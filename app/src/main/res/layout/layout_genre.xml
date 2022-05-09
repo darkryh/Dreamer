@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/genreLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginTop="8dp"
+    android:backgroundTint="?attr/colorSecondaryVariant">
+
+    <TextView
+        android:id="@+id/txvGenre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/genre"
+        android:textSize="12sp"
+        android:paddingHorizontal="8dp"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

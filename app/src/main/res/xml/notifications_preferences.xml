@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Notificaciones"
+        tools:ignore="TextContrastCheck">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_tips_and_updates_24"
+            android:summaryOn="Deseo recibir notificaciones de actualizaciones, promociones, etc."
+            app:key="Dreamer_Topic"
+            app:summaryOff="No deseo recibir notificaciones de actualizaciones, promociones, etc."
+            app:title="Notificador Oficial" />
+
+        <SwitchPreference
+            android:icon="@drawable/ic_campaign_24"
+            android:summaryOn="Comunicador interno activado."
+            app:key="PREFERENCE_CUSTOMIZE_COMMUNICATORS"
+            app:summaryOff="Comunicador interno desactivado."
+            app:title="Comunicador Oficial" />
+
+
+        <SwitchPreference
+            android:icon="@drawable/ic_notifications_24"
+            android:summaryOn="Deseo recibir notificación de lo ultimos capítulos."
+            app:key="PREFERENCE_NOTIFICATIONS"
+            app:summaryOff="Deseo no recibir notificación de lo ultimos capítulos."
+            app:title="Notificador (Experimental)" />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

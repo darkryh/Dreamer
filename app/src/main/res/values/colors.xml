@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blackPrimary">#212121</color>
+    <color name="whitePrimary">#fafafa</color>
+    <color name="blackSecondary">#000000</color>
+    <color name="whiteSecondary">#fbfbfb</color>
+    <color name="blueLight">#81d4fa</color>
+    <color name="blueLightDiscord">#4864F0</color>
+    <color name="blue">#1976d2</color>
+    <color name="yellow_700">#ffeb3b</color>
+    <color name="grey_accent">#838383</color>
+    <color name="grey">#373737</color>
+    <color name="pink">#E0245E</color>
+    <color name="green">#249721</color>
+    <color name="red">#a61919</color>
+    <color name="blackAccent">#1a1a1a</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="textBackgroundSmooth">#11000000</color>
+    <color name="textBackgroundSolid">#33000000</color>
+    <color name="transparentBackground">#88000000</color>
+
+    <color name="seem">#D0021B</color>
+</resources>

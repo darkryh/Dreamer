@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".ui.player.PlayerActivity"
+    android:orientation="vertical">
+
+    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+        android:id="@+id/aspectRatio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.exoplayer2.ui.StyledPlayerView
+            android:id="@+id/styledPlayerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            app:animation_enabled="false"
+            app:controller_layout_id="@layout/dreamer_player_controller"
+            app:hide_on_touch="true"
+            app:show_timeout="3500"
+            app:surface_type="surface_view" />
+
+
+    </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+
+
+    <LinearLayout
+        android:id="@+id/content_reference"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?attr/colorSurface"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/ln_castMiniController"
+        app:layout_constraintTop_toBottomOf="@+id/aspectRatio">
+
+        <FrameLayout
+            android:id="@+id/Frame_Content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ln_castMiniController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="?attr/colorSurface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="parent">
+
+        <fragment
+            android:id="@+id/castMiniController"
+            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            app:castControlButtons="@array/cast_mini_controller_control_buttons"
+            app:castProgressBarColor="@color/blueLight"
+            app:castMiniControllerLoadingIndicatorColor="@color/blueLight"
+            app:castButtonColor="?attr/colorPrimaryVariant"
+            android:visibility="visible"
+            tools:ignore="FragmentTagUsage" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

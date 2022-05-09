@@ -1,0 +1,100 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Dreamer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/blackPrimary</item>
+        <item name="colorPrimaryVariant">@color/blackSecondary</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/whitePrimary</item>
+        <item name="colorSecondaryVariant">@color/whiteSecondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/blackSecondary</item>
+        <item name="android:colorControlActivated">@color/blueLight</item>
+        <item name="android:windowContentTransitions">true</item>
+        <!-- <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item> -->
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.Dreamer.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>
+        <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>
+    </style>
+
+    <style name="CustomCastMiniController" parent="CastMiniController">
+        <item name="castShowImageThumbnail">true</item>
+        <item name="castTitleTextAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="castSubtitleTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="castBackground">?attr/colorSurface</item>
+        <item name="castProgressBarColor">@color/blueLight</item>
+        <item name="castButtonColor">?attr/colorPrimaryVariant</item>
+        <item name="castMiniControllerLoadingIndicatorColor">@color/blueLight</item>
+        <item name="castPlayButtonDrawable">@drawable/cast_ic_mini_controller_play</item>
+        <item name="castPauseButtonDrawable">@drawable/cast_ic_mini_controller_pause</item>
+        <item name="castStopButtonDrawable">@drawable/cast_ic_mini_controller_stop</item>
+        <item name="castLargePlayButtonDrawable">@drawable/cast_ic_mini_controller_play_large</item>
+        <item name="castLargePauseButtonDrawable">@drawable/cast_ic_mini_controller_pause_large</item>
+        <item name="castLargeStopButtonDrawable">@drawable/cast_ic_mini_controller_stop_large</item>
+        <item name="castSkipPreviousButtonDrawable">@drawable/cast_ic_mini_controller_skip_prev</item>
+        <item name="castSkipNextButtonDrawable">@drawable/cast_ic_mini_controller_skip_next</item>
+        <item name="castRewind30ButtonDrawable">@drawable/cast_ic_mini_controller_rewind30</item>
+        <item name="castForward30ButtonDrawable">@drawable/cast_ic_mini_controller_forward30</item>
+        <item name="castMuteToggleButtonDrawable">@drawable/cast_ic_mini_controller_mute</item>
+        <item name="castClosedCaptionsButtonDrawable">@drawable/cast_ic_mini_controller_closed_caption</item>
+    </style>
+
+
+    <style name="CustomCastExpandedController" parent="CastExpandedController">
+        <item name="castSeekBarProgressAndThumbColor">@color/blueLight</item>
+        <item name="castButtonColor">@color/white</item>
+        <item name="castControlButtons">@array/cast_expanded_controller_control_buttons</item>
+        <item name="castPlayButtonDrawable">@drawable/cast_ic_expanded_controller_play</item>
+        <item name="castPauseButtonDrawable">@drawable/cast_ic_expanded_controller_pause</item>
+        <item name="castStopButtonDrawable">@drawable/cast_ic_expanded_controller_stop</item>
+        <item name="castSkipPreviousButtonDrawable">@drawable/cast_ic_expanded_controller_skip_previous</item>
+        <item name="castSkipNextButtonDrawable">@drawable/cast_ic_expanded_controller_skip_next</item>
+        <item name="castRewind30ButtonDrawable">@drawable/cast_ic_expanded_controller_rewind30</item>
+        <item name="castForward30ButtonDrawable">@drawable/cast_ic_expanded_controller_forward30</item>
+    </style>
+
+
+    <style name="ExpandedAppBar" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/whitePrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CollapsedAppBar" parent="@android:style/TextAppearance">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:width">500dp</item>
+    </style>
+    <style name="PlayerTheme" parent="Theme.Dreamer">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="Theme.Dreamer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Dreamer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="Theme.Dreamer.AdAttribution">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:text">@string/ad_attribution</item>
+        <item name="android:background">#FFCC66</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.Dreamer">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppSearchView" parent="Widget.AppCompat.SearchView" >
+        <item name="android:textSize">13sp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,152 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.ead.project.dreamer"
+        minSdk 21
+        targetSdk 32
+        versionCode 14
+        versionName "1.17"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src\\main\\assets'
+            }
+        }
+    }
+    compileSdkVersion 32
+}
+
+dependencies {
+
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    def room_version = "2.4.2"
+    def lottieVersion = "4.2.1"
+    def exoplayer_version = "2.17.1"
+    def okhttpVersion = "4.9.2"
+    def retrofitVersion = "2.9.0"
+    def admobVersion = "20.6.0"
+
+    //basics
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation "androidx.media:media:1.6.0"
+
+    //room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    //image loader coil
+    implementation 'io.coil-kt:coil:1.4.0'
+
+    //shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    //html parser
+    implementation 'org.jsoup:jsoup:1.14.3'
+
+    //data store
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+
+    //exoplayer
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-dash:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-rtsp:$exoplayer_version"
+    implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayer_version"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+    implementation "com.google.android.exoplayer:extension-cast:$exoplayer_version"
+
+    //apacheCommons
+    implementation 'org.apache.commons:commons-text:1.9'
+
+    //workManager
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    //dagger hilt
+    implementation 'com.google.dagger:hilt-android:2.40.1'
+    kapt 'com.google.dagger:hilt-android-compiler:2.40.1'
+
+    //lottie
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    //okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion") {
+        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
+        //exclude module: 'okhttp'
+    }
+    //gson converter
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+
+
+    //calculator string
+    implementation 'net.objecthunter:exp4j:0.4.8'
+
+    //admob
+    implementation "com.google.android.gms:play-services-ads:$admobVersion"
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:29.2.1')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-inappmessaging-display-ktx'
+
+    //cast
+    implementation 'androidx.mediarouter:mediarouter:1.3.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:21.0.1'
+    implementation 'com.android.volley:volley:1.2.1'
+}

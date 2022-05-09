@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:icon="@drawable/ic_account_circle_24"
+        android:summary="Mi Cuenta"
+        app:key="PREFERENCE_ACCOUNT" />
+    <Preference
+        android:icon="@drawable/ic_video_player_type_24"
+        android:summary="Reproductor"
+        app:key="PREFERENCE_PLAYER" />
+    <Preference
+        android:icon="@drawable/ic_home_24"
+        android:summary="Diseño"
+        app:key="PREFERENCE_DESIGN" />
+    <Preference
+        android:icon="@drawable/ic_policy_24"
+        android:summary="Clasificación de Contenido"
+        app:key="PREFERENCE_CONTENT_RATING" />
+    <Preference
+        android:icon="@drawable/ic_notifications_24"
+        android:summary="Notificaciones"
+        app:key="PREFERENCE_NOTIFICATIONS" />
+    <Preference
+        android:icon="@drawable/ic_group_24"
+        android:summary="Sobre Nosotros"
+        app:key="PREFERENCE_ABOUT_US" />
+</PreferenceScreen>

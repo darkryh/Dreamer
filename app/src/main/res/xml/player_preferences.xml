@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Reproductor"
+        tools:ignore="TextContrastCheck">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_video_player_type_24"
+            android:summaryOn="Usando reproductor externo."
+            app:key="PREFERENCE_EXTERNAL_PLAYER"
+            app:summaryOff="Usando reproductor interno (Recomendado)."
+            app:title="Modo Externo" />
+
+        <SwitchPreference
+            android:icon="@drawable/ic_settings_input_svideo_24"
+            android:summaryOn="Reproduciendo videos automaticamente."
+            app:key="PREFERENCE_RANK_AUTOMATIC_PLAYER"
+            app:summaryOff="Reproduciendo videos manualmente."
+            app:title="Modo Automático" />
+
+        <SwitchPreference
+            android:icon="@drawable/ic_picture_in_picture_24"
+            android:summaryOn="Ventana flotante activada."
+            app:key="PREFERENCE_PIP_MODE_PLAYER"
+            app:summaryOff="Ventana flotante desactivada."
+            app:title="Picture In Picture" />
+    </PreferenceCategory>
+</PreferenceScreen>

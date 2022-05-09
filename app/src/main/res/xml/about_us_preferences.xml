@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Redes Sociales"
+        tools:ignore="TextContrastCheck">
+
+        <Preference
+            android:icon="@drawable/ic_twitter_24"
+            android:summary="Twitter"
+            app:key="PREFERENCE_TWITTER" />
+
+        <Preference
+            android:icon="@drawable/ic_discord_24"
+            android:summary="Discord"
+            app:key="PREFERENCE_DISCORD" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Desarrollado por Darkryh"
+        tools:ignore="TextContrastCheck">
+
+        <Preference
+            android:icon="@drawable/ic_cloud_sync_24"
+            android:summary="Sync : Progress State"
+            app:key="SYNC_DIRECTORY_PROFILE" />
+
+        <Preference
+            android:icon="@drawable/ic_engineering_24"
+            android:summary="Versión: Build Versión"
+            app:key="PREFERENCE_APP_VERSION" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

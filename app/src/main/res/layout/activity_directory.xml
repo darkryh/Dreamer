@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.directory.DirectoryActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSearching"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/colorSurface"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:orientation="horizontal"
+            android:layoutDirection="rtl"
+            tools:ignore="UseCompoundDrawables">
+
+            <EditText
+                android:id="@+id/edtSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_rounded"
+                android:backgroundTint="?attr/colorSecondary"
+                android:inputType="text"
+                android:layout_marginEnd="16dp"
+                android:autofillHints="no"
+                android:hint="@string/search_in_directory"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="6dp"
+                android:textColor="?attr/colorPrimaryVariant"
+                android:textColorHint="@color/grey_accent"
+                android:textSize="13sp"
+                tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
+
+
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvFinder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarSearching"
+        tools:listitem="@layout/layout_anime_base"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

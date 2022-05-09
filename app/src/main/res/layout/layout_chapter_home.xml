@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="0dp"
+    android:backgroundTint="?attr/colorSurface"
+    android:layout_marginVertical="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/imvRelativeCover"
+            android:layout_width="150dp"
+            android:layout_height="90dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imvCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/chapter_profile"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/media_player_holder" />
+
+            <ImageView
+                android:id="@+id/imvReflexCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_transparent_top_rounded"
+                android:contentDescription="@string/chapter_profile" />
+
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/txvTitle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="@string/title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imvRelativeCover"
+            app:layout_constraintTop_toTopOf="@+id/imvRelativeCover" />
+
+        <TextView
+            android:id="@+id/txvChapter"
+            app:layout_constraintEnd_toEndOf="@+id/imvRelativeCover"
+            app:layout_constraintTop_toTopOf="@+id/imvRelativeCover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/chapter"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txvType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/bg_blue_rounded"
+            android:paddingHorizontal="7dp"
+            android:text="@string/type"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imvRelativeCover"
+            app:layout_constraintStart_toStartOf="@+id/imvRelativeCover"
+            tools:ignore="TextContrastCheck" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

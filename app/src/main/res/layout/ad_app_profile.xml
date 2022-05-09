@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileLayout"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="35dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/relativeProfilePlayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imvCoverProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/cover_image"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@color/cardview_dark_background" />
+
+            <ImageView
+                android:id="@+id/imvReflexCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_transparent_bottom_rounded"
+                android:contentDescription="@string/cover_image" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:gravity="center|end"
+            android:maxLines="2"
+            android:paddingHorizontal="16dp"
+            android:text="@string/title"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imvIcon"
+            app:layout_constraintTop_toTopOf="@+id/relativeProfilePlayer" />
+
+        <ImageView
+            android:id="@+id/imvIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/relativeProfilePlayer"
+            app:srcCompat="@mipmap/ic_launcher_app" />
+
+        <TextView
+            android:id="@+id/txvDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="96dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/textBackgroundSmooth"
+            android:ellipsize="end"
+            android:maxLines="7"
+            android:padding="4dp"
+            android:text="@string/lorem"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toTopOf="@+id/txvTags"
+            app:layout_constraintEnd_toEndOf="@+id/relativeProfilePlayer"
+            app:layout_constraintStart_toStartOf="@+id/relativeProfilePlayer"
+            tools:ignore="RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/txvTags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/tags"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/relativeProfilePlayer"
+            app:layout_constraintEnd_toEndOf="@+id/relativeProfilePlayer"
+            app:layout_constraintStart_toStartOf="@+id/relativeProfilePlayer" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

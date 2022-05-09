@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:backgroundTint="?attr/colorSecondaryVariant"
+    android:layout_marginHorizontal="16dp"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="0dp"
+    android:orientation="horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="3dp">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imvCover_Base"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/anime_logo"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/media_player_holder" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_transparent_vertical_small_rounded"
+                android:contentDescription="@string/cover_image" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/rating"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/title"
+            android:textColor="@color/blueLight"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/txvContent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:justificationMode="inter_word"
+            android:text="@string/lorem"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/txvGenre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/txvTitle"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/txvGenre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/genre"
+            android:textColor="?attr/colorPrimaryVariant"
+            android:textSize="10sp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            tools:ignore="SmallSp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

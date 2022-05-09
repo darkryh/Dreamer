@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.ead.project.dreamer.ui.settings.layouts.ImageViewPreference
+        app:key="PREFERENCE_CUSTOMIZED_IMV_PROFILE"
+        app:layout="@layout/layout_image_view_preference" />
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Información Usuario"
+        tools:ignore="TextContrastCheck">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_no_accounts_24"
+            android:summaryOn="La app omitira el inicio de sesión"
+            app:key="PREFERENCE_SKIP_LOGIN"
+            app:summaryOff="La app no omitira el inicio de sesión."
+            app:title="Omitir Inicio Sesión" />
+        <Preference
+            android:icon="@drawable/ic_logout_24"
+            app:key="PREFERENCE_SESSION"
+            app:summary="Cerrar Sesión" />
+        <Preference
+            android:icon="@drawable/ic_info_24"
+            app:key="PREFERENCE_ADVISER"
+            app:summary="Las opciones deshabilitadas y servidores premium, funcionan al iniciar sesión." />
+    </PreferenceCategory>
+</PreferenceScreen>

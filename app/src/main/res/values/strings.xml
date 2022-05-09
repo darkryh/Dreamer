@@ -1,0 +1,243 @@
+<resources>
+    <string name="app_name">Dreamer</string>
+    <string name="logo">logo</string>
+    <string name="sign_in_discord">Iniciar con Discord</string>
+    <string name="guest">Modo Invitado</string>
+    <string name="back">atras</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_favorites">Favoritos</string>
+    <string name="title_records">Historial</string>
+    <string name="title_settings">Configuración</string>
+    <string name="chapter_profile">chapter profile</string>
+    <string name="title">title</string>
+    <string name="chapter">chapter</string>
+    <string name="type">type</string>
+    <string name="search_in_directory">Buscar en Directorio…</string>
+    <string name="state_of_the_app">state of the app</string>
+    <string name="chapterLogo">chapterLogo</string>
+    <string name="serversList">Lista de Servidores :</string>
+    <string name="welcome_player">%1$s - Capítulo número %2$d</string>
+    <string name="choose_quality">Escoger calidad de Video :</string>
+    <string name="full_screen">full screen</string>
+    <string name="slash">/</string>
+    <string name="fast_forward">fast forward</string>
+    <string name="pause">pause</string>
+    <string name="play">play</string>
+    <string name="replay">replay</string>
+    <string name="anime_logo">anime logo</string>
+    <string name="chapterList">Lista de Capítulos.</string>
+    <string name="lorem">What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.  Why do we use it? It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).   Where does it come from? Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.  The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</string>
+    <string name="rating">rating</string>
+    <string name="year">year</string>
+    <string name="state">state</string>
+    <string name="cover_profile">cover profile</string>
+    <string name="profile_logo">profile logo</string>
+    <string name="cover_reflex">cover reflex</string>
+    <string name="genre">genre</string>
+    <string name="cover_image">cover image</string>
+    <string name="title_player">%1$s - %2$d</string>
+    <string name="title_series">Serie de Reproducción %1$s.</string>
+    <string name="title_seeing">Estas viendo %1$s.</string>
+    <string name="wordDecorate">· %1$s</string>
+    <string name="ratingLayout">✪ %1$s</string>
+    <string name="chapter_number">Capítulo número %1$s</string>
+    <string name="chapter_number_min">Cap. %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_string">default</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="imageview_to_checker">imageview to checker</string>
+    <string name="loading">cargando..</string>
+    <string name="background_transparent">background_transparent</string>
+    <string name="close">close</string>
+    <string name="Chat">Chat</string>
+    <string name="account">Cuenta</string>
+    <string name="recommendations_user">Recomendaciones habilitadas al iniciar sesión.</string>
+    <string name="suggestions">Sugerencias</string>
+    <string name="current_pos">pos</string>
+    <string name="chapter_current_pos">Cap. %1$s</string>
+    <string name="relaunch_play">Relanzar Video.</string>
+
+    <string name="ad_attribution">Ad</string>
+    <string name="app_referent">app_Referent</string>
+    <string name="accept">Aceptar</string>
+    <string name="reject">Rechazar</string>
+    <string name="termsAndConditions">Términos y Condiciones</string>
+    <string name="termsAndConditionsContent">\nNosotros no alojamos ningún archivo multimedia en esta aplicacion.  No estamos asociados con la lista de contenidos que se encuentran en servidores remotos. \n\nNo tenemos conexión o asociación con dicho contenido.Los archivos mp4, avi, mkv que están disponibles para descargar no están alojados en Dreamer y están alojados en otros servidores (por lo tanto, no en nuestro servicio de host).Cada archivo en Dreamer es solo para escuchar la investigación. \n\nEste dominio (Dreamer) funciona como un motor de búsqueda de películas y no almacena ni aloja ningún archivo u otro material con derechos de autor. \n\nSeguimos las leyes de derechos de autor, pero si encuentra resultados de búsqueda que considera ilegales, se le pide que complete el formulario y envíe un correo electrónico propuesto (en la ultima sección de las políticas de privacidad). De hecho, nos adherimos a los derechos de los productores y artistas. Le aseguramos que su trabajo será seguro y legal, lo que resultará en una experiencia positiva para cada uno de ustedes, ya sea que sea un creador o un artista musical. \n\nTenga en cuenta que si alguna persona, a sabiendas o intencionalmente, tergiversa cualquier material o actividad enumerada en la Sección 512 (f), se consideraría una violación de la ley de derechos de autor. Entonces, si lo hace, es responsable de su propio daño. Pero tenga en cuenta una cosa: ¡no haga ninguna afirmación falsa sobre el contenido infringido!  La información completa contenida en el aviso legal también se puede enviar a la parte interesada proporcionando el contenido que se está infringiendo.</string>
+    <string name="legal_warning">Aviso Legal</string>
+    <string name="legalWarningContent">\nDreamer está de acuerdo con 17 USC § 512 y la Digital Millennium Copyright Act (“DMCA”). Es nuestra política responder a cualquier notificación de infracción y tomar las acciones apropiadas bajo la Digital Millennium Copyright Act (“DMCA”) y otras leyes de propiedad intelectual aplicables.  \n\n1. Los enlaces que figuran en esta página web han sido encontrados en páginas de la índole de Youtube, Digiload.co, Mystream.to, Uqload.com, Fembed.com, Tu.tv, Openload.co, Bigfile.to, Streamcloud.eu, allmyvideos.net, 1fichier.com, streamin.to, hugefiles.net, powvideo.net, uptobox.com, flashx.tv, ul.to, hqq.tv, mp4upload.com, yourupload.com, nowvideo.sx, etc. Y desconocemos si los mismos tienen contratos de cesión de derechos sobre estos videos para reproducirlos, alojarlos o permitir su descarga.  \n\n2. Todas las marcas aquí mencionadas y logos están registrados por sus legítimos propietarios y solamente se emplean en referencia a las mismas y con un fin de cita o comentario, de acuerdo con el articulo 32 LPI.  \n\n3. No nos hacemos responsables del uso indebido que puedas hacer del contenido de nuestra página.  \n\n4. En ningún caso o circunstancia se podrá responsabilizar directamente o indirectamente al propietario ni a los colaboradores del ilícito uso de la información contenida en Dreamer.  \n\n5. Así mismo tampoco se nos podrá responsabilizar directamente o indirectamente de incorrecto uso o mala interpretación que se haga de la información y servicios incluidos. Igualmente quedara fuera de nuestra responsabilidad el material al que usted pueda acceder desde nuestros enlaces.  \n\n6. Si en tu país, este tipo de página está prohibido, tú y solo tú eres el responsable de la entrada a Dreamer.  \n\n7. Si decides permanecer en nuestro sitio web, quiere decir que has leído, comprendido y aceptas las condiciones de esta página.  \n\n8. Todo el contenido ha sido exclusivamente sacado de sitios públicos de Internet, por lo que este material es considerado de libre distribución. En ningún artículo legal se menciona la prohibición de material libre por lo que esta página no infringe en ningún caso la ley. Si alguien tiene alguna duda o problema al respecto, no dude en ponerse en contacto con nosotros.  \n\n9. Todo la información y programas aquí recogidos van destinados al efectivo cumplimiento de los derechos recogidos en el artículo 31 RD/1/1996 por el que se aprueba el texto refundido de la Ley de la Propiedad Intelectual (LPI) en especial referencia al artículo 31.2 LPI, y en concordancia con lo expresado en el artículo 100.2 de esta misma ley.  \n\n10. Nos reservamos el derecho de vetar la entrada a cualquier sujeto a nuestra página web y a su vez se reserva el derecho de prohibir el uso de cualquier programa y/o información, en concordancia con los derechos de autor otorgados por el artículo 14 LPI.  \n\n11. La visita o acceso a esta página web, que es de carácter privado y no público, exige la aceptación del presente aviso. En esta web se podrá acceder a contenidos publicados por Youtube, Tu.tv, Openload.co, Bigfile.to, Streamcloud.eu, allmyvideos.net, 1fichier.com, streamin.to, hugefiles.net, powvideo.net, uptobox.com, flashx.tv, ul.to, hqq.tv, mp4upload.com, monoschinos2.com, yourupload.com, nowvideo.sx, etc. El único material que existe en la web son enlaces ha dicho contenido, facilitando únicamente su visionado. Los propietarios de Youtube, Digiload.co, Mystream.to, Uqload.com, Tu.tv, Openload.co, Bigfile.to, Streamcloud.eu, allmyvideos.net, 1fichier.com, streamin.to, hugefiles.net, powvideo.net, uptobox.com, flashx.tv, ul.to, hqq.tv, mp4upload.com, yourupload.com, nowvideo.sx, etc. son plenamente responsables de los contenidos que publiquen.  \n\nPor consiguiente, Dreamer ni aprueba, ni hace suyos los productos, servicios, contenidos, información, datos, opiniones archivos y cualquier clase de material existente en Youtube, Digiload.co, Mystream.to, Uqload.com, Tu.tv, Openload.co, Bigfile.to, Streamcloud.eu, allmyvideos.net, 1fichier.com, streamin.to, hugefiles.net, powvideo.net, uptobox.com, monoschinos2.com, flashx.tv, ul.to, hqq.tv, mp4upload.com, yourupload.com, nowvideo.sx, etc. y no controla ni se hace responsable de la calidad, licitud, fiabilidad y utilidad de la información, contenidos y servicios existentes en Youtube, Tu.tv, Openload.co, Bigfile.to, Streamcloud.eu, allmyvideos.net, 1fichier.com, streamin.to, hugefiles.net, powvideo.net, uptobox.com, flashx.tv, ul.to, hqq.tv, mp4upload.com, yourupload.com, nowvideo.sx, etc.</string>
+    <string name="Privacy_Policy">Política de privacidad</string>
+    <string name="PrivacyPolicyContent">\nDarkryh construyó la aplicación Dreamer como una aplicación gratuita. Este SERVICIO es proporcionado por Dreamer sin costo y está destinado a utilizar tal como está.  \n\nEsta página se utiliza para informar a los visitantes mis políticas con la colección, el uso y divulgación de Información Personal si alguien decidió usar mi Servicio.  Si decide utilizar mi Servicio, entonces usted está de acuerdo a la recopilación y uso de información en relación con este Política. \n\nLa información personal que recopilo es para proporcionar y mejorar el Servicio. No usaré ni compartiré su información con cualquier persona, excepto como se describe en esta Privacidad Política.  Los términos utilizados en esta Política de Privacidad tienen los mismos significados como en nuestros Términos y Condiciones, que es accesible en [aCademy iRami ] a menos que se defina lo contrario en esta Privacidad Política.  \n\nRecopilación y uso de información  \n\nPara una mejor experiencia, mientras usa nuestro Servicio, Puedo exigirle que nos proporcione ciertos información de identificación personal. el información que solicito será retenido en su dispositivo y no es recogido por mí de ninguna manera.  La aplicación utiliza servicios de terceros que pueden recopilar información utilizada para identificarlo.  Enlace a la política de privacidad de proveedores de servicios externos utilizado por la aplicaciónes :     \n\nGoogle Play Services     \nAdMob     \nGoogle Analytics for Firebase     \nFirebase Crashlytics     \nFacebook     \nFabric     \nOne Signal  \n\nDatos de registro  Quiero informarles que cada vez que utiliza mi Servicio, en caso de error en el aplicación que recopilo datos e información (a través de la tercera productos de la fiesta) en su teléfono llamado Datos de registro. \n\nEstos datos de registro puede incluir información como Internet de su dispositivo Dirección de protocolo (\"IP\"), nombre del dispositivo, sistema operativo versión, la configuración de la aplicación al utilizar mi Servicio, la hora y fecha de su uso de la Servicio y otras estadísticas.  \n\nSeguridad  Valoro su confianza en proporcionarnos su información personal, por lo tanto, nos esforzamos por utilizar medios comercialmente aceptables para protegerlo. Pero recuerda que ningún método de transmisión a través de Internet, o método almacenamiento electrónico es 100% seguro y confiable, y No puedo garantizar su seguridad absoluta.  \n\nEnlaces a otros sitios  Este Servicio puede contener enlaces a otros sitios. Si hace clic en en un enlace de terceros, se le dirigirá a ese sitio. Tenga en cuenta que estos sitios externos no son operados por yo. Por lo tanto, le aconsejo encarecidamente que revisar la Política de Privacidad de estos sitios web. No tengo control y asumo que no responsabilidad por el contenido, las políticas de privacidad o prácticas de sitios o servicios de terceros.  \n\nPrivacidad de los niños  Estos Servicios no se dirigen a menores de 13 años. No colecciono personalmente a sabiendas información identificable de niños menores de 13 años. En el caso Descubro que un niño menor de 13 años ha proporcionado con información personal, Inmediatamente elimino esto de nuestros servidores. Si usted son padres o tutores y usted es consciente de que su hijo nos ha proporcionado información personal, por favor póngase en contacto con para que pueda hacer acciones necesarias.  \n\nCambios en esta Política de Privacidad  Puedo actualizar nuestra Política de Privacidad de tiempo a tiempo. Por lo tanto, se recomienda revisar esta página periódicamente para cualquier cambio. Lo haré notificarle de cualquier cambio publicando la nueva Política de Privacidad en esta página. \n\nEstos cambios son efectivos inmediatamente después de se publican en esta página.  Contáctenos  Si tiene alguna pregunta o sugerencia sobre mi Política de Privacidad, no dude en ponerse en contacto con me </string>
+    <string name="welcome_legal_warning">Bienvenido. ¡Te ponemos en Contexto!</string>
+    <string name="email_protected">[Email Protected]</string>
+    <string name="community">Comunidad</string>
+    <string name="support">Soporte</string>
+    <string name="validation">validación</string>
+    <string name="message">Mensaje</string>
+    <string name="send">enviar</string>
+    <string name="profile_chat">profile_chat</string>
+    <string name="test_example">Esto es un texto de ejemplo, mejorar la calidad siempre recuerdalo.</string>
+    <string name="chantsender">ChantSender</string>
+    <string name="body">body</string>
+    <string name="store">store</string>
+    <string name="modo_de_gesto_al_acercar">Modo de gesto al acercar :</string>
+    <string name="fixed_width">Ancho Fijo</string>
+    <string name="zoom">Zoom</string>
+    <string name="fill">Relleno</string>
+    <string name="price">price</string>
+    <string name="timeout_message">Tiempo de espera agotado,intente ingresar despues en unos minutos, o revise su estado de conexión.</string>
+    <string name="status_app">La versión actual %1$s de la  aplicación, se encuentre obsoleta. Le recomendamos actualizar a una versión mínima : %2$s. o posterior! Click en este mensaje para actualizar a la ultima versión</string>
+    <string name="google_policies_message">Este contenido no soporta las políticas de google. Se le recomienda buscar otro contenido.</string>
+    <string name="google_policies_mode">La opción, no se puede cambiar por las políticas de google!</string>
+    <string name="log_in">Iniciar Sesión</string>
+    <string name="sync_complete">Sincronización : Completa</string>
+    <string name="sync_in_progress">Sincronización : En Progreso</string>
+    <string name="discord_error">error al establecer conexión con discord, reporte en nuestro discord.</string>
+    <string name="user_account">\nNombre de Usuario: %1$s\n\nRango actual: %2$s</string>
+    <string name="accepted_user">Ingreso aceptado, %1$s.</string>
+    <string name="requesting_data">Solicitando Datos del Directorio..</string>
+    <string name="requesting_data_adv1">Esto toma un par de minutos la primera vez, de instalación.</string>
+    <string name="requesting_data_adv2">En caso de que tome más de 10 minutos, reinicie la app.</string>
+    <string name="requesting_data_adv3">Si ve la pantalla de inicio en blanco, asegurese de estar conectado a una red wifi.</string>
+    <string name="successfully_sync">Sincronización Exitosa..</string>
+
+    <!-- Practice ADS IDS -->
+    <string name="ad_unit_id_app_practice">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ad_unit_id_native_practice">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="ad_unit_id_interstitial_practice">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="ad_unit_id_banner_practice">ca-app-pub-3940256099942544/6300978111</string>
+
+    <!-- Dreamer ADS IDS -->
+    <string name="ad_unit_id_app">ca-app-pub-8444582431468785~2572001480</string>
+    <string name="ad_unit_id_native_home">ca-app-pub-8444582431468785/8787724343</string>
+    <string name="ad_unit_id_native_favorites">ca-app-pub-8444582431468785/5597430121</string>
+    <string name="ad_unit_id_native_records">ca-app-pub-8444582431468785/3666476750</string>
+    <string name="ad_unit_id_native_profile">ca-app-pub-8444582431468785/1550577167</string>
+    <string name="ad_unit_id_native_player">ca-app-pub-8444582431468785/8692622477</string>
+    <string name="ad_unit_id_interstitial_player">ca-app-pub-8444582431468785/2087913619</string>
+    <string name="ad_unit_id_banner_profile">ca-app-pub-8444582431468785/7575209863</string>
+    <string name="playlist">playlist</string>
+    <string name="sort">sort</string>
+    <string name="icon">icon</string>
+    <string name="tags">tags</string>
+    <string name="modo_invitado">Modo Invitado</string>
+    <string name="usuario">Usuario</string>
+    <string name="configuration">Configuración</string>
+    <string name="chapters">Seleccionar Capítulos..</string>
+    <string name="filter">Filtrar</string>
+    <string name="genreList">Lista de Generos</string>
+    <string name="select_genre">Seleccionar Genero.</string>
+    <string name="stateList">Lista de Estados</string>
+    <string name="select_state">Seleccionar Estado.</string>
+    <string name="typeList">Lista de Tipos</string>
+    <string name="select_type">Seleccionar Tipo.</string>
+    <string name="search_chapter_number">Buscar numero de Capítulo.</string>
+    <string name="app_id">589DFD71</string>
+    <string name="media_route_menu_title">cast_button</string>
+    <string name="last_chapter_releases">Ultimos Capítulos en estreno</string>
+    <string name="latin_series">Series en Latino</string>
+    <string name="shonen_series">Series de Shonen</string>
+    <string name="romance_series">Series de Romance</string>
+    <string name="comedy_series">Series de Comedia</string>
+    <string name="drama_series">Series de Drama</string>
+    <string name="action_series">Series de Acción</string>
+    <string name="mystery_series">Series de Misterio</string>
+    <string name="content">content</string>
+    <string name="expanded">expanded</string>
+    <string name="sign_in_twitter">Iniciar con Twitter</string>
+
+    <string-array name="state_list">
+        <item>Estreno</item>
+        <item>Finalizado</item>
+    </string-array>
+
+    <string-array name="types_list">
+        <item>Anime</item>
+        <item>Ova</item>
+        <item>Pelicula</item>
+        <item>Especial</item>
+        <item>Corto</item>
+        <item>Ona</item>
+        <item>Donghua</item>
+        <item>Sin Censura</item>
+        <item>PREESTRENO</item>
+        <item>Pelicula 1080p</item>
+    </string-array>
+    <string-array name="genres_list">
+        <item>Acción</item>
+        <item>Aventura</item>
+        <item>Carreras</item>
+        <item>Ciencia Ficción</item>
+        <item>Comedia</item>
+        <item>Cyberpunk</item>
+        <item>Deportes</item>
+        <item>Drama</item>
+        <item>Ecchi</item>
+        <item>Escolares</item>
+        <item>Fantasía</item>
+        <item>Gore</item>
+        <item>Harem</item>
+        <item>Horror</item>
+        <item>Josei</item>
+        <item>Lucha</item>
+        <item>Magia</item>
+        <item>Mecha</item>
+        <item>Militar</item>
+        <item>Misterio</item>
+        <item>Música</item>
+        <item>Parodias</item>
+        <item>Psicológico</item>
+        <item>Recuerdos de la vida</item>
+        <item>Seinen</item>
+        <item>Shojo</item>
+        <item>Shonen</item>
+        <item>Sobrenatural</item>
+        <item>Vampiros</item>
+        <item>Yaoi</item>
+        <item>Yuri</item>
+        <item>Latino</item>
+        <item>Espacial</item>
+        <item>Histórico</item>
+        <item>Samurai</item>
+        <item>Artes Marciales</item>
+        <item>Demonios</item>
+        <item>Romance</item>
+        <item>Dementia</item>
+        <item>Policía</item>
+        <item>Castellano</item>
+        <item>Historia paralela</item>
+        <item>Aenime</item>
+        <item>Donghua</item>
+        <item>Blu-ray</item>
+        <item>Monogatari</item>
+    </string-array>
+
+    <array name="cast_mini_controller_control_buttons">
+        <item>@id/cast_button_type_empty</item>
+        <item>@id/cast_button_type_play_pause_toggle</item>
+        <item>@id/cast_button_type_forward_30_seconds</item>
+    </array>
+
+    <array name="cast_expanded_controller_control_buttons">
+        <item>@id/cast_button_type_custom</item>
+        <item>@id/cast_button_type_rewind_30_seconds</item>
+        <item>@id/cast_button_type_forward_30_seconds</item>
+        <item>@id/cast_button_type_empty</item>
+    </array>
+
+
+</resources>
