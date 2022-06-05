@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
@@ -10,6 +11,7 @@ import org.jsoup.Jsoup
 class Senvid(var url : String) : Server() {
 
     init {
+        player = Player.Senvid
         patternReference()
         linkProcess()
     }

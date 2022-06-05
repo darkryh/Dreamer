@@ -12,12 +12,6 @@
         android:title="Información Usuario"
         tools:ignore="TextContrastCheck">
 
-        <SwitchPreference
-            android:icon="@drawable/ic_no_accounts_24"
-            android:summaryOn="La app omitira el inicio de sesión"
-            app:key="PREFERENCE_SKIP_LOGIN"
-            app:summaryOff="La app no omitira el inicio de sesión."
-            app:title="Omitir Inicio Sesión" />
         <Preference
             android:icon="@drawable/ic_logout_24"
             app:key="PREFERENCE_SESSION"
@@ -25,6 +19,6 @@
         <Preference
             android:icon="@drawable/ic_info_24"
             app:key="PREFERENCE_ADVISER"
-            app:summary="Las opciones deshabilitadas y servidores premium, funcionan al iniciar sesión." />
+            app:summary="Las opciones deshabilitadas, funcionan al iniciar sesión." />
     </PreferenceCategory>
 </PreferenceScreen>

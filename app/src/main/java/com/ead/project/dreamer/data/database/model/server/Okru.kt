@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
@@ -11,6 +12,7 @@ import org.jsoup.Jsoup
 class Okru(var url:String) : Server() {
 
     init {
+        player = Player.Okru
         patternReference()
         linkProcess()
     }
@@ -54,6 +56,7 @@ class Okru(var url:String) : Server() {
                 }
                 videoList.add(video)
             }
+            breakOperation()
         } catch (e: Exception) { e.printStackTrace() }
     }
 }

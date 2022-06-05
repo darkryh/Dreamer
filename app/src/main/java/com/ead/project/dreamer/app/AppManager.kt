@@ -2,26 +2,28 @@ package com.ead.project.dreamer.app
 
 import android.graphics.Bitmap
 import android.webkit.WebView
-import com.ead.project.dreamer.data.network.DreamerWebClient
-import com.ead.project.dreamer.data.utils.ThreadUtil
+import com.ead.project.dreamer.data.network.DreamerClient
+import com.ead.project.dreamer.data.network.DreamerWebView
+import com.ead.project.dreamer.data.network.DreamerWebView.Companion.BLANK_BROWSER
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 
 class AppManager {
 
-    private var webView : WebView?=null
+    private var webView : DreamerWebView?=null
 
     init {
-        webView = WebView(DreamerApp.INSTANCE)
-        settingJavaScript()
+        webView = DreamerWebView(DreamerApp.INSTANCE)
+        settingWebView()
+        webView?.loadUrl(DreamerRequest.getExampleLoad())
     }
 
-    private fun settingJavaScript() {
-        webView?.webViewClient = object : DreamerWebClient(webView!!,DreamerRequest.getExampleLoad()) {
+    private fun settingWebView() {
+        webView?.webViewClient = object : DreamerClient() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 try {
-                    runTimeout {
+                    run {
                         if (timeout) {
                             webView?.loadUrl(BLANK_BROWSER)
                             webView?.destroy()
@@ -43,8 +45,6 @@ class AppManager {
             }
         }
     }
-
-    private fun runTimeout (task: () -> Unit) = ThreadUtil.runInMs(task,DreamerWebClient.TIMEOUT_MS)
 
     fun onDestroy() {
         webView?.destroy()

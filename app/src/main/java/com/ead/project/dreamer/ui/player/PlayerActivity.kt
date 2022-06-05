@@ -47,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playerView : StyledPlayerView
     private lateinit var dreamController : AspectRatioFrameLayout
     private lateinit var aspectRatio : AspectRatioFrameLayout
-    lateinit var videoList : List<VideoModel>
+    lateinit var playList : List<VideoModel>
 
     lateinit var chapter: Chapter
     private var orientation : Int = 0
@@ -108,14 +108,14 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initPlayer() {
-        playerManager = PlayerManager(this,playerViewModel, playerView,chapter, videoList,castManager)
+        playerManager = PlayerManager(this,playerViewModel, playerView,chapter, playList,castManager)
         playerManager.mediaRouteButton = mediaRouteButton
         playerManager.initPlayer()
     }
 
     private fun initVariables() {
         chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
-        videoList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        playList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
         orientation = resources.configuration.orientation
     }
 
@@ -204,7 +204,7 @@ class PlayerActivity : AppCompatActivity() {
                 val fragmentManager: FragmentManager = supportFragmentManager
                 val trackSelectorFragment = TrackSelectorFragment()
                 trackSelectorFragment.player = playerManager.currentPlayer!! as ExoPlayer
-                trackSelectorFragment.videoModelList = videoList.asReversed()
+                trackSelectorFragment.videoModelList = playList.asReversed()
                 trackSelectorFragment.trackSelector = playerManager.trackSelector
                 trackSelectorFragment.playerView = playerManager.playerView
                 trackSelectorFragment.show(fragmentManager, null)

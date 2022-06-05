@@ -2,6 +2,7 @@ package com.ead.project.dreamer.data.database.model.server
 
 
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import net.objecthunter.exp4j.ExpressionBuilder
@@ -12,6 +13,7 @@ import kotlin.math.roundToInt
 class Zippyshare (var url : String) : Server() {
 
     init {
+        player = Player.Zippyshare
         linkProcess()
     }
 
@@ -34,7 +36,7 @@ class Zippyshare (var url : String) : Server() {
             val result = fistPart + resultOperation + secondPart
 
             videoList.add(VideoModel("Default", url.substringBefore("/v/").plus(result)))
-
+            breakOperation()
         } catch (e: Exception) {
             e.printStackTrace()
         }

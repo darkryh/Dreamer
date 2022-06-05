@@ -56,6 +56,11 @@ data class Chapter (
 
         fun setCasting(chapter: Chapter) { DataStore.writeStringAsync(Constants.CURRENT_CASTING_CHAPTER,Gson().toJson(chapter)) }
 
+        fun setStreamDuration(value: Int) { DataStore.writeIntAsync(Constants.CAST_STREAM_DURATION,value) }
+
+        fun getStreamDuration(): Int? = try {
+            DataStore.readInt(Constants.CAST_STREAM_DURATION)
+        } catch (e : Exception) { null }
     }
 
     fun currentSeenToLong() = Tools.secondsToLong(this.currentSeen)

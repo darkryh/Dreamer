@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.ui.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -38,8 +39,8 @@ class MainActivity : AppCompatActivity() {
     private var castManager: CastManager = CastManager()
     private val appManager = AppManager()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_Dreamer)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -75,10 +76,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init(){
+        initSettings()
         userSettings()
         appSettings()
         checkStatusApp()
         checkSubscribedTopic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Tools.launchRequestedProfile(this)
     }
 
     override fun onResume() {
@@ -97,9 +104,9 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onStart() {
-        super.onStart()
-        Tools.launchRequestedProfile(this)
+    private fun initSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) splashScreen
+        Constants.setAppFromGoogle(false)
     }
 
     private fun appSettings() {
@@ -115,6 +122,7 @@ class MainActivity : AppCompatActivity() {
         castManager.setViewModel(mainActivityViewModel)
         castManager.initButtonFactory(this,binding.mediaRouteButton)
     }
+
 
     private fun userSettings() {
         if (user == null) {
@@ -165,5 +173,4 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, DirectoryActivity::class.java))
         }
     }
-
 }

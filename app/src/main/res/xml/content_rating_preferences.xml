@@ -9,9 +9,9 @@
 
         <SwitchPreference
             android:icon="@drawable/ic_policy_24"
-            android:summaryOn="Contenido +18 y modo ChromeCast bloqueado"
+            android:summaryOn="Contenido +18 bloqueado"
             app:key="PREFERENCE_GOOGLE_POLICY"
-            app:summaryOff="Contenido y modo ChromeCast desbloqueado"
+            app:summaryOff="Contenido +18 desbloqueado"
             app:title="Políticas de Google" />
     </PreferenceCategory>
 

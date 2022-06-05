@@ -32,6 +32,7 @@ class NotificationWorker @AssistedInject constructor(
     lateinit var repository: AnimeRepository
     lateinit var webProvider: WebProvider
     lateinit var notifier : DreamerNotifier
+
     private lateinit var notification : NotificationCompat.Builder
 
     private val listToNotify : MutableList<ChapterHome> = ArrayList()
@@ -55,7 +56,7 @@ class NotificationWorker @AssistedInject constructor(
                     previousList.apply {
                         if (isNotEmpty()) {
                             for (chapter in releaseList)
-                                if (!contains(chapter))
+                                if (!contains(chapter.title))
                                     listToNotify.add(chapter)
 
                             for (i in listToNotify.indices) {
@@ -65,7 +66,7 @@ class NotificationWorker @AssistedInject constructor(
                         }
                         else notificationSetting()
                     }
-                    ChapterHome.setPreviousList(releaseList)
+                    ChapterHome.setPreviousList(releaseList.map { it.title })
                 }
                 Result.success()
             }

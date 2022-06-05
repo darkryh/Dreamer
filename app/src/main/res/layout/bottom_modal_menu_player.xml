@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="@drawable/bg_horizontal_border"
             android:padding="16dp"
             tools:ignore="UselessParent">
 

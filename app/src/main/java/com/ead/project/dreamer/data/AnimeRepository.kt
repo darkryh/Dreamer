@@ -117,8 +117,6 @@ class AnimeRepository @Inject constructor(
 
     fun getFlowChaptersFromProfile(id :Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfile(id)
 
-    fun getFlowChaptersFromProfileInSections(id :Int,start: Int,end: Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfileInSections(id,start,end)
-
     fun getFlowChaptersFromProfileAsc(id :Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfileAsc(id)
 
     fun getFlowChaptersRecord() : Flow<List<Chapter>> = chapterDao.getFlowDataRecords()

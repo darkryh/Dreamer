@@ -172,7 +172,7 @@ class PlayerManager(
     fun onNewIntent() {
         isNewIntent = true
         chapter = playerActivity.chapter
-        videoList = playerActivity.videoList
+        videoList = playerActivity.playList
         playbackPosition = Tools.secondsToLong(chapter.currentSeen)
     }
 
@@ -237,12 +237,14 @@ class PlayerManager(
 
             }
             Player.STATE_ENDED -> {
-                DreamerApp.showLongToast("ENDED")
+
             }
             else -> {
                 DreamerApp.showLongToast("error")
             }
         }
+
+
     }
 
     private fun updateMedia() {

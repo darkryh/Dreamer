@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.retrofit.model.discord.User
@@ -18,13 +17,10 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
 
     private var user : User?= User.get()
 
-    private lateinit var pSkipMode : SwitchPreference
     private lateinit var pAdviser : Preference
     private lateinit var pSession : Preference
 
     private var imvpProfile: ImageViewPreference? = null
-    private var skipLogin = DataStore
-        .readBoolean(Constants.PREFERENCE_SKIP_LOGIN)
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_preferences, rootKey)
@@ -36,7 +32,6 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
     private fun initLayouts() {
         imvpProfile = findPreference(Constants.PREFERENCE_CUSTOMIZED_IMV_PROFILE) as ImageViewPreference?
         pAdviser = findPreference(Constants.PREFERENCE_ADVISER)!!
-        pSkipMode = findPreference(Constants.PREFERENCE_SKIP_LOGIN)!!
         pSession = findPreference(Constants.PREFERENCE_SESSION)!!
     }
 
@@ -44,12 +39,10 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
         if (imvpProfile != null)
             imvpProfile?.setImageClickListener{}
 
-        pSkipMode.isChecked = skipLogin
     }
 
     private fun userConfiguration() {
         if (user != null) {
-            pSkipMode.isVisible = false
             pAdviser.isVisible = false
         }
         else

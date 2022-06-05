@@ -15,6 +15,7 @@ import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.ui.main.MainActivityViewModel
 import com.ead.project.dreamer.ui.player.PlayerViewModel
 import com.ead.project.dreamer.ui.profile.AnimeProfileViewModel
+import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.gson.Gson
@@ -114,6 +115,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
     private fun updatedChapter() {
         chapter = Chapter.getCasting()
+        Chapter.setStreamDuration(Tools.longToSeconds(remoteMediaClient?.streamDuration!!))
         chapter?.totalToSeen = Tools.longToSeconds(remoteMediaClient?.streamDuration!!)
         chapter?.currentSeen = getStream()
         chapter?.lastSeen = Calendar.getInstance().time
@@ -121,6 +123,14 @@ class CastManager (private val initOnCreate : Boolean = false) {
         if (isOnFinalState(chapter)) {
             chapter?.alreadySeen = true
         }
+    }
+
+    private fun updatedChapterFinal() {
+        chapter = Chapter.getCasting()
+        chapter?.totalToSeen = Chapter.getStreamDuration()!!
+        chapter?.currentSeen = Chapter.getStreamDuration()!!
+        chapter?.lastSeen = Calendar.getInstance().time
+        chapter?.alreadySeen = true
     }
 
     fun setPreviousCast(string: String?=null)  {
@@ -142,6 +152,13 @@ class CastManager (private val initOnCreate : Boolean = false) {
     fun updateChapterMetaData() {
         if (remoteMediaClient != null) {
             updatedChapter()
+            applyUpdates(chapter)
+        }
+    }
+
+    fun updateChapterFinalMetaData() {
+        if (remoteMediaClient != null) {
+            updatedChapterFinal()
             applyUpdates(chapter)
         }
     }
@@ -169,6 +186,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionStarted(session: Session, p1: String) {
             Log.d(TAG, "onSessionStarted: ")
+            castContext.sessionManager.currentCastSession?.remoteMediaClient?.registerCallback(callback)
         }
 
         override fun onSessionStarting(session: Session) {
@@ -193,6 +211,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionEnded(session: Session, p1: Int) {
             Log.d(TAG, "onSessionEnded: ")
+            castContext.sessionManager.currentCastSession?.remoteMediaClient?.unregisterCallback(callback)
         }
 
         override fun onSessionEnding(session: Session) {
@@ -216,5 +235,17 @@ class CastManager (private val initOnCreate : Boolean = false) {
         }
         else
             DreamerApp.showLongToast("null")
+    }
+
+    private val callback : RemoteMediaClient.Callback = object : RemoteMediaClient.Callback() {
+
+        override fun onStatusUpdated() {
+            super.onStatusUpdated()
+            when(remoteMediaClient?.mediaStatus?.playerState) {
+                MediaStatus.IDLE_REASON_FINISHED -> {
+                    updateChapterFinalMetaData()
+                }
+            }
+        }
     }
 }

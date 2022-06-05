@@ -15,11 +15,10 @@ import javax.inject.Inject
 @HiltAndroidApp
 class DreamerApp : Application(), Configuration.Provider {
 
-    @Inject
-    lateinit var daggerWorkerFactory: DaggerWorkerFactory
+    @Inject lateinit var workerFactory: DaggerWorkerFactory
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder()
-        .setWorkerFactory(daggerWorkerFactory)
+        .setWorkerFactory(workerFactory)
         .build()
 
     companion object {

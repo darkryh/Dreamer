@@ -8,8 +8,6 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
-
-
     <application
         android:name=".app.DreamerApp"
         android:allowBackup="true"
@@ -21,8 +19,13 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".ui.web.WebActivity"
+            android:name=".ui.player.PlayerWebActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false" />
+        <activity
+            android:name=".ui.web.WebActivity"
+            android:exported="false"
+            android:launchMode="singleInstance" />
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
@@ -57,27 +60,23 @@
             tools:ignore="UnusedAttribute" />
         <activity
             android:name=".ui.player.cast.ExpandedControlsActivity"
-            android:launchMode="singleTop"
             android:exported="true"
-            android:theme="@style/Theme.Dreamer.NoActionBar"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Dreamer.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ead.project.dreamer.ui.main.MainActivity"/>
+                android:value="com.ead.project.dreamer.ui.main.MainActivity" />
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false"
-            android:label="@string/title_activity_main"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.login.LoginActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -85,6 +84,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Dreamer.NoActionBar"/>
 
         <service
             android:name=".data.utils.receiver.DreamerMessaging"
@@ -94,12 +98,11 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".data.utils.receiver.NotificationReceiver"/>
+        <receiver android:name=".data.utils.receiver.NotificationReceiver" />
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.ead.project.dreamer.data.utils.media.CastOptionsProvider" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ad_unit_id_app" />
@@ -107,7 +110,8 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove" />
+            tools:node="remove">
+        </provider>
     </application>
 
 </manifest>

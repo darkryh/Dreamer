@@ -1,9 +1,10 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.WorkerParameters
+import androidx.hilt.work.HiltWorker
+import androidx.work.*
 import com.ead.project.dreamer.data.AnimeRepository
+import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.network.WebProvider
 import dagger.assisted.Assisted
@@ -13,6 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
+@HiltWorker
 class HomeWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters
@@ -20,6 +22,7 @@ class HomeWorker @AssistedInject constructor(
 
     lateinit var repository: AnimeRepository
     lateinit var webProvider: WebProvider
+    lateinit var workManager: WorkManager
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
@@ -38,6 +41,14 @@ class HomeWorker @AssistedInject constructor(
                     val homeData = async { webProvider.getChaptersHome(localChapter) }
                     homeData.await().apply {
                         repository.updateHome(this)
+
+                        val syncingNotifications =
+                            OneTimeWorkRequestBuilder<NotificationWorker>()
+                                .build()
+                        workManager.enqueueUniqueWork(Constants.SYNC_SERIES_NOTIFICATIONS,
+                            ExistingWorkPolicy.REPLACE,
+                            syncingNotifications)
+
                         Result.success()
                     }
                 }

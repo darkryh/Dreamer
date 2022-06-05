@@ -25,7 +25,6 @@ class MainActivityViewModel @Inject constructor(
     fun synchronizeDirectory (workersQuantity : Int = 3) {
 
         val directoryRequest : MutableList<OneTimeWorkRequest> = ArrayList()
-
         for (i in 1 until workersQuantity + 1) {
 
             val data : Data = Data.Builder()
@@ -39,7 +38,6 @@ class MainActivityViewModel @Inject constructor(
                     .build()
 
             directoryRequest.add(syncingChaptersRequest)
-
         }
 
         var continuation = workManager.beginUniqueWork(
@@ -53,7 +51,6 @@ class MainActivityViewModel @Inject constructor(
                 .build()
 
         continuation = continuation.then(syncingProfilingRequest)
-
         continuation.enqueue()
     }
 

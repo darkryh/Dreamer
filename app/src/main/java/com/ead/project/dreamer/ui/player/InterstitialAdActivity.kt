@@ -22,6 +22,7 @@ class InterstitialAdActivity : AppCompatActivity() {
     private lateinit var chapter: Chapter
     private lateinit var videoList : List<VideoModel>
     private var isExternalPlayer = false
+    private var isDirect = true
 
     private lateinit var binding: ActivityInterstitialAdBinding
 
@@ -37,6 +38,7 @@ class InterstitialAdActivity : AppCompatActivity() {
     private fun initVariables() {
         chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
         videoList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        isDirect = intent.extras!!.getBoolean(Constants.REQUESTED_IS_DIRECT)
         isExternalPlayer = DataStore.readBoolean(Constants.PREFERENCE_EXTERNAL_PLAYER)
     }
 
@@ -77,31 +79,28 @@ class InterstitialAdActivity : AppCompatActivity() {
 
             override fun onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent()
-                if (!isExternalPlayer) {
-                    startActivity(
-                        Intent(this@InterstitialAdActivity,
-                            PlayerActivity::class.java)
-                            .putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                            .putParcelableArrayListExtra(
-                                Constants.PLAY_VIDEO_LIST,
-                                videoList as java.util.ArrayList<out Parcelable>
-                            )
-                    )
+                if (isDirect) {
+                    if (!isExternalPlayer) {
+                        launchIntent(PlayerActivity::class.java)
+                    }
+                    else {
+                        launchIntent(PlayerExternalActivity::class.java)
+                    }
                 }
-                else {
-                    startActivity(
-                        Intent(this@InterstitialAdActivity,
-                            PlayerExternalActivity::class.java)
-                            .putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                            .putParcelableArrayListExtra(
-                                Constants.PLAY_VIDEO_LIST,
-                                videoList as java.util.ArrayList<out Parcelable>
-                            )
-                    )
-                }
+                else
+                    launchIntent(PlayerWebActivity::class.java)
+
                 finish()
             }
         }
     }
 
+    private fun launchIntent(typeClass: Class<*>?) {
+        startActivity(Intent(this@InterstitialAdActivity,typeClass).apply {
+            putExtra(Constants.REQUESTED_CHAPTER, chapter)
+            putParcelableArrayListExtra(
+                Constants.PLAY_VIDEO_LIST,
+                videoList as java.util.ArrayList<out Parcelable>)
+        })
+    }
 }

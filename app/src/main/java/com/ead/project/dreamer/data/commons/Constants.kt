@@ -38,6 +38,8 @@ class Constants {
 
         const val REQUESTED_CHAPTER = "REQUESTED_CHAPTER"
 
+        const val REQUESTED_IS_DIRECT = "REQUESTED_IS_DIRECT"
+
         const val IS_FROM_CONTENT_PLAYER = "IS_FROM_CONTENT_PLAYER"
 
         const val SYNC_DIRECTORY = "CONSTANT_SYNC_DIRECTORY"
@@ -100,8 +102,6 @@ class Constants {
 
         const val VALUE_VIDEO_PLAYER_ID_PROFILE = "VALUE_VIDEO_PLAYER_ID_PROFILE"
 
-        const val AUTHORIZATION_VALUE = "Authorization="
-
         const val MS_CLICK_EFFECT_MEDIUM = 175L
 
         const val FINAL_DIRECTORY = "FINAL_DIRECTORY"
@@ -117,6 +117,8 @@ class Constants {
         const val CURRENT_PREVIOUS_CASTING_CHAPTER = "CURRENT_PREVIOUS_CASTING_CHAPTER"
 
         const val CASTING_MODE_APP = "CASTING_MODE_APP"
+
+        const val BREAK_SERVER_OPERATION = "BREAK_SERVER_OPERATION"
 
         //PREFERENCES
 
@@ -170,6 +172,8 @@ class Constants {
 
         private const val DEFAULT_VIDEO_LIMIT = 4
 
+        const val CAST_STREAM_DURATION = "CAST_STREAM_DURATION"
+
         //WORK PREFERENCES
 
         const val WORK_PREFERENCE_CLICKED_CHAPTER = "WORK_PREFERENCE_CLICKED_CHAPTER"
@@ -208,6 +212,8 @@ class Constants {
 
         const val TITLE_ONEFICHIER = "1Fichier"
 
+        const val TITLE_FIRELOAD = "Fireload"
+
 
         const val SERVER_FEMBED = "fembed.com"
 
@@ -237,6 +243,8 @@ class Constants {
 
         const val SERVER_ONEFICHIER = "1fichier.com"
 
+        const val SERVER_FIRELOAD = "fireload.com"
+
         fun isInQuantityAdLimit() = DataStore
             .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
             .readInt(PREFERENCE_QUANTITY_VIDEO_LIMIT, DEFAULT_VIDEO_LIMIT)
@@ -248,6 +256,12 @@ class Constants {
         }
 
         fun isExternalPlayerMode() = DataStore.readBoolean(PREFERENCE_EXTERNAL_PLAYER)
+
+        fun isAutomaticPlayerMode() = DataStore.readBoolean(PREFERENCE_RANK_AUTOMATIC_PLAYER)
+
+        fun setAppFromGoogle(value : Boolean) = DataStore.writeBooleanAsync(IS_THE_APP_FROM_GOOGLE,value)
+
+        fun isAppFromGoogle() = DataStore.readBoolean(IS_THE_APP_FROM_GOOGLE,false)
 
         fun isGooglePolicyActivate() = DataStore.readBoolean(PREFERENCE_GOOGLE_POLICY)
 

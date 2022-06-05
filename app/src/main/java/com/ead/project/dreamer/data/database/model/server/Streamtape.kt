@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
@@ -8,6 +9,7 @@ import org.jsoup.Jsoup
 class Streamtape(var url:String) : Server() {
 
     init {
+        player = Player.Streamtape
         linkProcess()
     }
 
@@ -31,6 +33,7 @@ class Streamtape(var url:String) : Server() {
             url = "https://$reference"
 
             videoList.add(VideoModel("Default",url))
+            breakOperation()
         } catch (e: Exception) { e.printStackTrace() }
     }
 }

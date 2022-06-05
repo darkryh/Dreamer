@@ -16,6 +16,7 @@ class ServerFactory @Inject constructor (
                 Constants.TITLE_SOLIDFILES -> serverList.add(SolidFiles(server))
                 Constants.TITLE_FEMBED -> serverList.add(Fembed(server))
                 Constants.TITLE_ONEFICHIER -> serverList.add(Onefichier(server))
+                Constants.TITLE_FIRELOAD -> serverList.add(Fireload(server))
                 Constants.TITLE_SENDVID -> serverList.add(Senvid(server))
                 Constants.TITLE_BAYFILES -> serverList.add(Bayfiles(server))
                 Constants.TITLE_ZIPPYSHARE -> serverList.add(Zippyshare(server))
@@ -27,6 +28,10 @@ class ServerFactory @Inject constructor (
                 Constants.TITLE_UQLOAD -> serverList.add(Uqload(server))
                 Constants.TITLE_MEGA -> serverList.add(Mega(server))
                 else -> serverList.add(NullServer(server))
+            }
+            if (Server.isOperationBreak()) {
+                Server.endOperation()
+                break
             }
         }
         return serverList

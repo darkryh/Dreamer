@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import okhttp3.Interceptor
@@ -10,9 +11,10 @@ import java.io.IOException
 class Onefichier (var url :String) : Server() {
 
     private var directLink = "null"
-    private var token = "token"
+    private var token = "YWxleF9ibGFjay14Y0Bob3RtYWlsLmNvbTpLaXJhMTAwOA=="
 
     init {
+        player = Player.Onefichier
         linkProcess()
     }
 
@@ -42,6 +44,7 @@ class Onefichier (var url :String) : Server() {
                     if (directLink != "null")
                         videoList.add(VideoModel("Default",directLink))
                 }
+                breakOperation()
             } catch (e : IOException) {
                 e.printStackTrace()
             }

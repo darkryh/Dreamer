@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -31,10 +30,8 @@ class LoginActivity : AppCompatActivity() {
 
     private var currentVersion = BuildConfig.VERSION_NAME
     private var minVersion : Double ?= null
-    private var user : User?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_Dreamer)
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -43,9 +40,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        DataStore.writeBooleanAsync(Constants.IS_THE_APP_FROM_GOOGLE,false)
         screenInit()
-        userSettings()
         getToken()
         binding.buttonLoginDiscord.setOnClickListener {
             startActivity(
@@ -62,8 +57,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun screenInit() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) splashScreen
-
         val nightModeFlags: Int = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK
 
@@ -84,24 +77,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
     }
-
-    private fun userSettings() {
-        try {
-            user = User.get()
-            if (user != null) {
-                DataStore.writeBooleanAsync(Constants.PREFERENCE_SKIP_LOGIN,false)
-                goToMain()
-            }
-            else {
-                if (DataStore.readBoolean(Constants.PREFERENCE_SKIP_LOGIN)) {
-                    goToMain()
-                }
-            }
-        } catch (e : Exception) {
-            DreamerApp.showLongToast(e.cause!!.message.toString())
-        }
-    }
-
 
     private fun getToken() {
         loginViewModel.getToken().observe(this) {
@@ -151,13 +126,14 @@ class LoginActivity : AppCompatActivity() {
     private fun goToMain() {
         if (!DataStore.readBoolean(Constants.VERSION_DEPRECATED))
             if (++countLaunch == 1) {
-                if (DataStore.readBoolean(Constants.PREFERENCE_TERMS_AND_CONDITIONS)) {
+                if (DataStore.readBoolean(Constants.PREFERENCE_TERMS_AND_CONDITIONS) || !Constants.isAppFromGoogle()) {
                     startActivity(Intent(this, MainActivity::class.java))
                 } else
                     startActivity(Intent(this, TermsAndConditionsActivity::class.java))
                 finish()
             }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -166,14 +142,12 @@ class LoginActivity : AppCompatActivity() {
             binding.txvVersioning.text = getString(R.string.status_app, currentVersion, minVersion.toString())
             binding.txvVersioning.visibility = View.VISIBLE
             binding.txvVersioning.setOnClickListener {
-                if (DataStore.readBoolean(Constants.IS_THE_APP_FROM_GOOGLE)) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PLAY_STORE_APP))
-                    startActivity(intent)
-                }
-                else {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Constants.BLOG_APP))
-                    startActivity(intent)
-                }
+                val redirectionIntent : Intent = if (DataStore.readBoolean(Constants.IS_THE_APP_FROM_GOOGLE))
+                    Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PLAY_STORE_APP))
+                else
+                    Intent(Intent.ACTION_VIEW, Uri.parse(Constants.BLOG_APP))
+
+                startActivity(redirectionIntent)
             }
         }
     }

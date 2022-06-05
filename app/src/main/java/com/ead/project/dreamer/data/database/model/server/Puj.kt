@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import org.jsoup.Jsoup
@@ -7,6 +8,7 @@ import org.jsoup.Jsoup
 class Puj (var url : String) : Server() {
 
     init {
+        player = Player.Puj
         linkProcess()
     }
 

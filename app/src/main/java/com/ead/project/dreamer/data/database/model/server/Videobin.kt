@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.data.database.model.server
 
 import android.util.Log
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
@@ -13,6 +14,7 @@ import java.util.ArrayList
 class Videobin (var url : String) : Server() {
 
     init {
+        player = Player.Videobin
         patternReference()
         linkProcess()
     }
@@ -44,7 +46,7 @@ class Videobin (var url : String) : Server() {
             for (i in list.indices) {
                 videoList.add(VideoModel(quality(list.size, i),list[i]))
             }
-
+            breakOperation()
         }
         catch (e : Exception) {
             Log.e("error", "linkProcess: $e")

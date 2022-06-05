@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -22,9 +23,12 @@ import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Constants.Companion.BLANK_BROWSER
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.database.model.*
-import com.ead.project.dreamer.data.network.DreamerWebClient
+import com.ead.project.dreamer.data.network.DreamerClient
+import com.ead.project.dreamer.data.network.DreamerWebView
+import com.ead.project.dreamer.data.network.DreamerWebView.Companion.server_Script
 import com.ead.project.dreamer.data.retrofit.model.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
@@ -35,11 +39,10 @@ import com.ead.project.dreamer.ui.chapterchecker.ChapterCheckerFragment
 import com.ead.project.dreamer.ui.player.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerExternalActivity
+import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
@@ -57,14 +60,12 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
     private lateinit var rawServers : List<String>
     private var embedServers : MutableList<String> = ArrayList()
     private var serverList : List<Server> = ArrayList()
-    private lateinit var videoChecker : VideoChecker
     private var optionsHeight = 0
     private var isFromContent = false
-    private var user = User.get()
 
     private lateinit var menuPlayerViewModel : MenuPlayerViewModel
     private lateinit var serverBase : LinearLayout
-    private var webView : WebView?= null
+    private var webView : DreamerWebView?= null
     private val castManager = CastManager(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +100,7 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                 inflater,
                 container,
                 false)
-        webView = WebView(requireContext())
+        webView = DreamerWebView(requireContext())
         settingCast()
         loadingLayouts()
         settingJavaScript()
@@ -107,25 +108,23 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
     }
 
     private fun settingCast() {
-        if (castManager.castIsConnected()) {
-            castManager.setPreviousCast()
-        }
+        if (castManager.castIsConnected()) castManager.setPreviousCast()
     }
 
     private fun settingJavaScript() {
-        webView?.webViewClient = object : DreamerWebClient(webView!!,chapter.reference) {
+        webView?.webViewClient = object : DreamerClient() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 try {
-                    ThreadUtil.runInMs({
+                    run {
                         if (_binding != null && timeout) {
                             webView!!.loadUrl(BLANK_BROWSER)
                             DreamerApp
                                 .showLongToast(requireContext().getString(R.string.timeout_message))
                             dismiss()
                         }
-                    }, TIMEOUT_MS)
+                    }
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
@@ -146,10 +145,11 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                 }
             }
         }
+        webView?.loadUrl(chapter.reference)
     }
 
     private fun embeddingServers() {
-        if (_binding != null) {
+        safeRun {
             for (server in rawServers) {
                 embedServers.add(Tools.embedLink(server))
             }
@@ -158,20 +158,17 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         }
     }
 
+
     private fun configuringLayout() {
-        optionsHeight = if (embedServers.size <= 8) {
-            resources
-                .getDimensionPixelSize(R.dimen.text_view_padding_player_option)
-        } else {
-            resources
-                .getDimensionPixelSize(R.dimen.text_view_padding_player_option_mini)
-        }
+        optionsHeight = if (embedServers.size <= 8) resources.getDimensionPixelSize(R.dimen.text_view_padding_player_option)
+         else resources.getDimensionPixelSize(R.dimen.text_view_padding_player_option_mini)
     }
 
     private fun employingServers() {
         if (!DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER))
             for (pos in embedServers.indices) {
                 val embeddedVideo = embedServers[pos]
+                val serverName = Server.identify(embeddedVideo)
 
                 serverBase = LinearLayout(requireContext())
                 serverBase.id = serverBaseId + pos
@@ -186,8 +183,12 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                 serverBase.orientation = LinearLayout.HORIZONTAL
                 DreamerLayout.setClickEffect(serverBase,requireContext())
 
+                if (Server.isRecommended(serverName)) addLogoServer(R.drawable.ic_thumb_up_24)
+                if (Server.isWebServer(serverName)) addLogoServer(R.drawable.ic_web_24)
+                if (isOtherServer(serverName)) addLogoServer(R.drawable.ic_play_circle_outline_24)
+
                 val textViewServer = TextView(requireContext())
-                textViewServer.text = Server.identify(embeddedVideo)
+                textViewServer.text = serverName
                 textViewServer.textSize = 15f
                 textViewServer.setPadding(
                     (resources.getDimensionPixelSize(R.dimen.text_view_padding_player_option) * 2),
@@ -199,14 +200,29 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                 binding.linearServer.addView(serverBase)
                 hidingOptions()
             }
-        serverParse(embedServers)
+        serverParse()
     }
 
-    private fun serverParse(serverList: MutableList<String>) {
-        menuPlayerViewModel = ViewModelProvider(
-            this,
-            MenuPlayerViewModelFactory(serverList)
-        )[MenuPlayerViewModel::class.java]
+    private fun isOtherServer(serverName : String) : Boolean
+    = !Server.isRecommended(serverName) && !Server.isWebServer(serverName) && serverName != "null"
+
+    private fun addLogoServer(imageSource : Int) {
+        val imageViewServer = ImageView(requireContext())
+        imageViewServer.setImageResource(imageSource)
+        imageViewServer.setPadding(
+            (resources.getDimensionPixelSize(R.dimen.text_view_padding_player_option)),
+            optionsHeight,
+            0,
+            optionsHeight
+        )
+        serverBase.addView(imageViewServer)
+    }
+
+
+    private fun serverParse() {
+        if(Constants.isAutomaticPlayerMode()) embedServers = VideoChecker.getSorterServerList(embedServers)
+        menuPlayerViewModel = ViewModelProvider(this,
+            MenuPlayerViewModelFactory(embedServers))[MenuPlayerViewModel::class.java]
         factoringServers()
     }
 
@@ -214,11 +230,8 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         menuPlayerViewModel.getServerList().observe(this) {
             serverList = it
             this.isCancelable = false
-            if (DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER)) {
-                initVideoChecker()
-                ThreadUtil.execute {
-                    executingAutomaticPlay()
-                }
+            if (Constants.isAutomaticPlayerMode()) {
+                ThreadUtil.execute { executingAutomaticPlay() }
             } else {
                 scriptLayouts()
                 showingOptions()
@@ -226,29 +239,20 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun initVideoChecker() {
-        val pairList : MutableList<Pair<String,List<VideoModel>>> = ArrayList()
-        for (pos in serverList.indices) {
-            if (serverList[pos].videoList.isNotEmpty() && serverList[pos].isDirect) {
-                pairList.add(Pair(embedServers[pos], serverList[pos].videoList))
-            }
-        }
-        videoChecker = VideoChecker((pairList))
-    }
 
     private fun executingAutomaticPlay() {
         try {
-            val tripleList = videoChecker.updatedTripleList()
-            for (pos in tripleList.indices) {
-                if (Constants.SERVER_ONEFICHIER !in tripleList[pos].third.last().directLink) {
-                    if (VideoChecker.getConnection(tripleList[pos].third.last().directLink)) {
-                        intentReferentData(tripleList[pos].third)
+            for (server in serverList) {
+                if (server.videoList.isNotEmpty())
+                    if (server.isValidated()) {
+                        preparingIntent(server.videoList,server.isDirect)
                         break
                     }
-                }
-                else {
-                    settingPremiumServer(tripleList[pos].third)
-                }
+                    else
+                        if (server.isConnectionValidated()) {
+                            preparingIntent(server.videoList, server.isDirect)
+                            break
+                        }
             }
             dismiss()
         }
@@ -273,83 +277,49 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
 
     private fun executingBase(pos: Int) {
         try {
-            if (Constants.SERVER_ONEFICHIER !in serverList[pos].videoList.last().directLink) {
-                intentReferentData(serverList[pos].videoList)
-                dismiss()
-            }
-            else {
-                settingPremiumServer(serverList[pos].videoList)
-            }
+            preparingIntent(serverList[pos].videoList,serverList[pos].isDirect)
+            dismiss()
         }
         catch (e : Exception) {
             DreamerApp.showLongToast( "error de servidor o video eliminado $e")
         }
     }
 
-    private fun intentReferentData(playList: List<VideoModel>) {
-        if (_binding != null) {
+    private fun preparingIntent(playList: List<VideoModel>,isDirect : Boolean) {
+        safeRun {
+
             try {
                 val isExternalPlayerMode = Constants.isExternalPlayerMode()
                 Chapter.set(chapter)
+
                 if (chapter.id != 0) {
                     if (Constants.isInQuantityAdLimit() && !User.isVip()) {
-                        startActivity(
-                            Intent(activity, InterstitialAdActivity::class.java).apply {
-                                putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                                putParcelableArrayListExtra(
-                                    Constants.PLAY_VIDEO_LIST,
-                                    playList as java.util.ArrayList<out Parcelable>
-                                )
-                            }
-                        )
+                        launchIntent(InterstitialAdActivity::class.java,playList,isDirect)
                         DataStore.writeIntAsync(Constants.PREFERENCE_CURRENT_WATCHED_VIDEOS, 0)
                     } else {
-                        if (!isExternalPlayerMode) {
-                            startActivity(
-                                Intent(activity, PlayerActivity::class.java).apply {
-                                    putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                                    putParcelableArrayListExtra(
-                                        Constants.PLAY_VIDEO_LIST,
-                                        playList as java.util.ArrayList<out Parcelable>)
-                                }
-                            )
-                        } else {
-                            startActivity(
-                                Intent(activity, PlayerExternalActivity::class.java).apply {
-                                    putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                                    putParcelableArrayListExtra(
-                                        Constants.PLAY_VIDEO_LIST,
-                                        playList as java.util.ArrayList<out Parcelable>)
-                                }
-                            )
+                        if (isDirect) {
+                            if (!isExternalPlayerMode)
+                                launchIntent(PlayerActivity::class.java,playList)
+                            else
+                                launchIntent(PlayerExternalActivity::class.java,playList)
+                        }
+                        else {
+                            launchIntent(PlayerWebActivity::class.java,playList)
                         }
                     }
 
-                    if (isFromContent && isExternalPlayerMode) {
-                        activity?.finish()
-                    }
-                } else {
-                    val fragmentManager: FragmentManager = (context
-                            as FragmentActivity).supportFragmentManager
-                    val data = Bundle()
-                    data.apply {
-                        putParcelable(Constants.REQUESTED_CHAPTER, chapter)
-                        putParcelableArrayList(
-                            Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>
-                        )
-                    }
-                    val chapterChecker = ChapterCheckerFragment()
-                    chapterChecker.apply {
-                        arguments = data
-                        show(fragmentManager, Constants.CHAPTER_CHECKER_FRAGMENT)
-                    }
+                    if (isFromContent && isExternalPlayerMode) activity?.finish()
                 }
+                else
+                    launchChapterChecker(playList,isDirect)
+
                 dismiss()
 
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
         }
+
     }
 
     private fun loadingLayouts() {
@@ -357,9 +327,7 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         binding.imvChapterMenu.load(chapter.chapterCover){
             transformations(RoundedCornersTransformation(10f))
         }
-        binding.txvTitleMenu.text = getString(R.string.welcome_player,
-            chapter.title,
-            chapter.chapterNumber)
+        binding.txvTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.chapterNumber)
     }
 
     private fun showingOptions() {
@@ -376,15 +344,30 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun settingPremiumServer (videoList : List<VideoModel>) {
-        if (user != null) {
-            intentReferentData(videoList)
-        }
-        else {
-            if (!DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER))
-                DreamerApp.showLongToast("Servidor Premium, no disponible.")
-        }
+    private fun launchIntent(typeClass: Class<*>?, playList: List<VideoModel>,isDirect: Boolean=true) {
+        startActivity(Intent(activity,typeClass).apply {
+            putExtra(Constants.REQUESTED_CHAPTER, chapter)
+            putExtra(Constants.REQUESTED_IS_DIRECT,isDirect)
+            putParcelableArrayListExtra(
+                Constants.PLAY_VIDEO_LIST,
+                playList as java.util.ArrayList<out Parcelable>)
+        })
     }
+
+    private fun launchChapterChecker(playList: List<VideoModel>,isDirect: Boolean) = ChapterCheckerFragment().apply {
+        val fragmentManager: FragmentManager =
+            (this@MenuPlayerFragment.context as FragmentActivity).supportFragmentManager
+        val data = Bundle()
+        data.apply {
+            putParcelable(Constants.REQUESTED_CHAPTER, chapter)
+            putParcelableArrayList(Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>)
+            putBoolean(Constants.REQUESTED_IS_DIRECT,isDirect)
+        }
+        arguments = data
+        show(fragmentManager, Constants.CHAPTER_CHECKER_FRAGMENT)
+    }
+
+    private fun safeRun(task: () -> Unit) { if (_binding != null) task() }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -400,7 +383,6 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
     companion object {
 
         const val serverBaseId = 100000
-
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

@@ -25,11 +25,10 @@ import com.ead.project.dreamer.databinding.FragmentDialogCheckerBinding
 import com.ead.project.dreamer.ui.player.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerExternalActivity
+import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.concurrent.thread
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
@@ -40,10 +39,11 @@ class ChapterCheckerFragment : DialogFragment() {
     private var param2: String? = null
 
     private lateinit var chapterCheckerViewModel : ChapterCheckerViewModel
-    private lateinit var videoList : List<VideoModel>
+    private lateinit var playList : List<VideoModel>
     private var  animeProfile: AnimeProfile ?= null
     private lateinit var chapter : Chapter
     private var lastChapterNeeded = false
+    private var isDirect = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +51,9 @@ class ChapterCheckerFragment : DialogFragment() {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-            videoList = it.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+            playList = it.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
             chapter = it.getParcelable(Constants.REQUESTED_CHAPTER)!!
+            isDirect = it.getBoolean(Constants.REQUESTED_IS_DIRECT)
         }
     }
 
@@ -82,7 +83,7 @@ class ChapterCheckerFragment : DialogFragment() {
     private fun gettingData() {
         chapterCheckerViewModel.getChapter(chapter).observe(viewLifecycleOwner) { mChapter ->
             if (mChapter != null) {
-                intentToPlayer(mChapter)
+                preparingIntent(mChapter)
             } else {
                 lastChapterNeeded = true
                 gettingAnimeBase()
@@ -125,8 +126,7 @@ class ChapterCheckerFragment : DialogFragment() {
             .getChaptersFromProfile(animeProfile.id)
             .observe(viewLifecycleOwner) { chapterList ->
                 if (++count == 1) {
-                    chapterCheckerViewModel
-                        .cachingChapters(
+                    chapterCheckerViewModel.cachingChapters(
                             animeBase.id,
                             animeBase.reference,
                             animeProfile.size - chapterList.size,
@@ -140,45 +140,32 @@ class ChapterCheckerFragment : DialogFragment() {
             }
     }
 
-    private fun intentToPlayer(chapter: Chapter) {
+    private fun preparingIntent(chapter: Chapter) {
         Chapter.set(chapter)
         if(Constants.isInQuantityAdLimit() && !User.isVip()) {
-            startActivity(
-                Intent(requireContext(), InterstitialAdActivity::class.java).apply {
-                    putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                    putParcelableArrayListExtra(
-                        Constants.PLAY_VIDEO_LIST,
-                        videoList as java.util.ArrayList<out Parcelable>
-                    )
-                }
-            )
+            launchIntent(InterstitialAdActivity::class.java,playList,chapter,isDirect)
             DataStore.writeIntAsync(Constants.PREFERENCE_CURRENT_WATCHED_VIDEOS,1)
-        }
-        else {
-            if (!Constants.isExternalPlayerMode()) {
-                startActivity(
-                    Intent(requireContext(), PlayerActivity::class.java).apply {
-                        putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                        putParcelableArrayListExtra(
-                            Constants.PLAY_VIDEO_LIST,
-                            videoList as java.util.ArrayList<out Parcelable>
-                        )
-                    }
-
-                )
-            } else {
-                startActivity(
-                    Intent(requireContext(), PlayerExternalActivity::class.java).apply {
-                        putExtra(Constants.REQUESTED_CHAPTER, chapter)
-                        putParcelableArrayListExtra(
-                            Constants.PLAY_VIDEO_LIST,
-                            videoList as java.util.ArrayList<out Parcelable>
-                        )
-                    }
-                )
+        } else {
+            if (isDirect) {
+                if (!Constants.isExternalPlayerMode())
+                    launchIntent(PlayerActivity::class.java, playList, chapter)
+                else
+                    launchIntent(PlayerExternalActivity::class.java, playList, chapter)
             }
+            else
+                launchIntent(PlayerWebActivity::class.java, playList, chapter)
         }
         dismiss()
+    }
+
+    private fun launchIntent(typeClass: Class<*>?, playList: List<VideoModel>,chapter: Chapter,isDirect : Boolean=true) {
+        startActivity(Intent(activity,typeClass).apply {
+            putExtra(Constants.REQUESTED_CHAPTER, chapter)
+            putExtra(Constants.REQUESTED_IS_DIRECT,isDirect)
+            putParcelableArrayListExtra(
+                Constants.PLAY_VIDEO_LIST,
+                playList as java.util.ArrayList<out Parcelable>)
+        })
     }
 
     override fun onPause() {

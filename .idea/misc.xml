@@ -154,6 +154,30 @@
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/notifications_preferences.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/player_preferences.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/root_preferences.xml" value="0.25" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/bg_circular.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_account_circle_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_chat_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_clear.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_play.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_play_circle_outline_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_replay_10.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_screenshot_monitor_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_settings_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_sort_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_thumb_up_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_web_24.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/rounded_dialog.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/rounded_dialog_dark.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/activity_player.xml" value="0.19655797101449277" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/activity_player_web.xml" value="0.17481884057971014" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/activity_web.xml" value="0.19655797101449277" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/bottom_modal_chapter_selector.xml" value="0.19655797101449277" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/bottom_modal_menu_player.xml" value="0.33" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/bottom_modal_track_selector.xml" value="0.19655797101449277" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/component_web_view.xml" value="0.17481884057971014" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/layout/layout_message.xml" value="0.19655797101449277" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/xml/account_preferences.xml" value="0.21" />
+        <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/xml/content_rating_preferences.xml" value="0.19655797101449277" />
       </map>
     </option>
   </component>

@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
@@ -17,6 +18,7 @@ class Fembed (var url :String) : Server() {
 
     override fun patternReference() {
         super.patternReference()
+        player = Player.Fembed
         val response = Jsoup.connect(url).followRedirects(true).execute()
         domain = response.url().toString().substringBefore("/v/")
         videoId = PatternManager.sliceReference(url)!!

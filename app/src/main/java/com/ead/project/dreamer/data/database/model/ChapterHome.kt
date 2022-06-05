@@ -31,15 +31,15 @@ data class ChapterHome (
             "null",
             "null")
 
-        fun getPreviousList() : List<ChapterHome> = try {
+        fun getPreviousList() : List<String> = try {
             Gson().fromJson(DataStore.readString(Constants.CURRENT_NOTICED_CHAPTERS_HOME),
-                object : TypeToken<ArrayList<ChapterHome?>?>() {}.type)
+                object : TypeToken<ArrayList<String?>?>() {}.type)
         } catch (e : Exception) {
             e.printStackTrace()
             emptyList()
         }
 
-        fun setPreviousList(list: List<ChapterHome>) = DataStore
+        fun setPreviousList(list: List<String>) = DataStore
             .writeString(Constants.CURRENT_NOTICED_CHAPTERS_HOME,Gson().toJson(list))
 
         fun sameData(first: ChapterHome,second: ChapterHome) : Boolean
