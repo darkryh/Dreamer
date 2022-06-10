@@ -97,6 +97,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
     }
 
     fun onDestroy() {
+        unregisterRemote()
         remoteMediaClient = null
         currentSession = null
     }
@@ -177,6 +178,12 @@ class CastManager (private val initOnCreate : Boolean = false) {
         }
     }
 
+    private fun registerRemote()= castContext.sessionManager
+        .currentCastSession?.remoteMediaClient?.registerCallback(callback)
+
+    private fun unregisterRemote() = castContext.sessionManager
+        .currentCastSession?.remoteMediaClient?.unregisterCallback(callback)
+
     private fun currentStream() = Tools
         .longToSeconds(remoteMediaClient?.streamDuration!! - currentSession?.sessionRemainingTimeMs!!)
 
@@ -186,7 +193,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionStarted(session: Session, p1: String) {
             Log.d(TAG, "onSessionStarted: ")
-            castContext.sessionManager.currentCastSession?.remoteMediaClient?.registerCallback(callback)
+            registerRemote()
         }
 
         override fun onSessionStarting(session: Session) {
@@ -199,6 +206,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionResumed(session: Session, p1: Boolean) {
             Log.d(TAG, "onSessionResumed: ")
+            registerRemote()
         }
 
         override fun onSessionResuming(session: Session, p1: String) {
@@ -211,7 +219,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionEnded(session: Session, p1: Int) {
             Log.d(TAG, "onSessionEnded: ")
-            castContext.sessionManager.currentCastSession?.remoteMediaClient?.unregisterCallback(callback)
+            unregisterRemote()
         }
 
         override fun onSessionEnding(session: Session) {
@@ -221,6 +229,8 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
         override fun onSessionSuspended(session: Session, p1: Int) {
             Log.d(TAG, "onSessionSuspended: ")
+            updateChapterMetaData()
+            unregisterRemote()
         }
 
     }
@@ -243,6 +253,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
             super.onStatusUpdated()
             when(remoteMediaClient?.mediaStatus?.playerState) {
                 MediaStatus.IDLE_REASON_FINISHED -> {
+                    Log.d(TAG, "onStatusUpdated: IDLE_REASON_FINISHED")
                     updateChapterFinalMetaData()
                 }
             }

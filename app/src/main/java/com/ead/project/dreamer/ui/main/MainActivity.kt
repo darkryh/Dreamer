@@ -14,6 +14,7 @@ import coil.transform.CircleCropTransformation
 import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppManager
+import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.retrofit.model.discord.Discord
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val navView: BottomNavigationView = binding.navView
         supportActionBar?.hide()
         init()
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         mainActivityViewModel.synchronizeNewContent()
         mainActivityViewModel.synchronizeDirectory()
         mainActivityViewModel.synchronizeReleases()
-        mainActivityViewModel.synchronizeNotifications()
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
@@ -76,12 +77,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init(){
+        DreamerApp.initAdsPreferences()
         initSettings()
         userSettings()
         appSettings()
         checkStatusApp()
         checkSubscribedTopic()
     }
+
 
     override fun onStart() {
         super.onStart()

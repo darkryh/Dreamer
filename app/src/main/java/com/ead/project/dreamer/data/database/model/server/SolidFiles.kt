@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model.server
 
+import android.util.Log
 import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
@@ -29,11 +30,11 @@ class SolidFiles(var url : String) : Server() {
     override fun linkProcess() {
         super.linkProcess()
         try {
-            videoList.add(VideoModel("Default",url))
-            if (!connectionAvailable())
-                videoList.clear()
-            else
+            val container = Jsoup.connect(url).get().body().getElementsByClass("reg-text").text()
+            if ("Namecheap.com." !in container) {
+                videoList.add(VideoModel("Default",url))
                 breakOperation()
+            }
         } catch (e :Exception) {
             e.printStackTrace()
         }

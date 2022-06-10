@@ -90,19 +90,6 @@ class MainActivityViewModel @Inject constructor(
             syncingReleasesRequest)
     }
 
-    fun synchronizeNotifications() {
-        val syncingNotifications =
-            PeriodicWorkRequestBuilder<NotificationWorker>(15, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            Constants.SYNC_SERIES_NOTIFICATIONS,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            syncingNotifications)
-    }
-
-
     fun getGuildMember(id : String) = repository.getGuildMember(id)!!
 
     fun updateChapter(chapter: Chapter) {

@@ -82,7 +82,7 @@ class PlayerManager(
     catch (e : Exception) { e.printStackTrace() }
 
     private fun playOnPlayer(player: Player?) {
-        if (currentPlayer == player) return
+        if (currentPlayer == player || videoList.isEmpty()) return
         currentPlayer?.let {
             if (it.playbackState != Player.STATE_ENDED) {
                 it.rememberState()
@@ -243,7 +243,6 @@ class PlayerManager(
                 DreamerApp.showLongToast("error")
             }
         }
-
 
     }
 

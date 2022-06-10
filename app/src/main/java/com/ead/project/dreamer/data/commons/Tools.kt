@@ -11,6 +11,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.util.Size
 import android.view.Display
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowMetrics
 import androidx.core.view.WindowCompat
@@ -19,7 +20,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
-import com.google.android.exoplayer2.ui.StyledPlayerView
 
 
 class Tools {
@@ -119,9 +119,9 @@ class Tools {
             return value
         }
 
-        fun hideSystemUI(activity: Activity, playerView : StyledPlayerView) {
+        fun hideSystemUI(activity: Activity, view : View) {
             WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-            WindowInsetsControllerCompat(activity.window, playerView).let { controller ->
+            WindowInsetsControllerCompat(activity.window, view).let { controller ->
                 controller.hide(WindowInsetsCompat.Type.systemBars())
                 controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }

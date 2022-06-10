@@ -36,6 +36,7 @@
             android:launchMode="singleInstance" />
         <activity
             android:name=".ui.player.InterstitialAdActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false" />
         <activity
             android:name=".ui.player.PlayerExternalActivity"
@@ -88,7 +89,7 @@
             android:name=".ui.login.LoginActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Dreamer.NoActionBar"/>
+            android:theme="@style/Theme.Dreamer.NoActionBar" />
 
         <service
             android:name=".data.utils.receiver.DreamerMessaging"
@@ -110,8 +111,7 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            tools:node="remove">
-        </provider>
+            tools:node="remove"/>
     </application>
 
 </manifest>

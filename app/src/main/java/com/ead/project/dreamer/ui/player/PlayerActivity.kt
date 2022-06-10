@@ -319,6 +319,13 @@ class PlayerActivity : AppCompatActivity() {
         if(newConfig != null){
             playerManager.isInPipMode = !isInPictureInPictureMode
         }
+        if (isInPictureInPictureMode) {
+            lnContentReference.visibility = View.GONE
+            // Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.
+        } else {
+            lnContentReference.visibility = View.VISIBLE
+            // Restore the full-screen UI.
+        }
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
@@ -341,6 +348,7 @@ class PlayerActivity : AppCompatActivity() {
             playerView.useController = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val params = PictureInPictureParams.Builder()
+                    .setSourceRectHint(Rect())
                 this.enterPictureInPictureMode(params.build())
             } else {
                 this.enterPictureInPictureMode()

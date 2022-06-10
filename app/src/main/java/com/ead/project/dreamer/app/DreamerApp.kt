@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.network.AdBlocker
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.worker.factory.DaggerWorkerFactory
 import com.google.android.gms.ads.MobileAds
@@ -23,7 +24,7 @@ class DreamerApp : Application(), Configuration.Provider {
 
     companion object {
         lateinit var INSTANCE : DreamerApp
-        lateinit var MOBILE_AD_INSTANCE: InitializationStatus
+        var MOBILE_AD_INSTANCE: InitializationStatus? = null
 
         fun showShortToast(message : String) {
             Toast.makeText(INSTANCE,message,Toast.LENGTH_SHORT).show()
@@ -33,13 +34,17 @@ class DreamerApp : Application(), Configuration.Provider {
             Toast.makeText(INSTANCE,message,Toast.LENGTH_LONG).show()
         }
 
+        fun initAdsPreferences() {
+            if (MOBILE_AD_INSTANCE!= null)
+                MobileAds.initialize(INSTANCE) { MOBILE_AD_INSTANCE = it }
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        initAdsPreferences()
         settingTheme()
-        MobileAds.initialize(INSTANCE) { MOBILE_AD_INSTANCE = it }
         initPreferences()
     }
 
