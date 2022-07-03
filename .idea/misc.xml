@@ -154,6 +154,9 @@
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/notifications_preferences.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/player_preferences.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/Desktop/Projects/android/Dreamer/app/src/main/res/xml/root_preferences.xml" value="0.25" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/bg_circular.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/bg_rounded.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/bg_rounded_notifications.xml" value="0.1" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/ic_account_circle_24.xml" value="0.1" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/ic_chat_24.xml" value="0.1" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/ic_clear.xml" value="0.1" />
@@ -166,10 +169,18 @@
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/ic_web_24.xml" value="0.1" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/rounded_dialog.xml" value="0.1" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/drawable/rounded_dialog_dark.xml" value="0.1" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/activity_anime_profile.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/activity_main.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/activity_player.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/activity_player_web.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/ad_unified_anime_profile.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/bottom_modal_filter.xml" value="0.17074275362318841" />
         <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/custom_webview.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/layout_anime_profile.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/layout_chapter_home.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/layout_notification_expanded.xml" value="0.2" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/layout/layout_notification_small.xml" value="0.22" />
+        <entry key="..\:/Users/alex_/Desktop/projects/Dreamer/app/src/main/res/xml/player_preferences.xml" value="0.209375" />
         <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/bg_circular.xml" value="0.1" />
         <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_account_circle_24.xml" value="0.1" />
         <entry key="..\:/Users/alex_/OneDrive/Escritorio/Projects/android/Dreamer/app/src/main/res/drawable/ic_chat_24.xml" value="0.1" />

@@ -13,4 +13,6 @@
     <dimen name="x60">60dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="snackbar_textsize">12sp</dimen>
+    <dimen name="notification_width">110dp</dimen>
+    <dimen name="notification_height">48dp</dimen>
 </resources>

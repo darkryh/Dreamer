@@ -32,7 +32,7 @@ class CastOptionsProvider : OptionsProvider {
         val mediaOptions = CastMediaOptions.Builder()
             .setNotificationOptions(notificationOptions)
             .setExpandedControllerActivityClassName(ExpandedControlsActivity::class.java.name)
-            //.setMediaIntentReceiverClassName(MyMediaIntentReceiver::class.java.name)
+            //.setMediaIntentReceiverClassName(DreamerMediaIntentReceiver::class.java.name)
             .build()
 
         val credentialsData = CredentialsData.Builder()
@@ -56,7 +56,8 @@ class CastOptionsProvider : OptionsProvider {
     }
 }
 
-internal class MyMediaIntentReceiver : MediaIntentReceiver() {
+internal class DreamerMediaIntentReceiver : MediaIntentReceiver() {
+
     override fun onReceiveActionTogglePlayback(currentSession: Session) {
         DreamerApp.showLongToast("onReceiveActionTogglePlayback")
     }

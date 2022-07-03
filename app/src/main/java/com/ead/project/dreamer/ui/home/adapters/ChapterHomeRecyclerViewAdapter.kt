@@ -94,6 +94,7 @@ class ChapterHomeRecyclerViewAdapter(
             binding.txvTitle.text = chapter.title
             binding.txvChapter.text = chapter.chapterNumber.toString()
             binding.txvType.text = chapter.type
+            if (chapter.type.isEmpty()) binding.txvType.visibility = View.GONE
             DreamerLayout
                 .setClickEffect(binding.root,context)
         }

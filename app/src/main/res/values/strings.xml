@@ -159,6 +159,7 @@
     <string name="content">content</string>
     <string name="expanded">expanded</string>
     <string name="sign_in_twitter">Iniciar con Twitter</string>
+    <string name="cover_notification">cover_notification</string>
 
     <string-array name="state_list">
         <item>Estreno</item>

@@ -169,7 +169,11 @@ class CastManager (private val initOnCreate : Boolean = false) {
                 && chapter.totalToSeen > 0
     } catch (e : Exception) { false }
 
+    /*fun isPlaying () = remoteMediaClient?.isPlaying
 
+    fun pause() = remoteMediaClient?.pause()
+
+    fun play() = remoteMediaClient?.play()*/
 
     private fun getStream() : Int {
         return when (currentStream()) {

@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.ui.main
 
+
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         binding.imvSearch.setOnClickListener {
             goToDirectory()
         }
+
     }
 
     private fun init(){

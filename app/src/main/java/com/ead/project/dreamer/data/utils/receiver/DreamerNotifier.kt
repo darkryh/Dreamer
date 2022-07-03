@@ -3,12 +3,14 @@ package com.ead.project.dreamer.data.utils.receiver
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.graphics.*
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +31,8 @@ class DreamerNotifier @Inject constructor() {
             instance = it
         }
 
+    private lateinit var collapsed : RemoteViews
+    private lateinit var expanded : RemoteViews
 
     fun notifier(
         title : String? = null,
@@ -41,27 +45,28 @@ class DreamerNotifier @Inject constructor() {
         createNotificationChannel(channelKey,notificationLevel)
         val notifier = NotificationCompat.Builder(DreamerApp.INSTANCE,channelKey).apply {
             setSmallIcon(idDrawable)
-            if (title != null) setContentTitle(title)
-            if (content != null) setContentText(content)
-            if (imageUrl != null) applyImageUrl(this,imageUrl)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) color = DreamerApp.INSTANCE.resources
-                .getColor(R.color.blueLight, DreamerApp.INSTANCE.theme)
+            collapsed = collapsed()
+            expanded = expanded()
+            color = ContextCompat.getColor(DreamerApp.INSTANCE, R.color.blueLight)
+            setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            setCustomContentView(collapsed)
+            setCustomBigContentView(expanded)
             setAutoCancel(true)
-            setStyle(androidx.media.app.NotificationCompat.MediaStyle())
             setColorized(true)
         }
+        bindCustomNotification(collapsed,expanded,title, content, imageUrl)
         return notifier
     }
 
-    //private fun collapsed() = RemoteViews(DreamerApp.INSTANCE.packageName, R.layout.layout_notification_small)
+    private fun collapsed() = RemoteViews(DreamerApp.INSTANCE.packageName, R.layout.layout_notification_small)
 
-    //private fun expanded() = RemoteViews(DreamerApp.INSTANCE.packageName, R.layout.layout_notification_expanded)
+    private fun expanded() = RemoteViews(DreamerApp.INSTANCE.packageName, R.layout.layout_notification_expanded)
 
-    /*private fun bindCustomNotification(
+    private fun bindCustomNotification(
         remoteCollapsed: RemoteViews,
         remoteExpanded : RemoteViews,
         title: String?,
-        content: String?) {
+        content: String?, imageUrl: String?) {
         if (title != null) {
             remoteCollapsed.setTextViewText(R.id.collapsed_notification_title,title)
             remoteExpanded.setTextViewText(R.id.expanded_notification_title,title)
@@ -70,25 +75,49 @@ class DreamerNotifier @Inject constructor() {
             remoteCollapsed.setTextViewText(R.id.collapsed_notification_info,content)
             remoteExpanded.setTextViewText(R.id.expanded_notification_info,content)
         }
-    }*/
+        if (imageUrl != null) {
+            applyImageUrl(remoteCollapsed,imageUrl,R.id.image_view_collapsed,48)
+            applyImageUrl(remoteExpanded,imageUrl,R.id.image_view_expanded,12)
+        }
+    }
 
     private fun applyImageUrl(
-        notifier : NotificationCompat.Builder,
-        imageUrl: String
+        remoteViews: RemoteViews,
+        imageUrl: String,
+        idDrawable : Int,
+        pixels: Int = 0
     ) = runBlocking {
         val url = URL(imageUrl)
-
         withContext(Dispatchers.IO) {
             try {
                 val input = url.openStream()
                 BitmapFactory.decodeStream(input)
-            } catch (e: IOException) {
-                null
-            }
+            } catch (e: IOException) { null }
         }?.let { bitmap ->
-            notifier.setLargeIcon(bitmap)
+            remoteViews.setImageViewBitmap(idDrawable,roundedCornerBitmap(bitmap,pixels))
         }
     }
+
+    private fun roundedCornerBitmap(bitmap: Bitmap, pixels: Int): Bitmap? {
+        val output = Bitmap.createBitmap(
+            bitmap.width, bitmap
+                .height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(output)
+        val color = -0xbdbdbe
+        val paint = Paint()
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+        val roundPx = pixels.toFloat()
+        paint.isAntiAlias = true
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = color
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+        return output
+    }
+
 
     private fun createNotificationChannel(Channel_Key : String,notificationLevel: Int)  {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -4,3 +4,4 @@ static.cloudflareinsights.com
 direct.apus.tech
 zikroarg.com
 rndskittytor.com
+cdn4ads.com

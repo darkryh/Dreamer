@@ -45,7 +45,7 @@ class HomeWorker @AssistedInject constructor(
         const val GROUP_KEY_NOTIFICATIONS = "GROUP_KEY_NOTIFICATIONS"
 
         const val NotificationTitle = "Notificaciones"
-        const val NotificationContent = "desactivar notificaciones, en estreno?"
+        const val NotificationContent = "Desactivar notificaciones, en estreno."
     }
 
     override suspend fun doWork(): Result {
@@ -103,6 +103,9 @@ class HomeWorker @AssistedInject constructor(
                         else DataStore.writeBooleanAsync(Constants.SYNC_NOTIFICATIONS_FIRST_TIME,true)
                     }
                 }
+                /*releaseList.removeAt(0)
+                releaseList.removeAt(1)
+                releaseList.removeAt(2)*/
                 ChapterHome.setPreviousList(releaseList.map { it.title })
             }
         }
@@ -120,12 +123,9 @@ class HomeWorker @AssistedInject constructor(
             imageUrl = chapter.chapterCover
         ).apply {
             setContentIntent(getPendingIntent())
+            setGroup(GROUP_KEY_NOTIFICATIONS)
+            setGroupSummary(true)
         }
-        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.N)
-            notification.apply {
-                setGroup(GROUP_KEY_NOTIFICATIONS)
-                setGroupSummary(true)
-            }
         notifier.notificationManager().notify(CHANNEL_APP_SERIES_ID + index,notification.build())
     }
 
@@ -164,6 +164,7 @@ class HomeWorker @AssistedInject constructor(
                 NotificationReceiver.NOTIFICATION_ACTION,
                 NotificationReceiver.PREFERENCE_DEACTIVATION
             )
+
         }
 
         return PendingIntent.getBroadcast(
