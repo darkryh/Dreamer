@@ -46,7 +46,7 @@ class AnimeBaseRecyclerViewAdapter(
             binding.imvCoverBase.load(animeBase.cover) {
                 crossfade(true)
                 crossfade(500)
-                transformations(RoundedCornersTransformation(11f,11f,0f,0f))
+                transformations(RoundedCornersTransformation(13f,13f,0f,0f))
                 if (Constants.isGooglePolicyActivate()) {
                     if ("Manyuu Hikenchou" in animeBase.title || "Freezing" in animeBase.title ||
                         "Ikkitousen" in animeBase.title) {

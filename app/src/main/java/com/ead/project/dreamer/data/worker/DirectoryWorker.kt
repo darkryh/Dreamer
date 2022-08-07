@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.AnimeRepository
@@ -38,6 +39,7 @@ class DirectoryWorker @AssistedInject constructor(
                 Result.success()
             } catch (ex: IOException) {
                 ex.printStackTrace()
+                Log.d("testing", "doWork: ${ex.cause}")
                 Result.retry()
             }
         }
