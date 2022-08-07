@@ -37,6 +37,7 @@ open class Server : VideoInterface {
         fun identify (url : String) : String {
 
             if (Constants.SERVER_OKRU in url) return Constants.TITLE_OKRU
+            if (Constants.SERVER_VOE in url) return Constants.TITLE_VOE
             if (Constants.SERVER_SOLIDFILES in url) return Constants.TITLE_SOLIDFILES
             if (Constants.SERVER_ONEFICHIER in url) return Constants.TITLE_ONEFICHIER
             if (Constants.SERVER_FEMBED in url) return Constants.TITLE_FEMBED
@@ -61,7 +62,7 @@ open class Server : VideoInterface {
         fun endOperation() = DataStore.writeBooleanAsync(Constants.BREAK_SERVER_OPERATION,false)
 
         private val recommendedServers : List<String> =
-            listOf(Constants.TITLE_OKRU,Constants.TITLE_ONEFICHIER, Constants.TITLE_SOLIDFILES)
+            listOf(Constants.TITLE_OKRU,Constants.TITLE_ONEFICHIER, Constants.TITLE_SOLIDFILES , Constants.TITLE_VOE)
 
         private val webServers : List<String> =
             listOf(Constants.TITLE_MP4UPLOAD,Constants.TITLE_MEGA, Constants.TITLE_UQLOAD)
@@ -102,5 +103,5 @@ open class Server : VideoInterface {
 enum class Player {
     Bayfiles,Embed,Fembed,Fireload,Mega,Mp4Upload,
     Okru,Onefichier,Puj,Senvid,SolidFiles,Streamtape,
-    Uqload,Videobin,Zippyshare,blank
+    Uqload,Videobin,Zippyshare,Voe,blank
 }

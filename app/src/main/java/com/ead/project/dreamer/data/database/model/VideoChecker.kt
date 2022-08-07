@@ -47,18 +47,19 @@ class VideoChecker @Inject constructor() {
             return when (Server.identify(data)) {
                 Constants.TITLE_OKRU -> 0
                 Constants.TITLE_ONEFICHIER -> 1
-                Constants.TITLE_FEMBED -> 2
-                Constants.TITLE_SOLIDFILES -> 3
-                Constants.TITLE_BAYFILES -> 4
-                Constants.TITLE_SENDVID -> 5
-                Constants.TITLE_STREAMTAPE -> 6
-                Constants.TITLE_ZIPPYSHARE -> 7
-                Constants.TITLE_PUJ -> 8
-                Constants.TITLE_EMBED -> 9
-                Constants.TITLE_VIDEOBIN -> 10
-                Constants.TITLE_MP4UPLOAD -> 11
-                Constants.TITLE_UQLOAD -> 12
-                Constants.TITLE_MEGA -> 13
+                Constants.TITLE_VOE -> 2
+                Constants.TITLE_FEMBED -> 3
+                Constants.TITLE_SOLIDFILES -> 4
+                Constants.TITLE_BAYFILES -> 5
+                Constants.TITLE_SENDVID -> 6
+                Constants.TITLE_STREAMTAPE -> 7
+                Constants.TITLE_ZIPPYSHARE -> 8
+                Constants.TITLE_PUJ -> 9
+                Constants.TITLE_EMBED -> 10
+                Constants.TITLE_VIDEOBIN -> 11
+                Constants.TITLE_MP4UPLOAD -> 12
+                Constants.TITLE_UQLOAD -> 13
+                Constants.TITLE_MEGA -> 14
                 else -> 10000
             }
         }
@@ -67,18 +68,19 @@ class VideoChecker @Inject constructor() {
             return when (Server.identify(data)) {
                 Constants.TITLE_FEMBED -> 0
                 Constants.TITLE_ONEFICHIER -> 1
-                Constants.TITLE_OKRU -> 2
-                Constants.TITLE_SOLIDFILES -> 3
-                Constants.TITLE_BAYFILES -> 4
-                Constants.TITLE_SENDVID -> 5
-                Constants.TITLE_STREAMTAPE -> 6
-                Constants.TITLE_ZIPPYSHARE -> 7
-                Constants.TITLE_PUJ -> 8
-                Constants.TITLE_EMBED -> 9
-                Constants.TITLE_VIDEOBIN -> 10
-                Constants.TITLE_MP4UPLOAD -> 11
-                Constants.TITLE_UQLOAD -> 12
-                Constants.TITLE_MEGA -> 13
+                Constants.TITLE_VOE -> 2
+                Constants.TITLE_OKRU -> 3
+                Constants.TITLE_SOLIDFILES -> 4
+                Constants.TITLE_BAYFILES -> 5
+                Constants.TITLE_SENDVID -> 6
+                Constants.TITLE_STREAMTAPE -> 7
+                Constants.TITLE_ZIPPYSHARE -> 8
+                Constants.TITLE_PUJ -> 9
+                Constants.TITLE_EMBED -> 10
+                Constants.TITLE_VIDEOBIN -> 11
+                Constants.TITLE_MP4UPLOAD -> 12
+                Constants.TITLE_UQLOAD -> 13
+                Constants.TITLE_MEGA -> 14
                 else -> 10000
             }
         }

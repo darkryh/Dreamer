@@ -13,6 +13,7 @@ class ServerFactory @Inject constructor (
         for (server in embeddedServerList) {
             when (Server.identify(server)) {
                 Constants.TITLE_OKRU -> serverList.add(Okru(server))
+                Constants.TITLE_VOE -> serverList.add(Voe(server))
                 Constants.TITLE_SOLIDFILES -> serverList.add(SolidFiles(server))
                 Constants.TITLE_FEMBED -> serverList.add(Fembed(server))
                 Constants.TITLE_ONEFICHIER -> serverList.add(Onefichier(server))
