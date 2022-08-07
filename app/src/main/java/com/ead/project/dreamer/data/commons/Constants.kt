@@ -214,6 +214,8 @@ class Constants {
 
         const val TITLE_FIRELOAD = "Fireload"
 
+        const val TITLE_VOE = "Voe"
+
 
         const val SERVER_FEMBED = "fembed.com"
 
@@ -244,6 +246,8 @@ class Constants {
         const val SERVER_ONEFICHIER = "1fichier.com"
 
         const val SERVER_FIRELOAD = "fireload.com"
+
+        const val SERVER_VOE = "voe.sx"
 
         fun isInQuantityAdLimit() = DataStore
             .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
