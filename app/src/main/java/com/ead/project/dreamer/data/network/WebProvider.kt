@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.network
 
+import android.util.Log
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
@@ -28,13 +29,20 @@ class WebProvider @Inject constructor() {
 
             for (rawChapter in rawChapterList) {
 
-                val title = rawChapter.select("p.animetitles").text()
-                val chapterCover = rawChapter.select("div.animeimgdiv")
+                val a = rawChapter.select("a")
+
+                val title = a.attr("title")
+
+                val animeDiv = rawChapter.select("div.animes").select("div.animeimgdiv")
+                val chapterCover = animeDiv
                     .select("img")
-                    .attr("data-src")
-                val chapterNumber = rawChapter.select("h5").text().toInt()
-                val type = rawChapter.select("button").text()
-                val reference = rawChapter.select("a").attr("href")
+                    .attr("src")
+
+                val positioning = animeDiv.select("div.hoverdiv").select("div.positioning")
+
+                val chapterNumber = positioning.select("p").text().toInt()
+                val type = positioning.select("button").text()
+                val reference = a.attr("href")
 
                 val chapterHome = ChapterHome(
                     --index,
@@ -69,20 +77,28 @@ class WebProvider @Inject constructor() {
 
         for (page in section.first until section.second + 1) {
 
-            val docPages =
-                Jsoup.connect(Constants.BASE_URL + Constants.PAGE + page.toString())
-                    .userAgent(DreamerRequest.userAgent()).get()
+            val url = Constants.BASE_URL + Constants.PAGE + page.toString()
+
+            val docPages = Jsoup.connect(url).userAgent(DreamerRequest.userAgent()).get()
 
             val seriesData = docPages.getElementsByClass("col-md-4 col-lg-2 col-6")
 
             for (serie in seriesData) {
 
-                val title = serie.select("h5.seristitles").text()
-                val image = serie.select("img").attr("src")
-                val reference = serie.select("a").attr("href")
-                val arrayInfo = serie.select("span.seriesinfo").text().split(" · ")
+                val a = serie.select("a")
+                val title = a.attr("title")
+                val reference = a.attr("href")
+
+                val series = serie.select("div.series")
+                val image = series.select("div.seriesimg")
+                    .select("img")
+                    .attr("src")
+
+                val arrayInfo = serie.select("div.seriesdetails")
+                    .select("span.seriesinfo").text().split(" · ")
                 val type = arrayInfo[0]
                 val year = arrayInfo[1].toInt()
+
 
                 auxChapterList.add(
                     AnimeBase(
@@ -96,7 +112,6 @@ class WebProvider @Inject constructor() {
                 )
             }
         }
-
         return auxChapterList
     }
 
@@ -153,7 +168,7 @@ class WebProvider @Inject constructor() {
             val cover = elementsChapters[i]
                 .select("div.animedtlsmain")
                 .select("div.animeimgdiv")
-                .select("img").attr("data-src")
+                .select("img").attr("src")
             val chapterReference = elementsChapters[i].select("a").attr("href")
             val chapter = Chapter(
                 0,
