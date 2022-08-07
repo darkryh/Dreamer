@@ -12,6 +12,7 @@ class Senvid(var url : String) : Server() {
 
     init {
         player = Player.Senvid
+        if (url.contains("repro.monoschinos2.com")) url = url.substringAfter("url=")
         patternReference()
         linkProcess()
     }
@@ -22,13 +23,13 @@ class Senvid(var url : String) : Server() {
             url = PatternManager.variableReference(Jsoup.connect(url)
                 .userAgent(DreamerRequest.userAgent())
                 .method(Connection.Method.GET).execute().body()
-                ,"<source src=\"(.*?)\"").toString()
+                ,"<source src=\"(.*?)\"")?: "null"
         } catch (e: Exception) { e.printStackTrace() }
     }
 
     override fun linkProcess() {
         super.linkProcess()
-        videoList.add(VideoModel("Default",url))
+        if (url != "null") videoList.add(VideoModel("Default",url))
     }
 
 }
