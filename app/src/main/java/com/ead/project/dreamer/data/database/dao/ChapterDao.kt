@@ -31,10 +31,10 @@ interface ChapterDao {
     @Query("select * from anime_chapter_table  where idProfile =:id order by chapterNumber asc")
     fun getFlowChaptersFromProfileAsc(id : Int) : Flow<List<Chapter>>
 
-    @Query("select * from(select * from anime_chapter_table where currentSeen > 0 order by lastSeen asc) as X group by X.title")
+    @Query("select * from(select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title")
     fun getRecords() : List<Chapter>
 
-    @Query("select * from(select * from (select * from anime_chapter_table where currentSeen > 0 order by lastSeen asc) as X group by X.title) as T order by lastSeen desc")
+    @Query("select * from(select * from (select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title) as T order by lastSeen desc")
     fun getFlowDataRecords() : Flow<List<Chapter>>
 
     @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
