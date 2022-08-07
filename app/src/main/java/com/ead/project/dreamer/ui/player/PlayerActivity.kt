@@ -315,10 +315,9 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        if(newConfig != null){
-            playerManager.isInPipMode = !isInPictureInPictureMode
-        }
+    @Deprecated("Deprecated in Java")
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
+        playerManager.isInPipMode = !isInPictureInPictureMode
         if (isInPictureInPictureMode) {
             lnContentReference.visibility = View.GONE
             // Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.
@@ -326,7 +325,7 @@ class PlayerActivity : AppCompatActivity() {
             lnContentReference.visibility = View.VISIBLE
             // Restore the full-screen UI.
         }
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode)
     }
 
     override fun onUserLeaveHint() {
