@@ -18,11 +18,11 @@ class PatternManager {
         }
 
 
-        fun variableReference(url: String,regex : String): String? {
+        fun variableReference(url: String,regex : String,groupIndex : Int = 1): String? {
             val pattern = Pattern.compile(regex, Pattern.MULTILINE)
             val matcher = pattern.matcher(url)
             return if (matcher.find()) {
-                matcher.group(1)
+                matcher.group(groupIndex)
             } else null
         }
     }
