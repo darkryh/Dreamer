@@ -13,5 +13,7 @@ class Uqload (var url : String) : Server() {
         if (!fileDeleted()) videoList.add(VideoModel("Default",url))
     }
 
-    private fun fileDeleted() = Jsoup.connect(url).get().body().text() == "File was deleted"
+    private fun fileDeleted() : Boolean = try {
+        Jsoup.connect(url).get().body().text() == "File was deleted"
+    } catch (e : Exception) { true }
 }
