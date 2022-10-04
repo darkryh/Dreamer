@@ -21,12 +21,11 @@
         tools:ignore="ImageContrastCheck" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_login_twitter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_rounded"
+        android:background="@drawable/background_rounded_20dp"
         android:backgroundTint="?attr/colorPrimary"
         android:drawableStart="@drawable/ic_twitter_32"
         android:paddingHorizontal="16dp"
@@ -44,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="128dp"
-        android:background="@drawable/bg_rounded"
+        android:background="@drawable/background_rounded_20dp"
         android:backgroundTint="?attr/colorPrimary"
         android:drawableStart="@drawable/ic_discord_32"
         android:paddingHorizontal="16dp"
@@ -62,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/bg_rounded"
+        android:background="@drawable/background_rounded_20dp"
         android:backgroundTint="?attr/colorPrimary"
         android:drawableStart="@drawable/ic_incognito"
         android:paddingHorizontal="16dp"        android:text="@string/guest"
