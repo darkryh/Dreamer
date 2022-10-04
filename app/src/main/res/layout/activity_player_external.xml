@@ -14,17 +14,18 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="12dp"
+        android:background="@drawable/background_circular"
+        android:backgroundTint="?attr/colorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/bt_play_list_cast"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:contentDescription="@string/playlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lnSettings"
-            app:srcCompat="@drawable/ic_expand_more_24" />
+            app:srcCompat="@drawable/ic_format_list_numbered"/>
     </LinearLayout>
 
     <ImageView
@@ -41,14 +42,14 @@
 
     <ImageView
         android:id="@+id/bt_close_external_player"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_circular"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/background_circular"
         android:backgroundTint="?attr/colorSecondary"
         android:layout_marginTop="4dp"
         android:contentDescription="@string/close"
         android:layout_marginStart="8dp"
-        android:src="@drawable/ic_chevron_left"
+        android:src="@drawable/ic_expand_38"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck" />

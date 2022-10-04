@@ -23,26 +23,26 @@
                 android:id="@+id/adAppIcon"
                 android:layout_width="120dp"
                 android:layout_height="70dp"
-                android:background="@drawable/bg_rounded"
+                android:background="@drawable/background_rounded_20dp"
                 android:backgroundTint="?attr/colorSecondary"
                 android:contentDescription="@string/anime_logo"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@mipmap/ic_launcher_app" />
+                app:srcCompat="@mipmap/ic_launcher" />
 
             <TextView
-                android:id="@+id/ad_store"
+                android:id="@+id/adStore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="4dp"
-                android:background="@drawable/bg_blue_rounded"
+                android:background="@drawable/background_blue_rounded_20dp"
                 android:paddingHorizontal="7dp"
                 android:text="@string/store"
-                android:textSize="12sp"
                 android:textColor="@color/white"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="TextContrastCheck" />
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded"
+                android:background="@drawable/background_rounded_20dp"
                 android:backgroundTint="@color/yellow_700"
                 android:paddingHorizontal="6dp"
                 android:textColor="@color/white"
@@ -71,7 +71,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/title"
-                android:textColor="@color/blueLight"
+                android:textColor="@color/blue_light"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/lnOperation"
                 app:layout_constraintStart_toEndOf="@+id/adAppIcon"
@@ -98,13 +98,13 @@
                 android:id="@+id/lnOperation"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/ad_price"
+                    android:id="@+id/adPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -114,10 +114,10 @@
                     tools:ignore="SmallSp" />
 
                 <Button
-                    android:id="@+id/ad_call_to_action"
+                    android:id="@+id/adCallToAction"
                     android:layout_width="wrap_content"
                     android:layout_height="33dp"
-                    android:backgroundTint="@color/blueLight"
+                    android:backgroundTint="@color/blue_light"
                     android:gravity="center"
                     android:textSize="9sp"
                     tools:ignore="SmallSp,SpeakableTextPresentCheck,TouchTargetSizeCheck" />

@@ -62,13 +62,13 @@
 
         <fragment
             android:id="@+id/castMiniController"
-            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+            class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             app:castControlButtons="@array/cast_mini_controller_control_buttons"
-            app:castProgressBarColor="@color/blueLight"
-            app:castMiniControllerLoadingIndicatorColor="@color/blueLight"
+            app:castProgressBarColor="@color/blue_light"
+            app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
             app:castButtonColor="?attr/colorPrimaryVariant"
             android:visibility="visible"
             tools:ignore="FragmentTagUsage" />

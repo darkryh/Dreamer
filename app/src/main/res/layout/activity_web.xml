@@ -25,19 +25,22 @@
 
         <ImageView
             android:id="@+id/imvClose"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             app:srcCompat="@drawable/ic_clear"
+            app:tint="@color/white"
             android:contentDescription="@string/close" />
 
 
         <ImageView
-            android:id="@+id/imvWeb"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="8dp"
             android:contentDescription="@string/close"
-            app:srcCompat="@drawable/ic_public_24" />
+            app:srcCompat="@drawable/ic_public_24"
+            app:tint="@color/white"/>
 
         <LinearLayout
             android:layout_width="match_parent"

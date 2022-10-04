@@ -1,251 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.profile.AnimeProfileActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:fitsSystemWindows="false">
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/coordinatorMode">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false"
-            app:collapsedTitleTextAppearance="@style/CollapsedAppBar"
-            app:expandedTitleTextAppearance="@style/ExpandedAppBar"
-            app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-            app:maxLines="4"
-            app:title="@string/title">
+            android:layout_height="400dp"
+            android:fitsSystemWindows="false">
 
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/imvCover_Profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/cover_profile"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_perm_media_24"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/cover_reflex"
-                    android:src="@drawable/gradient_transparent_vertical" />
-
-            </RelativeLayout>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                app:layout_collapseMode="pin">
-
-                <ImageView
-                    android:id="@+id/imvProfile_Base"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="end|center"
-                    android:layout_marginEnd="16dp"
-                    android:contentDescription="@string/profile_logo"
-                    app:srcCompat="@drawable/ic_person_pin_24"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageView
-                    android:id="@+id/imvLike_Profile"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_gravity="end|center"
-                    android:contentDescription="@string/cover_profile"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/ic_favorite_border_24"
-                    tools:ignore="ImageContrastCheck" />
-
-                <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/media_route_button"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:mediaRouteTypes="user"
-                    app:mediaRouteButtonTint="@color/white"
-                    app:layout_anchor="@id/rcvGenres"
-                    android:layout_gravity="end|center"
-                    android:layout_margin="8dp"
-                    android:visibility="gone"/>
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/castMiniController"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:fitsSystemWindows="false"
+                app:collapsedTitleTextAppearance="@style/CollapsedAppBar"
+                app:expandedTitleTextAppearance="@style/ExpandedAppBar"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+                app:maxLines="4"
+                app:title="@string/title">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvGenres"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/bg_horizonal_border_down"
-                    tools:listitem="@layout/layout_genre" />
+                    android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/txvState_Profile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/state"
-                        android:textSize="13sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/txvYear"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/txvYear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:text="@string/year"
-                        app:layout_constraintBottom_toBottomOf="@+id/txvState_Profile"
-                        app:layout_constraintEnd_toStartOf="@+id/txvRating"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/txvState_Profile"
-                        app:layout_constraintTop_toTopOf="@+id/txvState_Profile" />
-
-                    <TextView
-                        android:id="@+id/txvRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/rating"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/txvYear"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/txvYear"
-                        app:layout_constraintTop_toTopOf="@+id/txvYear" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/txvDescription_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="@drawable/bg_horizontal_border"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/lorem"
-                    android:textAlignment="textStart"
-                    android:textSize="12sp" />
-
-                <LinearLayout
-                    android:id="@+id/lnBanner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="4dp">
-
-                    <include
-                        android:id="@+id/banner"
-                        layout="@layout/ad_unified_mini_banner" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txvChapterTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_horizontal_border"
-                    android:gravity="center"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/chapterList"
-                    android:textSize="15sp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/txInputChapters"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:hint="@string/chapterList"
-                    android:visibility="gone"
-                    app:startIconDrawable="@drawable/ic_list_24">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actChapters"
+                    <ImageView
+                        android:id="@+id/imvCoverProfile"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:inputType="none"
-                        android:text="@string/chapters"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/cover_profile"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_perm_media_24"
+                        tools:ignore="ImageContrastCheck" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvChapters"
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/cover_reflex"
+                        android:src="@drawable/gradient_transparent_vertical" />
+
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_horizonal_border_down"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="4dp"
-                    android:paddingBottom="8dp"
-                    tools:listitem="@layout/layout_chapter" />
+                    android:layout_height="60dp"
+                    app:layout_collapseMode="pin">
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+                    <ImageView
+                        android:id="@+id/imvProfileBase"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@string/profile_logo"
+                        app:srcCompat="@drawable/ic_person_pin_24"
+                        tools:ignore="ImageContrastCheck" />
 
-        <fragment
-            android:id="@+id/castMiniController"
-            class="com.google.android.gms.cast.framework.media.widget.MiniControllerFragment"
+                    <ImageView
+                        android:id="@+id/imvLikeProfile"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/cover_profile"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_favorite_border_24"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageView
+                        android:id="@+id/imvFixer"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginEnd="0dp"
+                        android:contentDescription="@string/cover_profile"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_fixer_24"
+                        app:tint="@color/white"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <androidx.mediarouter.app.MediaRouteButton
+                        android:id="@+id/mediaRouteButton"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="end|center"
+                        android:layout_margin="8dp"
+                        android:mediaRouteTypes="user"
+                        android:visibility="gone"
+                        app:layout_anchor="@id/rcvGenres"
+                        app:mediaRouteButtonTint="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/imvDownloads"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/cover_profile"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:tint="@color/white"
+                        app:srcCompat="@drawable/ic_circle_download_24"
+                        tools:ignore="ImageContrastCheck"/>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:castControlButtons="@array/cast_mini_controller_control_buttons"
-            app:castProgressBarColor="@color/blueLight"
-            app:castMiniControllerLoadingIndicatorColor="@color/blueLight"
-            app:castButtonColor="?attr/colorPrimaryVariant"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="FragmentTagUsage" />
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcvGenres"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/background_horizonal_border_down"
+                        tools:listitem="@layout/layout_genre" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/txvState_Profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/state"
+                            android:textSize="13sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/txvYear"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/txvYear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:text="@string/year"
+                            app:layout_constraintBottom_toBottomOf="@+id/txvState_Profile"
+                            app:layout_constraintEnd_toStartOf="@+id/txvRating"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/txvState_Profile"
+                            app:layout_constraintTop_toTopOf="@+id/txvState_Profile" />
+
+                        <TextView
+                            android:id="@+id/txvRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/rating"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/txvYear"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/txvYear"
+                            app:layout_constraintTop_toTopOf="@+id/txvYear" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/txvDescriptionContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="@drawable/background_horizontal_border"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="8dp"
+                        android:text="@string/lorem"
+                        android:textAlignment="textStart"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/lnBanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="4dp">
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/bannerShimmer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible">
+
+                            <include layout="@layout/layout_banner_shimmer" />
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        <include
+                            android:id="@+id/banner"
+                            layout="@layout/ad_unified_mini_banner"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txvChapterTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_horizontal_border"
+                        android:gravity="center"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="8dp"
+                        android:text="@string/chapterList"
+                        android:textSize="15sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txInputChapters"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:hint="@string/chapterList"
+                        android:visibility="gone"
+                        app:startIconDrawable="@drawable/ic_list_24">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actChapters"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:inputType="none"
+                            android:text="@string/chapters"
+                            tools:ignore="LabelFor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcvChapters"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_horizonal_border_down"
+                        android:layoutAnimation="@anim/layout_animation"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="4dp"
+                        android:paddingBottom="8dp"
+                        tools:listitem="@layout/layout_chapter" />
+
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/castMiniController"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:backgroundTint="@color/grey_accent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="24dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:layoutDirection="rtl">
+
+                <ImageView
+                    android:id="@+id/imvDownloadSelected"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:paddingVertical="16dp"
+                    android:src="@drawable/ic_circle_download_24"
+                    android:contentDescription="@string/download"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <fragment
+        android:id="@+id/castMiniController"
+        class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:castButtonColor="?attr/colorPrimaryVariant"
+        app:castControlButtons="@array/cast_mini_controller_control_buttons"
+        app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
+        app:castProgressBarColor="@color/blue_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="FragmentTagUsage" />
+</androidx.constraintlayout.widget.ConstraintLayout>

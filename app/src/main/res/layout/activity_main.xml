@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarMain"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?attr/colorSurface"
-        android:theme="?attr/actionBarTheme"
+        android:background="@color/blackSurface"
+        app:layout_collapseMode="pin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,65 +21,70 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
             android:layoutDirection="rtl"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <ImageView
                 android:id="@+id/imvProfile"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="@color/backgroundSmooth"
+                android:contentDescription="@string/state_of_the_app"
+                android:padding="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/state_of_the_app"
-                app:srcCompat="@drawable/ic_account_circle_24"
-                tools:ignore="ImageContrastCheck"/>
+                app:srcCompat="@drawable/ic_person_outline_24"
+                tools:ignore="ImageContrastCheck" />
 
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="4dp"
-                android:background="@drawable/bg_circular"
-                android:backgroundTint="?attr/colorSecondary"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="@color/backgroundSmooth"
                 android:orientation="vertical">
 
                 <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/media_route_button"
+                    android:id="@+id/mediaRouteButton"
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:mediaRouteTypes="user"
-                    app:mediaRouteButtonTint="?attr/colorPrimaryVariant"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:mediaRouteButtonTint="@color/whiteSecondary" />
 
 
             </LinearLayout>
+
             <ImageView
                 android:id="@+id/imvSearch"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="8dp"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="@color/backgroundSmooth"
+                android:contentDescription="@string/state_of_the_app"
                 android:padding="4dp"
-                android:background="@drawable/bg_circular"
-                android:backgroundTint="?attr/colorSecondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/state_of_the_app"
                 app:srcCompat="@drawable/ic_search_24"
-                tools:ignore="ImageContrastCheck"/>
+                app:tint="@color/white"
+                tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/edtMainSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_rounded"
-                android:backgroundTint="?attr/colorSecondary"
+                android:background="@drawable/background_rounded_20dp"
+                android:backgroundTint="@color/backgroundSmooth"
                 android:hint="@string/search_in_directory"
-                android:paddingHorizontal="24dp"
+                android:paddingHorizontal="16dp"
                 android:paddingVertical="6dp"
                 android:textColorHint="@color/grey_accent"
                 android:textSize="13sp"
@@ -86,6 +93,45 @@
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/castMiniController"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarMain"
+        app:navGraph="@navigation/mobile_navigation" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/castMiniController"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <fragment
+        android:id="@+id/castMiniController"
+        class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="8dp"
+        android:visibility="visible"
+        app:castButtonColor="?attr/colorPrimaryVariant"
+        app:castControlButtons="@array/cast_mini_controller_control_buttons"
+        app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
+        app:castProgressBarColor="@color/blue_light"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="FragmentTagUsage" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
@@ -101,33 +147,4 @@
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/castMiniController"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:navGraph="@navigation/mobile_navigation" />
-
-    <fragment
-        android:id="@+id/castMiniController"
-        class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:castControlButtons="@array/cast_mini_controller_control_buttons"
-        app:castProgressBarColor="@color/blueLight"
-        app:castMiniControllerLoadingIndicatorColor="@color/blueLight"
-        app:castButtonColor="?attr/colorPrimaryVariant"
-        android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="8dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="FragmentTagUsage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

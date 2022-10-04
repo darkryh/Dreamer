@@ -3,30 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    app:cardCornerRadius="15dp"
-    android:backgroundTint="?attr/colorSurface"
-    android:layout_marginVertical="4dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    android:backgroundTint="?attr/colorSecondary"
+    android:foreground="?attr/selectableItemBackground"
     app:cardElevation="0dp">
 
     <com.google.android.gms.ads.nativead.NativeAdView
         android:id="@+id/nativeView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/ad_app_icon"
-                android:layout_width="150dp"
-                android:layout_height="90dp"
-                android:contentDescription="@string/chapter_profile"
-                android:scaleType="fitCenter"
+                android:layout_width="100dp"
+                android:layout_height="70dp"
                 android:background="@drawable/background_rounded_20dp"
                 android:backgroundTint="?attr/colorSecondary"
+                android:contentDescription="@string/chapter_profile"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:text="@string/title"
                 android:textColor="@color/blue_light"
                 android:textSize="12sp"
@@ -54,28 +54,28 @@
                 android:id="@+id/lnOperation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_margin="4dp"
                 android:gravity="center"
-                app:layout_constraintBottom_toBottomOf="@+id/ad_app_icon"
-                app:layout_constraintEnd_toEndOf="@+id/ad_body"
-                app:layout_constraintStart_toStartOf="@+id/ad_body">
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ad_headline">
 
                 <TextView
                     android:id="@+id/adPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:layout_marginHorizontal="4dp"
-                    android:text="@string/play"/>
+                    android:text="@string/play"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/adCallToAction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
                     android:background="@drawable/background_blue_rounded_20dp"
                     android:backgroundTint="@color/blue_light"
-                    android:layout_marginHorizontal="4dp"
                     android:paddingHorizontal="7dp"
                     android:text="@string/play"
                     android:textColor="?attr/colorPrimaryVariant"
@@ -113,16 +113,17 @@
             <TextView
                 android:id="@+id/ad_body"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginVertical="2dp"
+                android:layout_marginEnd="8dp"
                 android:ellipsize="end"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:text="@string/body"
                 android:textSize="11sp"
-                android:layout_marginVertical="2dp"
-                app:layout_constraintBottom_toTopOf="@+id/lnOperation"
-                app:layout_constraintEnd_toEndOf="@+id/ad_headline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/lnOperation"
                 app:layout_constraintStart_toStartOf="@+id/ad_headline"
-                app:layout_constraintTop_toBottomOf="@+id/ad_headline"/>
+                app:layout_constraintTop_toBottomOf="@+id/ad_headline" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

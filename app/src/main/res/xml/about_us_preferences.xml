@@ -9,6 +9,16 @@
         tools:ignore="TextContrastCheck">
 
         <Preference
+            android:icon="@drawable/ic_tiktok_24"
+            android:summary="Tik Tok"
+            app:key="PREFERENCE_TIKTOK" />
+
+        <Preference
+            android:icon="@drawable/ic_instagram_24"
+            android:summary="Instagram"
+            app:key="PREFERENCE_INSTAGRAM" />
+
+        <Preference
             android:icon="@drawable/ic_twitter_24"
             android:summary="Twitter"
             app:key="PREFERENCE_TWITTER" />
@@ -30,7 +40,7 @@
             app:key="SYNC_DIRECTORY_PROFILE" />
 
         <Preference
-            android:icon="@drawable/ic_engineering_24"
+            android:icon="@drawable/ic_plumbing_24"
             android:summary="Versión: Build Versión"
             app:key="PREFERENCE_APP_VERSION" />
     </PreferenceCategory>

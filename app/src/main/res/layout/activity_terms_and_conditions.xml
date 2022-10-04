@@ -45,7 +45,6 @@
 
 
             <TextView
-                android:id="@+id/txvTermsAndConditions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -53,7 +52,6 @@
                 android:text="@string/termsAndConditions" />
 
             <TextView
-                android:id="@+id/txvTermsAndConditionsContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -62,7 +60,6 @@
                 tools:targetApi="o" />
 
             <TextView
-                android:id="@+id/txvLegalWarning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -71,18 +68,16 @@
                 android:text="@string/legal_warning"/>
 
             <TextView
-                android:id="@+id/txvLegalWarningContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:justificationMode="inter_word"
                 android:text="@string/legalWarningContent"
                 android:autoLink="web"
-                android:textColorLink="@color/blueLight"
+                android:textColorLink="@color/blue_light"
                 tools:targetApi="o" />
 
             <TextView
-                android:id="@+id/txvPrivacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -91,7 +86,6 @@
                 android:text="@string/Privacy_Policy"/>
 
             <TextView
-                android:id="@+id/txvPrivacyPolicyContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -108,7 +102,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/email_protected"
                 android:textStyle="italic"
-                android:textColor="@color/blueLight"
+                android:textColor="@color/blue_light"
                 tools:targetApi="o" />
 
         </LinearLayout>
