@@ -1,36 +1,37 @@
 package com.ead.project.dreamer.data.database.model.server
 
 import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
+import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.apache.commons.text.StringEscapeUtils
 import org.json.JSONObject
-import org.jsoup.Jsoup
 
-class Okru(var url:String) : Server() {
+class Okru(embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
+
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Okru
-        patternReference()
-        linkProcess()
     }
 
-    override fun patternReference() {
-        super.patternReference()
+    override fun onExtract() {
+        super.onExtract()
         try {
             url = url.replace("//","https://")
-            url = PatternManager.variableReference(Jsoup.connect(url)
-                .userAgent(DreamerRequest.getSpecificUserAgent(0))
-                .ignoreContentType(true)
-                .execute().body(),"data-options=\"(.*?)\"")!!
-        } catch (e: Exception) { e.printStackTrace() }
-    }
 
-    override fun linkProcess() {
-        super.linkProcess()
-        try {
+            val response = OkHttpClient()
+                .newCall(
+                    Request.Builder().url(url)
+                        .header("User-Agent", DreamerRequest.getSpecificUserAgent(0)).build())
+                .execute()
+
+            url = PatternManager.singleMatch(
+                response.body!!.string(),
+                "data-options=\"(.*?)\"")!!
 
             url = StringEscapeUtils.unescapeHtml4(url)
 
@@ -57,6 +58,10 @@ class Okru(var url:String) : Server() {
                 videoList.add(video)
             }
             breakOperation()
-        } catch (e: Exception) { e.printStackTrace() }
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
+
+
     }
 }

@@ -5,9 +5,11 @@ import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 import org.jsoup.Jsoup
 
-class Uqload (var url : String) : Server() {
+class Uqload (embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
+    override fun onExtract() {
+        super.onExtract()
+        if (isDownloading) return
         player = Player.Uqload
         isDirect = false
         if (!fileDeleted()) videoList.add(VideoModel("Default",url))

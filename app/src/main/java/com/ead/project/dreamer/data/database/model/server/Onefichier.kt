@@ -2,56 +2,44 @@ package com.ead.project.dreamer.data.database.model.server
 
 import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
+import okhttp3.Response
 
-class Onefichier (var url :String) : Server() {
+class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
 
-    private var directLink = "null"
-    private var token = "YWxleF9ibGFjay14Y0Bob3RtYWlsLmNvbTpLaXJhMTAwOA=="
-
-    init {
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Onefichier
-        linkProcess()
     }
 
-    override fun linkProcess() {
-        super.linkProcess()
+    override fun onExtract() {
+        super.onExtract()
         try {
-            val request = Request.Builder()
-                .url(finalLink())
-                .header("Cookie","SID=")
-                .header("Authorization", "Basic $token")
+            url = fixUrl(url)
+            val request: Request = Request.Builder()
+                .url(url)
+                .header("Cookie", "SID=")
+                .header("Authorization", "Basic ${getToken()}")
                 .build()
 
-            val client = OkHttpClient.Builder()
-                .addNetworkInterceptor(Interceptor { chain ->
+            val client: OkHttpClient.Builder = OkHttpClient.Builder()
+                .addNetworkInterceptor(Interceptor { chain: Interceptor.Chain ->
                     val networkRequest = chain.request()
                     val response = chain.proceed(networkRequest)
                     val redirect = response.header("Location")
-                    if (redirect != null) {
-                        directLink = redirect
-                    }
+                    if (redirect != null) url = redirect
                     response
                 })
-
-            try {
-                val requestData = client.build().newCall(request).execute()
-                if (requestData.isSuccessful) {
-                    if (directLink != "null")
-                        videoList.add(VideoModel("Default",directLink))
-                }
-                breakOperation()
-            } catch (e : IOException) {
-                e.printStackTrace()
-            }
-        } catch (e : IOException) {
+            val response: Response = client.build().newCall(request).execute()
+            if (response.isSuccessful) addDefaultVideo()
+            breakOperation()
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun finalLink() = "$url?=&auth=1"
+    private fun fixUrl(url: String): String = "$url?=&auth=1"
+    private fun getToken() = "YWxleF9ibGFjay14Y0Bob3RtYWlsLmNvbTpLaXJhMTAwOA=="
 }

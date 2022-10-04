@@ -6,58 +6,47 @@ import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.*
 import org.json.JSONObject
-import org.jsoup.Jsoup
-import java.io.IOException
 
-class Fembed (var url :String) : Server() {
+class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
-        patternReference()
-        linkProcess()
-    }
-
-    override fun patternReference() {
-        super.patternReference()
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Fembed
-        val response = Jsoup.connect(url).followRedirects(true).execute()
-        domain = response.url().toString().substringBefore("/v/")
-        videoId = PatternManager.sliceReference(url)!!
     }
 
-    override fun linkProcess() {
-        super.linkProcess()
-
+    override fun onExtract() {
+        super.onExtract()
         try {
-            val request = Request.Builder()
-                .url(domain + "/api/source/${videoId}")
-                .post(
-                    FormBody.Builder()
-                        .add("client_id","369484")
-                        .add("client_secret","33143aad190dda88").build())
+            var request: Request =  Request.Builder().url(url).build()
+
+            var response = OkHttpClient()
+                .newCall(request)
+                .execute()
+            val host = response.request.url.host
+            val videoId = PatternManager.singleMatch(
+                url,
+                "([vf])([/=])(.+)([/&])?",
+                3
+            )!!.replace("[&/]", "")
+
+            request = Request.Builder().url("https://$host/api/source/$videoId")
+                .post(FormBody.Builder().build())
                 .build()
 
-            OkHttpClient().newCall(request).enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        if (response.isSuccessful) {
-                            val source = JSONObject(response.body!!.string())
-                            check(source.getBoolean("success")) {  "Request was not succeeded" }
-                            val objectData = source.getJSONArray("data")
-                            for (pos in 0 until  objectData.length()) {
-                                val name: String = (objectData[pos] as JSONObject).getString("label")
-                                url = (objectData[pos] as JSONObject).getString("file")
-                                videoList.add(VideoModel(name,url))
-                            }
-                            if(!connectionAvailable())
-                                videoList.clear()
-                        }
-                    }
-                    catch (e : Exception) { e.printStackTrace() }
+            response = OkHttpClient().newCall(request).execute()
+            if (response.isSuccessful) {
+                val body = response.body!!.string()
+                val source = JSONObject(body)
+                check(source.getBoolean("success")) {  "Request was not succeeded" }
+                val array = source.getJSONArray("data")
+                for (i in 0 until array.length()) {
+                    val `object` = array.getJSONObject(i)
+                    val name = `object`.getString("label")
+                    url = `object`.getString("file")
+                    videoList.add(VideoModel(name, url))
                 }
-                override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                }
-            })
+            }
         } catch (e: Exception) { e.printStackTrace() }
     }
+
 }

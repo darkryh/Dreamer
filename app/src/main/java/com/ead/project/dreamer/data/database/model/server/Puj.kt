@@ -3,26 +3,29 @@ package com.ead.project.dreamer.data.database.model.server
 import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
-import org.jsoup.Jsoup
+import com.ead.project.dreamer.data.utils.PatternManager
+import okhttp3.OkHttpClient
+import okhttp3.Request
 
-class Puj (var url : String) : Server() {
+class Puj (embeddedUrl: String) : Server(embeddedUrl) {
 
-    init {
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Puj
-        linkProcess()
     }
 
-    override fun linkProcess() {
-        super.linkProcess()
+    override fun onExtract() {
+        super.onExtract()
         try {
-
-            val source = Jsoup.connect(url).get()
-
-            val script = source.select("script").last()!!.html()
-            val reDir = script.lines()[12]
-            url = reDir.trim().removePrefix("file: '").removeSuffix("',")
-
+            val response = OkHttpClient()
+                .newCall(Request.Builder().url(url).build())
+                .execute()
+            url = PatternManager.singleMatch(
+                response.body!!.string(),
+                "file: '(.+)'")
             videoList.add(VideoModel("Default",url))
+            if (connectionIsNotAvailable()) removeVideos()
+            else breakOperation()
         } catch (e: Exception) { e.printStackTrace() }
     }
 }

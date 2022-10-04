@@ -1,20 +1,20 @@
 package com.ead.project.dreamer.data.database.model.server
 
 import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.VideoModel
 import org.jsoup.Jsoup
 
-class Streamtape(var url:String) : Server() {
+class Streamtape(embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Streamtape
-        linkProcess()
     }
 
-    override fun linkProcess() {
-        super.linkProcess()
+    override fun onExtract() {
+        super.onExtract()
         try {
             val source = Jsoup.connect(url)
                 .userAgent(DreamerRequest.userAgent())
