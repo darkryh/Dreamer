@@ -18,8 +18,10 @@ data class AnimeBase (
     val year : Int
 ) : Parcelable,DiffUtilEquality {
 
-    companion object {
-    }
+    fun isWorking() = title.isNotEmpty() && cover.isNotEmpty()
+            && reference.isNotEmpty() && type.isNotEmpty() && year != -1
+
+    //fun isNotWorking () = !isWorking()
 
     override fun equalsHeader(other: Any?): Boolean {
         if (this === other) return true

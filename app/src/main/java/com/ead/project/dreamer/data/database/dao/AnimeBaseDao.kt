@@ -8,20 +8,20 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AnimeBaseDao {
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll (list : List<AnimeBase>)
+
     @Update
     suspend fun update(animeBase: AnimeBase)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll (list : List<AnimeBase>)
-
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    fun updateDirectory(list: List<AnimeBase>)
+    suspend fun updateDirectory(list: List<AnimeBase>)
 
     @Query("select * from anime_base_table")
-    fun getList() : List<AnimeBase>
+    suspend fun getList() : List<AnimeBase>
 
     @Query("select * from anime_base_table where id=:id")
-    fun getById(id: Int) : AnimeBase
+    suspend fun getById(id: Int) : AnimeBase
 
     @Query("select * from anime_base_table where title like '%' || :title || '%' order by title asc")
     fun getFlowDataListByName(title : String) : Flow<List<AnimeBase>>

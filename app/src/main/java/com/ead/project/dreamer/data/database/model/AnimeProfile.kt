@@ -26,6 +26,14 @@ data class AnimeProfile (
     var reference : String? = null,
     var isFavorite : Boolean = false
 ) : Parcelable, DiffUtilEquality {
+
+    fun isWorking() = title.isNotEmpty() && coverPhoto.isNotEmpty() && rating != -1f
+            && profilePhoto.isNotEmpty() && reference?.isNotEmpty() == true
+            && state.isNotEmpty() && description.isNotEmpty() && size != -1
+            && date.isNotEmpty() && rawGenres.isNotEmpty()
+
+    fun isNotWorking () = !isWorking()
+
     override fun equalsHeader(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
