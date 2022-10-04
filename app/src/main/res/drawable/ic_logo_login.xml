@@ -2,7 +2,8 @@
     android:width="200dp"
     android:height="200dp"
     android:viewportWidth="512"
-    android:viewportHeight="512">
+    android:viewportHeight="512"
+    android:tint="?attr/colorControlNormal">
   <group>
     <clip-path
         android:pathData="M0,0h512v512h-512z"/>

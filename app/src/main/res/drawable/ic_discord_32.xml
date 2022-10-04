@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <item
         android:drawable="@drawable/ic_discord"
-        android:width="@dimen/x32"
-        android:height="@dimen/x32" />
-
+        android:width="@dimen/dimen_32dp"
+        android:height="@dimen/dimen_32dp" />
 </layer-list >
