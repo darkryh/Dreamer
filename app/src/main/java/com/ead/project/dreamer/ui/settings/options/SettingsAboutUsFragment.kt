@@ -13,9 +13,14 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
 
     companion object {
 
+        const val PREFERENCE_TIKTOK = "PREFERENCE_TIKTOK"
+        const val PREFERENCE_INSTAGRAM = "PREFERENCE_INSTAGRAM"
         const val PREFERENCE_TWITTER = "PREFERENCE_TWITTER"
         const val PREFERENCE_DISCORD = "PREFERENCE_DISCORD"
 
+
+        const val TIKTOK = "https://www.tiktok.com/@darkryh"
+        const val INSTAGRAM = "https://www.instagram.com/darkryh"
         const val TWITTER = "https://twitter.com/Darkryh"
         const val DISCORD = "https://discord.gg/mvMfenSazJ"
     }
@@ -48,6 +53,14 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key!!) {
+            PREFERENCE_TIKTOK -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(TIKTOK))
+                startActivity(intent)
+            }
+            PREFERENCE_INSTAGRAM -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(INSTAGRAM))
+                startActivity(intent)
+            }
             PREFERENCE_TWITTER -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(TWITTER))
                 startActivity(intent)
