@@ -12,6 +12,8 @@
   *;
 }
 
+-keep public class * extends com.ead.project.dreamer.data.utils.DataStore
+-keep public class * extends com.ead.project.dreamer.data.commons.Constants
 -keep public class * extends android.webkit**
 
 
