@@ -2,8 +2,6 @@ package com.ead.project.dreamer.ui.player.cast.controller;//
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by FernFlower decompiler)
 //
-
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
