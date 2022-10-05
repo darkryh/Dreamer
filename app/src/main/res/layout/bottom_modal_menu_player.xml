@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.menuplayer.MenuPlayerFragment">
 
 
+
     <LinearLayout
-        android:id="@+id/generalLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/headerConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -52,7 +52,7 @@
                 app:layout_constraintTop_toTopOf="@+id/imvChapterMenu" />
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lav_loadingServer"
+                android:id="@+id/lavLoadingServer"
                 android:layout_width="300dp"
                 android:layout_height="175dp"
                 android:layout_marginTop="8dp"

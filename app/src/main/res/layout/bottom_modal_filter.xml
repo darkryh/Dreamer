@@ -19,12 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filter"
-            android:textColor="@color/white"/>
+            android:backgroundTint="?attr/colorPrimaryVariant"
+            android:textColor="?attr/colorSecondaryVariant"/>
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:id="@+id/txInputState"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:hint="@string/stateList"
@@ -44,7 +44,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:id="@+id/txInputType"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:visibility="gone"
@@ -65,7 +64,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:id="@+id/txInputGenre"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="32dp"

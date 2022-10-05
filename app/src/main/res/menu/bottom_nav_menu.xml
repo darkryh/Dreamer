@@ -7,13 +7,18 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_favorites"
-        android:icon="@drawable/ic_favorite_24"
-        android:title="@string/title_favorites" />
+        android:id="@+id/navigation_inbox"
+        android:icon="@drawable/ic_bookmarks_24"
+        android:title="Bandeja" />
+
+    <item
+        android:id="@+id/navigation_news"
+        android:icon="@drawable/ic_newspaper_24"
+        android:title="Noticias" />
 
     <item
         android:id="@+id/navigation_records"
-        android:icon="@drawable/ic_record_24"
+        android:icon="@drawable/ic_format_list_numbered"
         android:title="@string/title_records" />
 
 </menu>
