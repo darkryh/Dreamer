@@ -1,9 +1,8 @@
 package com.ead.project.dreamer.data.database.model.server
 
-import android.util.Log
 import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import org.json.JSONArray
@@ -11,48 +10,33 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.util.ArrayList
 
-class Videobin (var url : String) : Server() {
+class Videobin (embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
+    override fun onPreExtract() {
+        super.onPreExtract()
         player = Player.Videobin
-        patternReference()
-        linkProcess()
     }
 
-    override fun patternReference() {
-        super.patternReference()
+    override fun onExtract() {
+        super.onExtract()
         try {
-            url = PatternManager.variableReference(Jsoup.connect(url)
+            url = PatternManager.singleMatch(Jsoup.connect(url)
                 .userAgent(DreamerRequest.userAgent())
                 .method(Connection.Method.GET).execute().body(),"sources:(.*),")!!
-                .trim { it <= ' ' }
-        } catch (e: Exception) { e.printStackTrace() }
-    }
-
-    override fun linkProcess() {
-        super.linkProcess()
-
-        try {
             val array = JSONArray(url)
             val list: MutableList<String> = ArrayList()
 
             for (i in 0 until array.length()) {
                 val src = array.getString(i)
-                if (!src.endsWith(".m3u8")) {
-                    list.add(src)
-                }
+                if (!isDownloading)
+                    if (src.endsWith(".m3u8")) list.add(src)
+                else
+                    if (!src.endsWith(".m3u8")) list.add(src)
             }
-
-            for (i in list.indices) {
-                videoList.add(VideoModel(quality(list.size, i),list[i]))
-            }
+            for (i in list.indices) videoList.add(VideoModel(quality(list.size, i),list[i]))
             breakOperation()
         }
-        catch (e : Exception) {
-            Log.e("error", "linkProcess: $e")
-        }
-
-
+        catch (e : Exception) { e.printStackTrace() }
     }
 
     private fun quality(size: Int, index: Int): String {

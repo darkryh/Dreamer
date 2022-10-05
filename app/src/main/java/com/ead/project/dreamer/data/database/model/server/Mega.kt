@@ -4,12 +4,18 @@ import com.ead.project.dreamer.data.database.model.Player
 import com.ead.project.dreamer.data.database.model.Server
 import com.ead.project.dreamer.data.database.model.VideoModel
 
-class Mega (var url : String) : Server() {
+class Mega (embeddedUrl:String) : Server(embeddedUrl) {
 
-    init {
+    override fun onExtract() {
+        super.onExtract()
+        if (isDownloading) return
         player = Player.Mega
         isDirect = false
-        url = url.replace("/#","/embed#")
+        url = fixUrl(url)
         videoList.add(VideoModel("Default",url))
     }
+
+    private fun fixUrl(string: String) = string
+        .replace("/file","/embed#")
+        .replace("/#","/embed#")
 }
