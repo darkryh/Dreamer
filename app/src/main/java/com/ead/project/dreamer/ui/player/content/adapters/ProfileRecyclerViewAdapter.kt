@@ -12,7 +12,6 @@ import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
@@ -118,7 +117,7 @@ class ProfileRecyclerViewAdapter (
                             writeInt(Constants.VALUE_VIDEO_PLAYER_ID_PROFILE,animeProfile.id)
                             writeString(Constants.VALUE_VIDEO_PLAYER_LINK,animeProfile.reference)
                         }
-                        (context as AppCompatActivity).onBack()
+                        (context as AppCompatActivity).onBackPressed()
                     }
                 }
             }
