@@ -1,12 +1,18 @@
 package com.ead.project.dreamer.data.database.model
 
+import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DiffUtilEquality
+import com.ead.project.dreamer.ui.chapter.settings.ChapterSettingsFragment
+import com.ead.project.dreamer.ui.menuplayer.MenuPlayerFragment
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -24,7 +30,8 @@ data class Chapter (
     var currentSeen : Int = 0,
     var totalToSeen : Int = 0,
     var alreadySeen : Boolean = false,
-    var lastSeen : Date = Calendar.getInstance().time
+    var lastSeen : Date = Calendar.getInstance().time,
+    var selected : Boolean = false
 ) : Parcelable, DiffUtilEquality {
 
     companion object {
@@ -61,7 +68,38 @@ data class Chapter (
         fun getStreamDuration(): Int? = try {
             DataStore.readInt(Constants.CAST_STREAM_DURATION)
         } catch (e : Exception) { null }
+
+        fun callMenuInAdapter(context: Context,chapter: Chapter) {
+            if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
+                DataStore.writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_CHAPTER,true)
+                val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
+                val data = Bundle()
+                data.apply { putParcelable(Constants.REQUESTED_CHAPTER, chapter) }
+                val chapterMenu = MenuPlayerFragment()
+                chapterMenu.apply {
+                    arguments = data
+                    show(fragmentManager, Constants.MENU_PLAYER_FRAGMENT)
+                }
+            }
+        }
+
+        fun callInAdapterSettings(context : Context,chapterList: List<Chapter>) {
+            val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
+            val data = Bundle()
+            data.apply { putParcelableArrayList(Constants.REQUESTED_CHAPTER_LIST,
+                chapterList as ArrayList<out Parcelable>) }
+            val chapterMenu = ChapterSettingsFragment()
+            chapterMenu.apply {
+                arguments = data
+                show(fragmentManager, Constants.MENU_CHAPTER_SETTINGS)
+            }
+        }
     }
+
+    fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
+            && chapterNumber != -1 && reference.isNotEmpty()
+
+    fun isNotWorking () = !isWorking()
 
     fun currentSeenToLong() = Tools.secondsToLong(this.currentSeen)
 
@@ -76,7 +114,7 @@ data class Chapter (
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val chapter: Chapter = other as Chapter
-        return  chapterNumber == chapterNumber
+        return  chapterNumber == chapter.chapterNumber
                 && chapterCover == chapter.chapterCover
                 && currentSeen == chapter.currentSeen
                 && reference == chapter.reference
