@@ -1,8 +1,8 @@
 package com.ead.project.dreamer.ui.settings.options
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.ead.project.dreamer.R
@@ -11,7 +11,7 @@ import com.ead.project.dreamer.data.retrofit.model.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.ui.login.LoginActivity
 import com.ead.project.dreamer.ui.settings.layouts.ImageViewPreference
-import com.ead.project.dreamer.ui.settings.logout.LogoutFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsAccountFragment : PreferenceFragmentCompat() {
 
@@ -55,9 +55,20 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
         when (key) {
             Constants.PREFERENCE_SESSION -> {
                 if (user != null) {
-                    val manager: FragmentManager = requireActivity().supportFragmentManager
-                    val logoutDialog = LogoutFragment()
-                    logoutDialog.show(manager, null)
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Sesión")
+                        .setMessage("\n¿Estas seguro de querer cerrar sesión. ${User.get()?.username}?")
+                        .setPositiveButton("Confirmar") { _: DialogInterface?, _: Int ->
+                            User.logout()
+                            val intent: Intent? = requireActivity().baseContext.packageManager.getLaunchIntentForPackage(
+                                requireActivity().baseContext.packageName
+                            )
+                            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            startActivity(intent)
+                        }
+                        .setNegativeButton("Cancelar",null)
+                        .show()
                 }
                 else {
                     DataStore.writeBooleanAsync(Constants.PREFERENCE_SKIP_LOGIN,false)
@@ -72,4 +83,5 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
         }
         return false
     }
+
 }

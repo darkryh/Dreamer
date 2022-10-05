@@ -14,12 +14,11 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
 
     private lateinit var pCommunicator : SwitchPreference
     private lateinit var pNotificatorOfficial : SwitchPreference
-    private lateinit var pNotificator : SwitchPreference
+    private lateinit var lNotificator : androidx.preference.ListPreference
 
     private var communicators = DataStore
         .readBoolean(Constants.PREFERENCE_CUSTOMIZE_COMMUNICATORS,true)
-    private var notificator = DataStore
-        .readBoolean(Constants.PREFERENCE_NOTIFICATIONS,true)
+    private lateinit var notificator :String
     private var dreamerTopic = DataStore
         .readBoolean(Constants.DREAMER_TOPIC,true)
 
@@ -27,20 +26,29 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.notifications_preferences, rootKey)
         initLayouts()
         settingLayouts()
+        functionsLayout()
     }
 
     private fun initLayouts() {
         pCommunicator = findPreference(Constants.PREFERENCE_CUSTOMIZE_COMMUNICATORS)!!
         pNotificatorOfficial = findPreference(Constants.DREAMER_TOPIC)!!
-        pNotificator = findPreference(Constants.PREFERENCE_NOTIFICATIONS)!!
+        lNotificator = findPreference(Constants.PREFERENCE_NOTIFICATIONS)!!
     }
 
     private fun settingLayouts() {
-        pNotificator.isChecked = notificator
+        notificator = DataStore.readInt(Constants.PREFERENCE_NOTIFICATIONS, lNotificator.value.toInt()).toString()
         pNotificatorOfficial.isChecked = dreamerTopic
         pCommunicator.isChecked = communicators
+        lNotificator.value = notificator
     }
 
+    private fun functionsLayout() {
+        lNotificator.onPreferenceChangeListener =
+            Preference.OnPreferenceChangeListener { preference, newValue ->
+                DataStore.writeIntAsync(preference.key,newValue.toString().toInt())
+                true
+            }
+    }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         val key = preference.key!!
@@ -52,11 +60,7 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
                 DataStore.writeBooleanAsync(key, !data)
                 return data
             }
-            Constants.PREFERENCE_NOTIFICATIONS -> {
-                data = DataStore.readBoolean(key,true)
-                DataStore.writeBooleanAsync(key, !data)
-                return data
-            }
+            Constants.PREFERENCE_NOTIFICATIONS -> { return true }
             Constants.DREAMER_TOPIC -> {
                 data = DataStore.readBoolean(key,true)
                 if (!data)
