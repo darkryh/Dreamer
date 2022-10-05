@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import androidx.mediarouter.app.MediaRouteButton
 import com.ead.project.dreamer.R
@@ -58,17 +59,24 @@ class CastManager (private val initOnCreate : Boolean = false) {
     fun initButtonFactory(activity: Activity,mediaRouteButton: MediaRouteButton) {
         this.mediaRouteButton = mediaRouteButton
         castStateListener = CastStateListener { newState ->
-            if (newState != CastState.NO_DEVICES_AVAILABLE && !policies()) {
+            val isCastingAvailable = newState != CastState.NO_DEVICES_AVAILABLE && !policies()
+            if (isCastingAvailable) {
                 mediaRouteButton.visibility = View.VISIBLE
                 showIntroductoryOverlay(activity,mediaRouteButton)
-                setAvailableMode(true)
             }
             else {
                 mediaRouteButton.visibility = View.GONE
-                setAvailableMode(false)
             }
+            setAvailableMode(isCastingAvailable)
         }
         setButtonFactory(mediaRouteButton)
+    }
+
+    fun hideMessageInTextView(textView: TextView) { textView.visibility = View.GONE }
+
+    fun showMessageInTextView(textView: TextView) {
+        textView.visibility = View.VISIBLE
+        textView.text = "Casteando en ${castContext.sessionManager.currentCastSession?.castDevice?.friendlyName}."
     }
 
     fun setButtonFactory(mediaRouteButton: MediaRouteButton) {
@@ -84,12 +92,18 @@ class CastManager (private val initOnCreate : Boolean = false) {
             currentSession = sessionManager.currentCastSession
             remoteMediaClient = currentSession?.remoteMediaClient
         }
-        if (isAvailable() && !policies() && mediaRouteButton.visibility == View.GONE)
-            mediaRouteButton.visibility = View.VISIBLE
-
+        showIfExist()
+        updateChapterMetaData()
         castContext.addCastStateListener(castStateListener)
         castContext.sessionManager.addSessionManagerListener(sessionManagerListener)
     }
+
+    fun showIfExist() {
+        if (isAvailable() && !policies() && mediaRouteButton.visibility == View.GONE)
+            mediaRouteButton.visibility = View.VISIBLE
+    }
+
+    fun stopCasting() = castContext.sessionManager.endCurrentSession(true)
 
     fun onPause() {
         castContext.removeCastStateListener(castStateListener)
@@ -107,7 +121,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
         introductoryOverlay = IntroductoryOverlay.Builder(activity,mediaRouteButton)
             .setTitleText("¡Casting Disponible!")
             .setSingleTime()
-            .setOverlayColor(R.color.blueLight)
+            .setOverlayColor(R.color.blue_light)
             .setOnOverlayDismissedListener { introductoryOverlay = null }
             .build()
 
@@ -141,8 +155,8 @@ class CastManager (private val initOnCreate : Boolean = false) {
                 Gson().toJson(string))
         }
         else
-        DataStore.writeStringAsync(Constants.CURRENT_PREVIOUS_CASTING_CHAPTER,
-            Gson().toJson(chapter))
+            DataStore.writeStringAsync(Constants.CURRENT_PREVIOUS_CASTING_CHAPTER,
+                Gson().toJson(chapter))
     }
 
     fun getPreviousCast() : Chapter? = try {
@@ -237,6 +251,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
             unregisterRemote()
         }
 
+
     }
 
     private fun applyUpdates(chapter: Chapter?) {
@@ -247,8 +262,6 @@ class CastManager (private val initOnCreate : Boolean = false) {
                 is PlayerViewModel -> (viewModel as PlayerViewModel).updateChapter(chapter)
             }
         }
-        else
-            DreamerApp.showLongToast("null")
     }
 
     private val callback : RemoteMediaClient.Callback = object : RemoteMediaClient.Callback() {
@@ -262,5 +275,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
                 }
             }
         }
+
+
     }
 }
