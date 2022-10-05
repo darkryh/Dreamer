@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.network.AdBlocker
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.worker.factory.DaggerWorkerFactory
 import com.google.android.gms.ads.MobileAds
@@ -24,7 +23,7 @@ class DreamerApp : Application(), Configuration.Provider {
 
     companion object {
         lateinit var INSTANCE : DreamerApp
-        var MOBILE_AD_INSTANCE: InitializationStatus? = null
+        var AD_INSTANCE: InitializationStatus? = null
 
         fun showShortToast(message : String) {
             Toast.makeText(INSTANCE,message,Toast.LENGTH_SHORT).show()
@@ -35,8 +34,8 @@ class DreamerApp : Application(), Configuration.Provider {
         }
 
         fun initAdsPreferences() {
-            if (MOBILE_AD_INSTANCE!= null)
-                MobileAds.initialize(INSTANCE) { MOBILE_AD_INSTANCE = it }
+            if (AD_INSTANCE!= null)
+                MobileAds.initialize(INSTANCE) { AD_INSTANCE = it }
         }
     }
 
@@ -47,7 +46,6 @@ class DreamerApp : Application(), Configuration.Provider {
         settingTheme()
         initPreferences()
     }
-
 
     private fun initPreferences() {
         DataStore.apply {
@@ -62,10 +60,9 @@ class DreamerApp : Application(), Configuration.Provider {
     }
 
     private fun settingTheme () {
-        val theme = DataStore.readBoolean(Constants.PREFERENCE_THEME_MODE)
-        if (theme)
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        else
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val theme = Constants.isDarkThemeMode()
+        if (theme) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
+
 }
