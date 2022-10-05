@@ -3,6 +3,7 @@ package com.ead.project.dreamer.data.worker
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.ead.project.dreamer.app.model.scrapping.AnimeProfileScrap
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
@@ -25,6 +26,7 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
+                val animeProfileScrap = AnimeProfileScrap.get()?:AnimeProfileScrap.getDataFromApi(repository)
                 val repositoryData = repository.getDirectory()
                 val repositoryProfile = repository.getProfileList()
 
@@ -35,7 +37,8 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                         val profile = async {
                             webProvider.getAnimeProfile(
                                 animeBase.id,
-                                animeBase.reference
+                                animeBase.reference,
+                                animeProfileScrap
                             )
                         }
                         profile.await().apply {

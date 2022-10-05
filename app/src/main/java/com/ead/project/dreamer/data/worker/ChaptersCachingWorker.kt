@@ -3,6 +3,7 @@ package com.ead.project.dreamer.data.worker
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.ead.project.dreamer.app.model.scrapping.ChapterScrap
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
@@ -26,6 +27,7 @@ class ChaptersCachingWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
+                val chapterScrap = ChapterScrap.get()?:ChapterScrap.getDataFromApi(repository)
                 val array = inputData
                     .getStringArray(Constants.CHAPTER_PROFILE_KEY)!!
                 val id = array[0].toInt()
@@ -39,7 +41,8 @@ class ChaptersCachingWorker @AssistedInject constructor(
                     webProvider.getChaptersFromProfile(
                         chapter,
                         reference,
-                        id) }
+                        id,
+                        chapterScrap) }
 
                 requestedProfileChapters.await().apply {
                     repository.insertChapters(this)
@@ -54,14 +57,8 @@ class ChaptersCachingWorker @AssistedInject constructor(
         }
     }
 
-    private fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
-        if (size <= 0) {
-            repository.getChapterFromId(chapterId).apply {
-                if (this != null)
-                    return this
-            }
-        }
+    private suspend fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
+        if (size <= 0) repository.getChapterFromId(chapterId).apply { if (this != null) return this }
         return Chapter.fake()
     }
-
 }

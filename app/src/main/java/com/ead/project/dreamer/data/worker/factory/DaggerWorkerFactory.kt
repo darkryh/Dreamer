@@ -35,6 +35,14 @@ class DaggerWorkerFactory  (
                 instance.repository = repository
                 instance.webProvider = webProvider
             }
+            is FixerChaptersCachingWorker -> {
+                instance.repository = repository
+                instance.webProvider = webProvider
+            }
+            is FixerProfileCachingWorker -> {
+                instance.repository = repository
+                instance.webProvider = webProvider
+            }
             is HomeWorker -> {
                 instance.repository = repository
                 instance.webProvider = webProvider
@@ -43,6 +51,10 @@ class DaggerWorkerFactory  (
             is NewContentWorker -> {
                 instance.repository = repository
             }
+            is NewsWorker ->{
+                instance.repository = repository
+                instance.webProvider = webProvider
+            }
             is ProfileCachingWorker -> {
                 instance.repository = repository
                 instance.webProvider = webProvider
@@ -50,6 +62,9 @@ class DaggerWorkerFactory  (
             is ProfileRepositoryWorker -> {
                 instance.repository = repository
                 instance.webProvider = webProvider
+            }
+            is ScrapperWorker -> {
+                instance.repository = repository
             }
             is UpdateReleasesWorker -> {
                 instance.repository = repository

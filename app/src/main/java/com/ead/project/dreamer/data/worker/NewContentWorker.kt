@@ -35,7 +35,7 @@ class NewContentWorker @AssistedInject constructor(
         }
     }
 
-    private fun operatingData(chapterHomeList : List<ChapterHome>) {
+    private suspend fun operatingData(chapterHomeList : List<ChapterHome>) {
         val seriesList : MutableList<AnimeBase> = ArrayList()
         for (chapter in chapterHomeList) {
             if (!repository.checkIfAnimeBaseExist(chapter.title)) {
