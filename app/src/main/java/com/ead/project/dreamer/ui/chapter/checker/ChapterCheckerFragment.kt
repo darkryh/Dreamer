@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.chapterchecker
+package com.ead.project.dreamer.ui.chapter.checker
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -15,12 +15,12 @@ import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
-import com.ead.project.dreamer.data.retrofit.model.discord.User
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.databinding.FragmentDialogCheckerBinding
 import com.ead.project.dreamer.ui.player.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
@@ -29,14 +29,8 @@ import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.concurrent.thread
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 @AndroidEntryPoint
 class ChapterCheckerFragment : DialogFragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private lateinit var chapterCheckerViewModel : ChapterCheckerViewModel
     private lateinit var playList : List<VideoModel>
@@ -49,10 +43,8 @@ class ChapterCheckerFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         chapterCheckerViewModel = ViewModelProvider(this)[ChapterCheckerViewModel::class.java]
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-            playList = it.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
-            chapter = it.getParcelable(Constants.REQUESTED_CHAPTER)!!
+            playList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
             isDirect = it.getBoolean(Constants.REQUESTED_IS_DIRECT)
         }
     }
@@ -142,9 +134,9 @@ class ChapterCheckerFragment : DialogFragment() {
 
     private fun preparingIntent(chapter: Chapter) {
         Chapter.set(chapter)
-        if(Constants.isInQuantityAdLimit() && !User.isVip()) {
+        if(Constants.isAdInterstitialTime(isDirect)) {
             launchIntent(InterstitialAdActivity::class.java,playList,chapter,isDirect)
-            DataStore.writeIntAsync(Constants.PREFERENCE_CURRENT_WATCHED_VIDEOS,1)
+            Constants.resetCountedAds()
         } else {
             if (isDirect) {
                 if (!Constants.isExternalPlayerMode())
@@ -152,8 +144,7 @@ class ChapterCheckerFragment : DialogFragment() {
                 else
                     launchIntent(PlayerExternalActivity::class.java, playList, chapter)
             }
-            else
-                launchIntent(PlayerWebActivity::class.java, playList, chapter)
+            else launchIntent(PlayerWebActivity::class.java, playList, chapter)
         }
         dismiss()
     }
@@ -182,15 +173,4 @@ class ChapterCheckerFragment : DialogFragment() {
         _binding = null
     }
 
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChapterCheckerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
