@@ -8,8 +8,7 @@ import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.worker.ChaptersCachingWorker
-import com.ead.project.dreamer.data.worker.ProfileCachingWorker
+import com.ead.project.dreamer.data.worker.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -32,11 +31,8 @@ class AnimeProfileViewModel @Inject constructor(
     fun getChaptersFromProfile (id : Int) = repository.getFlowChaptersFromProfile(id).asLiveData()
 
     fun getChaptersFromProfile (id : Int,start: Int,end: Int) = repository.getFlowChaptersFromProfile(id).map {
-        it.filter { filter ->
-            filter.chapterNumber >= start
-        }.filter { filter2 ->
-            filter2.chapterNumber <= end
-        }
+        it.filter { filter -> filter.chapterNumber >= start }
+            .filter { filter2 -> filter2.chapterNumber <= end }
     }.asLiveData()
 
     fun updateChapter(chapter: Chapter) {
@@ -86,6 +82,30 @@ class AnimeProfileViewModel @Inject constructor(
 
         workManager.enqueueUniqueWork(
             Constants.SYNC_CHAPTER_SIZE,
+            ExistingWorkPolicy.KEEP,
+            syncingChaptersRequest)
+    }
+
+    fun repairingProfiles() {
+
+        val cachingProfile =  OneTimeWorkRequestBuilder<FixerProfileCachingWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            Constants.SYNC_PROFILE_FIXER_CHECKER,
+            ExistingWorkPolicy.KEEP,
+            cachingProfile)
+    }
+
+    fun repairingChapters() {
+
+        val syncingChaptersRequest = OneTimeWorkRequestBuilder<FixerChaptersCachingWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            Constants.SYNC_CHAPTER_FIXER_SIZE,
             ExistingWorkPolicy.KEEP,
             syncingChaptersRequest)
     }
