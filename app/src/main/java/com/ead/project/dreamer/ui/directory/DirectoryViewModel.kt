@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DirectoryActivityViewModel @Inject constructor(
+class DirectoryViewModel @Inject constructor(
     private val repository: AnimeRepository
 ): ViewModel() {
 

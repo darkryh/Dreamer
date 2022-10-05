@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.chapterchecker
+package com.ead.project.dreamer.ui.chapter.checker
 
 import androidx.lifecycle.*
 import androidx.work.*

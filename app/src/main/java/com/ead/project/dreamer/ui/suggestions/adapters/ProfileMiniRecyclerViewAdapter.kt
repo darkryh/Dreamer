@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.home.adapters
+package com.ead.project.dreamer.ui.suggestions.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -52,7 +52,7 @@ class ProfileMiniRecyclerViewAdapter (private val context: Context) :
             binding.imvCoverBase.load(animeProfile.profilePhoto){
                 crossfade(true)
                 crossfade(500)
-                transformations(RoundedCornersTransformation(11f,11f,0f,0f))
+                transformations(RoundedCornersTransformation(11f,11f,11f,11f))
             }
 
             binding.txvRating.text = context
