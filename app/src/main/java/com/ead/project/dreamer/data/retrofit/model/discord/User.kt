@@ -48,19 +48,11 @@ data class User(
 
         fun set(user: User) = DataStore.writeStringAsync(Discord.USER_ME,Gson().toJson(user))
 
-        fun logout() {
-            DataStore.writeStringAsync(Discord.USER_ME,null)
-        }
+        fun logout() { DataStore.writeStringAsync(Discord.USER_ME,null) }
 
-        fun isVip() : Boolean {
-            if (get() == null)
-                return false
-            else {
-                if (get()!!.rankLevel == 3)
-                    return true
-            }
-            return false
-        }
+        fun isVip() : Boolean = if (get() == null) false else get()?.rankLevel == 3
+
+        fun isNotVip() : Boolean = !isVip()
 
         private fun idValue(id : String) : Int {
             return when (id) {
