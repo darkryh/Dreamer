@@ -5,15 +5,17 @@ import android.view.View
 import android.widget.ImageView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.project.dreamer.R
 import com.google.android.gms.cast.framework.media.uicontroller.UIController
 
-class DreamerUIController (private val mView: View) : UIController() {
+class DreamerUIController (private val view: View) : UIController() {
     override fun onMediaStatusUpdated() {
-        mView.visibility = View.VISIBLE
-        mView.layoutParams.height = 120
-        mView.layoutParams.width = 120
-        (mView as ImageView).apply {
-            load("https://i.ibb.co/6nfLSKL/logo-app.png") {
+        view.visibility = View.VISIBLE
+        view.layoutParams.height = 120
+        view.layoutParams.width = 120
+        view.background = DreamerLayout.getDrawable(R.drawable.background_circular)
+        (view as ImageView).apply {
+            load(R.mipmap.ic_launcher_round) {
                 transformations(CircleCropTransformation())
             }
             scaleType = ImageView.ScaleType.CENTER_CROP
