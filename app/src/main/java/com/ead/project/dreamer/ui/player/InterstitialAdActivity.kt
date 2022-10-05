@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.databinding.ActivityInterstitialAdBinding
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
@@ -36,8 +39,8 @@ class InterstitialAdActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
-        videoList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
+        videoList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
         isDirect = intent.extras!!.getBoolean(Constants.REQUESTED_IS_DIRECT)
         isExternalPlayer = DataStore.readBoolean(Constants.PREFERENCE_EXTERNAL_PLAYER)
     }
@@ -65,9 +68,7 @@ class InterstitialAdActivity : AppCompatActivity() {
         }
     }
 
-    private fun showAds() {
-        interstitialAd?.show(this)
-    }
+    private fun showAds() { interstitialAd?.show(this) }
 
     private fun initListener() {
         interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
@@ -79,20 +80,21 @@ class InterstitialAdActivity : AppCompatActivity() {
 
             override fun onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent()
-                if (isDirect) {
-                    if (!isExternalPlayer) {
-                        launchIntent(PlayerActivity::class.java)
-                    }
-                    else {
-                        launchIntent(PlayerExternalActivity::class.java)
-                    }
-                }
-                else
-                    launchIntent(PlayerWebActivity::class.java)
+                initVideo()
+                finish()
+            }
 
+            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                super.onAdFailedToShowFullScreenContent(p0)
+                initVideo()
                 finish()
             }
         }
+    }
+
+    private fun initVideo() {
+        if (isDirect) launchIntent(PlayerExternalActivity::class.java)
+        else launchIntent(PlayerWebActivity::class.java)
     }
 
     private fun launchIntent(typeClass: Class<*>?) {
