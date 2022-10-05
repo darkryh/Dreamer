@@ -39,9 +39,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/exo_duration"
                 app:layout_constraintStart_toEndOf="@+id/exo_position"
-                app:played_color="@color/blueLight"
-                app:unplayed_color="@color/whiteSecondary"
-                tools:ignore="SpeakableTextPresentCheck" />
+                app:played_color="@color/blue_light"
+                app:unplayed_color="@color/whiteSecondary"/>
 
             <LinearLayout
                 android:id="@+id/ln_fullscreen"
@@ -51,12 +50,14 @@
                 android:layout_margin="4dp"
                 app:layout_constraintBottom_toTopOf="@+id/exo_progress"
                 app:layout_constraintEnd_toEndOf="parent" >
+
                 <ImageView
                     android:id="@+id/bt_fullscreen"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:contentDescription="@string/full_screen"
-                    android:src="@drawable/ic_fullscreen_24" />
+                    android:src="@drawable/ic_fullscreen_24"
+                    app:tint="@color/white"/>
 
             </LinearLayout>
 
@@ -88,11 +89,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/cover_reflex"
-                android:src="@drawable/gradient_transparent_vertical" />
+                android:src="@color/backgroundCastImageSmooth" />
 
         </RelativeLayout>
-
-
+        
+        <TextView
+            android:id="@+id/txvCasting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="@string/casting"
+            android:shadowColor="#000000"
+            android:shadowDx="2.5"
+            android:shadowDy="2.3"
+            android:shadowRadius="2.6"
+            android:textAllCaps="false"
+            android:textColor="@color/whiteSecondary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_controls"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="TextContrastCheck" />
 
         <LinearLayout
             android:id="@+id/lnOperator"
@@ -111,7 +129,8 @@
                 android:contentDescription="@string/replay"
                 android:layout_gravity="center"
                 style="@style/ExoMediaButton.Rewind"
-                android:src="@drawable/ic_replay_10" />
+                android:src="@drawable/ic_replay_30"
+                app:tint="@color/white"/>
 
             <ImageButton
                 android:id="@+id/exo_play"
@@ -131,7 +150,8 @@
                 android:layout_gravity="center"
                 android:visibility="visible"
                 style="@style/ExoMediaButton.Pause"
-                android:src="@drawable/ic_pause" />
+                android:src="@drawable/ic_pause"
+                app:tint="@color/white"/>
 
             <ImageButton
                 android:id="@+id/exo_ffwd"
@@ -140,20 +160,21 @@
                 android:contentDescription="@string/fast_forward"
                 android:layout_gravity="center"
                 style="@style/ExoMediaButton.FastForward"
-                android:src="@drawable/ic_forward_30" />
+                android:src="@drawable/ic_forward_30"
+                app:tint="@color/white"/>
 
         </LinearLayout>
 
         <ImageView
             android:id="@+id/bt_close_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:contentDescription="@string/close"
             android:paddingHorizontal="8dp"
-            android:src="@drawable/ic_chevron_left"
+            android:src="@drawable/ic_expand_more_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white"/>
 
         <TextView
             android:id="@+id/txvChapterTitle"
@@ -176,8 +197,9 @@
             android:id="@+id/lnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/bt_close_player"
             app:layout_constraintEnd_toEndOf="parent"
@@ -188,7 +210,8 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@string/title_settings"
-                app:srcCompat="@drawable/ic_settings_24" />
+                app:srcCompat="@drawable/ic_settings_24"
+                app:tint="@color/white"/>
         </LinearLayout>
 
         <androidx.mediarouter.app.MediaRouteButton
@@ -205,6 +228,7 @@
             android:id="@+id/lnGesture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="12dp"
@@ -214,17 +238,18 @@
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
-                android:id="@+id/bt_gesture"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@string/title_settings"
-                app:srcCompat="@drawable/ic_center_focus_24" />
+                app:srcCompat="@drawable/ic_center_focus_24"
+                app:tint="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ln_play_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="12dp"
@@ -238,7 +263,8 @@
                 android:contentDescription="@string/playlist"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lnSettings"
-                app:srcCompat="@drawable/ic_expand_more_24" />
+                app:srcCompat="@drawable/ic_format_list_numbered"
+                app:tint="@color/white"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
