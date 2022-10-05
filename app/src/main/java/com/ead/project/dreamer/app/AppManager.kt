@@ -20,33 +20,22 @@ class AppManager {
     private fun settingWebView() {
         webView?.webViewClient = object : DreamerClient() {
 
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                try {
-                    run {
-                        if (timeout) {
-                            webView?.loadUrl(BLANK_BROWSER)
-                            webView?.destroy()
-                        }
-                    }
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
+            override fun onTimeout(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onTimeout(view, url, favicon)
+                webView?.loadUrl(BLANK_BROWSER)
+                webView?.destroy()
             }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                timeout = false
-                try {
-                    webView?.destroy()
-                } catch (e : InterruptedException) {
-                    e.printStackTrace()
-                }
+            override fun onPageLoaded(view: WebView?, url: String?) {
+                super.onPageLoaded(view, url)
+                try { webView?.destroy() }
+                catch (e : InterruptedException) { e.printStackTrace() }
             }
         }
     }
 
     fun onDestroy() {
         webView?.destroy()
+        webView = null
     }
 }
