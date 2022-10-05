@@ -16,8 +16,14 @@ interface ChapterDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateChapters(chapters: List<Chapter>)
 
+    @Query("delete from anime_chapter_table  where idProfile=:id")
+    suspend fun deleteChaptersById(id : Int)
+
     @Query("select * from anime_chapter_table  where id =:id")
-    fun getChapterFromId(id : Int) : Chapter?
+    suspend fun getChapterFromId(id : Int) : Chapter?
+
+    @Query("select * from anime_chapter_table where title='' or chapterCover='' or chapterNumber=-1 or reference='' GROUP by idProfile")
+    suspend fun getChaptersToFix() : List<Chapter>
 
     @Query("select * from(select count(*) as id from anime_chapter_table where idProfile =:id) as a union all select * from(select id from anime_chapter_table where idProfile =:id order by chapterNumber desc Limit 1) as b")
     fun getFlowPreparation(id : Int) : Flow<List<Int>>
@@ -32,16 +38,14 @@ interface ChapterDao {
     fun getFlowChaptersFromProfileAsc(id : Int) : Flow<List<Chapter>>
 
     @Query("select * from(select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title")
-    fun getRecords() : List<Chapter>
+    suspend fun getRecords() : List<Chapter>
 
     @Query("select * from(select * from (select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title) as T order by lastSeen desc")
     fun getFlowDataRecords() : Flow<List<Chapter>>
 
     @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
-    fun getChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Chapter?
+    suspend fun getChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Chapter?
 
     @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
     fun getFlowChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Flow<Chapter?>
-
-
 }

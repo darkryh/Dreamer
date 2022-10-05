@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.Flow
 interface ChapterHomeDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll (list : List<ChapterHome>)
+    suspend fun insertAll (list : List<ChapterHome>)
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateHome(list: List<ChapterHome>)
 
     @Query("select * from anime_chapter_home_table order by id desc")
-    fun getList() : MutableList<ChapterHome>
+    suspend fun getChapterHomeList() : MutableList<ChapterHome>
 
     @Query("select * from anime_chapter_home_table order by id desc")
     fun getFlowDataList() : Flow<List<ChapterHome>>
@@ -24,5 +24,5 @@ interface ChapterHomeDao {
     fun getFlowDataListCensured() : Flow<List<ChapterHome>>
 
     @Query("select * from anime_chapter_home_table where chapterNumber <= 1")
-    fun getReleaseList() : List<ChapterHome>
+    suspend fun getReleaseList() : List<ChapterHome>
 }
