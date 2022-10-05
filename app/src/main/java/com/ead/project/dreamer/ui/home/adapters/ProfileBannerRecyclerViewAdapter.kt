@@ -4,16 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.BlurTransformation
 import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdAppProfileBinding
@@ -69,6 +67,8 @@ class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
         differ.submitList(list)
     }
 
+
+
     override fun getItemCount(): Int = differ.currentList.size
 
     override fun getItemViewType(position: Int): Int {
@@ -91,22 +91,16 @@ class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
         }
 
         private fun settingImage(animeProfile: AnimeProfile) {
-            binding.imvCoverProfile.load(animeProfile.coverPhoto){
-                transformations(RoundedCornersTransformation(55f))
-                if (Constants.isGooglePolicyActivate() && (Constants.TYPE_BOYS_LOVE in animeProfile.rawGenres || Constants.TYPE_ECCHI in animeProfile.rawGenres
-                    || Constants.TYPE_UNCENSORED in animeProfile.rawGenres)) {
-                    transformations(
-                        RoundedCornersTransformation(35f),
-                        BlurTransformation(context,25f)
-                    )
-                    binding.imvReflexCover.visibility = View.GONE
-                }
+            binding.imvCoverProfile.load(animeProfile.coverPhoto)
+            binding.imvProfile.load(animeProfile.profilePhoto)  {
+                transformations(CircleCropTransformation())
             }
         }
 
         private fun settingContent(animeProfile: AnimeProfile) {
             binding.txvTitle.text = animeProfile.title
             binding.txvDescription.text = animeProfile.description
+            binding.txvDescription.justifyInterWord()
 
             when(animeProfile.description.length) {
                 in 0..250-> {
@@ -149,11 +143,9 @@ class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
         }
 
         private fun settingImages(publicity: Publicity) {
-            binding.imvCoverProfile.load(publicity.cover){
-                transformations(RoundedCornersTransformation(55f))
-            }
+            binding.imvCoverProfile.load(publicity.cover)
             if (publicity.icon != null) {
-                binding.imvIcon.load(publicity.icon){
+                binding.imvIcon.load(publicity.icon) {
                     transformations(CircleCropTransformation())
                 }
             }

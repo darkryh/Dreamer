@@ -1,25 +1,19 @@
 package com.ead.project.dreamer.ui.home.adapters
 
 import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
-import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.AdUnifiedChapterHomeBinding
 import com.ead.project.dreamer.databinding.LayoutChapterHomeBinding
-import com.ead.project.dreamer.ui.menuplayer.MenuPlayerFragment
 import com.google.android.gms.ads.nativead.NativeAd
 
 
@@ -95,17 +89,14 @@ class ChapterHomeRecyclerViewAdapter(
             binding.txvChapter.text = chapter.chapterNumber.toString()
             binding.txvType.text = chapter.type
             if (chapter.type.isEmpty()) binding.txvType.visibility = View.GONE
-            DreamerLayout
-                .setClickEffect(binding.root,context)
+            DreamerLayout.setClickEffect(binding.root,context)
         }
 
         private fun settingImages(chapter: ChapterHome) {
             binding.imvCover.load(chapter.chapterCover){
                 crossfade(true)
                 crossfade(500)
-                transformations(
-                    RoundedCornersTransformation(35f)
-                )
+                transformations(RoundedCornersTransformation(35f))
             }
         }
 
@@ -113,21 +104,10 @@ class ChapterHomeRecyclerViewAdapter(
             val chapterSender = Chapter(0, 0, chapter.title,
                 chapter.chapterCover, chapter.chapterNumber,chapter.reference)
 
-            binding.root.setOnClickListener {
-                if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
-                    DataStore.writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_CHAPTER,true)
-
-                    val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
-                    val data = Bundle()
-                    data.apply {
-                        putParcelable(Constants.REQUESTED_CHAPTER, chapterSender)
-                    }
-                    val chapterMenu = MenuPlayerFragment()
-                    chapterMenu.apply {
-                        arguments = data
-                        show(fragmentManager, Constants.MENU_PLAYER_FRAGMENT)
-                    }
-                }
+            binding.root.setOnClickListener { Chapter.callMenuInAdapter(context,chapterSender) }
+            binding.root.setOnLongClickListener {
+                Chapter.callInAdapterSettings(context, arrayListOf(chapterSender))
+                return@setOnLongClickListener true
             }
         }
     }
