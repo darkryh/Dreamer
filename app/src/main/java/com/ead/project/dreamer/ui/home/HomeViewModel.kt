@@ -6,7 +6,6 @@ import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.worker.HomeWorker
 import com.ead.project.dreamer.data.worker.NewContentWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +23,6 @@ class HomeViewModel @Inject constructor(
     fun getChaptersHome() : LiveData<List<ChapterHome>> = repository.getFlowChapterHome().asLiveData()
 
     fun getPublicity() = repository.getPublicityApp()!!
-
-    fun directoryState() = DataStore.flowBoolean(Constants.FINAL_DIRECTORY)
 
     fun getRecommendations() : LiveData<List<AnimeProfile>> =
         repository.getFlowProfileRandomRecommendationsList().asLiveData()

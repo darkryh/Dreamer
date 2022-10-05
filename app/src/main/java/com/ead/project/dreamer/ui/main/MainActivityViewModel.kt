@@ -6,21 +6,28 @@ import androidx.work.*
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.worker.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val workManager: WorkManager,
     private val constraints: Constraints,
-    private val repository: AnimeRepository
+    private val repository: AnimeRepository,
 ) : ViewModel() {
 
+    lateinit var directoryId : UUID
+
     fun getStatusApp() = repository.getAppStatus()!!
+
+    fun directoryState() = DataStore.flowBoolean(Constants.FINAL_DIRECTORY)
 
     fun synchronizeDirectory (workersQuantity : Int = 3) {
 
@@ -37,6 +44,8 @@ class MainActivityViewModel @Inject constructor(
                     .setConstraints(constraints)
                     .build()
 
+            if (i == 1) directoryId = syncingChaptersRequest.id
+
             directoryRequest.add(syncingChaptersRequest)
         }
 
@@ -52,7 +61,10 @@ class MainActivityViewModel @Inject constructor(
 
         continuation = continuation.then(syncingProfilingRequest)
         continuation.enqueue()
+
     }
+
+    //fun directoryObserver(context : Context) = WorkManager.getInstance(context).getWorkInfoByIdLiveData(directoryId)
 
     fun synchronizeHome() {
         val syncingRequest =
@@ -63,6 +75,18 @@ class MainActivityViewModel @Inject constructor(
         workManager.enqueueUniquePeriodicWork(
             Constants.SYNC_HOME,
             ExistingPeriodicWorkPolicy.REPLACE,
+            syncingRequest)
+    }
+
+    fun synchronizeScrapper() {
+        val syncingRequest =
+            PeriodicWorkRequestBuilder<ScrapperWorker>(3, TimeUnit.DAYS)
+                .setConstraints(constraints)
+                .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            Constants.SYNC_SCRAPPER,
+            ExistingPeriodicWorkPolicy.KEEP,
             syncingRequest)
     }
 

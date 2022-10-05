@@ -31,4 +31,10 @@ class PlayerViewModel @Inject constructor(
         return repository.getFlowRandomProfileListFrom(random, rating,id).asLiveData()
     }
 
+    fun updateAnimeProfile(animeProfile: AnimeProfile) {
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.updateAnimeProfile(animeProfile)
+        }
+    }
+
 }

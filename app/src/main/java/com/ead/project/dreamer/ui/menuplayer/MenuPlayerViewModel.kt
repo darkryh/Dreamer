@@ -4,22 +4,27 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.ServerFactory
+import com.ead.project.dreamer.data.utils.ServerManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MenuPlayerViewModel @Inject constructor (
-    embedList : MutableList<String>
-) : ViewModel() {
+class MenuPlayerViewModel @Inject constructor () : ViewModel() {
 
-    private var serverFactory : ServerFactory = ServerFactory(embedList)
-    private var serverList : MutableLiveData<MutableList<Server>> = MutableLiveData()
+    private var serverList : MutableLiveData<List<Server>> = MutableLiveData()
 
-    fun getServerList (): MutableLiveData<MutableList<Server>> {
+    fun getServerList(embedList : MutableList<String>): MutableLiveData<List<Server>> {
         viewModelScope.launch (Dispatchers.IO) {
-            serverList.postValue(serverFactory.getServers())
+            serverList.postValue(ServerManager.getServersList(embedList))
         }
         return serverList
+    }
+
+    fun getServer(rawServer : String) : MutableLiveData<Server>  {
+        val serverSelector : MutableLiveData<Server> = MutableLiveData()
+        viewModelScope.launch (Dispatchers.IO) {
+            serverSelector.postValue(ServerManager.getServer(rawServer))
+        }
+        return serverSelector
     }
 }
