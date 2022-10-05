@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.record
+package com.ead.project.dreamer.ui.record.adapters
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
