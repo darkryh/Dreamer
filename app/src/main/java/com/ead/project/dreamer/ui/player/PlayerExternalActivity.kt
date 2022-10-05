@@ -13,6 +13,9 @@ import coil.load
 import coil.transform.BlurTransformation
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
@@ -64,8 +67,8 @@ class PlayerExternalActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
-        videoList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
+        videoList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
     }
 
     private fun settingThemeLayouts() {
@@ -106,7 +109,7 @@ class PlayerExternalActivity : AppCompatActivity() {
             val chapterSelectorFragment = ChapterSelectorFragment()
             chapterSelectorFragment.show(fragmentManager, null)
         }
-        closeButton.setOnClickListener { onBackPressed() }
+        closeButton.setOnClickListener { onBack() }
     }
 
     override fun onStop() {

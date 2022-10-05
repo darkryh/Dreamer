@@ -1,15 +1,19 @@
 package com.ead.project.dreamer.data.utils.media
 
-import android.app.Activity
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
 import androidx.mediarouter.app.MediaRouteButton
+import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
+import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
@@ -19,18 +23,25 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
+import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.ads.AdsLoader
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.StyledPlayerView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
 import java.util.*
 import kotlin.math.roundToInt
+
 
 class PlayerManager(
     val activity : Activity,
@@ -47,6 +58,7 @@ class PlayerManager(
     var currentPlayer : Player?= null
     var exoPlayer : ExoPlayer?= null
     var castPlayer : CastPlayer?= null
+    private var adsLoader: ImaAdsLoader? = null
 
     var isInPipMode : Boolean = false
     var isPIPModeEnabled : Boolean = DataStore.
@@ -54,10 +66,10 @@ class PlayerManager(
 
     private var mediaSession : MediaSessionCompat? = null
 
-    private val timeOut = 10000
     private var playWhenReady = true
     private var currentWindow = 0
     private var isVideoEnded = false
+    private var timeout = 10000
     var playbackPosition = chapter.currentSeenToLong()
 
     private val playerActivity = activity as PlayerActivity
@@ -69,6 +81,7 @@ class PlayerManager(
         if (castManager.isAvailable())
             mediaRouteButton.visibility = View.VISIBLE
 
+        adsLoader = ImaAdsLoader.Builder(context).build()
         exoPlayer = ExoPlayer.Builder(context).build()
         if (castPlayer == null || isNewIntent) {
             castPlayer = CastPlayer(castManager.getContext())
@@ -77,9 +90,10 @@ class PlayerManager(
         playOnPlayer(if (castPlayer?.isCastSessionAvailable == true) castPlayer else exoPlayer)
     }
 
-    private fun initMediaSettings() = try {
-        chapter.totalToSeen = Tools.longToSeconds(currentPlayer!!.contentDuration) }
-    catch (e : Exception) { e.printStackTrace() }
+    private fun initMediaSettings() =  currentPlayer?.let {
+        chapter.totalToSeen = Tools.longToSeconds(it.contentDuration)
+    }
+
 
     private fun playOnPlayer(player: Player?) {
         if (currentPlayer == player || videoList.isEmpty()) return
@@ -89,36 +103,49 @@ class PlayerManager(
             }
             it.stop()
         }
+
         playerActivity.setMetaData()
         playerActivity.preparingLayoutByMode()
         currentPlayer = player
+        val adsProvider = AdsLoader.Provider { adsLoader }
 
         if (currentPlayer == exoPlayer) {
+            setCurrentExoplayerFlags()
+
             trackSelector = DefaultTrackSelector(context).apply {
                 setParameters(buildUponParameters().setMaxVideoSizeSd())
             }
-            val dataSourceFactory = DefaultHttpDataSource.Factory()
-                .setConnectTimeoutMs(timeOut)
-                .setAllowCrossProtocolRedirects(true)
-                .setKeepPostFor302Redirects(true)
-                .setUserAgent(Util.getUserAgent(context, "Dreamer"))
 
-            val mediaSource  = when (Util.inferContentType(videoList.last().directLink)) {
-                C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
-                C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
-                C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
-                C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
-                else -> throw Exception("error")
-            }
+            val mediaSourceFactory: MediaSource.Factory =
+                if (Constants.isAdTime()) {
+                    val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(context)
+                    DefaultMediaSourceFactory(dataSourceFactory).setLocalAdInsertionComponents(adsProvider,playerView)
+                }
+                else  {
+                    val dataSourceFactory = DefaultHttpDataSource.Factory()
+                        .setConnectTimeoutMs(timeout)
+                        .setAllowCrossProtocolRedirects(true)
+                        .setKeepPostFor302Redirects(true)
+                        .setUserAgent(Util.getUserAgent(context, "Dreamer"))
+
+                    val mediaSource  = when (Util.inferContentType(Uri.parse(videoList.last().directLink))) {
+                        C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
+                        C.CONTENT_TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
+                        C.CONTENT_TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
+                        C.CONTENT_TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
+                        else -> throw Exception("error")
+                    }
+                    mediaSource
+                }
 
             val audioAttributes = AudioAttributes.Builder()
-                .setContentType(C.CONTENT_TYPE_MOVIE).build()
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build()
 
             currentPlayer = ExoPlayer.Builder(context)
                 .setTrackSelector(trackSelector)
-                .setMediaSourceFactory(mediaSource)
+                .setMediaSourceFactory(mediaSourceFactory)
                 .setSeekForwardIncrementMs(30000)
-                .setSeekBackIncrementMs(10000)
+                .setSeekBackIncrementMs(30000)
                 .setAudioAttributes(audioAttributes,true)
                 .build()
                 .also {
@@ -129,6 +156,7 @@ class PlayerManager(
                     it.addListener(this)
                     it.prepare()
                 }
+            adsLoader?.setPlayer(currentPlayer)
 
             mediaSession = MediaSessionCompat(context, activity.packageName)
             val mediaSessionConnector = MediaSessionConnector(mediaSession!!)
@@ -137,6 +165,7 @@ class PlayerManager(
         }
 
         if (currentPlayer == castPlayer) {
+            setCurrentCastingPlayerFlags()
             val metadata = MediaMetadata.Builder()
                 .setTitle(chapter.title)
                 .setSubtitle("Capítulo ${chapter.chapterNumber}")
@@ -145,6 +174,7 @@ class PlayerManager(
                 .build()
 
             val mediaItem = MediaItem.Builder()
+                .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build())
                 .setUri(videoList.last().directLink)
                 .setMimeType(MimeTypes.VIDEO_UNKNOWN)
                 .setMediaMetadata(metadata).build()
@@ -154,8 +184,26 @@ class PlayerManager(
         }
     }
 
+    private fun setCurrentExoplayerFlags() {
+        activity.window.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    private fun setCurrentCastingPlayerFlags() {
+        activity.window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+        }
+    }
+
+    private val adTagUri = Uri.parse(context.getString(R.string.ad_tag_url))
     private fun mediaItems() : List<MediaItem> =
-        videoList.map { MediaItem.fromUri(it.directLink) }
+        videoList.map {
+            MediaItem.Builder()
+                .setUri(it.directLink)
+                .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build())
+                .build()
+        }
 
     private fun Player.rememberState() {
         this@PlayerManager.playWhenReady = playWhenReady
@@ -183,7 +231,7 @@ class PlayerManager(
     }
 
     fun onResume() {
-        Tools.hideSystemUI(activity,playerView)
+        activity.hideSystemUI()
         if ((Util.SDK_INT < 24 || exoPlayer == null && !isInPipMode && videoList.isNotEmpty())) {
             initPlayer()
         }
@@ -191,9 +239,10 @@ class PlayerManager(
     }
 
     fun onPause() {
-        if (currentPlayer!= null) {
-            playbackPosition = currentPlayer!!.currentPosition
+        currentPlayer?.let {
+            playbackPosition = it.currentPosition
         }
+        if (Constants.isAdTime()) Constants.resetCountedAds()
     }
 
     fun onStop() {
@@ -202,6 +251,7 @@ class PlayerManager(
     }
 
     fun release() {
+        adsLoader?.release()
         if (!isPlayerCastMode()) {
             currentPlayer?.run {
                 this@PlayerManager.playWhenReady = playWhenReady
@@ -211,8 +261,10 @@ class PlayerManager(
             }
             currentPlayer = null
         }
-        mediaSession?.isActive = false
-        mediaSession?.release()
+        mediaSession?.apply {
+            isActive = false
+            release()
+        }
         exoPlayer?.release()
         exoPlayer = null
         playerView.player = null
@@ -223,27 +275,21 @@ class PlayerManager(
     fun isPlayerCastMode() = currentPlayer is CastPlayer
 
     fun isCasting() = isPlayerCastMode()
-            && (currentPlayer?.isPlaying == true || currentPlayer?.isLoading == true)
+
+    fun isNotCasting() = !isCasting()
+
+    fun showCastingMessage(textView: TextView) = castManager.showMessageInTextView(textView)
+
+    fun hideCastingMessage(textView: TextView) = castManager.hideMessageInTextView(textView)
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         when (playbackState) {
-            Player.STATE_READY -> {
-                initMediaSettings()
-            }
-            Player.STATE_IDLE -> {
-
-            }
-            Player.STATE_BUFFERING -> {
-
-            }
-            Player.STATE_ENDED -> {
-
-            }
-            else -> {
-                DreamerApp.showLongToast("error")
-            }
+            Player.STATE_READY -> { initMediaSettings() }
+            Player.STATE_IDLE -> {}
+            Player.STATE_BUFFERING -> {}
+            Player.STATE_ENDED -> {}
+            else -> { DreamerApp.showLongToast("error") }
         }
-
     }
 
     private fun updateMedia() {

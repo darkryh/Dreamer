@@ -9,6 +9,7 @@ open class ScrollTimer (
     private val adapter : RecyclerView.Adapter<*>,
     private val rcvTarget : RecyclerView,
     private var isFirstTime : Boolean) : TimerTask() {
+
     override fun run() {
         if (layoutManager.findLastCompletelyVisibleItemPosition() < adapter.itemCount-1) {
             layoutManager.smoothScrollToPosition(

@@ -145,7 +145,7 @@ class LoginActivity : AppCompatActivity() {
                 val redirectionIntent : Intent = if (DataStore.readBoolean(Constants.IS_THE_APP_FROM_GOOGLE))
                     Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PLAY_STORE_APP))
                 else
-                    Intent(Intent.ACTION_VIEW, Uri.parse(Constants.BLOG_APP))
+                    Intent(Intent.ACTION_VIEW, Uri.parse(Constants.WEB_APP))
 
                 startActivity(redirectionIntent)
             }

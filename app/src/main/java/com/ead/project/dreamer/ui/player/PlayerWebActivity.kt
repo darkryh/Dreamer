@@ -1,17 +1,20 @@
 package com.ead.project.dreamer.ui.player
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.webkit.WebSettings
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
+import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.network.AdBlocker
-import com.ead.project.dreamer.data.network.DreamerClient
+import com.ead.project.dreamer.data.network.DreamerBlockClient
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.databinding.ActivityPlayerWebBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +30,7 @@ class PlayerWebActivity : AppCompatActivity() {
     lateinit var playList : List<VideoModel>
     private var orientation : Int = 0
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerWebBinding.inflate(layoutInflater)
@@ -39,13 +43,13 @@ class PlayerWebActivity : AppCompatActivity() {
         settings.domStorageEnabled = false
         settings.userAgentString = DreamerRequest.userAgent()
         settings.cacheMode = WebSettings.LOAD_DEFAULT
-        binding.webView.webViewClient = DreamerClient()
+        binding.webView.webViewClient = DreamerBlockClient()
         binding.webView.loadUrl(playList.last().directLink)
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
-        playList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
+        playList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         orientation = resources.configuration.orientation
     }
@@ -58,13 +62,28 @@ class PlayerWebActivity : AppCompatActivity() {
         playerViewModel.updateChapter(chapter)
     }
 
+    private fun destroyWebView() {
+        binding.webView.clearHistory()
+        binding.webView.clearCache(true)
+        binding.webView.loadUrl("about:blank")
+        binding.webView.onPause()
+        binding.webView.removeAllViews()
+        binding.webView.destroyDrawingCache()
+        binding.webView.destroy()
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Tools.hideSystemUI(this,binding.root)
+        hideSystemUI()
     }
 
     override fun onStop() {
         updateChapter()
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        destroyWebView()
+        super.onDestroy()
     }
 }
