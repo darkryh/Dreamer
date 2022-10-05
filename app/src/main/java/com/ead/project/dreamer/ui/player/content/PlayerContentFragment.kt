@@ -12,44 +12,35 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.databinding.FragmentPlayerContentBinding
 import com.ead.project.dreamer.ui.player.content.adapters.ProfileRecyclerViewAdapter
 import com.ead.project.dreamer.ui.player.PlayerViewModel
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 @AndroidEntryPoint
 class PlayerContentFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private val playerViewModel : PlayerViewModel by viewModels()
     private lateinit var chapter : Chapter
     private lateinit var adapter : ProfileRecyclerViewAdapter
     private var objetList : MutableList<Any> = ArrayList()
-    private var adList : MutableList<NativeAd> = ArrayList()
-    private lateinit var adLoader : AdLoader
-    private var suggestionsIsLoaded : Boolean = false
+    private var countSuggestion = 0
 
+    private var adManager : AdManager?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            chapter = it.getParcelable(Constants.REQUESTED_CHAPTER)!!
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
         }
     }
-
 
     private var _binding: FragmentPlayerContentBinding? = null
     private val binding get() = _binding!!
@@ -66,11 +57,10 @@ class PlayerContentFragment : Fragment() {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        adList.clear()
+        adManager?.onViewStateRestored()
     }
 
     private fun settingLayouts() {
-
         binding.ChapterProfile.load(chapter.chapterCover){
             transformations(CircleCropTransformation())
         }
@@ -81,95 +71,41 @@ class PlayerContentFragment : Fragment() {
     private fun settingRcvViews() {
         val surfaceColor = MaterialColors.getColor(requireContext(), R.attr.colorSurface, Color.GRAY)
         binding.appBarLayout.setBackgroundColor(surfaceColor)
-        if(!User.isVip())
-            setupAd()
         binding.rcvSuggestions.apply {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this@PlayerContentFragment.adapter =
                 ProfileRecyclerViewAdapter(activity as Context,true)
+            adManager =  AdManager(
+                context =  requireContext(),
+                adId =  getString(R.string.ad_unit_id_native_player),
+                anyList = objetList,
+                adapter = this@PlayerContentFragment.adapter,
+                quantityAds = 3)
             adapter = this@PlayerContentFragment.adapter
+            adManager?.setUp(User.isNotVip())
             settingProfile()
         }
     }
 
-
     private fun settingProfile() {
         playerViewModel.getProfile(chapter.idProfile).observe(viewLifecycleOwner) {
-            if (it != null) {
-                settingSuggestions(it)
-            }
+            if (it != null) settingSuggestions(it)
         }
     }
 
-    private var countSuggestion = 0
     private fun settingSuggestions(animeProfile: AnimeProfile) {
         playerViewModel
             .getProfilesListFrom(animeProfile.genres as MutableList<String>,animeProfile.rating,animeProfile.id)
             .observe(viewLifecycleOwner) {
                 if (++countSuggestion == 1) {
                     Constants.setQuantityAdsPlayer(it.size)
-                    if(!suggestionsIsLoaded)
-                        objetList = it.toMutableList()
+                        adManager?.setAnyList(it)
 
-                    if (adList.isNotEmpty()) {
-                        implementAds()
-                    }
-                    else {
-                        adapter.submitList(it)
-                    }
+                    adManager?.submitList(it)
                 }
             }
-    }
-
-    private fun implementAds() {
-        if (adList.isEmpty() || objetList.isEmpty()) return
-
-        val offset: Int = adapter.itemCount / adList.size + 1
-        var index = 0
-        if (objetList.first() !is NativeAd) {
-            for (ad in adList) {
-                objetList.add(index, ad)
-                index += offset
-            }
-        }
-        adapter.submitList(objetList)
-        if (_binding != null) {
-            binding.rcvSuggestions.smoothScrollToPosition(0)
-        }
-    }
-
-    private fun setupAd() {
-        try {
-            DreamerApp.MOBILE_AD_INSTANCE.apply {
-                adLoader = AdLoader.Builder(requireContext(),
-                    getString(R.string.ad_unit_id_native_player))
-                    .forNativeAd {
-                        adList.add(it)
-                        if (!adLoader.isLoading) {
-                            commitAdvertisements()
-                        }
-                    }
-                    .withAdListener(object : AdListener() {
-                        override fun onAdFailedToLoad(p0: LoadAdError) {
-                            if (!adLoader.isLoading) {
-                                commitAdvertisements()
-                            }
-                        }
-                    })
-                    .build()
-
-                adLoader.loadAd(AdRequest.Builder().build())
-            }
-        } catch (e : Exception) {
-           e.printStackTrace()
-        }
-    }
-
-    private  fun commitAdvertisements() {
-        countSuggestion = 0
-        suggestionsIsLoaded = true
-        implementAds()
+        adManager?.getAds()?.observe(viewLifecycleOwner) { adManager?.submitList(it) }
     }
 
     override fun onDestroyView() {
@@ -178,29 +114,8 @@ class PlayerContentFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        for (ad in adList) {
-            ad.destroy()
-        }
+        adManager?.onDestroy()
+        adManager = null
         super.onDestroy()
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PlayerContentFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PlayerContentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
