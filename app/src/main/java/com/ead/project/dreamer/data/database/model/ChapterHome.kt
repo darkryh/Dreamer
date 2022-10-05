@@ -50,6 +50,11 @@ data class ChapterHome (
                 && first.reference == second.reference
     }
 
+    fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
+            && chapterNumber != -1 && type.isNotEmpty() && reference.isNotEmpty()
+
+    fun isNotWorking () = !isWorking()
+
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
         val chapter: ChapterHome = other as ChapterHome
