@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        android:icon="@drawable/ic_account_circle_24"
+        android:icon="@drawable/ic_person_outline_24"
         android:summary="Mi Cuenta"
         app:key="PREFERENCE_ACCOUNT" />
     <Preference
@@ -14,6 +14,10 @@
         android:icon="@drawable/ic_home_24"
         android:summary="Diseño"
         app:key="PREFERENCE_DESIGN" />
+    <Preference
+        android:icon="@drawable/ic_engineering_24"
+        android:summary="Reparador"
+        app:key="PREFERENCE_FIXER" />
     <Preference
         android:icon="@drawable/ic_policy_24"
         android:summary="Clasificación de Contenido"

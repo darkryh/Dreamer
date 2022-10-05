@@ -2,6 +2,7 @@ package com.ead.project.dreamer.data.utils.receiver
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.graphics.*
 import android.media.AudioAttributes
@@ -40,21 +41,39 @@ class DreamerNotifier @Inject constructor() {
         idDrawable : Int,
         channelKey : String,
         notificationLevel : Int = 3,
-        imageUrl: String? = null
+        imageUrl: String? = null,
+        pixelSizeSmall : Int = 48,
+        pixelSizeExpanded: Int = 16,
+        isCustom : Boolean = true
     ) : NotificationCompat.Builder {
         createNotificationChannel(channelKey,notificationLevel)
         val notifier = NotificationCompat.Builder(DreamerApp.INSTANCE,channelKey).apply {
             setSmallIcon(idDrawable)
             collapsed = collapsed()
             expanded = expanded()
-            color = ContextCompat.getColor(DreamerApp.INSTANCE, R.color.blueLight)
-            setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            setCustomContentView(collapsed)
-            setCustomBigContentView(expanded)
+            color = ContextCompat.getColor(DreamerApp.INSTANCE, R.color.blue_light)
             setAutoCancel(true)
             setColorized(true)
+            if (isCustom) {
+                setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                setCustomContentView(collapsed)
+                setCustomBigContentView(expanded)
+                bindCustomNotification(
+                    collapsed,
+                    expanded,
+                    title,
+                    content,
+                    imageUrl,
+                    pixelSizeSmall,
+                    pixelSizeExpanded
+                )
+            }else {
+                if (imageUrl != null) applyImageUrl(this,imageUrl)
+                setContentTitle(title)
+                setContentText(content)
+            }
         }
-        bindCustomNotification(collapsed,expanded,title, content, imageUrl)
+
         return notifier
     }
 
@@ -66,7 +85,9 @@ class DreamerNotifier @Inject constructor() {
         remoteCollapsed: RemoteViews,
         remoteExpanded : RemoteViews,
         title: String?,
-        content: String?, imageUrl: String?) {
+        content: String?, imageUrl: String?,
+        pixelSizeSmall: Int,
+        pixelSizeExpanded: Int) {
         if (title != null) {
             remoteCollapsed.setTextViewText(R.id.collapsed_notification_title,title)
             remoteExpanded.setTextViewText(R.id.expanded_notification_title,title)
@@ -76,8 +97,26 @@ class DreamerNotifier @Inject constructor() {
             remoteExpanded.setTextViewText(R.id.expanded_notification_info,content)
         }
         if (imageUrl != null) {
-            applyImageUrl(remoteCollapsed,imageUrl,R.id.image_view_collapsed,48)
-            applyImageUrl(remoteExpanded,imageUrl,R.id.image_view_expanded,12)
+            applyImageUrl(remoteCollapsed,imageUrl,R.id.image_view_collapsed,pixelSizeSmall)
+            applyImageUrl(remoteExpanded,imageUrl,R.id.image_view_expanded,pixelSizeExpanded)
+        }
+    }
+
+    private fun applyImageUrl(
+        builder: NotificationCompat.Builder,
+        imageUrl: String
+    ) = runBlocking {
+        val url = URL(imageUrl)
+
+        withContext(Dispatchers.IO) {
+            try {
+                val input = url.openStream()
+                BitmapFactory.decodeStream(input)
+            } catch (e: IOException) {
+                null
+            }
+        }?.let { bitmap ->
+            builder.setLargeIcon(bitmap)
         }
     }
 
@@ -144,5 +183,17 @@ class DreamerNotifier @Inject constructor() {
 
             notificationManager().createNotificationChannel(channel)
         }
+    }
+
+    companion object {
+        fun flagIntentImmutable() = if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) PendingIntent.FLAG_UPDATE_CURRENT
+        else PendingIntent.FLAG_IMMUTABLE
+
+        fun flagIntentMutable() = if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) PendingIntent.FLAG_UPDATE_CURRENT
+        else PendingIntent.FLAG_MUTABLE
+
+        const val ALL = 2
+        const val FAVORITES = 1
+        const val NONE = 0
     }
 }

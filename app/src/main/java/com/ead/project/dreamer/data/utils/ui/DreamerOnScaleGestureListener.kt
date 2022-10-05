@@ -12,19 +12,15 @@ class DreamerOnScaleGestureListener(
     private var scaleFactor = 0f
     var isHorizontalMode : Boolean = false
 
-    override fun onScale(
-        detector: ScaleGestureDetector
-    ): Boolean {
+
+    override fun onScale(detector: ScaleGestureDetector): Boolean {
         scaleFactor = detector.scaleFactor
         return true
     }
+    override fun onScaleBegin(detector: ScaleGestureDetector) : Boolean =  true
 
-    override fun onScaleBegin(
-        detector: ScaleGestureDetector
-    ) : Boolean{
-        return true
-    }    override fun onScaleEnd(detector: ScaleGestureDetector) {
-        if (isHorizontalMode) {
+    override fun onScaleEnd(detector: ScaleGestureDetector) {
+        if (isHorizontalMode)
             if (scaleFactor > 1) {
                 when(DataStore.readInt(Constants.PREFERENCE_RESIZING_MODE, -1)) {
                     -1 -> player.resizeMode =
@@ -32,9 +28,6 @@ class DreamerOnScaleGestureListener(
                     else -> player.resizeMode =
                         DataStore.readInt(Constants.PREFERENCE_RESIZING_MODE)
                 }
-            } else {
-                player.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            }
-        }
+            } else player.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
     }
 }

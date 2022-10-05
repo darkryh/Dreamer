@@ -126,7 +126,7 @@ class DataStore {
         }
 
         fun readString(stringKey :String, value : String? = null) : String = runBlocking {
-            readStringAsync(stringKey, value)?:"null"
+            readStringAsync(stringKey, value)?: value?:"null"
         }
 
         fun readInt(stringKey :String, value : Int = 0) : Int = runBlocking {

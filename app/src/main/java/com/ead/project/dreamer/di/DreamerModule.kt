@@ -7,10 +7,7 @@ import androidx.work.NetworkType
 import androidx.work.WorkManager
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.AnimeDatabase
-import com.ead.project.dreamer.data.database.dao.AnimeBaseDao
-import com.ead.project.dreamer.data.database.dao.AnimeProfileDao
-import com.ead.project.dreamer.data.database.dao.ChapterDao
-import com.ead.project.dreamer.data.database.dao.ChapterHomeDao
+import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.retrofit.model.discord.Discord
 import com.ead.project.dreamer.data.utils.media.CastManager
@@ -46,12 +43,14 @@ object DreamerModule {
         animeProfileDao: AnimeProfileDao,
         chapterHomeDao: ChapterHomeDao,
         chapterDao: ChapterDao,
+        newsItemDao: NewsItemDao,
         retrofit: Retrofit
     ): AnimeRepository = AnimeRepository(
         animeBaseDao = animeBaseDao,
         animeProfileDao = animeProfileDao,
         chapterHomeDao = chapterHomeDao,
         chapterDao = chapterDao,
+        newsItemDao = newsItemDao,
         retrofit = retrofit
     )
 
@@ -78,6 +77,10 @@ object DreamerModule {
     @Singleton
     @Provides
     fun provideChapterDao(database: AnimeDatabase): ChapterDao = database.chapterDao()
+
+    @Singleton
+    @Provides
+    fun provideNewsItemDao(database: AnimeDatabase): NewsItemDao = database.newsItemDao()
 
     @Singleton
     @Provides

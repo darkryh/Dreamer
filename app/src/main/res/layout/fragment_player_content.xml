@@ -6,20 +6,19 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/linearLayoutDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/txvSuggestionSeries"
             android:backgroundTint="?attr/colorSecondaryVariant"
-            android:background="@drawable/bg_small_rounded"
+            android:background="@drawable/background_rounded_15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
             android:gravity="center"
             android:padding="8dp"
             android:text="@string/suggestions"
@@ -39,7 +38,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txvSuggestionPlayer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -49,10 +47,10 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcvSuggestions"
+                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     tools:listitem="@layout/layout_anime_profile" />
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -65,7 +63,6 @@
         android:fitsSystemWindows="false">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
@@ -91,7 +88,7 @@
                         android:layout_height="75dp"
                         android:layout_gravity="center"
                         android:layout_margin="4dp"
-                        android:src="@mipmap/ic_launcher_app"
+                        android:src="@mipmap/ic_launcher"
                         android:contentDescription="@string/chapterLogo" />
 
                     <LinearLayout

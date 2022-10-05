@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Diagnostico Dreamer"
+        tools:ignore="TextContrastCheck">
+
+        <Preference
+            android:icon="@drawable/ic_cell_tower_24"
+            android:key="try"
+            app:title="Conexión con la API" />
+
+        <Preference
+            app:key="PREFERENCE_CLICK_DREAMER_CONNECTION"
+            android:icon="@drawable/ic_api_24"
+            android:summary="Realizar pruebas de conexión a Dreamer." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Diagnostico MC2"
+        android:key="try"
+        tools:ignore="TextContrastCheck">
+
+        <Preference
+            android:icon="@drawable/ic_cell_tower_24"
+            app:title="Conexión con el Proveedor"
+            android:key="try"/>
+
+        <Preference
+            app:key="PREFERENCE_CLICK_MC2_CONNECTION"
+            android:icon="@drawable/ic_data_exploration_24"
+            android:summary="Realizar pruebas de conexión a proveedor MonosChinos2."/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Reparador"
+        android:key="try"
+        tools:ignore="TextContrastCheck">
+
+        <Preference
+            android:icon="@drawable/ic_fixer_24"
+            app:key="PREFERENCE_CLICK_FIXER"
+            app:title="Iniciar reparador" />
+
+        <Preference
+            android:icon="@drawable/ic_info_24"
+            android:summary="El REPARADOR, sirve en casos de actualización de datos en la  estructura de la pagina proveedora. "
+            android:key="try"/>
+
+        <Preference
+            android:icon="@drawable/ic_info_24"
+            android:summary="Con el objetivo de que no sea necesario ACTUALIZAR la aplicación para corregir estos errores."
+            android:key="try"/>
+
+        <Preference
+            android:icon="@drawable/ic_info_24"
+            android:summary="En caso de que no funcione, intentalo más tarde o reportalo en nuestro servidor discord. (Disponible en la sección SOBRE NOSOTROS en configuración)."
+            android:key="try"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

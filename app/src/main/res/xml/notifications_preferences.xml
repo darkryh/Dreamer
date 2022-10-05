@@ -22,13 +22,14 @@
             app:summaryOff="Comunicador interno desactivado."
             app:title="Comunicador Oficial" />
 
-
-        <SwitchPreference
+        <androidx.preference.ListPreference
             android:icon="@drawable/ic_notifications_24"
-            android:summaryOn="Deseo recibir notificación de lo ultimos capítulos."
             app:key="PREFERENCE_NOTIFICATIONS"
-            app:summaryOff="Deseo no recibir notificación de lo ultimos capítulos."
-            app:title="Notificador (Experimental)" />
+            android:defaultValue="2"
+            android:entries="@array/notifications_entries"
+            android:entryValues="@array/notifications_values"
+            android:title="Notificador"
+            app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>
 

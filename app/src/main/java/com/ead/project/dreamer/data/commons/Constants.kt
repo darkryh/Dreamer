@@ -1,20 +1,24 @@
 package com.ead.project.dreamer.data.commons
 
+import com.ead.project.dreamer.data.retrofit.model.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.data.utils.receiver.DreamerNotifier
 
 class Constants {
 
     companion object {
 
-        const val BASE_URL = "https://monoschinos2.com/"
+        const val PROVIDER_URL = "https://monoschinos2.com/"
+
+        const val PROVIDER_NEWS_URL = "https://somoskudasai.com/"
 
         const val LIST = "animes/"
 
         const val PAGE = "animes?p="
 
-        const val API_APP = "https://my-json-server.typicode.com/Darkryh/Api_Dreamer/"
+        const val API_APP = "https://darkryh.github.io/Api_Dreamer/"
 
-        const val BLOG_APP = "https://eadreference.blogspot.com/2022/03/dreamer.html"
+        const val WEB_APP = "https://dreamer-ead.net/"
 
         const val PLAY_STORE_APP = "https://play.google.com/store/apps/details?id=com.ead.project.dreamer"
 
@@ -26,7 +30,11 @@ class Constants {
 
         const val MENU_PLAYER_FRAGMENT = "MENU_PLAYER_FRAGMENT"
 
+        const val MENU_CHAPTER_SETTINGS = "MENU_CHAPTER_SETTINGS"
+
         const val CHAPTER_CHECKER_FRAGMENT = "CHAPTER_CHECKER_FRAGMENT"
+
+        const val CAP_BLANK_MC2 = "https://monoschinos2.com/public/img/capblank.png"
 
         const val PLAY_VIDEO_LIST = "PLAY_VIDEO_LIST"
 
@@ -38,7 +46,11 @@ class Constants {
 
         const val REQUESTED_CHAPTER = "REQUESTED_CHAPTER"
 
+        const val REQUESTED_CHAPTER_LIST = "REQUESTED_CHAPTER_LIST"
+
         const val REQUESTED_IS_DIRECT = "REQUESTED_IS_DIRECT"
+
+        const val REQUESTED_NEWS = "REQUESTED_NEWS"
 
         const val IS_FROM_CONTENT_PLAYER = "IS_FROM_CONTENT_PLAYER"
 
@@ -48,11 +60,15 @@ class Constants {
 
         const val SYNC_HOME = "CONSTANT_SYNC_HOME"
 
+        const val SYNC_NEWS = "SYNC_NEWS"
+
         const val SYNC_NEW_CONTENT = "SYNC_NEW_CONTENT"
 
         const val SYNC_RELEASES = "SYNC_RELEASES"
 
         const val SYNC_NOTIFICATIONS_FIRST_TIME = "SYNC_NOTIFICATIONS_FIRST_TIME"
+
+        const val SYNC_SCRAPPER = "SYNC_SCRAPPER"
 
         const val DIRECTORY_KEY = "DIRECTORY_KEY"
 
@@ -60,9 +76,15 @@ class Constants {
 
         const val CHAPTER_PROFILE_KEY = "CHAPTER_PROFILE_KEY"
 
+        private const val ANIME_PROFILE_FIXER_KEY = "ANIME_PROFILE_FIXER_KEY"
+
         const val SYNC_PROFILE_CHECKER = "SYNC_PROFILE_CHECKER"
 
         const val SYNC_CHAPTER_SIZE = "SYNC_CHAPTER_SIZE"
+
+        const val SYNC_PROFILE_FIXER_CHECKER = "SYNC_PROFILE_FIXER_CHECKER"
+
+        const val SYNC_CHAPTER_FIXER_SIZE = "SYNC_CHAPTER_FIXER_SIZE"
 
         const val SYNC_CHAPTER_SIZE_CHECKER = "SYNC_CHAPTER_SIZE_CHECKER"
 
@@ -75,18 +97,6 @@ class Constants {
         const val TYPE_ECCHI = "Ecchi"
 
         const val TYPE_BOYS_LOVE = "Yaoi"
-
-        const val TYPE_LATIN = "Latino"
-
-        const val TYPE_SHONEN = "Shonen"
-
-        const val TYPE_ROMANCE = "Romance"
-
-        const val TYPE_COMEDY = "Comedia"
-
-        const val TYPE_DRAMA = "Drama"
-
-        const val TYPE_MYSTERY = "Misterio"
 
         const val CURRENT_NOTICED_CHAPTERS_HOME = "CURRENT_NOTICED_CHAPTERS_HOME"
 
@@ -120,7 +130,21 @@ class Constants {
 
         const val BREAK_SERVER_OPERATION = "BREAK_SERVER_OPERATION"
 
+        const val ANIME_BASE_SCRAP = "ANIME_BASE_SCRAP"
+
+        const val ANIME_PROFILE_SCRAP = "ANIME_PROFILE_SCRAP"
+
+        const val CHAPTER_HOME_SCRAP = "CHAPTER_HOME_SCRAP"
+
+        const val CHAPTER_SCRAP = "CHAPTER_SCRAP"
+
+        const val NEWS_ITEM_SCRAP = "NEWS_ITEM_SCRAP"
+
+        const val NEWS_ITEM_WEB_SCRAP = "NEWS_ITEM_WEB_SCRAP"
+
         //PREFERENCES
+
+        private const val PREFERENCE_DOWNLOAD_MODE = "PREFERENCE_DOWNLOAD_MODE"
 
         const val PREFERENCE_DIRECTORY_CLICKED = "PREFERENCE_DIRECTORY_CLICKED"
 
@@ -160,6 +184,14 @@ class Constants {
 
         const val PREFERENCE_APP_VERSION = "PREFERENCE_APP_VERSION"
 
+        const val PREFERENCE_CLICK_DREAMER_CONNECTION = "PREFERENCE_CLICK_DREAMER_CONNECTION"
+
+        const val PREFERENCE_CLICK_MC2_CONNECTION = "PREFERENCE_CLICK_MC2_CONNECTION"
+
+        const val PREFERENCE_CLICK_FIXER = "PREFERENCE_CLICK_FIXER"
+
+        const val PREFERENCE_SERVER_SCRIPT = "PREFERENCE_SERVER_SCRIPT"
+
         const val MINIMUM_VERSION_REQUIRED = "MINIMUM_VERSION_REQUIRED"
 
         const val VERSION_DEPRECATED = "VERSION_DEPRECATED"
@@ -170,9 +202,17 @@ class Constants {
 
         private const val PREFERENCE_QUANTITY_VIDEO_LIMIT = "PREFERENCE_QUANTITY_VIDEO_LIMIT"
 
-        private const val DEFAULT_VIDEO_LIMIT = 4
+        private const val DEFAULT_AD_LIMIT = 4
+
+        private const val DEFAULT_VIDEO_LIMIT = 3
 
         const val CAST_STREAM_DURATION = "CAST_STREAM_DURATION"
+
+        private const val NOTIFICATIONS_INDEX = "NOTIFICATIONS_INDEX"
+
+        const val HOME_ITEMS_LIMIT = 25
+
+
 
         //WORK PREFERENCES
 
@@ -194,7 +234,7 @@ class Constants {
 
         const val TITLE_OKRU = "Ok.ru"
 
-        const val TITLE_EMBED = "Embed"
+        const val TITLE_STREAMSB = "StreamSB"
 
         const val TITLE_UQLOAD = "Uqload"
 
@@ -216,6 +256,18 @@ class Constants {
 
         const val TITLE_VOE = "Voe"
 
+        const val TITLE_UPTOBOX = "Uptobox"
+
+        const val TITLE_ANONFILE = "Anonfile"
+
+        const val TITLE_YOUR_UPLOAD = "YourUpload"
+
+        const val TITLE_MEGA_UP = "MegaUp"
+
+        const val TITLE_GOOGLE_DRIVE = "Google Drive"
+
+        const val TITLE_MEDIAFIRE = "Mediafire"
+
 
         const val SERVER_FEMBED = "fembed.com"
 
@@ -227,7 +279,7 @@ class Constants {
 
         const val SERVER_OKRU = "ok.ru"
 
-        const val SERVER_EMBED = "embedsb.com"
+        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
 
         const val SERVER_UQLOAD = "uqload.com"
 
@@ -249,7 +301,23 @@ class Constants {
 
         const val SERVER_VOE = "voe.sx"
 
-        fun isInQuantityAdLimit() = DataStore
+        const val SERVER_UPTOBOX = "uptobox.com"
+
+        const val SERVER_ANONFILE = "anonfile.com"
+
+        const val SERVER_YOUR_UPLOAD = "yourupload.com"
+
+        const val SERVER_MEGA_UP = "megaup.net"
+
+        const val SERVER_GOOGLE_DRIVE = "drive.google.com"
+
+        const val SERVER_MEDIAFIRE = "mediafire.com"
+
+        private fun isInQuantityAdLimit() = DataStore
+            .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
+            .readInt(PREFERENCE_QUANTITY_VIDEO_LIMIT, DEFAULT_AD_LIMIT)
+
+        private fun isInQuantityAdLimitVideo() = DataStore
             .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
             .readInt(PREFERENCE_QUANTITY_VIDEO_LIMIT, DEFAULT_VIDEO_LIMIT)
 
@@ -259,22 +327,50 @@ class Constants {
             DataStore.writeIntAsync(PREFERENCE_CURRENT_WATCHED_VIDEOS,++currentSeriesSeen)
         }
 
+        fun isDirectoryActivityClicked() = DataStore.readBoolean(PREFERENCE_DIRECTORY_CLICKED,true)
+
+        fun setDirectoryActivityClicked(value: Boolean) =DataStore.writeBooleanAsync(
+            PREFERENCE_DIRECTORY_CLICKED,value)
+
+        fun getNotificationMode() = DataStore.readInt(PREFERENCE_NOTIFICATIONS,DreamerNotifier.ALL)
+
         fun isExternalPlayerMode() = DataStore.readBoolean(PREFERENCE_EXTERNAL_PLAYER)
 
         fun isAutomaticPlayerMode() = DataStore.readBoolean(PREFERENCE_RANK_AUTOMATIC_PLAYER)
 
         fun setAppFromGoogle(value : Boolean) = DataStore.writeBooleanAsync(IS_THE_APP_FROM_GOOGLE,value)
 
-        fun isAppFromGoogle() = DataStore.readBoolean(IS_THE_APP_FROM_GOOGLE,false)
+        fun isAppFromGoogle() = DataStore.readBoolean(IS_THE_APP_FROM_GOOGLE)
 
         fun isGooglePolicyActivate() = DataStore.readBoolean(PREFERENCE_GOOGLE_POLICY)
 
-        fun setQuantityAdsPlayer(value : Int) = DataStore.writeIntAsync(QUANTITY_ADS_PLAYER,value)
+        fun isAdInterstitialTime(isDirect : Boolean) = isInQuantityAdLimit() && User.isNotVip() && (isExternalPlayerMode() || !isDirect)
+
+        fun isAdTime() = isInQuantityAdLimitVideo() && User.isNotVip()
+
+
+        fun setQuantityAdsPlayer(value : Int) = DataStore.writeInt(QUANTITY_ADS_PLAYER,value)
+
+        fun resetCountedAds() = DataStore.writeIntAsync(PREFERENCE_CURRENT_WATCHED_VIDEOS, 0)
 
         fun isCustomizedCommunicator() = DataStore
             .readBoolean(PREFERENCE_CUSTOMIZE_COMMUNICATORS,true)
 
         fun isDirectorySynchronized() = DataStore
             .readBoolean(PREFERENCE_DIRECTORY_PROFILE)
+
+        fun isProfileFixerLaunched() = DataStore.flowBoolean(ANIME_PROFILE_FIXER_KEY)
+
+        fun setProfileFixer(value: Boolean) = DataStore.writeBoolean(ANIME_PROFILE_FIXER_KEY,value)
+
+        fun getNotificationIndex() = DataStore.readInt(NOTIFICATIONS_INDEX,0)
+
+        fun setNotificationIndex(value : Int) = DataStore.writeIntAsync(NOTIFICATIONS_INDEX,value)
+
+        fun isDarkThemeMode() = DataStore.readBoolean(PREFERENCE_THEME_MODE)
+
+        fun getDownloadMode() = DataStore.readBoolean(PREFERENCE_DOWNLOAD_MODE)
+
+        fun setDownloadMode(value: Boolean) = DataStore.writeBooleanAsync(PREFERENCE_DOWNLOAD_MODE,value)
     }
 }

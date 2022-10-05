@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
+import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 
 
@@ -16,33 +18,21 @@ class DreamerWebView @JvmOverloads constructor(
 
     init {
         settings.javaScriptEnabled = true
-        settings.domStorageEnabled = false
-        this.settings.userAgentString = DreamerRequest.userAgent()
-        this.webViewClient = DreamerClient()
+        settings.domStorageEnabled = true
+        settings.userAgentString = DreamerRequest.userAgent()
+        webViewClient = DreamerBlockClient()
     }
+
+    var isLoading = true
 
     companion object {
         const val BLANK_BROWSER = "about:blank"
         const val TIMEOUT_MS = 10000L
-        const val server_Script = "var event = document.createEvent('HTMLEvents');" +
-                "event.initEvent('click',true,true);" +
-                "var downloads = document.getElementsByClassName('downbtns')[0].children;" +
-                "var servers = document.getElementsByClassName('play-video dropdown-item cap');" +
-                "var serverList = [];" +
-                "" +
-                "function clicker(obj) { " +
-                "obj.dispatchEvent(event); " +
-                "var player = document.getElementsByClassName('embed-responsive-item')[0];" +
-                "serverList.push(player.getAttribute('src')); " +
-                "}" +
-                "" +
-                "for(var server of servers) { " +
-                "clicker(server) " +
-                "}" +
-                "for (var download of downloads) {" +
-                "serverList.push((download.href));" +
-                "}" +
-                "(function() { return serverList; })();"
+
+        fun getServerScript() = DataStore.readString(Constants.PREFERENCE_SERVER_SCRIPT)
+
+        fun setServerScript(value : String) = DataStore.writeString(Constants.PREFERENCE_SERVER_SCRIPT,value)
+
     }
 
 }
