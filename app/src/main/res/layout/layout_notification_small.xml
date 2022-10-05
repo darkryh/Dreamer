@@ -44,7 +44,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/cover_notification"
         android:scaleType="fitCenter"
-        android:src="@mipmap/ic_launcher_round_app"
+        android:src="@mipmap/ic_launcher_round"
         tools:ignore="ImageContrastCheck"/>
 
 </LinearLayout>

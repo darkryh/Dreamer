@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
     android:layout_marginTop="8dp"
@@ -13,70 +14,84 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="2dp">
+        android:padding="0dp">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="115dp"
-            android:layout_height="160dp"
+            android:layout_width="60dp"
+            android:layout_height="85dp"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCover_Base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/media_player_holder" />
+                app:srcCompat="@drawable/logo_app" />
 
             <ImageView
+                android:id="@+id/imvCoverBase"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_vertical_base"
+                android:background="@drawable/background_rounded_20dp"
                 android:contentDescription="@string/cover_image" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/txvTitle_Base"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="4"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:paddingHorizontal="8dp"
             android:text="@string/title"
-            android:textSize="11sp"
+            android:textColor="@color/blue_light"
+            android:textSize="12sp"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/txvTypeBase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/background_rounded_sides_40dp"
+            android:backgroundTint="@color/grey_accent"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="1dp"
             android:text="@string/type"
-            android:textSize="11sp"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txvTitle_Base"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/txvYearBase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/background_rounded_sides_40dp"
+            android:backgroundTint="@color/grey_accent"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="1dp"
             android:text="@string/year"
             android:textColor="@color/white"
             android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
-            app:layout_constraintStart_toStartOf="@+id/relativeLayout" />
+            app:layout_constraintBottom_toBottomOf="@+id/txvTypeBase"
+            app:layout_constraintStart_toEndOf="@+id/txvTypeBase"
+            app:layout_constraintTop_toTopOf="@+id/txvTypeBase"
+            tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

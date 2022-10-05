@@ -1,7 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ln_setting_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorSurface"
@@ -13,7 +12,10 @@
         android:layout_marginHorizontal="24dp"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/ic_account_circle_24"
+        android:background="@drawable/background_circular"
+        android:backgroundTint="@color/backgroundSmooth"
+        android:padding="4dp"
+        android:src="@drawable/ic_person_outline_24"
         android:contentDescription="@string/profile_logo" />
 
     <LinearLayout

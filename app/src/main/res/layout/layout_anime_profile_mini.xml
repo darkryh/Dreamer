@@ -3,40 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
+    android:layout_marginHorizontal="6dp"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="1dp"
-    android:backgroundTint="?attr/colorSecondaryVariant"
+    android:backgroundTint="?attr/colorSurface"
     app:cardCornerRadius="10dp"
-    app:cardElevation="1dp"
+    app:cardElevation="0dp"
     android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="2dp">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="115dp"
-            android:layout_height="160dp"
+            android:layout_height="180dp"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCover_Base"
+                android:id="@+id/imvCoverBase"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/media_player_holder" />
+                app:srcCompat="@drawable/logo_app" />
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_vertical_base"
-                android:contentDescription="@string/cover_image" />
+                android:background="@color/backgroundImageSmooth"
+                android:contentDescription="@string/cover_image"
+                android:visibility="visible" />
         </RelativeLayout>
 
         <TextView
@@ -45,7 +44,6 @@
             android:layout_height="50dp"
             android:ellipsize="end"
             android:gravity="center"
-            android:layout_marginHorizontal="4dp"
             android:maxLines="2"
             android:text="@string/title"
             android:textSize="11sp"
@@ -62,9 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/type"
+            android:text="@string/rating"
             android:textSize="11sp"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -74,9 +73,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/year"
+            android:text="@string/state"
             android:textColor="@color/white"
             android:textSize="11sp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
             app:layout_constraintStart_toStartOf="@+id/relativeLayout" />
 

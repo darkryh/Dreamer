@@ -4,27 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:backgroundTint="?attr/colorSecondaryVariant"
     android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="8dp"
+    android:backgroundTint="?attr/colorSurface"
     app:cardCornerRadius="15dp"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="3dp">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_height="180dp"
             android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCoverBase"
+                android:id="@+id/imvCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
@@ -34,70 +34,58 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_vertical_rounded_15dp"
+                android:background="@drawable/background_rounded_15dp"
+                android:backgroundTint="@color/backgroundImageSmooth"
                 android:contentDescription="@string/cover_image" />
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvRating"
+            android:id="@+id/txvType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/rating"
+            android:layout_marginEnd="16dp"
+            android:text="@string/type"
             android:textColor="@color/white"
-            android:textSize="11sp"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:background="@drawable/background_rounded_20dp"
+            android:backgroundTint="@color/textBackgroundSmoothDark"
             app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txvTitle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/transparent"
             android:ellipsize="end"
+            android:gravity="center"
             android:maxLines="2"
             android:text="@string/title"
             android:textColor="@color/blue_light"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvContent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="5"
-            android:text="@string/lorem"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toTopOf="@+id/txvGenre"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
-            app:layout_constraintTop_toBottomOf="@+id/txvTitle"
-            tools:ignore="SmallSp,TextContrastCheck" />
-
-        <TextView
-            android:id="@+id/txvGenre"
+            android:id="@+id/txvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp"
-            android:text="@string/genre"
-            android:textColor="?attr/colorPrimaryVariant"
-            android:textSize="10sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            android:text="@string/date"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:padding="4dp"
+            android:background="@drawable/background_rounded_20dp"
+            android:backgroundTint="@color/textBackgroundSmoothDark"
+            app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintStart_toStartOf="parent"
             tools:ignore="SmallSp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

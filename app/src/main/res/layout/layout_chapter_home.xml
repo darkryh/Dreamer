@@ -27,13 +27,12 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/chapter_profile"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/media_player_holder" />
+                app:srcCompat="@drawable/logo_app" />
 
             <ImageView
-                android:id="@+id/imvReflexCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_top_rounded"
+                android:background="@drawable/gradient_transparent_top_rounded_15dp"
                 android:contentDescription="@string/chapter_profile" />
 
         </RelativeLayout>
@@ -57,8 +56,6 @@
 
         <TextView
             android:id="@+id/txvChapter"
-            app:layout_constraintEnd_toEndOf="@+id/imvRelativeCover"
-            app:layout_constraintTop_toTopOf="@+id/imvRelativeCover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -66,7 +63,9 @@
             android:text="@string/chapter"
             android:textColor="@color/white"
             android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/imvRelativeCover"
+            app:layout_constraintTop_toTopOf="@+id/imvRelativeCover" />
 
         <TextView
             android:id="@+id/txvType"
@@ -74,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/bg_blue_rounded"
+            android:background="@drawable/background_blue_rounded_20dp"
             android:paddingHorizontal="7dp"
             android:text="@string/type"
             android:textSize="12sp"

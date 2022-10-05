@@ -22,12 +22,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/grey"
                 android:contentDescription="@string/chapter_profile"
                 android:scaleType="fitCenter"
-                android:background="@color/grey"
                 app:srcCompat="@drawable/logo_app" />
         </RelativeLayout>
 
