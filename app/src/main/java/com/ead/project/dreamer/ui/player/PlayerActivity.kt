@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +22,11 @@ import coil.load
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
+import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
+import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandle
+import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandlePressed
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.VideoModel
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
@@ -73,6 +76,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var buttonPause : ImageButton
 
     private lateinit var txvTitle : TextView
+    private lateinit var txvCasting : TextView
 
     private var scaleGestureDetector: ScaleGestureDetector? = null
     private var dreamerOnScaleGestureListener : DreamerOnScaleGestureListener?=null
@@ -85,6 +89,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
+        onBackHandle { onBackPressedMode()  }
         init(false)
         initSettings()
         initPlayer()
@@ -107,15 +112,20 @@ class PlayerActivity : AppCompatActivity() {
         launchSuggestions()
     }
 
+    private fun initSettings() {
+        supportActionBar?.hide()
+    }
+
     private fun initPlayer() {
         playerManager = PlayerManager(this,playerViewModel, playerView,chapter, playList,castManager)
         playerManager.mediaRouteButton = mediaRouteButton
         playerManager.initPlayer()
+        setOrientationMode(orientation)
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.getParcelable(Constants.REQUESTED_CHAPTER)!!
-        playList = intent.extras!!.getParcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
+        playList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
         orientation = resources.configuration.orientation
     }
 
@@ -126,6 +136,7 @@ class PlayerActivity : AppCompatActivity() {
         aspectRatio = findViewById(R.id.aspectRatio)
         frameContent = findViewById(R.id.Frame_Content)
         txvTitle = findViewById(R.id.txvChapterTitle)
+        txvCasting = findViewById(R.id.txvCasting)
         buttonScreen = findViewById(R.id.bt_fullscreen)
         buttonPlayList = findViewById(R.id.bt_play_list)
         buttonClose = findViewById(R.id.bt_close_player)
@@ -142,13 +153,7 @@ class PlayerActivity : AppCompatActivity() {
         lnPlaylist = findViewById(R.id.ln_play_list)
         lnContentReference = findViewById(R.id.content_reference)
         dreamerOnScaleGestureListener = DreamerOnScaleGestureListener(playerView)
-        scaleGestureDetector = ScaleGestureDetector(this, dreamerOnScaleGestureListener)
-    }
-
-    private fun initSettings() {
-        supportActionBar?.hide()
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        setOrientationMode(orientation)
+        scaleGestureDetector = ScaleGestureDetector(this, dreamerOnScaleGestureListener!!)
     }
 
     private fun prepareLayout() {
@@ -163,7 +168,9 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         super.onTouchEvent(event)
-        scaleGestureDetector?.onTouchEvent(event)
+        if (event != null) {
+            scaleGestureDetector?.onTouchEvent(event)
+        }
         return true
     }
 
@@ -178,7 +185,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         buttonClose.setOnClickListener {
             playerManager.playerView.hideController()
-            onBackPressed()
+            onBackHandlePressed()
         }
         buttonPlay.setOnClickListener{
             run {
@@ -289,6 +296,7 @@ class PlayerActivity : AppCompatActivity() {
         dreamerOnScaleGestureListener?.isHorizontalMode = false
         dreamController.setAspectRatio(16f/9f)
         aspectRatio.setAspectRatio(16f/9f)
+        txvTitle.visibility = View.GONE
         aspectRatio.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
         dreamController.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
@@ -299,6 +307,7 @@ class PlayerActivity : AppCompatActivity() {
             AppCompatResources
                 .getDrawable(this,R.drawable.ic_fullscreen_exit_24))
         dreamerOnScaleGestureListener?.isHorizontalMode = true
+        if (playerManager.isNotCasting()) txvTitle.visibility = View.VISIBLE
         aspectRatio.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         dreamController.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
@@ -306,15 +315,14 @@ class PlayerActivity : AppCompatActivity() {
 
     //PIP-MODE
 
-    override fun onBackPressed() {
+    private fun onBackPressedMode() {
         if(devicesCompatibleWithPipMode() && playerManager.isPIPModeEnabled
-            && !playerManager.isCasting()) {
+            && playerManager.isNotCasting()) {
             onUserLeaveHint()
-        } else {
-            super.onBackPressed()
-        }
+        } else { finish() }
     }
 
+    @Suppress("DEPRECATION")
     @Deprecated("Deprecated in Java")
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
         playerManager.isInPipMode = !isInPictureInPictureMode
@@ -333,9 +341,7 @@ class PlayerActivity : AppCompatActivity() {
             super.onUserLeaveHint()
             enterPIPMode()
         }
-        else {
-            onBackPressed()
-        }
+        else { onBackHandlePressed() }
     }
 
     @Suppress("DEPRECATION")
@@ -359,9 +365,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun checkPIPPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             playerManager.isPIPModeEnabled = isInPictureInPictureMode
-            if(!isInPictureInPictureMode){
-                onBackPressed()
-            }
+            if(!isInPictureInPictureMode){ onBackHandlePressed() }
         }
     }
 
@@ -393,7 +397,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     fun preparingLayoutByMode() {
-        Tools.hideSystemUI(this,playerView)
+        hideSystemUI()
         if (playerManager.castPlayer?.isCastSessionAvailable == false) {
             playerView.player = playerManager.exoPlayer
             relativeCover.visibility = View.GONE
@@ -401,8 +405,8 @@ class PlayerActivity : AppCompatActivity() {
             playerView.controllerShowTimeoutMs = 3500
             playerView.controllerHideOnTouch = true
             bottomControls.visibility = View.VISIBLE
-            txvTitle.visibility = View.VISIBLE
             playerManager.exoPlayer?.play()
+            playerManager.hideCastingMessage(txvCasting)
         }
         else {
             playerView.player = playerManager.castPlayer
@@ -414,6 +418,7 @@ class PlayerActivity : AppCompatActivity() {
             bottomControls.visibility = View.GONE
             txvTitle.visibility = View.GONE
             playerManager.exoPlayer?.pause()
+            playerManager.showCastingMessage(txvCasting)
         }
     }
 }
