@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.ui.web
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -53,6 +54,7 @@ class WebActivity : AppCompatActivity() {
         orientation = resources.configuration.orientation
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun initWeb() {
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.settings.domStorageEnabled = true
