@@ -1,41 +1,34 @@
-package com.ead.project.dreamer.ui.record
+package com.ead.project.dreamer.ui.player.cast.adapters
 
 import android.content.Context
-import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.BlurTransformation
 import coil.transform.RoundedCornersTransformation
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
-import com.ead.project.dreamer.databinding.LayoutChapterRecordBinding
-import com.ead.project.dreamer.ui.menuplayer.MenuPlayerFragment
+import com.ead.project.dreamer.databinding.LayoutChapterCastingBinding
 
-class ChapterRecordRecyclerViewAdapter (
-    private val context: Context
-) :
-    RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
+class ChapterCastingRecyclerViewAdapter (private val context: Context) :
+    RecyclerView.Adapter<ChapterCastingRecyclerViewAdapter.ViewHolder>() {
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
 
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChapterRecordRecyclerViewAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutChapterRecordBinding.inflate(
-                LayoutInflater.from(parent.context), parent,false))
+            LayoutChapterCastingBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false))
     }
 
-    override fun onBindViewHolder(holder: ChapterRecordRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chapter = differ.currentList[position]
         holder.bindTo(chapter)
     }
@@ -46,7 +39,7 @@ class ChapterRecordRecyclerViewAdapter (
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    inner class ViewHolder(val binding: LayoutChapterRecordBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: LayoutChapterCastingBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo (chapter: Chapter) {
             settingsLayouts(chapter)
@@ -56,22 +49,15 @@ class ChapterRecordRecyclerViewAdapter (
         }
 
         private fun settingsLayouts(chapter: Chapter) {
-            binding.txvTitle.text = chapter.title
-            binding.txvChapterRecord.text = chapter.chapterNumber.toString()
-            binding.txvTitle.gravity = Gravity.CENTER_VERTICAL
-            binding.imvChapterProfile.alpha = 0.93f
-            DreamerLayout
-                .setClickEffect(binding.root,context)
+            binding.txvTitle.text = context
+                .getString(R.string.chapter_number,chapter.chapterNumber.toString())
         }
 
         private fun settingImages(chapter: Chapter) {
             binding.imvChapterProfile.load(chapter.chapterCover){
                 crossfade(true)
                 crossfade(500)
-                transformations(
-                    BlurTransformation(context,1f)
-                    , RoundedCornersTransformation(30f)
-                )
+                transformations(RoundedCornersTransformation(0f,16f,0f,16f))
             }
         }
 
@@ -83,9 +69,10 @@ class ChapterRecordRecyclerViewAdapter (
         }
 
         private fun settingFunctionality(chapter: Chapter) {
-            binding.chapterLayout.setOnClickListener {
-                if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
+            binding.root.setOnClickListener {
+                /*if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
                     DataStore.writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_CHAPTER,true)
+
                     val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
                     val data = Bundle()
                     data.apply {
@@ -96,9 +83,9 @@ class ChapterRecordRecyclerViewAdapter (
                         arguments = data
                         show(fragmentManager, Constants.MENU_PLAYER_FRAGMENT)
                     }
-                }
+                }*/
+                DreamerApp.showLongToast("in develop")
             }
         }
-
     }
 }
