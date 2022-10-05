@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.utils.ui
 
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BlendMode
@@ -31,25 +32,21 @@ class DreamerLayout {
     companion object {
 
         fun setClickEffect (view: View,context: Context) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                view.foreground  = with(TypedValue()) {
-                    context.theme.resolveAttribute(
-                        R.attr.selectableItemBackground, this, true)
-                    ContextCompat.getDrawable(context, resourceId)
-                }
+            view.foreground  = with(TypedValue()) {
+                context.theme.resolveAttribute(
+                    R.attr.selectableItemBackground, this, true)
+                ContextCompat.getDrawable(context, resourceId)
             }
         }
 
+
         fun getBackgroundColor(drawable: Drawable, color :Int) : Drawable {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val colorDrawable = getDrawable(drawable)
-                colorDrawable.mutate().colorFilter = BlendModeColorFilterCompat
-                    .createBlendModeColorFilterCompat(
-                        DreamerApp.INSTANCE.getColor(color),
-                        BlendModeCompat.SRC_ATOP)
-                return colorDrawable
-            }
-            return drawable
+            val colorDrawable = getDrawable(drawable)
+            colorDrawable.mutate().colorFilter = BlendModeColorFilterCompat
+                .createBlendModeColorFilterCompat(
+                    DreamerApp.INSTANCE.getColor(color),
+                    BlendModeCompat.SRC_ATOP)
+            return colorDrawable
         }
 
         fun setColorFilter(drawable: Drawable, @ColorInt color: Int) {
@@ -73,7 +70,7 @@ class DreamerLayout {
         fun isDarkTheme() = DataStore.readBoolean(Constants.PREFERENCE_THEME_MODE)
 
         @SuppressLint("CutPasteId")
-        fun showSnackbar(view: View, text : String, color: Int = R.color.blackPrimary,length : Int = Snackbar.LENGTH_SHORT) {
+        fun showSnackbar(view: View, text : String, color: Int = R.color.blackPrimary,size : Int = R.dimen.snackbar_text_size,length : Int = Snackbar.LENGTH_SHORT) {
             val snackbar: Snackbar = Snackbar.make(view, text, length)
             snackbar.setBackgroundTint(ContextCompat.getColor(DreamerApp.INSTANCE, color))
             val viewGroup = snackbar.view
@@ -87,12 +84,12 @@ class DreamerLayout {
             viewGroup.setPadding(64,0,64,0)
             val textView = snackbar.view
                 .findViewById<View>(com.google.android.material.R.id.snackbar_text) as TextView
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, DreamerApp.INSTANCE.resources.getDimension(R.dimen.snackbar_textsize))
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, DreamerApp.INSTANCE.resources.getDimension(size))
 
             if (length == Snackbar.LENGTH_INDEFINITE) {
                 val progressBar = ProgressBar(DreamerApp.INSTANCE)
 
-                setColorFilter(progressBar.indeterminateDrawable, getColor(R.color.blueLight))
+                setColorFilter(progressBar.indeterminateDrawable, getColor(R.color.blue_light))
                 viewGroup.addView(progressBar)
                 progressBar.layoutParams.height = 80
                 (progressBar.layoutParams as LinearLayout.LayoutParams).gravity = Gravity.CENTER

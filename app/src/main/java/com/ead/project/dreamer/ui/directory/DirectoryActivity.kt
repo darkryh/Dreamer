@@ -1,29 +1,32 @@
 package com.ead.project.dreamer.ui.directory
 
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class DirectoryActivity : AppCompatActivity() {
 
-    private val directoryActivityViewModel : DirectoryActivityViewModel by viewModels()
+    private val directoryViewModel : DirectoryViewModel by viewModels()
     private lateinit var recyclerView : RecyclerView
     private lateinit var adapter: AnimeBaseRecyclerViewAdapter
     private lateinit var edtSearch : EditText
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    private var isLinear = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +34,7 @@ class DirectoryActivity : AppCompatActivity() {
         overridePendingTransition(
             R.anim.fade_in, R.anim.fade_out)
         prepareLayout()
-        recyclerView.layoutManager =
-            GridLayoutManager(this, Tools.getAutomaticSizeReference(130))
+        recyclerView.layoutManager = getLayoutManager()
         prepareAdapter()
     }
 
@@ -56,45 +58,43 @@ class DirectoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         settingThemeLayouts()
-        toolbar.setNavigationOnClickListener { onBackPressed()}
+        toolbar.setNavigationOnClickListener { onBack() }
         recyclerView = findViewById(R.id.rcvFinder)
         recyclerView.adapter?.stateRestorationPolicy =
             RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            recyclerView.foregroundGravity = Gravity.CENTER_HORIZONTAL
-        }
+        recyclerView.foregroundGravity = Gravity.CENTER_HORIZONTAL
     }
+
+    private fun getLayoutManager() : RecyclerView.LayoutManager =
+        when(Tools.getAutomaticSizeReference(380)) {
+            0 -> {
+                isLinear = true
+                recyclerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                LinearLayoutManager(this)
+            }
+            else -> {
+                GridLayoutManager(this,Tools.getAutomaticSizeReference(110))
+            }
+        }
 
     private fun prepareAdapter() {
         edtSearch.addTextChangedListener {
-            directoryActivityViewModel.getDirectory(edtSearch.text.toString()).observe(this) {
-                this.adapter = AnimeBaseRecyclerViewAdapter(it, this)
+            directoryViewModel.getDirectory(edtSearch.text.toString()).observe(this) {
+                this.adapter = AnimeBaseRecyclerViewAdapter(it, this,isLinear)
                 recyclerView.adapter = adapter
             }
         }
     }
 
     private fun settingThemeLayouts() {
-        val data = DataStore.readBoolean(Constants.PREFERENCE_THEME_MODE)
-
-        if (data) {
-            toolbar.navigationIcon =
-                DreamerLayout.getBackgroundColor(
-                    toolbar.navigationIcon!!,
-                    R.color.whitePrimary
-                )
-        }
-        else {
-            toolbar.navigationIcon =
-                DreamerLayout.getBackgroundColor(
-                    toolbar.navigationIcon!!,
-                    R.color.blackPrimary
-                )
-        }
+        toolbar.navigationIcon =
+            DreamerLayout.getBackgroundColor(
+                toolbar.navigationIcon!!,
+                R.color.whitePrimary)
     }
 
     override fun onStop() {
         super.onStop()
-        DataStore.writeBooleanAsync(Constants.PREFERENCE_DIRECTORY_CLICKED,false)
+        Constants.setDirectoryActivityClicked(false)
     }
 }

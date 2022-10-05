@@ -22,7 +22,7 @@ class DreamerMessaging: FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("okTest", "onNewToken: $token")
+        Log.d("testing", "onNewToken: $token")
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -34,7 +34,6 @@ class DreamerMessaging: FirebaseMessagingService() {
             R.drawable.ic_launcher_foreground,
             CHANNEL_APP_KEY
         )
-        dreamerNotifier().notificationManager()
-            .notify(CHANNEL_APP_ID ,notification.build())
+        dreamerNotifier().notificationManager().notify(CHANNEL_APP_ID ,notification.build())
     }
 }
