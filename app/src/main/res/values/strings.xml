@@ -3,8 +3,6 @@
     <string name="logo">logo</string>
     <string name="sign_in_discord">Iniciar con Discord</string>
     <string name="guest">Modo Invitado</string>
-    <string name="back">atras</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Inicio</string>
     <string name="title_favorites">Favoritos</string>
     <string name="title_records">Historial</string>
@@ -20,7 +18,6 @@
     <string name="welcome_player">%1$s - Capítulo número %2$d</string>
     <string name="choose_quality">Escoger calidad de Video :</string>
     <string name="full_screen">full screen</string>
-    <string name="slash">/</string>
     <string name="fast_forward">fast forward</string>
     <string name="pause">pause</string>
     <string name="play">play</string>
@@ -44,36 +41,20 @@
     <string name="chapter_number">Capítulo número %1$s</string>
     <string name="chapter_number_min">Cap. %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_string">default</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="imageview_to_checker">imageview to checker</string>
     <string name="loading">cargando..</string>
-    <string name="background_transparent">background_transparent</string>
     <string name="close">close</string>
-    <string name="Chat">Chat</string>
-    <string name="account">Cuenta</string>
     <string name="recommendations_user">Recomendaciones habilitadas al iniciar sesión.</string>
     <string name="suggestions">Sugerencias</string>
-    <string name="current_pos">pos</string>
-    <string name="chapter_current_pos">Cap. %1$s</string>
     <string name="relaunch_play">Relanzar Video.</string>
 
     <string name="ad_attribution">Ad</string>
-    <string name="app_referent">app_Referent</string>
     <string name="accept">Aceptar</string>
     <string name="reject">Rechazar</string>
     <string name="termsAndConditions">Términos y Condiciones</string>
@@ -84,14 +65,7 @@
     <string name="PrivacyPolicyContent">\nDarkryh construyó la aplicación Dreamer como una aplicación gratuita. Este SERVICIO es proporcionado por Dreamer sin costo y está destinado a utilizar tal como está.  \n\nEsta página se utiliza para informar a los visitantes mis políticas con la colección, el uso y divulgación de Información Personal si alguien decidió usar mi Servicio.  Si decide utilizar mi Servicio, entonces usted está de acuerdo a la recopilación y uso de información en relación con este Política. \n\nLa información personal que recopilo es para proporcionar y mejorar el Servicio. No usaré ni compartiré su información con cualquier persona, excepto como se describe en esta Privacidad Política.  Los términos utilizados en esta Política de Privacidad tienen los mismos significados como en nuestros Términos y Condiciones, que es accesible en [aCademy iRami ] a menos que se defina lo contrario en esta Privacidad Política.  \n\nRecopilación y uso de información  \n\nPara una mejor experiencia, mientras usa nuestro Servicio, Puedo exigirle que nos proporcione ciertos información de identificación personal. el información que solicito será retenido en su dispositivo y no es recogido por mí de ninguna manera.  La aplicación utiliza servicios de terceros que pueden recopilar información utilizada para identificarlo.  Enlace a la política de privacidad de proveedores de servicios externos utilizado por la aplicaciónes :     \n\nGoogle Play Services     \nAdMob     \nGoogle Analytics for Firebase     \nFirebase Crashlytics     \nFacebook     \nFabric     \nOne Signal  \n\nDatos de registro  Quiero informarles que cada vez que utiliza mi Servicio, en caso de error en el aplicación que recopilo datos e información (a través de la tercera productos de la fiesta) en su teléfono llamado Datos de registro. \n\nEstos datos de registro puede incluir información como Internet de su dispositivo Dirección de protocolo (\"IP\"), nombre del dispositivo, sistema operativo versión, la configuración de la aplicación al utilizar mi Servicio, la hora y fecha de su uso de la Servicio y otras estadísticas.  \n\nSeguridad  Valoro su confianza en proporcionarnos su información personal, por lo tanto, nos esforzamos por utilizar medios comercialmente aceptables para protegerlo. Pero recuerda que ningún método de transmisión a través de Internet, o método almacenamiento electrónico es 100% seguro y confiable, y No puedo garantizar su seguridad absoluta.  \n\nEnlaces a otros sitios  Este Servicio puede contener enlaces a otros sitios. Si hace clic en en un enlace de terceros, se le dirigirá a ese sitio. Tenga en cuenta que estos sitios externos no son operados por yo. Por lo tanto, le aconsejo encarecidamente que revisar la Política de Privacidad de estos sitios web. No tengo control y asumo que no responsabilidad por el contenido, las políticas de privacidad o prácticas de sitios o servicios de terceros.  \n\nPrivacidad de los niños  Estos Servicios no se dirigen a menores de 13 años. No colecciono personalmente a sabiendas información identificable de niños menores de 13 años. En el caso Descubro que un niño menor de 13 años ha proporcionado con información personal, Inmediatamente elimino esto de nuestros servidores. Si usted son padres o tutores y usted es consciente de que su hijo nos ha proporcionado información personal, por favor póngase en contacto con para que pueda hacer acciones necesarias.  \n\nCambios en esta Política de Privacidad  Puedo actualizar nuestra Política de Privacidad de tiempo a tiempo. Por lo tanto, se recomienda revisar esta página periódicamente para cualquier cambio. Lo haré notificarle de cualquier cambio publicando la nueva Política de Privacidad en esta página. \n\nEstos cambios son efectivos inmediatamente después de se publican en esta página.  Contáctenos  Si tiene alguna pregunta o sugerencia sobre mi Política de Privacidad, no dude en ponerse en contacto con me </string>
     <string name="welcome_legal_warning">Bienvenido. ¡Te ponemos en Contexto!</string>
     <string name="email_protected">[Email Protected]</string>
-    <string name="community">Comunidad</string>
-    <string name="support">Soporte</string>
-    <string name="validation">validación</string>
-    <string name="message">Mensaje</string>
-    <string name="send">enviar</string>
-    <string name="profile_chat">profile_chat</string>
     <string name="test_example">Esto es un texto de ejemplo, mejorar la calidad siempre recuerdalo.</string>
-    <string name="chantsender">ChantSender</string>
     <string name="body">body</string>
     <string name="store">store</string>
     <string name="modo_de_gesto_al_acercar">Modo de gesto al acercar :</string>
@@ -100,6 +74,7 @@
     <string name="fill">Relleno</string>
     <string name="price">price</string>
     <string name="timeout_message">Tiempo de espera agotado,intente ingresar despues en unos minutos, o revise su estado de conexión.</string>
+    <string name="error_url_message">Error url malformada..</string>
     <string name="status_app">La versión actual %1$s de la  aplicación, se encuentre obsoleta. Le recomendamos actualizar a una versión mínima : %2$s. o posterior! Click en este mensaje para actualizar a la ultima versión</string>
     <string name="google_policies_message">Este contenido no soporta las políticas de google. Se le recomienda buscar otro contenido.</string>
     <string name="google_policies_mode">La opción, no se puede cambiar por las políticas de google!</string>
@@ -107,29 +82,25 @@
     <string name="sync_complete">Sincronización : Completa</string>
     <string name="sync_in_progress">Sincronización : En Progreso</string>
     <string name="discord_error">error al establecer conexión con discord, reporte en nuestro discord.</string>
-    <string name="user_account">\nNombre de Usuario: %1$s\n\nRango actual: %2$s</string>
     <string name="accepted_user">Ingreso aceptado, %1$s.</string>
     <string name="requesting_data">Solicitando Datos del Directorio..</string>
     <string name="requesting_data_adv1">Esto toma un par de minutos la primera vez, de instalación.</string>
     <string name="requesting_data_adv2">En caso de que tome más de 10 minutos, reinicie la app.</string>
     <string name="requesting_data_adv3">Si ve la pantalla de inicio en blanco, asegurese de estar conectado a una red wifi.</string>
     <string name="successfully_sync">Sincronización Exitosa..</string>
-
-    <!-- Practice ADS IDS -->
-    <string name="ad_unit_id_app_practice">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="ad_unit_id_native_practice">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="ad_unit_id_interstitial_practice">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="ad_unit_id_banner_practice">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="topic_news">Tópico: %1$s.</string>
+    <string name="recommendations">Recomendaciones</string>
 
     <!-- Dreamer ADS IDS -->
     <string name="ad_unit_id_app">ca-app-pub-8444582431468785~2572001480</string>
     <string name="ad_unit_id_native_home">ca-app-pub-8444582431468785/8787724343</string>
-    <string name="ad_unit_id_native_favorites">ca-app-pub-8444582431468785/5597430121</string>
+    <string name="ad_unit_id_native_news">ca-app-pub-8444582431468785/7330237942</string>
     <string name="ad_unit_id_native_records">ca-app-pub-8444582431468785/3666476750</string>
     <string name="ad_unit_id_native_profile">ca-app-pub-8444582431468785/1550577167</string>
     <string name="ad_unit_id_native_player">ca-app-pub-8444582431468785/8692622477</string>
+    <string name="ad_unit_id_native_casting">ca-app-pub-8444582431468785/7619864633</string>
     <string name="ad_unit_id_interstitial_player">ca-app-pub-8444582431468785/2087913619</string>
-    <string name="ad_unit_id_banner_profile">ca-app-pub-8444582431468785/7575209863</string>
+
     <string name="playlist">playlist</string>
     <string name="sort">sort</string>
     <string name="icon">icon</string>
@@ -145,21 +116,19 @@
     <string name="select_state">Seleccionar Estado.</string>
     <string name="typeList">Lista de Tipos</string>
     <string name="select_type">Seleccionar Tipo.</string>
-    <string name="search_chapter_number">Buscar numero de Capítulo.</string>
     <string name="app_id">589DFD71</string>
-    <string name="media_route_menu_title">cast_button</string>
-    <string name="last_chapter_releases">Ultimos Capítulos en estreno</string>
-    <string name="latin_series">Series en Latino</string>
-    <string name="shonen_series">Series de Shonen</string>
-    <string name="romance_series">Series de Romance</string>
-    <string name="comedy_series">Series de Comedia</string>
-    <string name="drama_series">Series de Drama</string>
-    <string name="action_series">Series de Acción</string>
-    <string name="mystery_series">Series de Misterio</string>
     <string name="content">content</string>
     <string name="expanded">expanded</string>
     <string name="sign_in_twitter">Iniciar con Twitter</string>
     <string name="cover_notification">cover_notification</string>
+
+    <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=]]></string>
+    <string name="complete_percent">100%</string>
+    <string name="current_progress">Progreso actual: %1$s%%</string>
+    <string name="txvcurrentprogress">txvCurrentProgress</string>
+    <string name="txvtotalprogress">txvTotalProgress</string>
+    <string name="description">Descripción</string>
+    <string name="chapters_cast">Capitulos</string>
 
     <string-array name="state_list">
         <item>Estreno</item>
@@ -230,7 +199,7 @@
     <array name="cast_mini_controller_control_buttons">
         <item>@id/cast_button_type_empty</item>
         <item>@id/cast_button_type_play_pause_toggle</item>
-        <item>@id/cast_button_type_forward_30_seconds</item>
+        <item>@id/cast_button_type_custom</item>
     </array>
 
     <array name="cast_expanded_controller_control_buttons">
@@ -240,5 +209,34 @@
         <item>@id/cast_button_type_empty</item>
     </array>
 
+    <string-array name="notifications_entries">
+        <item>Ninguno</item>
+        <item>Solo mis animes favoritos</item>
+        <item>Todos los estrenos</item>
+    </string-array>
+
+    <string-array name="notifications_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="date">date</string>
+    <string name="casting">casting</string>
+    <string name="author">author</string>
+    <string name="authorWords">lorem ipsum spaciba</string>
+    <string name="fakeName">Xavy Alonso de Fernandez</string>
+    <string name="cover">cover</string>
+    <string name="coverBackground">coverBackground</string>
+    <string name="imv_download">imv_download</string>
+    <string name="download">Descarga</string>
+    <string name="imv_favorites">imv_favorites</string>
+    <string name="favorites">Favorites</string>
+    <string name="chapter_options">Opciones de Capítulo</string>
+    <string name="chapter_spanish">Capítulo</string>
+    <string name="list">Lista</string>
+    <string name="share">share</string>
+    <string name="random_description">description aleatorias</string>
 
 </resources>
