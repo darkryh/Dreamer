@@ -9,14 +9,14 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ead.project.dreamer"
         minSdk 23
         targetSdk 33
-        versionCode 16
-        versionName "1.19"
+        versionCode 17
+        versionName "1.20"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -25,19 +25,11 @@ android {
     }
 
     buildTypes {
-
-        makingRelease {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -53,35 +45,41 @@ android {
             }
         }
     }
+    packagingOptions {
+        resources.excludes.add 'META-INF/INDEX.LIST'
+        resources.excludes.add 'META-INF/io.netty.versions.properties'
+    }
+
     compileSdkVersion 33
     namespace 'com.ead.project.dreamer'
 }
 
 dependencies {
 
-    implementation 'androidx.preference:preference-ktx:1.2.0'
     def room_version = "2.4.3"
     def lottieVersion = "4.2.1"
     def exoplayer_version = "2.18.1"
     def okhttpVersion = "4.9.2"
     def retrofitVersion = "2.9.0"
-    def admobVersion = "21.2.0"
+    def admobVersion = "21.3.0"
+    def ktor_version = "1.6.2"
 
     //basics
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation "androidx.media:media:1.6.0"
 
     //room
@@ -121,7 +119,7 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
     //gson
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     //dagger hilt
     implementation 'com.google.dagger:hilt-android:2.43.2'
@@ -137,7 +135,7 @@ dependencies {
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion") {
         // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
-        //exclude module: 'okhttp'
+        exclude module: 'okhttp'
     }
     //gson converter
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
@@ -150,7 +148,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:$admobVersion"
 
     //firebase
-    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation platform('com.google.firebase:firebase-bom:31.0.1')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
@@ -158,6 +156,12 @@ dependencies {
 
     //cast
     implementation 'androidx.mediarouter:mediarouter:1.3.1'
-    implementation 'com.google.android.gms:play-services-cast-framework:21.1.0'
+    implementation 'com.google.android.gms:play-services-cast-framework:21.2.0'
     implementation 'com.android.volley:volley:1.2.1'
+
+    //embedded Server
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-websockets:$ktor_version"
+
 }
