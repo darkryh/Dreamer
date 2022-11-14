@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.data.network;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebResourceResponse;
@@ -13,25 +12,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import okio.BufferedSource;
 import okio.Okio;
 
 public class AdBlocker {
     private static final String AD_HOSTS_FILE = "host.txt";
     private static final Set<String> AD_HOSTS = new HashSet<>();
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static void init(Context context) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    loadFromAssets(context);
-                } catch (IOException e) {
-                    // noop
-                }
-                return null;
+        executor.execute(() -> { //Background work here
+            try {
+                loadFromAssets(context);
+            } catch (IOException e) { // noop
             }
-        }.execute();
+        });
     }
 
     @WorkerThread
