@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.ui.profile
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.utils.DownloadManager
 import com.ead.project.dreamer.data.worker.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +22,8 @@ import javax.inject.Inject
 class AnimeProfileViewModel @Inject constructor(
     private val repository: AnimeRepository,
     private val workManager: WorkManager,
-    private val constraints: Constraints
+    private val constraints: Constraints,
+    private val downloadManager: DownloadManager
 ): ViewModel() {
 
     fun getAnimeProfile(id : Int)  =
@@ -98,8 +101,13 @@ class AnimeProfileViewModel @Inject constructor(
             cachingProfile)
     }
 
-    fun repairingChapters() {
+    fun downloadAllChapters(id: Int) {
+        viewModelScope.launch (Dispatchers.IO) {
+            downloadManager.init(repository.getNotDownloadedChaptersFromId(id))
+        }
+    }
 
+    fun repairingChapters() {
         val syncingChaptersRequest = OneTimeWorkRequestBuilder<FixerChaptersCachingWorker>()
             .setConstraints(constraints)
             .build()
