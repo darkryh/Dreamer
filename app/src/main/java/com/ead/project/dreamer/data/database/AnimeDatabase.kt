@@ -25,4 +25,8 @@ abstract class AnimeDatabase : RoomDatabase() {
     abstract fun animeProfileDao() : AnimeProfileDao
     abstract fun chapterDao() : ChapterDao
     abstract fun newsItemDao() : NewsItemDao
+
+    companion object {
+        const val DATABASE = "anime_Database"
+    }
 }
