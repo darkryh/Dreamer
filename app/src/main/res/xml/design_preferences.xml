@@ -5,7 +5,7 @@
     <PreferenceCategory
         android:layout="@layout/preferences_category"
         android:title="Diseño"
-        tools:ignore="TextContrastCheck">>
+        tools:ignore="TextContrastCheck">
 
         <SwitchPreference
             android:icon="@drawable/ic_night_mode"
@@ -13,7 +13,19 @@
             app:key="PREFERENCE_THEME_MODE"
             app:summaryOff="Modo desactivado."
             app:title="Modo Oscuro" />
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:layout="@layout/preferences_category"
+        android:title="Inicio"
+        tools:ignore="TextContrastCheck">
+
+        <SwitchPreference
+            android:icon="@drawable/ic_campaign_24"
+            android:summaryOn="Publicitador con datos oficiales, activado."
+            app:key="PREFERENCE_OFFICIAL_ADVERTISER"
+            app:summaryOff="Publicitador con datos oficiales, desactivado."
+            app:title="Publicitador oficial" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -15,13 +15,6 @@
             app:summaryOff="No deseo recibir notificaciones de actualizaciones, promociones, etc."
             app:title="Notificador Oficial" />
 
-        <SwitchPreference
-            android:icon="@drawable/ic_campaign_24"
-            android:summaryOn="Comunicador interno activado."
-            app:key="PREFERENCE_CUSTOMIZE_COMMUNICATORS"
-            app:summaryOff="Comunicador interno desactivado."
-            app:title="Comunicador Oficial" />
-
         <androidx.preference.ListPreference
             android:icon="@drawable/ic_notifications_24"
             app:key="PREFERENCE_NOTIFICATIONS"
