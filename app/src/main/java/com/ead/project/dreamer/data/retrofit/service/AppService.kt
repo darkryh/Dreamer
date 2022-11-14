@@ -11,27 +11,27 @@ interface AppService {
     @GET("app_status.json")
     fun getAppStatus() : Call<AppStatus>
 
-    @GET("publicity.json")
+    @GET("Ads/publicity.json")
     fun getPublicity() : Call<List<Publicity>>
 
-    @GET("AnimeBaseScrap.json")
+    @GET("Scrapper/AnimeBaseScrap.json")
     fun getAnimeBaseScrap() : Call<AnimeBaseScrap>
 
-    @GET("AnimeProfileScrap.json")
+    @GET("Scrapper/AnimeProfileScrap.json")
     fun getAnimeProfileScrap() : Call<AnimeProfileScrap>
 
-    @GET("ChapterHomeScrap.json")
+    @GET("Scrapper/ChapterHomeScrap.json")
     fun getChapterHomeScrap() : Call<ChapterHomeScrap>
 
-    @GET("ChapterScrap.json")
+    @GET("Scrapper/ChapterScrap.json")
     fun getChapterScrap() : Call<ChapterScrap>
 
-    @GET("NewsItemScrap.json")
+    @GET("Scrapper/NewsItemScrap.json")
     fun getNewsItemScrap() : Call<NewsItemScrap>
 
-    @GET("NewsItemWebScrap.json")
+    @GET("Scrapper/NewsItemWebScrap.json")
     fun getNewsItemWebScrap() : Call<NewsItemWebScrap>
 
-    @GET("server_script.json")
+    @GET("Functionality/server_script.json")
     fun getServerScriptScrap() : Call<String>
 }
