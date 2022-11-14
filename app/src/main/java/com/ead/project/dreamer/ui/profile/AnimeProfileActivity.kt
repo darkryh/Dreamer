@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.ui.profile
 
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -21,10 +22,11 @@ import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
 import com.ead.project.dreamer.data.commons.Tools.Companion.margin
 import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandle
 import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandlePressed
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DownloadManager
@@ -33,9 +35,11 @@ import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityAnimeProfileBinding
 import com.ead.project.dreamer.ui.profile.adapters.ChapterRecyclerViewAdapter
 import com.ead.project.dreamer.ui.profile.adapters.GenreRecyclerViewAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AnimeProfileActivity : AppCompatActivity() {
@@ -65,7 +69,7 @@ class AnimeProfileActivity : AppCompatActivity() {
     var count = 0
     private var countChapters = 0
     private var countSections = 0
-    private var downloadManager : DownloadManager?=null
+    @Inject lateinit var downloadManager : DownloadManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,16 +128,23 @@ class AnimeProfileActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackHandlePressed() }
         binding.imvFixer.setOnClickListener {
             it.isEnabled = false
-            DreamerApp.showLongToast("Reparador ejecutando. En caso de no funcionar ejecutar más tarde.")
+            DreamerApp.showLongToast(getString(R.string.warning_executing_manual_fixer))
             if (isProfileNotWorking) animeProfileViewModel.repairingProfiles()
             if (isChaptersNotWorking) animeProfileViewModel.repairingChapters()
-            if (!isProfileNotWorking && !isChaptersNotWorking) DreamerApp.showShortToast("¡Todo esta en funcionamiento!")
+            if (!isProfileNotWorking && !isChaptersNotWorking) DreamerApp.showShortToast(getString(R.string.all_is_working))
         }
         DreamerLayout.setClickEffect(binding.imvDownloads,this)
         DreamerLayout.setClickEffect(binding.imvDownloadSelected,this)
-        binding.imvDownloads.setOnClickListener { launchDownloads(adapterChapters.getFullList()) }
+        binding.imvDownloads.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.to_download))
+                .setMessage(getString(R.string.message_to_download_all_series,animeProfileSender?.title.toString()))
+                .setPositiveButton(getString(R.string.confirm)) { _: DialogInterface?, _: Int -> animeProfileViewModel.downloadAllChapters(id) }
+                .setNegativeButton(R.string.cancel,null)
+                .show()
+        }
         binding.imvDownloadSelected.setOnClickListener { launchDownloads(adapterChapters.getDownloadList())}
-        adapterChapters = ChapterRecyclerViewAdapter(this,binding.coordinatorMode)
+        adapterChapters = ChapterRecyclerViewAdapter(this,binding.editModeView)
         binding.rcvChapters.layoutManager = LinearLayoutManager(this)
         binding.rcvChapters.adapter = adapterChapters
     }
@@ -169,13 +180,11 @@ class AnimeProfileActivity : AppCompatActivity() {
                 lastChapterId = it[1]
                 if (++countSections == 1) {
                     updateData()
+                    binding.imvDownloads.setVisibility(chapterSize > 0)
                     if (!needsSections(chapterSize))
                         adaptingChapters()
-                    else {
-                        adapterChapters = ChapterRecyclerViewAdapter(this,binding.coordinatorMode)
-                        binding.rcvChapters.adapter = adapterChapters
-                        sectionChapters(chapterSize)
-                    }
+                    else
+                        adaptingChaptersInSections(chapterSize)
                 }
             }
             if (cachingChaptersTrigger(chapterSize, animeProfile)) {
@@ -196,9 +205,10 @@ class AnimeProfileActivity : AppCompatActivity() {
             Constants.isProfileFixerLaunched().collect {
                 runOnUiThread {
                     if (it) {
-
-                        loadProfile(animeProfileSender!!)
-                        Constants.setProfileFixer(false)
+                        animeProfileSender?.let {
+                            loadProfile(it)
+                            Constants.setProfileFixer(false)
+                        }
                     }
                 }
             }
@@ -207,7 +217,10 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun needsSections(size: Int) = size >= 200
 
-    private fun sectionChapters(size: Int) {
+    private fun adaptingChaptersInSections(size: Int) {
+        adapterChapters = ChapterRecyclerViewAdapter(this,binding.editModeView)
+        binding.rcvChapters.adapter = adapterChapters
+
         var pairNumberList : MutableList<Pair<Int,Int>> = ArrayList()
         var layoutRanges : MutableList<String> = ArrayList()
         binding.txvChapterTitle.visibility = View.GONE
@@ -340,16 +353,11 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun launchDownloads(downloadList : MutableList<Chapter>) {
         if (downloadList.isNotEmpty()) {
-            DreamerApp.showLongToast("Empezando Descarga..")
-            downloadManager = object : DownloadManager(this,downloadList) {
-                override fun onCompleted() {
-                    super.onCompleted()
-                    downloadManager = null
-                }
-            }
+            if (downloadList.size == 1) downloadManager.init(downloadList.first())
+            else downloadManager.init(downloadList,false)
             adapterChapters.removeEditMode()
         }
-        else DreamerApp.showLongToast("Error descarga..")
+        else DreamerApp.showLongToast(getString(R.string.error_download))
     }
 
     private fun updateData() {
