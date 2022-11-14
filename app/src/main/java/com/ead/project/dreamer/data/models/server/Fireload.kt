@@ -1,18 +1,22 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
 import android.webkit.WebView
 import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.ServerWebClient
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
 
-class Mediafire(embeddedUrl:String) : Server(embeddedUrl) {
+class Fireload (embeddedUrl:String) : Server(embeddedUrl) {
+
+    override fun onPreExtract() {
+        player = Player.Fireload
+    }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             initWeb()
-            handleDownload(CONNECTION_STABLE)
+            handleDownload(CONNECTION_UNSTABLE)
             releaseWebView()
         } catch (e : Exception) { e.printStackTrace() }
     }
@@ -21,14 +25,18 @@ class Mediafire(embeddedUrl:String) : Server(embeddedUrl) {
         runUI {
             webView = DreamerWebView(DreamerApp.INSTANCE)
             webView?.webViewClient = object : ServerWebClient(webView) {
+
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
-                    view?.let { if (timesLoaded <= 2) it.evaluateJavascript(scriptLoader()) {} }
+                    view?.let { if (timesLoaded == 1) it.evaluateJavascript(scriptLoader()) {} }
                 }
             }
             complainWebView()
         }
     }
 
-    private fun scriptLoader() = "document.getElementById('downloadButton').click();"
+    private fun scriptLoader() = "setTimeout(() => { " +
+            "document.getElementsByClassName('dl-button')[0].click(); " +
+            "}, '4000');"
+
 }

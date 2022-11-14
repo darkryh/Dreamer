@@ -1,24 +1,19 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
 import android.webkit.WebView
 import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.ServerWebClient
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
 
-class Fireload (embeddedUrl:String) : Server(embeddedUrl) {
+class GoogleDrive(embeddedUrl:String) : Server(embeddedUrl) {
 
-    override fun onPreExtract() {
-        super.onPreExtract()
-        player = Player.Fireload
-    }
 
     override fun onExtract() {
-        super.onExtract()
         try {
+            url = fixUrl(url)
             initWeb()
-            handleDownload(CONNECTION_UNSTABLE)
+            handleDownload(CONNECTION_STABLE)
             releaseWebView()
         } catch (e : Exception) { e.printStackTrace() }
     }
@@ -27,7 +22,6 @@ class Fireload (embeddedUrl:String) : Server(embeddedUrl) {
         runUI {
             webView = DreamerWebView(DreamerApp.INSTANCE)
             webView?.webViewClient = object : ServerWebClient(webView) {
-
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
                     view?.let { if (timesLoaded == 1) it.evaluateJavascript(scriptLoader()) {} }
@@ -37,8 +31,10 @@ class Fireload (embeddedUrl:String) : Server(embeddedUrl) {
         }
     }
 
-    private fun scriptLoader() = "setTimeout(() => { " +
-            "document.getElementsByClassName('dl-button')[0].click(); " +
-            "}, '4000');"
+    private fun fixUrl(url : String) = "https://drive.google.com/u/0/uc?id=${getFileId(url)}&export=download"
 
+    private fun getFileId(string: String) = string.substringAfter("/d/")
+        .substringBefore("/preview")
+
+    private fun scriptLoader() = "document.getElementById('uc-download-link').click();"
 }

@@ -1,8 +1,8 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.*
 import org.json.JSONObject
@@ -10,12 +10,10 @@ import org.json.JSONObject
 class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Fembed
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             var request: Request =  Request.Builder().url(url).build()
 
@@ -27,7 +25,7 @@ class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
                 url,
                 "([vf])([/=])(.+)([/&])?",
                 3
-            )!!.replace("[&/]", "")
+            ).toString().replace("[&/]", "")
 
             request = Request.Builder().url("https://$host/api/source/$videoId")
                 .post(FormBody.Builder().build())
@@ -35,7 +33,7 @@ class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
 
             response = OkHttpClient().newCall(request).execute()
             if (response.isSuccessful) {
-                val body = response.body!!.string()
+                val body = response.body?.string().toString()
                 val source = JSONObject(body)
                 check(source.getBoolean("success")) {  "Request was not succeeded" }
                 val array = source.getJSONArray("data")
@@ -43,7 +41,7 @@ class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
                     val `object` = array.getJSONObject(i)
                     val name = `object`.getString("label")
                     url = `object`.getString("file")
-                    videoList.add(VideoModel(name, url))
+                    addVideo(VideoModel(name, url))
                 }
             }
         } catch (e: Exception) { e.printStackTrace() }

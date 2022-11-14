@@ -1,18 +1,17 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoModel
 import org.jsoup.Jsoup
 
 class Uqload (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onExtract() {
-        super.onExtract()
         if (isDownloading) return
         player = Player.Uqload
         isDirect = false
-        if (!fileDeleted()) videoList.add(VideoModel("Default",url))
+        if (!fileDeleted()) addVideo(VideoModel("Default",url))
     }
 
     private fun fileDeleted() : Boolean = try {

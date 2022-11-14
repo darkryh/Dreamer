@@ -1,7 +1,7 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -9,12 +9,10 @@ import okhttp3.Request
 class Anonfiles(embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Anonfile
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             val response = OkHttpClient()
                 .newCall(Request.Builder().url(url).build())

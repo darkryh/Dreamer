@@ -1,7 +1,7 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,12 +10,10 @@ import okhttp3.Response
 class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Onefichier
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             url = fixUrl(url)
             val request: Request = Request.Builder()

@@ -1,18 +1,17 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoModel
 
 class Mega (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onExtract() {
-        super.onExtract()
         if (isDownloading) return
         player = Player.Mega
         isDirect = false
         url = fixUrl(url)
-        videoList.add(VideoModel("Default",url))
+        addVideo(VideoModel("Default",url))
     }
 
     private fun fixUrl(string: String) = string

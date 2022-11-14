@@ -1,7 +1,8 @@
-package com.ead.project.dreamer.data.database.model;
+package com.ead.project.dreamer.data.models;
 
 import androidx.annotation.Nullable;
 import com.ead.project.dreamer.data.commons.Constants;
+import com.ead.project.dreamer.data.commons.Tools;
 import com.ead.project.dreamer.data.network.DreamerWebView;
 import com.ead.project.dreamer.data.utils.DataStore;
 import com.ead.project.dreamer.data.utils.ThreadUtil;
@@ -55,18 +56,20 @@ public class Server {
 
     protected void addDefaultVideo() { this.videoList.add(new VideoModel(DEFAULT,url)); }
 
+    protected void addVideo(VideoModel video) { this.videoList.add(video); }
+
     public Boolean isConnectionValidated() {
-        try { return VideoChecker.Companion
-                    .getConnection(this.getVideoList().get(getVideoList().size()-1).getDirectLink());
+        try { return Tools.Companion
+                    .isConnectionAvailable(this.getVideoList().get(getVideoList().size()-1).getDirectLink());
         } catch (Exception e) { return false; }
     }
 
     protected Boolean connectionAvailable() {
-        if (!videoList.isEmpty()) return VideoChecker.Companion.getConnection(videoList.get(videoList.size() - 1).getDirectLink());
+        if (!videoList.isEmpty()) return Tools.Companion.isConnectionAvailable(videoList.get(videoList.size() - 1).getDirectLink());
         return false;
     }
 
-    protected void runUI(Function0<Unit> unit) {ThreadUtil.INSTANCE.runOnUiThread(unit);}
+    protected void runUI(Function0<Unit> unit) {ThreadUtil.INSTANCE.onUi(unit);}
 
     protected void handleDownload(int timeLimit) { if(awaitInTimePattern(timeLimit)) addDefaultVideo();}
 

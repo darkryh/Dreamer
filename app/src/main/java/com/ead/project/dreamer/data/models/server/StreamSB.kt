@@ -1,10 +1,10 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
 import android.webkit.WebView
 import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.ServerWebClient
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
 import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
@@ -16,13 +16,11 @@ class StreamSB(embeddedUrl:String) : Server(embeddedUrl) {
     private lateinit var rawServers : MutableList<String>
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.StreamSb
         rawServers = mutableListOf()
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             url = fixUrl(url)
             val response = OkHttpClient()
@@ -31,7 +29,7 @@ class StreamSB(embeddedUrl:String) : Server(embeddedUrl) {
 
             val host = response.request.url.host
             val totalData: List<String> = PatternManager.multipleMatches(
-                response.body!!.string(),
+                response.body?.string().toString(),
                 "onclick=\"download_video(.*?)\""
             )
 

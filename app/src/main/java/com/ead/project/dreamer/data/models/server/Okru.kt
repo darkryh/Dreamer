@@ -1,8 +1,8 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import okhttp3.OkHttpClient
@@ -14,12 +14,10 @@ class Okru(embeddedUrl:String) : Server(embeddedUrl) {
 
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Okru
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             url = url.replace("//","https://")
 
@@ -30,8 +28,8 @@ class Okru(embeddedUrl:String) : Server(embeddedUrl) {
                 .execute()
 
             url = PatternManager.singleMatch(
-                response.body!!.string(),
-                "data-options=\"(.*?)\"")!!
+                response.body?.string().toString(),
+                "data-options=\"(.*?)\"").toString()
 
             url = StringEscapeUtils.unescapeHtml4(url)
 
@@ -55,7 +53,7 @@ class Okru(embeddedUrl:String) : Server(embeddedUrl) {
                     "ultra"  -> VideoModel("4000p", url)
                     else     -> VideoModel("Default", url)
                 }
-                videoList.add(video)
+                addVideo(video)
             }
             breakOperation()
         } catch (e : Exception) {

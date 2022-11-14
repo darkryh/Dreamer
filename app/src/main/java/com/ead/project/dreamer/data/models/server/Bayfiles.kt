@@ -1,8 +1,9 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.commons.Tools.Companion.delete
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,41 +11,39 @@ import okhttp3.Request
 class Bayfiles(embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Bayfiles
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             val response = OkHttpClient()
                 .newCall(Request.Builder().url(url).build())
                 .execute()
 
             val totalData: List<String> = PatternManager.multipleMatches(
-                response.body!!.string(),
+                response.body?.string().toString(),
                 "https?:\\/\\/(cdn-[0123456789][0123456789][0123456789]).(bayfiles\\.com\\/.+)",
                 0
             )
             if (totalData.size > 1)
                 for (i in 0 until totalData.size / 2) {
                     url = fixDownloadLinks(totalData[i])
-                    videoList.add(VideoModel(quality(i),url))
+                    addVideo(VideoModel(quality(i),url))
                 }
             else {
                 url = fixDownloadLinks(totalData[0])
-                videoList.add(VideoModel("default",url))
+                addDefaultVideo()
             }
         } catch (e: Exception) { e.printStackTrace() }
     }
 
     private fun fixDownloadLinks(string: String): String {
         return string.trim { it <= ' ' }
-            .replace("\"", "")
-            .replace(" ", "")
-            .replace("img", "")
-            .replace(">", "")
-            .replace("<", "")
+            .delete("\"")
+            .delete(" ")
+            .delete("img")
+            .delete(">")
+            .delete("<")
     }
 
     private fun quality(index : Int) :String {

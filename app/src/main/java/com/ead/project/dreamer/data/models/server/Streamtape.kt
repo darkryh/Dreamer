@@ -1,20 +1,18 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.VideoModel
 import org.jsoup.Jsoup
 
 class Streamtape(embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Streamtape
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             val source = Jsoup.connect(url)
                 .userAgent(DreamerRequest.userAgent())
