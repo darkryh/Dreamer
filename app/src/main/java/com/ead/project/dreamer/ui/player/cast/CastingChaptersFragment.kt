@@ -9,17 +9,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.databinding.FragmentCastingChapterListBinding
+import com.ead.project.dreamer.databinding.FragmentCastingChaptersBinding
 import com.ead.project.dreamer.ui.player.PlayerViewModel
 import com.ead.project.dreamer.ui.player.cast.adapters.ChapterCastingRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CastingChapterListFragment : Fragment() {
+class CastingChaptersFragment : Fragment() {
 
     lateinit var chapter: Chapter
 
-    private var _binding : FragmentCastingChapterListBinding?=null
+    private var _binding : FragmentCastingChaptersBinding?=null
     private val binding get() = _binding!!
     private val playerViewModel : PlayerViewModel by viewModels()
     private lateinit var adapter: ChapterCastingRecyclerViewAdapter
@@ -28,7 +28,7 @@ class CastingChapterListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCastingChapterListBinding.inflate(inflater, container, false)
+        _binding = FragmentCastingChaptersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -40,8 +40,8 @@ class CastingChapterListFragment : Fragment() {
     private fun settingsLayout() {
         binding.rcvList.apply {
             layoutManager = LinearLayoutManager(context)
-            this@CastingChapterListFragment.adapter = ChapterCastingRecyclerViewAdapter(activity as Context)
-            adapter = this@CastingChapterListFragment.adapter
+            this@CastingChaptersFragment.adapter = ChapterCastingRecyclerViewAdapter(activity as Context)
+            adapter = this@CastingChaptersFragment.adapter
             setupChapters()
         }
     }
