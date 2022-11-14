@@ -63,7 +63,7 @@ class AdManager(
         }
     }
 
-    private fun workingOnFailedAd(it: LoadAdError) { }
+    private fun workingOnFailedAd(it: LoadAdError) { print(it.message) }
 
     fun onViewStateRestored() {
         ads?.clear()
