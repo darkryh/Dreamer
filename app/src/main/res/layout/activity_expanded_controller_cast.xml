@@ -108,12 +108,6 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/background_rounded_top_left_20dp"
-                    android:text="@string/chapter_spanish" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@drawable/background_rounded_top_right_20dp"
                     android:text="@string/list" />
 
