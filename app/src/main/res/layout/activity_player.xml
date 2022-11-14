@@ -17,19 +17,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.exoplayer2.ui.StyledPlayerView
+            app:controller_layout_id="@layout/dreamer_player_controller"
             android:id="@+id/styledPlayerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             app:animation_enabled="false"
-            app:controller_layout_id="@layout/dreamer_player_controller"
             app:hide_on_touch="true"
             app:show_timeout="3500"
-            app:surface_type="surface_view" />
-
-
+            app:surface_type="texture_view"/>
     </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
-
 
     <LinearLayout
         android:id="@+id/content_reference"
