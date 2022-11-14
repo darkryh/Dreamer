@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.data.retrofit.model.discord
+package com.ead.project.dreamer.data.models.discord
 
 data class UserIn(
     val avatar: String?,

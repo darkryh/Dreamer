@@ -1,10 +1,8 @@
-package com.ead.project.dreamer.data.database.model
+package com.ead.project.dreamer.data.models
 
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ServerManager
-import java.net.HttpURLConnection
-import java.net.URL
 import javax.inject.Inject
 
 class VideoChecker @Inject constructor() {
@@ -26,21 +24,6 @@ class VideoChecker @Inject constructor() {
             return pairList.map {
                 it.second
             }.toMutableList()
-        }
-
-        fun getConnection(url : String) : Boolean {
-            return try {
-                val urlObject = URL(url)
-                val connection: HttpURLConnection = urlObject.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-                connection.connect()
-                val code = connection.responseCode
-                connection.disconnect()
-                when (code) {
-                    200 -> true
-                    else -> false
-                }
-            } catch (e : Exception) { false }
         }
 
         private fun getDownloadsPosition(data: String) : Int {

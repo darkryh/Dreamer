@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.data.retrofit.model.discord
+package com.ead.project.dreamer.data.models.discord
 
 import com.ead.project.dreamer.data.utils.DataStore
 import com.google.gson.Gson

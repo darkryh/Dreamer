@@ -1,9 +1,9 @@
-package com.ead.project.dreamer.data.database.model.server
+package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.database.model.Player
-import com.ead.project.dreamer.data.database.model.Server
+import com.ead.project.dreamer.data.models.Player
+import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.PatternManager
 import org.json.JSONArray
 import org.jsoup.Connection
@@ -13,16 +13,15 @@ import java.util.ArrayList
 class Videobin (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
-        super.onPreExtract()
         player = Player.Videobin
     }
 
     override fun onExtract() {
-        super.onExtract()
         try {
             url = PatternManager.singleMatch(Jsoup.connect(url)
                 .userAgent(DreamerRequest.userAgent())
-                .method(Connection.Method.GET).execute().body(),"sources:(.*),")!!
+                .method(Connection.Method.GET).execute().body(),"sources:(.*),")
+
             val array = JSONArray(url)
             val list: MutableList<String> = ArrayList()
 
@@ -33,7 +32,7 @@ class Videobin (embeddedUrl:String) : Server(embeddedUrl) {
                 else
                     if (!src.endsWith(".m3u8")) list.add(src)
             }
-            for (i in list.indices) videoList.add(VideoModel(quality(list.size, i),list[i]))
+            for (i in list.indices) addVideo(VideoModel(quality(list.size, i),list[i]))
             breakOperation()
         }
         catch (e : Exception) { e.printStackTrace() }
