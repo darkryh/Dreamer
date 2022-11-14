@@ -15,6 +15,7 @@ data class AnimeProfile (
     val coverPhoto : String,
     val profilePhoto : String,
     val title : String,
+    val titleAlternate : String ="null",
     val rating : Float,
     var state : String,
     val description : String,
@@ -53,7 +54,7 @@ data class AnimeProfile (
                 && date == animeProfile.date
                 && genres == animeProfile.genres
                 && size == animeProfile.size
-                && lastChapterId == lastChapterId
+                && lastChapterId == animeProfile.lastChapterId
                 && reference == animeProfile.reference
 
     }
