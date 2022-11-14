@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.database.model
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -9,11 +10,20 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
+import com.ead.project.dreamer.data.commons.Tools.Companion.delete
+import com.ead.project.dreamer.data.commons.Tools.Companion.launchIntent
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DiffUtilEquality
+import com.ead.project.dreamer.data.utils.DirectoryManager
 import com.ead.project.dreamer.ui.chapter.settings.ChapterSettingsFragment
-import com.ead.project.dreamer.ui.menuplayer.MenuPlayerFragment
+import com.ead.project.dreamer.ui.menuserver.MenuServerFragment
+import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
+import com.ead.project.dreamer.ui.player.PlayerActivity
+import com.ead.project.dreamer.ui.player.PlayerExternalActivity
+import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -27,6 +37,7 @@ data class Chapter (
     val chapterCover : String,
     val chapterNumber : Int,
     val reference : String,
+    var downloadState : Int = STATUS_INITIALIZED,
     var currentSeen : Int = 0,
     var totalToSeen : Int = 0,
     var alreadySeen : Boolean = false,
@@ -36,20 +47,12 @@ data class Chapter (
 
     companion object {
 
-        fun fake() : Chapter = Chapter(
-            0,
-            0,
-            "null",
-            "null",
-            -1,
-            "null")
-
-        fun sameData(first: Chapter,second: Chapter) : Boolean
-                = first.idProfile == second.idProfile
-                && first.title == second.title
-                && first.chapterCover == second.chapterCover
-                && first.chapterNumber == second.chapterNumber
-                && first.reference == second.reference
+        const val STATUS_INITIALIZED = 0
+        const val STATUS_COMPLETED = 1
+        const val STATUS_PAUSED = 2
+        const val STATUS_RUNNING = 3
+        const val STATUS_PENDING = 4
+        const val STATUS_FAILED = -1
 
         fun get(): Chapter? = try {
             Gson().fromJson(DataStore.readString(Constants.CURRENT_EXECUTED_CHAPTER), Chapter::class.java)
@@ -69,13 +72,44 @@ data class Chapter (
             DataStore.readInt(Constants.CAST_STREAM_DURATION)
         } catch (e : Exception) { null }
 
-        fun callMenuInAdapter(context: Context,chapter: Chapter) {
+        fun getDownloadList() : MutableList<Pair<Long,Int>> = try {
+            Gson().fromJson(DataStore.readString(Constants.DOWNLOADED_CHAPTERS),
+                object : TypeToken<ArrayList<Pair<Long,Int>?>?>() {}.type)
+        } catch (e : Exception) { mutableListOf() }
+
+        fun addToDownloadList(data: Pair<Long,Int>) {
+            try {
+                val initList = getDownloadList()
+                initList.add(data)
+                DataStore.writeStringAsync(Constants.DOWNLOADED_CHAPTERS,
+                    Gson().toJson(initList))
+            } catch (e : Exception) { e.printStackTrace() }
+        }
+
+        fun removeFromDownloadList(data: Pair<Long,Int>) {
+            try {
+                val initList = getDownloadList()
+                initList.remove(data)
+                DataStore.writeStringAsync(Constants.DOWNLOADED_CHAPTERS,
+                    Gson().toJson(initList))
+            } catch (e : Exception) { e.printStackTrace() }
+        }
+
+        fun manageVideo(context: Context, chapter: Chapter) {
+            if (chapter.isNotDownloaded()) launchServer(context, chapter)
+            else launchOfflineVideo(context as Activity, chapter, chapter.toVideoModelArray())
+        }
+
+        fun launchServer(context: Context, chapter: Chapter, isDownloadMode : Boolean = false) {
             if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
                 DataStore.writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_CHAPTER,true)
                 val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
                 val data = Bundle()
-                data.apply { putParcelable(Constants.REQUESTED_CHAPTER, chapter) }
-                val chapterMenu = MenuPlayerFragment()
+                data.apply {
+                    putParcelable(Constants.REQUESTED_CHAPTER, chapter)
+                    putBoolean(Constants.IS_DATA_FOR_DOWNLOADING_MODE,isDownloadMode)
+                }
+                val chapterMenu = MenuServerFragment()
                 chapterMenu.apply {
                     arguments = data
                     show(fragmentManager, Constants.MENU_PLAYER_FRAGMENT)
@@ -83,25 +117,76 @@ data class Chapter (
             }
         }
 
-        fun callInAdapterSettings(context : Context,chapterList: List<Chapter>) {
+        private fun launchOfflineVideo(activity: Activity, chapter: Chapter, playList: List<VideoModel>, isDirect : Boolean = true) {
+            val isExternalPlayerMode = Constants.isExternalPlayerMode()
+            if (Constants.isAdInterstitialTime(isDirect)) {
+                launchIntent(activity, chapter, InterstitialAdActivity::class.java, playList, isDirect)
+                Constants.resetCountedAds()
+            } else {
+                if (isDirect) {
+                    if (!isExternalPlayerMode) launchIntent(activity, chapter, PlayerActivity::class.java, playList)
+                    else launchIntent(activity, chapter, PlayerExternalActivity::class.java, playList)
+                }
+                else launchIntent(activity, chapter, PlayerWebActivity::class.java, playList)
+            }
+        }
+
+        fun callInAdapterSettings(context : Context,chapter: Chapter,isCorrectData : Boolean = true) {
             val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
             val data = Bundle()
-            data.apply { putParcelableArrayList(Constants.REQUESTED_CHAPTER_LIST,
-                chapterList as ArrayList<out Parcelable>) }
+            data.apply {
+                putParcelable(Constants.REQUESTED_CHAPTER, chapter)
+                putBoolean(Constants.IS_CORRECT_DATA_FROM_CHAPTER,isCorrectData)
+            }
             val chapterMenu = ChapterSettingsFragment()
             chapterMenu.apply {
                 arguments = data
                 show(fragmentManager, Constants.MENU_CHAPTER_SETTINGS)
             }
         }
+
+        fun fake() : Chapter = Chapter(
+            0,
+            0,
+            "null",
+            "null",
+            -1,
+            "null")
+
     }
 
-    fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
+    fun needsToUpdate() = currentSeen > 0L
+
+    private fun toVideoModelArray() = arrayListOf(VideoModel("default",getDownloadReference()))
+
+    fun getDownloadReference() = DirectoryManager.getChapterFolder(this)
+
+    fun getWebReference() = Tools.getWebServerAddress() + "/${routeName()}"
+
+    fun routeName() = title
+        .delete(" ")
+        .delete("(")
+        .delete(")")
+        .delete(":")
+        .lowercase() + chapterNumber
+
+    fun isDownloaded() = downloadState == STATUS_COMPLETED
+
+    fun isNotDownloaded() = !isDownloaded()
+
+    private fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
             && chapterNumber != -1 && reference.isNotEmpty()
 
     fun isNotWorking () = !isWorking()
 
     fun currentSeenToLong() = Tools.secondsToLong(this.currentSeen)
+
+    fun sameData(other : Chapter) : Boolean
+            = this.idProfile == other.idProfile
+            && this.title == other.title
+            && this.chapterCover == other.chapterCover
+            && this.chapterNumber == other.chapterNumber
+            && this.reference == other.reference
 
     override fun equalsHeader(other: Any?): Boolean {
         if (this === other) return true
@@ -118,5 +203,6 @@ data class Chapter (
                 && chapterCover == chapter.chapterCover
                 && currentSeen == chapter.currentSeen
                 && reference == chapter.reference
+                && selected == chapter.selected
     }
 }
