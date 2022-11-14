@@ -9,8 +9,10 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.getCatch
 import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.database.model.*
+import com.ead.project.dreamer.data.models.discord.AccessToken
+import com.ead.project.dreamer.data.models.discord.GuildMember
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.retrofit.interceptor.*
-import com.ead.project.dreamer.data.retrofit.model.discord.*
 import com.ead.project.dreamer.data.retrofit.service.AppService
 import com.ead.project.dreamer.data.retrofit.service.DiscordService
 import kotlinx.coroutines.flow.Flow
@@ -63,7 +65,17 @@ class AnimeRepository @Inject constructor(
     suspend fun getAnimeBaseById(id: Int) : AnimeBase = animeBaseDao.getById(id)
 
     fun getFlowAnimeBaseList(title: String) : Flow<List<AnimeBase>> {
+        if (Constants.isGooglePolicyActivate()) {
+            return animeBaseDao.getFlowDataListByNameCensured(title)
+        }
         return animeBaseDao.getFlowDataListByName(title)
+    }
+
+    fun getFlowAnimeBaseFullList(title: String) : Flow<List<AnimeBase>> {
+        if (Constants.isGooglePolicyActivate()) {
+            return animeBaseDao.getFlowDataFullListByNameCensured(title)
+        }
+        return animeBaseDao.getFlowDataFullListByName(title)
     }
 
     fun getFlowAnimeBaseFromTitle(title : String) : Flow<AnimeBase?> = animeBaseDao.getFlowAnimeBaseFromTitle(title)
@@ -113,10 +125,13 @@ class AnimeRepository @Inject constructor(
 
     //CHAPTERS
 
-
     suspend fun insertChapters(chapterList: List<Chapter>) = chapterDao.insertChapters(chapterList)
 
     suspend fun updateChapter(chapter: Chapter) = chapterDao.update(chapter)
+
+    fun updateChapterNormal(chapter: Chapter) = chapterDao.updateNormal(chapter)
+
+    suspend fun getNotDownloadedChaptersFromId(id: Int) : List<Chapter> = chapterDao.getNotDownloadedChaptersFromId(id)
 
     suspend fun updateChapters(chapterList: List<Chapter>) = chapterDao.updateChapters(chapterList)
 
