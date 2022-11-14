@@ -44,10 +44,10 @@ interface AnimeProfileDao {
     @Query("select * from anime_profile_table where isFavorite = 1 order by title asc")
     fun getLikeFlowDataList() : Flow<List<AnimeProfile>>
 
-    @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size,p.lastChapterId,p.reference,p.isFavorite from (select * from anime_chapter_table where currentSeen >= totalToSeen*0.75 and totalToSeen != 0 GROUP BY idProfile ORDER BY count(idProfile) desc) as c INNER join anime_profile_table as p on c.idProfile = p.id")
+    @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.titleAlternate,p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size,p.lastChapterId,p.reference,p.isFavorite from (select * from anime_chapter_table where currentSeen >= totalToSeen*0.75 and totalToSeen != 0 GROUP BY idProfile ORDER BY count(idProfile) desc) as c INNER join anime_profile_table as p on c.idProfile = p.id")
     fun getFlowMostViewedSeries(): Flow<List<AnimeProfile>>
 
-    @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size,p.lastChapterId,p.reference,p.isFavorite from (select * from anime_chapter_table where currentSeen >= totalToSeen*0.75 and totalToSeen != 0 GROUP BY idProfile ORDER BY count(idProfile) desc) as c INNER join anime_profile_table as p on c.idProfile = p.id")
+    @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.titleAlternate,p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size,p.lastChapterId,p.reference,p.isFavorite from (select * from anime_chapter_table where currentSeen >= totalToSeen*0.75 and totalToSeen != 0 GROUP BY idProfile ORDER BY count(idProfile) desc) as c INNER join anime_profile_table as p on c.idProfile = p.id")
     suspend fun getMostViewedSeries(): List<AnimeProfile>
 
     @Query("select * from anime_profile_table where (rawGenres like '%' || :fMGenre || '%' or rawGenres like '%' || :sMGenre || '%' or rawGenres like '%' || :tMGenre || '%' or rawGenres like '%' || :forMGenre || '%' or rawGenres like '%' || :fivMGenre || '%' or rawGenres like '%' || :fSGenre || '%' or rawGenres like '%' || :sSGenre || '%' or rawGenres like '%' || :tSGenre || '%' or rawGenres like '%' || :tFGenre || '%') and rating >= 4.7 order by random() limit :limit")
