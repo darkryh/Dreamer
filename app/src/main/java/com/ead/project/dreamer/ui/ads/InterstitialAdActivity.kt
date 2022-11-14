@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.player
+package com.ead.project.dreamer.ui.ads
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +9,10 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.database.model.VideoModel
-import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.databinding.ActivityInterstitialAdBinding
+import com.ead.project.dreamer.ui.player.PlayerExternalActivity
+import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -24,7 +25,6 @@ class InterstitialAdActivity : AppCompatActivity() {
     private var interstitialAd : InterstitialAd?= null
     private lateinit var chapter: Chapter
     private lateinit var videoList : List<VideoModel>
-    private var isExternalPlayer = false
     private var isDirect = true
 
     private lateinit var binding: ActivityInterstitialAdBinding
@@ -42,7 +42,6 @@ class InterstitialAdActivity : AppCompatActivity() {
         chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
         videoList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
         isDirect = intent.extras!!.getBoolean(Constants.REQUESTED_IS_DIRECT)
-        isExternalPlayer = DataStore.readBoolean(Constants.PREFERENCE_EXTERNAL_PLAYER)
     }
 
     private fun initAds() {
@@ -84,8 +83,8 @@ class InterstitialAdActivity : AppCompatActivity() {
                 finish()
             }
 
-            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                super.onAdFailedToShowFullScreenContent(p0)
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                super.onAdFailedToShowFullScreenContent(adError)
                 initVideo()
                 finish()
             }

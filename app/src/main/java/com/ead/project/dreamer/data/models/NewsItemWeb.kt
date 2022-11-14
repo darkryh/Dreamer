@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.data.database.model
+package com.ead.project.dreamer.data.models
 
 data class NewsItemWeb(
     val title: String,
@@ -10,10 +10,4 @@ data class NewsItemWeb(
     val photoAuthor : String,
     val authorFooter : String,
     val authorWords : String
-) {
-
-    companion object {
-        fun fake () : NewsItemWeb = NewsItemWeb("","","","","", emptyList(),
-            "","","")
-    }
-}
+)
