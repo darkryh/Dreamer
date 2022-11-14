@@ -6,9 +6,8 @@ import kotlin.math.abs
 
 
 abstract class AppBarStateChangeListener : OnOffsetChangedListener {
-    enum class State {
-        EXPANDED, COLLAPSED, IDLE
-    }
+
+    enum class State { EXPANDED, COLLAPSED, IDLE }
 
     private var mCurrentState = State.IDLE
     override fun onOffsetChanged(appBarLayout: AppBarLayout, i: Int) {
