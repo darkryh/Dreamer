@@ -14,6 +14,9 @@ interface ChapterDao {
     suspend fun update(chapter: Chapter)
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun updateNormal(chapter: Chapter)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateChapters(chapters: List<Chapter>)
 
     @Query("delete from anime_chapter_table  where idProfile=:id")
@@ -37,9 +40,6 @@ interface ChapterDao {
     @Query("select * from anime_chapter_table  where idProfile =:id order by chapterNumber asc")
     fun getFlowChaptersFromProfileAsc(id : Int) : Flow<List<Chapter>>
 
-    @Query("select * from(select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title")
-    suspend fun getRecords() : List<Chapter>
-
     @Query("select * from(select * from (select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title) as T order by lastSeen desc")
     fun getFlowDataRecords() : Flow<List<Chapter>>
 
@@ -48,4 +48,7 @@ interface ChapterDao {
 
     @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
     fun getFlowChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Flow<Chapter?>
+
+    @Query("select * from ( select * from anime_chapter_table where idProfile=:id order by chapterNumber asc ) as x where downloadState='${Chapter.STATUS_INITIALIZED}' or downloadState='${Chapter.STATUS_FAILED}'")
+    suspend fun getNotDownloadedChaptersFromId(id: Int) : List<Chapter>
 }
