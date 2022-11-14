@@ -11,6 +11,7 @@ import coil.transform.BlurTransformation
 import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Tools.Companion.round
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
@@ -80,11 +81,11 @@ class ChapterRecordRecyclerViewAdapter (
                 binding.progressBarSeen.max = chapter.totalToSeen
             }
             binding.progressBarSeen.progress = chapter.currentSeen
+            binding.imvDownload.setVisibility(chapter.isDownloaded())
 
-            binding.root.setOnClickListener { Chapter.callMenuInAdapter(context, chapter) }
-
+            binding.root.setOnClickListener { Chapter.manageVideo(context, chapter) }
             binding.root.setOnLongClickListener {
-                Chapter.callInAdapterSettings(context, arrayListOf(chapter))
+                Chapter.callInAdapterSettings(context, chapter)
                 return@setOnLongClickListener true
             }
         }
@@ -110,10 +111,11 @@ class ChapterRecordRecyclerViewAdapter (
                 binding.progressBarSeen.max = chapter.totalToSeen
             }
             binding.progressBarSeen.progress = chapter.currentSeen
+            binding.imvDownload.setVisibility(chapter.isDownloaded())
 
-            binding.root.setOnClickListener { Chapter.callMenuInAdapter(context,chapter) }
+            binding.root.setOnClickListener { Chapter.manageVideo(context,chapter) }
             binding.root.setOnLongClickListener {
-                Chapter.callInAdapterSettings(context, arrayListOf(chapter))
+                Chapter.callInAdapterSettings(context, chapter)
                 return@setOnLongClickListener true
             }
         }

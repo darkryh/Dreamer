@@ -23,14 +23,6 @@ data class ChapterHome (
 
     companion object {
 
-        fun fake() : ChapterHome = ChapterHome(
-            0,
-            "null",
-            "null",
-            -1,
-            "null",
-            "null")
-
         fun getPreviousList() : List<String> = try {
             Gson().fromJson(DataStore.readString(Constants.CURRENT_NOTICED_CHAPTERS_HOME),
                 object : TypeToken<ArrayList<String?>?>() {}.type)
@@ -40,14 +32,16 @@ data class ChapterHome (
         }
 
         fun setPreviousList(list: List<String>) = DataStore
-            .writeString(Constants.CURRENT_NOTICED_CHAPTERS_HOME,Gson().toJson(list))
+            .writeStringAsync(Constants.CURRENT_NOTICED_CHAPTERS_HOME,Gson().toJson(list))
 
-        fun sameData(first: ChapterHome,second: ChapterHome) : Boolean
-                = first.title == second.title
-                && first.chapterCover == second.chapterCover
-                && first.chapterNumber == second.chapterNumber
-                && first.type == second.type
-                && first.reference == second.reference
+        fun fake() : ChapterHome = ChapterHome(
+            0,
+            "null",
+            "null",
+            -1,
+            "null",
+            "null")
+
     }
 
     fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
@@ -58,12 +52,19 @@ data class ChapterHome (
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
         val chapter: ChapterHome = other as ChapterHome
-        return sameData(this,chapter)
+        return sameData(chapter)
     }
 
     override fun hashCode(): Int {
         return Objects.hash(title,chapterCover,chapterNumber,type,reference)
     }
+
+    fun sameData(other: ChapterHome) : Boolean
+            = this.title == other.title
+                && this.chapterCover == other.chapterCover
+                && this.chapterNumber == other.chapterNumber
+                && this.type == other.type
+                && this.reference == other.reference
 
     override fun equalsHeader(other: Any?): Boolean {
         if (this === other) return true
@@ -76,6 +77,6 @@ data class ChapterHome (
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val chapter: ChapterHome = other as ChapterHome
-        return sameData(this,chapter)
+        return sameData(chapter)
     }
 }

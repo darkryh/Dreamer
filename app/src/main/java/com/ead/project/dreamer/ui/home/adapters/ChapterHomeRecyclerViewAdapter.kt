@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
@@ -88,7 +90,7 @@ class ChapterHomeRecyclerViewAdapter(
             binding.txvTitle.text = chapter.title
             binding.txvChapter.text = chapter.chapterNumber.toString()
             binding.txvType.text = chapter.type
-            if (chapter.type.isEmpty()) binding.txvType.visibility = View.GONE
+            binding.txvType.setVisibility(chapter.type.isNotEmpty())
             DreamerLayout.setClickEffect(binding.root,context)
         }
 
@@ -104,9 +106,9 @@ class ChapterHomeRecyclerViewAdapter(
             val chapterSender = Chapter(0, 0, chapter.title,
                 chapter.chapterCover, chapter.chapterNumber,chapter.reference)
 
-            binding.root.setOnClickListener { Chapter.callMenuInAdapter(context,chapterSender) }
+            binding.root.setOnClickListener { Chapter.manageVideo(context,chapterSender) }
             binding.root.setOnLongClickListener {
-                Chapter.callInAdapterSettings(context, arrayListOf(chapterSender))
+                Chapter.callInAdapterSettings(context, chapterSender,false)
                 return@setOnLongClickListener true
             }
         }
@@ -142,9 +144,7 @@ class ChapterHomeRecyclerViewAdapter(
             if (nativeAd.store != null) {
                 binding.adStore.text = nativeAd.store
             }
-            else {
-                binding.adStore.visibility = View.GONE
-            }
+            binding.adStore.setVisibility(nativeAd.store.isNotNullOrNotEmpty())
 
             if (nativeAd.price != null) {
                 binding.adPrice.text = nativeAd.price

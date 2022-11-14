@@ -4,18 +4,22 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterBinding
 
 class ChapterRecyclerViewAdapter (
     private val context: Context,
-    private val editModeView : View? = null) :
+    private val editModeView : View? = null
+) :
     RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
@@ -39,19 +43,24 @@ class ChapterRecyclerViewAdapter (
 
     fun removeEditMode() {
         isEditMode = false
-        editModeView?.visibility = View.GONE
-        val tempList = differ.currentList.let { it.forEach { item -> item.selected = false }
-            it
-        }
+        hideAnimation(editModeView)
+        val temporalList = differ.currentList.onEach { item -> item.selected = false }
         differ.submitList(null)
-        differ.submitList(tempList)
+        differ.submitList(temporalList)
+    }
+
+    private fun hideAnimation(view: View?) {
+        view?.let {
+            val bottomDown: Animation = AnimationUtils.loadAnimation(
+                context,
+                R.anim.bottom_down
+            )
+            it.startAnimation(bottomDown)
+            it.visibility = View.INVISIBLE
+        }
     }
 
     override fun getItemCount(): Int = differ.currentList.size
-
-    fun getFullList() = try {
-        differ.currentList.sortedBy { it.chapterNumber }.toMutableList()
-    } catch (e : Exception) { emptyList<Chapter?>().toMutableList() }
 
     fun getDownloadList() = try {
         differ.currentList.filter { filter -> filter.selected }
@@ -83,18 +92,30 @@ class ChapterRecyclerViewAdapter (
         private fun settingProgress(chapter: Chapter) {
             if (chapter.totalToSeen > 0) binding.progressBarSeen.max = chapter.totalToSeen
             binding.progressBarSeen.progress = chapter.currentSeen
+            binding.imvDownload.setVisibility(chapter.isDownloaded())
         }
 
         private fun settingFunctionality(chapter: Chapter) {
             binding.root.setOnClickListener {
-                if (!isEditMode) Chapter.callMenuInAdapter(context, chapter)
+                if (!isEditMode) Chapter.manageVideo(context, chapter)
                 else configureEditMode(chapter)
             }
             binding.root.setOnLongClickListener {
                 isEditMode = true
-                editModeView?.visibility = View.VISIBLE
+                showAnimation(editModeView)
                 configureEditMode(chapter)
                 return@setOnLongClickListener true
+            }
+        }
+
+        private fun showAnimation(view: View?) {
+            view?.let {
+                val bottomUp: Animation = AnimationUtils.loadAnimation(
+                    context,
+                    R.anim.bottom_up
+                )
+                it.startAnimation(bottomUp)
+                it.visibility = View.VISIBLE
             }
         }
 
