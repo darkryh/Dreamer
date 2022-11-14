@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterCastingBinding
@@ -66,26 +66,11 @@ class ChapterCastingRecyclerViewAdapter (private val context: Context) :
                 binding.progressBarSeen.max = chapter.totalToSeen
             }
             binding.progressBarSeen.progress = chapter.currentSeen
+            binding.imvDownload.setVisibility(chapter.isDownloaded())
         }
 
         private fun settingFunctionality(chapter: Chapter) {
-            binding.root.setOnClickListener {
-                /*if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_CHAPTER)) {
-                    DataStore.writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_CHAPTER,true)
-
-                    val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
-                    val data = Bundle()
-                    data.apply {
-                        putParcelable(Constants.REQUESTED_CHAPTER, chapter)
-                    }
-                    val chapterMenu = MenuPlayerFragment()
-                    chapterMenu.apply {
-                        arguments = data
-                        show(fragmentManager, Constants.MENU_PLAYER_FRAGMENT)
-                    }
-                }*/
-                DreamerApp.showLongToast("in develop")
-            }
+            binding.root.setOnClickListener { Chapter.manageVideo(context,chapter) }
         }
     }
 }
