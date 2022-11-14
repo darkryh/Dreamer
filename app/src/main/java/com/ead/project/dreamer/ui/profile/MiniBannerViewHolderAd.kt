@@ -3,6 +3,8 @@ package com.ead.project.dreamer.ui.profile
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.databinding.AdUnifiedMiniBannerBinding
 
 import com.google.android.gms.ads.nativead.NativeAd
@@ -37,9 +39,7 @@ class MiniBannerViewHolderAd (val binding: AdUnifiedMiniBannerBinding) :
         if (nativeAd.store != null) {
             binding.adStore.text = nativeAd.store
         }
-        else {
-            binding.adStore.visibility = View.GONE
-        }
+        binding.adStore.setVisibility(nativeAd.store.isNotNullOrNotEmpty())
 
         if (nativeAd.price != null) {
             binding.adPrice.text = nativeAd.price
