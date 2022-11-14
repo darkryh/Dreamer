@@ -12,13 +12,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class SettingsNotificationsFragment : PreferenceFragmentCompat() {
 
-    private lateinit var pCommunicator : SwitchPreference
     private lateinit var pNotificatorOfficial : SwitchPreference
     private lateinit var lNotificator : androidx.preference.ListPreference
-
-    private var communicators = DataStore
-        .readBoolean(Constants.PREFERENCE_CUSTOMIZE_COMMUNICATORS,true)
-    private lateinit var notificator :String
+    private lateinit var notificator : String
     private var dreamerTopic = DataStore
         .readBoolean(Constants.DREAMER_TOPIC,true)
 
@@ -30,7 +26,6 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initLayouts() {
-        pCommunicator = findPreference(Constants.PREFERENCE_CUSTOMIZE_COMMUNICATORS)!!
         pNotificatorOfficial = findPreference(Constants.DREAMER_TOPIC)!!
         lNotificator = findPreference(Constants.PREFERENCE_NOTIFICATIONS)!!
     }
@@ -38,7 +33,6 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
     private fun settingLayouts() {
         notificator = DataStore.readInt(Constants.PREFERENCE_NOTIFICATIONS, lNotificator.value.toInt()).toString()
         pNotificatorOfficial.isChecked = dreamerTopic
-        pCommunicator.isChecked = communicators
         lNotificator.value = notificator
     }
 
@@ -53,13 +47,7 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         val key = preference.key!!
         val data: Boolean
-
         when (key) {
-            Constants.PREFERENCE_CUSTOMIZE_COMMUNICATORS -> {
-                data = DataStore.readBoolean(key,true)
-                DataStore.writeBooleanAsync(key, !data)
-                return data
-            }
             Constants.PREFERENCE_NOTIFICATIONS -> { return true }
             Constants.DREAMER_TOPIC -> {
                 data = DataStore.readBoolean(key,true)

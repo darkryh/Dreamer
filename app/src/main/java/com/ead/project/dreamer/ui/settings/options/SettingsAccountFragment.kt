@@ -7,10 +7,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.ui.login.LoginActivity
-import com.ead.project.dreamer.ui.settings.layouts.ImageViewPreference
+import com.ead.project.dreamer.ui.settings.layouts.AccountViewPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsAccountFragment : PreferenceFragmentCompat() {
@@ -20,7 +20,7 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
     private lateinit var pAdviser : Preference
     private lateinit var pSession : Preference
 
-    private var imvpProfile: ImageViewPreference? = null
+    private var imvpProfile: AccountViewPreference? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.account_preferences, rootKey)
@@ -30,7 +30,7 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
     }
 
     private fun initLayouts() {
-        imvpProfile = findPreference(Constants.PREFERENCE_CUSTOMIZED_IMV_PROFILE) as ImageViewPreference?
+        imvpProfile = findPreference(Constants.PREFERENCE_CUSTOMIZED_IMV_PROFILE) as AccountViewPreference?
         pAdviser = findPreference(Constants.PREFERENCE_ADVISER)!!
         pSession = findPreference(Constants.PREFERENCE_SESSION)!!
     }
@@ -56,9 +56,9 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
             Constants.PREFERENCE_SESSION -> {
                 if (user != null) {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Sesión")
-                        .setMessage("\n¿Estas seguro de querer cerrar sesión. ${User.get()?.username}?")
-                        .setPositiveButton("Confirmar") { _: DialogInterface?, _: Int ->
+                        .setTitle(getString(R.string.session))
+                        .setMessage(getString(R.string.warning_logout,User.get()?.username))
+                        .setPositiveButton(getString(R.string.confirm)) { _: DialogInterface?, _: Int ->
                             User.logout()
                             val intent: Intent? = requireActivity().baseContext.packageManager.getLaunchIntentForPackage(
                                 requireActivity().baseContext.packageName
@@ -67,7 +67,7 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
                             intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(intent)
                         }
-                        .setNegativeButton("Cancelar",null)
+                        .setNegativeButton(getString(R.string.cancel),null)
                         .show()
                 }
                 else {

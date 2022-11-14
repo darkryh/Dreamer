@@ -29,7 +29,7 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
     private lateinit var pState : Preference
     private var versionName = BuildConfig.VERSION_NAME
 
-    private val directoryProfileState = Constants.isDirectorySynchronized()
+    private val isDirectoryProfileStateCompleted = Constants.isDirectorySynchronized()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.about_us_preferences, rootKey)
@@ -43,12 +43,12 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
     }
 
     private fun settingLayouts() {
-        if (directoryProfileState)
+        if (isDirectoryProfileStateCompleted)
             pState.summary = requireActivity().getString(R.string.sync_complete)
         else
             pState.summary = requireActivity().getString(R.string.sync_in_progress)
 
-        pVersion.summary = "Versión : Beta $versionName"
+        pVersion.summary = getString(R.string.version_description,"Beta",versionName)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {

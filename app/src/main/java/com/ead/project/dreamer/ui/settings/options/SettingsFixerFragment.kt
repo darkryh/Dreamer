@@ -40,16 +40,16 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
                 connecting(
                     Constants.API_APP,
                     preferenceStateApi,
-                    "¡Conexión exitosa con la API!",
-                    "¡Conexión fallida con la API!")
+                    getString(R.string.status_api,"exitosa"),
+                    getString(R.string.status_api,"fallida"))
             }
             Constants.PREFERENCE_CLICK_MC2_CONNECTION -> {
                 preferenceProvider.isEnabled = false
                 connecting(
                     Constants.PROVIDER_URL,
                     preferenceProvider,
-                    "¡Conexión exitosa con el Proveedor!",
-                    "¡Conexión fallida con el Proveedor!")
+                    getString(R.string.status_provider,"exitosa"),
+                    getString(R.string.status_provider,"fallida"))
             }
             Constants.PREFERENCE_CLICK_FIXER -> {
                 preferenceFixer.isEnabled = false
@@ -64,7 +64,7 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
         settingsFixerViewModel.getConnectionState(url).observe(viewLifecycleOwner) {
             when(it) {
                 0 -> {
-                    val summary: Spannable = SpannableString("Intentando conectar..")
+                    val summary: Spannable = SpannableString(getString(R.string.try_reconnecting))
                     val color = Color.GRAY
                     summary.setSpan(ForegroundColorSpan(color), 0, summary.length, 0)
                     preference.summary = summary
