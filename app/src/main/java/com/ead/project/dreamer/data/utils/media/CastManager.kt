@@ -2,6 +2,7 @@ package com.ead.project.dreamer.data.utils.media
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -26,7 +27,9 @@ import kotlin.math.roundToInt
 
 class CastManager (private val initOnCreate : Boolean = false) {
 
-    private var castContext : CastContext = CastContext.getSharedInstance(DreamerApp.INSTANCE)
+    private val context : Context = DreamerApp.INSTANCE
+    @Suppress("DEPRECATION") private var castContext : CastContext =
+        CastContext.getSharedInstance(context)
     private lateinit var castStateListener : CastStateListener
     private var introductoryOverlay : IntroductoryOverlay?= null
 
@@ -76,7 +79,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
     fun showMessageInTextView(textView: TextView) {
         textView.visibility = View.VISIBLE
-        textView.text = "Casteando en ${castContext.sessionManager.currentCastSession?.castDevice?.friendlyName}."
+        textView.text = context.getString(R.string.casting_in_device,castContext.sessionManager.currentCastSession?.castDevice?.friendlyName)
     }
 
     fun setButtonFactory(mediaRouteButton: MediaRouteButton) {
@@ -183,11 +186,6 @@ class CastManager (private val initOnCreate : Boolean = false) {
                 && chapter.totalToSeen > 0
     } catch (e : Exception) { false }
 
-    /*fun isPlaying () = remoteMediaClient?.isPlaying
-
-    fun pause() = remoteMediaClient?.pause()
-
-    fun play() = remoteMediaClient?.play()*/
 
     private fun getStream() : Int {
         return when (currentStream()) {
@@ -250,32 +248,33 @@ class CastManager (private val initOnCreate : Boolean = false) {
             updateChapterMetaData()
             unregisterRemote()
         }
-
-
     }
 
     private fun applyUpdates(chapter: Chapter?) {
         if (chapter != null && viewModel != null) {
-            when(viewModel) {
-                is MainActivityViewModel -> (viewModel as MainActivityViewModel).updateChapter(chapter)
-                is AnimeProfileViewModel -> (viewModel as AnimeProfileViewModel).updateChapter(chapter)
-                is PlayerViewModel -> (viewModel as PlayerViewModel).updateChapter(chapter)
-            }
+            if (chapter.needsToUpdate())
+                when(viewModel) {
+                    is MainActivityViewModel -> (viewModel as MainActivityViewModel).updateChapter(chapter)
+                    is AnimeProfileViewModel -> (viewModel as AnimeProfileViewModel).updateChapter(chapter)
+                    is PlayerViewModel -> (viewModel as PlayerViewModel).updateChapter(chapter)
+                }
         }
     }
 
     private val callback : RemoteMediaClient.Callback = object : RemoteMediaClient.Callback() {
+
+        private var remoteError = false
 
         override fun onStatusUpdated() {
             super.onStatusUpdated()
             when(remoteMediaClient?.mediaStatus?.playerState) {
                 MediaStatus.IDLE_REASON_FINISHED -> {
                     Log.d(TAG, "onStatusUpdated: IDLE_REASON_FINISHED")
-                    updateChapterFinalMetaData()
+                    if (!remoteError) { updateChapterFinalMetaData() }
+                    else remoteError = false
                 }
+                MediaStatus.IDLE_REASON_ERROR -> remoteError = true
             }
         }
-
-
     }
 }
