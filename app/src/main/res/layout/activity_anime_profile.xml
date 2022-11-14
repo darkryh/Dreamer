@@ -12,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/coordinatorMode">
+        app:layout_constraintBottom_toTopOf="@id/castMiniController">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                         android:layout_marginEnd="8dp"
                         android:contentDescription="@string/cover_profile"
                         android:scaleType="centerCrop"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:tint="@color/white"
                         app:srcCompat="@drawable/ic_circle_download_24"
                         tools:ignore="ImageContrastCheck"/>
@@ -279,41 +279,37 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinatorMode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/castMiniController"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
         <com.google.android.material.card.MaterialCardView
-            android:backgroundTint="@color/grey_accent"
+            android:id="@+id/editModeView"
+            android:backgroundTint="?attr/colorPrimary"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="24dp">
+            android:layout_height="56dp"
+            android:layout_margin="16dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/castMiniController"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:cardCornerRadius="8dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
+                android:gravity="center_vertical"
                 android:layoutDirection="rtl">
 
                 <ImageView
                     android:id="@+id/imvDownloadSelected"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:paddingVertical="16dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:paddingVertical="0dp"
                     android:src="@drawable/ic_circle_download_24"
+                    app:tint="?attr/colorSecondaryVariant"
                     android:contentDescription="@string/download"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
 
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <fragment
         android:id="@+id/castMiniController"
@@ -328,5 +324,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="FragmentTagUsage" />
+        tools:ignore="FragmentTagUsage"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
