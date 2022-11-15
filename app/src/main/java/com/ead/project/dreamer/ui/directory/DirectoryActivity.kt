@@ -27,6 +27,7 @@ class DirectoryActivity : AppCompatActivity() {
     private lateinit var edtSearch : EditText
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private var isLinear = false
+    private val isDirectoryProfileStateCompleted = Constants.isDirectorySynchronized()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,12 +79,20 @@ class DirectoryActivity : AppCompatActivity() {
         }
 
     private fun prepareAdapter() {
-        edtSearch.addTextChangedListener {
-            directoryViewModel.getDirectory(edtSearch.text.toString()).observe(this) {
+        if (isDirectoryProfileStateCompleted)
+            edtSearch.addTextChangedListener {
+            directoryViewModel.getFullDirectory(edtSearch.text.toString()).observe(this) {
                 this.adapter = AnimeBaseRecyclerViewAdapter(it, this,isLinear)
                 recyclerView.adapter = adapter
             }
         }
+        else
+            edtSearch.addTextChangedListener {
+                directoryViewModel.getDirectory(edtSearch.text.toString()).observe(this) {
+                    this.adapter = AnimeBaseRecyclerViewAdapter(it, this,isLinear)
+                    recyclerView.adapter = adapter
+                }
+            }
     }
 
     private fun settingThemeLayouts() {
