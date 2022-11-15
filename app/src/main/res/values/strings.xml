@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Dreamer</string>
     <string name="logo">logo</string>
     <string name="sign_in_discord">Iniciar con Discord</string>
@@ -39,14 +39,8 @@
     <string name="wordDecorate">· %1$s</string>
     <string name="ratingLayout">✪ %1$s</string>
     <string name="chapter_number">Capítulo número %1$s</string>
-    <string name="chapter_number_min">Cap. %1$s</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="default_string">default</string>
-    <!-- Preference Titles -->
+    <string name="chapter_number_short">Cap. %1$s</string>
 
-    <!-- Messages Preferences -->
-
-    <!-- Sync Preferences -->
     <string name="imageview_to_checker">imageview to checker</string>
     <string name="loading">cargando..</string>
     <string name="close">close</string>
@@ -90,6 +84,9 @@
     <string name="successfully_sync">Sincronización Exitosa..</string>
     <string name="topic_news">Tópico: %1$s.</string>
     <string name="recommendations">Recomendaciones</string>
+    <string name="casting_mode">En modo Casting</string>
+    <string name="casting_in_device">Casteando en %1$s.</string>
+    <string name="server_warning_error">Error de servidor o video eliminado</string>
 
     <!-- Dreamer ADS IDS -->
     <string name="ad_unit_id_app">ca-app-pub-8444582431468785~2572001480</string>
@@ -107,7 +104,6 @@
     <string name="tags">tags</string>
     <string name="modo_invitado">Modo Invitado</string>
     <string name="usuario">Usuario</string>
-    <string name="configuration">Configuración</string>
     <string name="chapters">Seleccionar Capítulos..</string>
     <string name="filter">Filtrar</string>
     <string name="genreList">Lista de Generos</string>
@@ -125,10 +121,10 @@
     <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=]]></string>
     <string name="complete_percent">100%</string>
     <string name="current_progress">Progreso actual: %1$s%%</string>
+    <string name="current_percent">%1$s%%</string>
     <string name="txvcurrentprogress">txvCurrentProgress</string>
     <string name="txvtotalprogress">txvTotalProgress</string>
-    <string name="description">Descripción</string>
-    <string name="chapters_cast">Capitulos</string>
+    <string name="wifi_warning">Para evitar errores, utilizar una conexión wifi, mientras utiliza la app.</string>
 
     <string-array name="state_list">
         <item>Estreno</item>
@@ -220,8 +216,8 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
     <string name="date">date</string>
     <string name="casting">casting</string>
     <string name="author">author</string>
@@ -231,12 +227,39 @@
     <string name="coverBackground">coverBackground</string>
     <string name="imv_download">imv_download</string>
     <string name="download">Descarga</string>
+    <string name="to_download">Descargar</string>
+    <string name="automatic_download">Descarga Automatica</string>
+    <string name="manual_download">Descarga Manual</string>
+    <string name="downloads">Descargas</string>
     <string name="imv_favorites">imv_favorites</string>
-    <string name="favorites">Favorites</string>
+    <string name="favorites">Favoritos</string>
     <string name="chapter_options">Opciones de Capítulo</string>
-    <string name="chapter_spanish">Capítulo</string>
     <string name="list">Lista</string>
     <string name="share">share</string>
     <string name="random_description">description aleatorias</string>
-
+    <string name="warning_logout">\n¿Estas seguro de querer cerrar sesión. %1$s?\n</string>
+    <string name="warning_chapter_status_in_progress">Capítulo descarga en progreso.</string>
+    <string name="warning_chapter_status_pending">Capítulo descarga pendiente.</string>
+    <string name="warning_chapter_status_paused">Capítulo descarga pausado.</string>
+    <string name="warning_chapter_status_completed">Capítulo descarga completado.</string>
+    <string name="warning_manual_fixer">¡Se detecto problema de actualización!, ejecuta el reparador manual. En configuración.</string>
+    <string name="warning_executing_manual_fixer">Reparador ejecutando. En caso de no funcionar ejecutar más tarde.</string>
+    <string name="in_develop">En desarrollo</string>
+    <string name="error_web_page_null">Error página null</string>
+    <string name="all_is_working">¡Todo esta en funcionamiento!</string>
+    <string name="favorites_warning">Esta sección es para tus animes favoritos, añade los que mas te gusten.</string>
+    <string name="records_warning">Empieza a ver tus animes, y se mostraran aqui.</string>
+    <string name="session">sesión</string>
+    <string name="confirm">confirmar</string>
+    <string name="cancel" tools:ignore="ButtonCase">cancel</string>
+    <string name="play_pause">play_pause</string>
+    <string name="d_letter">D</string>
+    <string name="message_to_download_all_series">\n¿Estas seguro de querer descargar todos los capítulos del anime %1$s?\n</string>
+    <string name="error_download">Error en descargar..</string>
+    <string name="version_description">Versión : %1$s %2$s</string>
+    <string name="status_api">¡Conexión %1$s con la API!</string>
+    <string name="status_provider">¡Conexión %1$s con el Proveedor!</string>
+    <string name="try_reconnecting">Intentando conectar.</string>
+    <string name="empty_short">          </string>
+    <string name="empty_medium">               </string>
 </resources>
