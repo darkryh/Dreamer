@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.app.model.scrapping.AnimeBaseScrap
@@ -23,7 +22,6 @@ class DirectoryWorker @AssistedInject constructor(
 
     lateinit var repository: AnimeRepository
     lateinit var webProvider: WebProvider
-    //private lateinit var output : Data
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
@@ -43,13 +41,10 @@ class DirectoryWorker @AssistedInject constructor(
                 Result.success()
             } catch (ex: IOException) {
                 ex.printStackTrace()
-                Log.d("testing", "doWork: ${ex.cause}")
                 Result.failure()
             }
         }
     }
-
-    //private fun outputValue(value : Boolean) = workDataOf(Pair(Constants.RESULT_DIRECTORY_WORKER,value))
 
     private fun final(pos: Int) { if (pos == 1) DataStore.writeBooleanAsync(Constants.FINAL_DIRECTORY,true) }
 }
