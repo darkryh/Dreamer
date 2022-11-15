@@ -27,7 +27,7 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:paddingHorizontal="32dp"
-                    android:text="Empieza a ver tus animes, y se mostraran aqui."
+                    android:text="@string/records_warning"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
