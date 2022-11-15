@@ -9,9 +9,11 @@ import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.AnimeDatabase
 import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.utils.DownloadManager
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.receiver.DreamerNotifier
+import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
 import com.ead.project.dreamer.data.worker.factory.DaggerWorkerFactory
 import dagger.Module
 import dagger.Provides
@@ -33,7 +35,7 @@ object DreamerModule {
     ): AnimeDatabase = Room.databaseBuilder(
         context,
         AnimeDatabase::class.java,
-        "anime_Database"
+        AnimeDatabase.DATABASE
     ).build()
 
     @Singleton
@@ -102,10 +104,12 @@ object DreamerModule {
     @Provides
     fun provideDaggerWorkerFactory(
         repository: AnimeRepository,
-        webProvider: WebProvider
+        webProvider: WebProvider,
+        dreamerNotifier: DreamerNotifier
     ): DaggerWorkerFactory = DaggerWorkerFactory(
-        repository, webProvider,
-        provideDreamerNotifier()
+        repository,
+        webProvider,
+        dreamerNotifier
     )
 
     @Singleton
@@ -115,5 +119,23 @@ object DreamerModule {
     @Singleton
     @Provides
     fun provideDreamerCast() : CastManager = CastManager()
-    //Casting
+
+    @Singleton
+    @Provides
+    fun provideDownloadManager(
+        @ApplicationContext context: Context,
+        downloadManager: android.app.DownloadManager,
+        repository: AnimeRepository
+    ) : DownloadManager = DownloadManager(context,downloadManager,repository)
+
+    @Singleton
+    @Provides
+    fun provideDownloadManagerGoogle(@ApplicationContext context: Context) : android.app.DownloadManager =
+        context.getSystemService(Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
+
+    @Singleton
+    @Provides
+    fun provideDownloadDesigner(downloadManager: android.app.DownloadManager) : DownloadDesigner =
+        DownloadDesigner(downloadManager)
+
 }
