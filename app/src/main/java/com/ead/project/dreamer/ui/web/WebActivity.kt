@@ -13,7 +13,7 @@ import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.network.DreamerWebView.Companion.TIMEOUT_MS
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
+import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
