@@ -2,8 +2,8 @@ package com.ead.project.dreamer.data.utils
 
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.contains
-import com.ead.project.dreamer.data.database.model.Server
-import com.ead.project.dreamer.data.database.model.server.*
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.server.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,6 +37,7 @@ class ServerManager @Inject constructor () {
                 Constants.TITLE_ONEFICHIER -> Onefichier(serverUrl)
                 Constants.TITLE_STREAMSB -> StreamSB(serverUrl)
                 Constants.TITLE_SENDVID -> Senvid(serverUrl)
+                Constants.TITLE_DOOD_STREAM -> DoodStream(serverUrl)
                 Constants.TITLE_SOLIDFILES -> SolidFiles(serverUrl)
                 Constants.TITLE_BAYFILES -> Bayfiles(serverUrl)
                 Constants.TITLE_VIDEOBIN -> Videobin(serverUrl)
@@ -53,6 +54,7 @@ class ServerManager @Inject constructor () {
                 Constants.TITLE_MP4UPLOAD -> Mp4Upload(serverUrl)
                 Constants.TITLE_UQLOAD -> Uqload(serverUrl)
                 Constants.TITLE_MEGA -> Mega(serverUrl)
+                Constants.TITLE_VIDLOX -> Vidlox(serverUrl)
                 else -> NullServer(serverUrl)
             }
         }
@@ -63,11 +65,12 @@ class ServerManager @Inject constructor () {
             if (url.contains(Constants.SERVER_ONEFICHIER)) return Constants.TITLE_ONEFICHIER
             if (url.contains(Constants.SERVER_GOOGLE_DRIVE)) return Constants.TITLE_GOOGLE_DRIVE
             if (url.contains(Constants.SERVER_FEMBED)) return Constants.TITLE_FEMBED
-            if (url.contains(Constants.SERVER_FIRELOAD)) return Constants.TITLE_FIRELOAD
             if (url.contains(Constants.SERVER_SENDVID)) return Constants.TITLE_SENDVID
+            if (url.contains(Constants.SERVER_DOOD_STREAM)) return Constants.TITLE_DOOD_STREAM
             if (url.contains(Constants.SERVER_BAYFILES)) return Constants.TITLE_BAYFILES
             if (url.contains(Constants.SERVER_ZIPPYSHARE)) return Constants.TITLE_ZIPPYSHARE
             if (url.contains(Constants.SERVER_MEDIAFIRE)) return Constants.TITLE_MEDIAFIRE
+            if (url.contains(Constants.SERVER_FIRELOAD)) return Constants.TITLE_FIRELOAD
             if (url.contains(Constants.SERVER_STREAMTAPE)) return Constants.TITLE_STREAMTAPE
             if (url.contains(Constants.SERVER_VOE)) return Constants.TITLE_VOE
             if (url.contains(Constants.SERVER_PUJ)) return Constants.TITLE_PUJ
@@ -80,6 +83,7 @@ class ServerManager @Inject constructor () {
             if (url.contains(Constants.SERVER_YOUR_UPLOAD)) return Constants.TITLE_YOUR_UPLOAD
             if (url.contains(Constants.SERVER_MEGA_UP)) return Constants.TITLE_MEGA_UP
             if (url.contains(Constants.SERVER_STREAMSB_DOMAINS)) return Constants.TITLE_STREAMSB
+            if (url.contains(Constants.SERVER_VIDLOX)) return Constants.TITLE_VIDLOX
             return "null"
         }
 
