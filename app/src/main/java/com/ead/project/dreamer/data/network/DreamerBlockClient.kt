@@ -3,16 +3,11 @@ package com.ead.project.dreamer.data.network
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.ead.project.dreamer.data.utils.ThreadUtil
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
 open class DreamerBlockClient : WebViewClient() {
-
-    @Suppress("unused")
-    var timeout = true
-    fun run (task: () -> Unit) = ThreadUtil.runInMs(task,10000)
 
     private val loadedUrls: Map<String, Boolean> = HashMap()
     private var validUrls: List<String> = listOf(
