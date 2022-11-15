@@ -6,6 +6,10 @@ import com.ead.project.dreamer.data.commons.Tools.Companion.getCatch
 import com.ead.project.dreamer.data.commons.Tools.Companion.toFloatCatch
 import com.ead.project.dreamer.data.commons.Tools.Companion.toIntCatch
 import com.ead.project.dreamer.data.database.model.*
+import com.ead.project.dreamer.data.models.Image
+import com.ead.project.dreamer.data.models.NewsItemWeb
+import com.ead.project.dreamer.data.models.Title
+import com.ead.project.dreamer.data.models.Video
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,9 +29,7 @@ class WebProvider @Inject constructor() {
         val auxChapterList = mutableListOf<ChapterHome>()
 
         try {
-            val doc =
-                Jsoup.connect(Constants.PROVIDER_URL)
-                    .get()
+            val doc = Jsoup.connect(Constants.PROVIDER_URL).get()
 
             val rawChapterList = doc.select(chapterHomeScrap.classList)
             var index = rawChapterList.size + 1
@@ -49,10 +51,8 @@ class WebProvider @Inject constructor() {
                     type,
                     reference)
 
-                if (firstChapter.equalsContent(chapterHome))
-                    break
-                else
-                    auxChapterList.add(chapterHome)
+                if (firstChapter.sameData(chapterHome)) break
+                else auxChapterList.add(chapterHome)
             }
 
         } catch (ex: IOException) { ex.printStackTrace() }
@@ -68,9 +68,7 @@ class WebProvider @Inject constructor() {
         val auxChapterList = mutableListOf<AnimeBase>()
         val directorySize = requestDirectorySize(document)
 
-        val section = getSections(sectionPos,directorySize,
-            zeroNeeded = false,
-            extraFinal = false)
+        val section = getSections(sectionPos,directorySize)
 
         val elementsTesting = Jsoup.connect(Constants.PROVIDER_URL + Constants.PAGE + 1)
             .userAgent(DreamerRequest.userAgent()).get().getElementsByClass(animeBaseScrap.classList)
@@ -122,6 +120,7 @@ class WebProvider @Inject constructor() {
         val attrImageCover = getAttrImage(document,animeProfileScrap.coverPhotoContainer)
 
         val title = document.select(animeProfileScrap.titleContainer).getCatch(0).text()
+        val titleAlternate = document.select(animeProfileScrap.titleAlternativeContainer).getCatch(0).text()
         val state = document.select(animeProfileScrap.stateContainer).text()
         val description = document.select(animeProfileScrap.descriptionContainer).getCatch(2).text().removeSuffix("Ver menos")
         val rating = document.select(animeProfileScrap.ratingContainer).attr("data-rating").toFloatCatch()
@@ -133,7 +132,7 @@ class WebProvider @Inject constructor() {
         val size = document.getElementsByClass(animeProfileScrap.sizeContainer).size.toString().toIntCatch()
 
         return AnimeProfile(
-            idProfile,coverPhoto,profilePhoto,title, rating,
+            idProfile,coverPhoto,profilePhoto,title,titleAlternate, rating,
             state,description,date,genre,rawGenre,size
         )
     }
@@ -144,10 +143,7 @@ class WebProvider @Inject constructor() {
         idProfile : Int,
         chapterScrap: ChapterScrap) : MutableList<Chapter> {
 
-        val document =
-            Jsoup.connect(reference)
-                .get()
-
+        val document = Jsoup.connect(reference).get()
 
         val elementsChapters = document.getElementsByClass(chapterScrap.classList).reversed()
         val title = document.select(chapterScrap.titleContainer).text()
@@ -167,7 +163,7 @@ class WebProvider @Inject constructor() {
                 number,
                 chapterReference
             )
-            if (Chapter.sameData(lastChapter,chapter)) break
+            if (lastChapter.sameData(chapter)) break
             else chaptersList.add(chapter)
         }
         return chaptersList
@@ -176,9 +172,7 @@ class WebProvider @Inject constructor() {
     fun getNews(firstNewItem : NewsItem, newsItemScrap: NewsItemScrap) : MutableList<NewsItem> {
         val auxNewsList = mutableListOf<NewsItem>()
         try {
-            val doc =
-                Jsoup.connect(Constants.PROVIDER_NEWS_URL)
-                    .get()
+            val doc = Jsoup.connect(Constants.PROVIDER_NEWS_URL).get()
 
             val rawNewsItemList = doc.select(newsItemScrap.classList)
             var index = rawNewsItemList.size + 1
@@ -203,8 +197,7 @@ class WebProvider @Inject constructor() {
 
     fun getWebPageNews(reference: String, newsItemWebScrap: NewsItemWebScrap) : NewsItemWeb? {
         return try {
-            val doc =
-                Jsoup.connect(reference).get()
+            val doc = Jsoup.connect(reference).get()
 
             val sectionHeader = doc.select(newsItemWebScrap.headerContainer)
 
@@ -246,10 +239,19 @@ class WebProvider @Inject constructor() {
                                         bodyList.add(Image("null"))
                                 }
                             }
+                            val child = item.children().last()
+                            child?.let {
+                                if (it.tagName() == "figcaption" ) {
+                                    val insideChild =  it.child(0)
+                                    if (insideChild.tagName() == "mark")
+                                        bodyList.add(Title(insideChild.text(),"random"))
+                                }
+                            }
                         }
                         "center" -> {
                             val child = item.child(0)
                             if (child.tagName() == "video") bodyList.add(Video(child.attr("src"),false))
+                            //else if (child.tagName() == "iframe") bodyList.add(Video(child.attr("src"),true))
                         }
                         "h5","h4","h3","h2" -> bodyList.add(Title(item.text(),item.tagName()))
                         "ul" -> bodyList.add(item.children().map { " · " + it.text() })
@@ -270,42 +272,20 @@ class WebProvider @Inject constructor() {
         } catch (ex: IOException) { null }
     }
 
-    private fun getSections(pos : Int, size : Int, zeroNeeded : Boolean,extraFinal : Boolean) : Pair<Int,Int> {
-
+    private fun getSections(pos : Int, size : Int) : Pair<Int,Int> {
         val portion = size / 3
-        var initExtra = 0
-        var finalExtra = 0
-
-        if (!zeroNeeded) initExtra = 1
-        if (extraFinal) finalExtra = 1
-
-        when (pos) {
-            1 -> {
-                val init = (portion * 0) + initExtra
-                val final = (portion * 1) + finalExtra
-                return Pair(init,final)
-            }
-            2 -> {
-                val init = (portion * 1) + 1
-                val final = (portion * 2) + finalExtra
-                return Pair(init,final)
-            }
-            3 -> {
-                val init = (portion * 2) + 1
-                return Pair(init,size)
-            }
-            else ->
-                return Pair(0,size)
+        return when (pos) {
+            1 -> { Pair(1,portion) }
+            2 -> { Pair(portion + 1,(portion * 2)) }
+            3 -> { Pair((portion * 2) + 1,size) }
+            else -> Pair(0,size)
         }
     }
-
-
 
     private fun getAttrImage(document: Document, query : String) : String {
         val src = document.select(query).attr("src")
         return if(isImageSrcWorking(src)) "src" else "data-src"
     }
-
 
     private fun getAttrImage(classList : Elements, query : String) : String {
         val src = classList.first()?.select(query)?.attr("data-src")
