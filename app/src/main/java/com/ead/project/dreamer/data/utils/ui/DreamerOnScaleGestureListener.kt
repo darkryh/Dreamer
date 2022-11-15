@@ -9,9 +9,9 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 class DreamerOnScaleGestureListener(
     private val player: StyledPlayerView
 ) : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
     private var scaleFactor = 0f
     var isHorizontalMode : Boolean = false
-
 
     override fun onScale(detector: ScaleGestureDetector): Boolean {
         scaleFactor = detector.scaleFactor
