@@ -10,10 +10,7 @@ import com.google.firebase.messaging.RemoteMessage
 class DreamerMessaging: FirebaseMessagingService() {
 
     private var instance: DreamerNotifier? = null
-
-    private fun dreamerNotifier() = instance?: DreamerNotifier().also {
-        instance = it
-    }
+    private fun dreamerNotifier() = instance?: DreamerNotifier().also { instance = it }
 
     companion object {
         const val CHANNEL_APP_ID = 51
