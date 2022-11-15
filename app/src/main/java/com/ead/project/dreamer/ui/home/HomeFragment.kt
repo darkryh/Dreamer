@@ -20,8 +20,8 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hide
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ThreadUtil
@@ -218,8 +218,7 @@ class HomeFragment : Fragment() {
         if (chapterHomeList.isNotEmpty()) if (++countHome == 1 && chapterHomeList.first().isNotWorking())
             DreamerLayout.showSnackbar(
                 view = binding.root,
-                text = "¡Se detecto problema de actualización!, ejecuta el reparador manual. " +
-                        "En configuración.",
+                text = getString(R.string.warning_manual_fixer),
                 color = R.color.red, length = Snackbar.ANIMATION_MODE_SLIDE,
                 size = R.dimen.snackbar_text_size_mini
             )
@@ -244,7 +243,7 @@ class HomeFragment : Fragment() {
                     index += offset
                 }
             }
-        } catch (e : Exception){ e.printStackTrace() }
+        } catch (e : Exception) { e.printStackTrace() }
     }
 
     private fun setupRecommendations() {
