@@ -49,8 +49,7 @@ class RecordViewModel @Inject constructor(
 
     fun checkIfUpgradeExist(chapterList: List<Chapter>) : Boolean {
         for (chapter in chapterList)
-            if (chapter.alreadySeen)
-                return true
+            if (chapter.alreadySeen) return true
 
         return false
     }
