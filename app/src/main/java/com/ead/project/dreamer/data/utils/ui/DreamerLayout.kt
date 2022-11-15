@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.data.utils.ui
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BlendMode
@@ -22,8 +21,6 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DataStore
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -53,7 +50,7 @@ class DreamerLayout {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
             } else {
-                drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                @Suppress("DEPRECATION") drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             }
         }
 
@@ -65,9 +62,7 @@ class DreamerLayout {
             return DreamerApp.INSTANCE.resources.getDrawable(resourcesId,DreamerApp.INSTANCE.theme)
         }
 
-        fun getColor(colorId: Int) = ContextCompat.getColor(DreamerApp.INSTANCE, colorId)
-
-        fun isDarkTheme() = DataStore.readBoolean(Constants.PREFERENCE_THEME_MODE)
+        private fun getColor(colorId: Int) = ContextCompat.getColor(DreamerApp.INSTANCE, colorId)
 
         @SuppressLint("CutPasteId")
         fun showSnackbar(view: View, text : String, color: Int = R.color.blackPrimary,size : Int = R.dimen.snackbar_text_size,length : Int = Snackbar.LENGTH_SHORT) {
