@@ -8,12 +8,9 @@ open class DreamerAsyncDiffUtil <T : Any>: DiffUtil.ItemCallback<T>() {
         return try {
             return if (oldItem is DiffUtilEquality) {
                 (oldItem as DiffUtilEquality).equalsHeader(newItem)
-            } else
-                true
+            } else true
         }
-        catch (e : Exception) {
-            false
-        }
+        catch (e : Exception) { false }
     }
 
     override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
@@ -21,11 +18,8 @@ open class DreamerAsyncDiffUtil <T : Any>: DiffUtil.ItemCallback<T>() {
             return if (oldItem is DiffUtilEquality) {
                 return (oldItem as DiffUtilEquality).equalsContent(newItem)
             }
-            else
-                true
+            else true
         }
-        catch (e : Exception) {
-            false
-        }
+        catch (e : Exception) { false }
     }
 }
