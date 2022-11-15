@@ -36,5 +36,4 @@ class PlayerViewModel @Inject constructor(
             repository.updateAnimeProfile(animeProfile)
         }
     }
-
 }
