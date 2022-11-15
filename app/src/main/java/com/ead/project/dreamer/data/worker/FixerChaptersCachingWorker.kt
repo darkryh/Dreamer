@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.data.worker
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -23,7 +22,6 @@ class FixerChaptersCachingWorker@AssistedInject constructor(
     lateinit var repository: AnimeRepository
     lateinit var webProvider: WebProvider
 
-    @SuppressLint("RestrictedApi")
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
@@ -48,7 +46,7 @@ class FixerChaptersCachingWorker@AssistedInject constructor(
                         requestedProfileChapters.await().apply { repository.insertChapters(this) }
                     }
                 }
-                Result.Success()
+                Result.success()
             }
             catch (ex : IOException) {
                 ex.printStackTrace()
