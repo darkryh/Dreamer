@@ -15,4 +15,7 @@ class DirectoryViewModel @Inject constructor(
 
     fun getDirectory(title : String) : LiveData<List<AnimeBase>> =
         repository.getFlowAnimeBaseList(title).asLiveData()
+
+    fun getFullDirectory(title: String): LiveData<List<AnimeBase>> =
+        repository.getFlowAnimeBaseFullList(title).asLiveData()
 }
