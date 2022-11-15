@@ -16,7 +16,7 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.databinding.FragmentPlayerContentBinding
 import com.ead.project.dreamer.ui.player.content.adapters.ProfileRecyclerViewAdapter
