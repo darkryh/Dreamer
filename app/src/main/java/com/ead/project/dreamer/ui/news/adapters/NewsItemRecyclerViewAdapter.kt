@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
 import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
+import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
@@ -129,9 +131,7 @@ class NewsItemRecyclerViewAdapter(private val context: Context) :
             if (nativeAd.store != null) {
                 binding.adStore.text = nativeAd.store
             }
-            else {
-                binding.adStore.visibility = View.GONE
-            }
+            binding.adStore.setVisibility(nativeAd.store.isNotNullOrNotEmpty())
 
             if (nativeAd.price != null) {
                 binding.adPrice.text = nativeAd.price

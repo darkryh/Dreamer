@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import com.ead.project.dreamer.app.model.scrapping.NewsItemWebScrap
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.database.model.NewsItemWeb
+import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.worker.NewsWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
