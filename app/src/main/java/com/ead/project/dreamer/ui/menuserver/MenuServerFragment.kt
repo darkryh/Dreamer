@@ -1,6 +1,6 @@
-package com.ead.project.dreamer.ui.menuplayer
+package com.ead.project.dreamer.ui.menuserver
 
-import android.content.Intent
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Parcelable
@@ -28,7 +28,13 @@ import com.ead.project.dreamer.data.commons.Constants.Companion.isAdInterstitial
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.commons.Tools.Companion.observeOnce
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
+import com.ead.project.dreamer.data.commons.Tools.Companion.launchIntent
+import com.ead.project.dreamer.data.commons.Tools.Companion.load
+import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
 import com.ead.project.dreamer.data.database.model.*
+import com.ead.project.dreamer.data.models.Server
+import com.ead.project.dreamer.data.models.VideoChecker
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.network.DreamerClient
 import com.ead.project.dreamer.data.network.DreamerWebView
 import com.ead.project.dreamer.data.network.DreamerWebView.Companion.getServerScript
@@ -39,14 +45,14 @@ import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.databinding.BottomModalMenuPlayerBinding
 import com.ead.project.dreamer.ui.chapter.checker.ChapterCheckerFragment
-import com.ead.project.dreamer.ui.player.InterstitialAdActivity
+import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerExternalActivity
 import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class MenuPlayerFragment : BottomSheetDialogFragment() {
+class MenuServerFragment : BottomSheetDialogFragment() {
 
     private lateinit var chapter: Chapter
     private lateinit var rawServers : List<String>
@@ -54,8 +60,9 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
     private var serverList : List<Server> = ArrayList()
     private var optionsHeight = 0
     private var isFromContent = false
+    private var isDownloadingMode = false
 
-    private lateinit var menuPlayerViewModel : MenuPlayerViewModel
+    private lateinit var menuServerViewModel : MenuServerViewModel
     private lateinit var serverBase : LinearLayout
     private var webView : DreamerWebView?= null
     private val castManager = CastManager(true)
@@ -65,10 +72,11 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        menuPlayerViewModel = ViewModelProvider(this)[MenuPlayerViewModel::class.java]
+        menuServerViewModel = ViewModelProvider(this)[MenuServerViewModel::class.java]
         arguments?.let {
             chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
             isFromContent = it.getBoolean(Constants.IS_FROM_CONTENT_PLAYER)
+            isDownloadingMode = it.getBoolean(Constants.IS_DATA_FOR_DOWNLOADING_MODE)
         }
     }
 
@@ -76,7 +84,7 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         super.onStart()
         val behavior = BottomSheetBehavior.from(requireView().parent as View)
         behavior.maxWidth = ViewGroup.LayoutParams.MATCH_PARENT
-        if (!DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER)) {
+        if (!DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER) || isDownloadingMode) {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
@@ -126,7 +134,7 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                         webView = null
                         rawServers = Tools.stringRawArrayToList(it)
                         embeddingServers()
-                        if (Constants.isAutomaticPlayerMode()) {
+                        if (Constants.isAutomaticPlayerMode() && !isDownloadingMode) {
                             parsingServersList()
                         }
                         else {
@@ -139,7 +147,7 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                 }
             }
         }
-        webView?.loadUrl(chapter.reference)
+        webView?.load(chapter.reference)
     }
 
     private fun embeddingServers() {
@@ -215,13 +223,12 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
     }
 
     private fun factoringServersPlayers () {
-        menuPlayerViewModel.getServerList(embedServers).observeOnce(this) {
+        menuServerViewModel.getServerList(embedServers).observeOnce(this) {
             serverList = it
             this.isCancelable = false
-            ThreadUtil.execute { executingAutomaticPlay() }
+            launchInThread { executingAutomaticPlay() }
         }
     }
-
 
     private fun executingAutomaticPlay() {
         safeRun {
@@ -251,9 +258,13 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
 
     private fun executingBase(pos : Int) {
         safeRun {
-            menuPlayerViewModel.getServer(embedServers[pos]).observeOnce(this){ server ->
+            menuServerViewModel.getServer(embedServers[pos]).observeOnce(this){ server ->
                 if (server.videoList.isNotEmpty()) {
-                    preparingIntent(server.videoList,server.isDirect)
+                    if (isDownloadingMode) {
+                        if (chapter.id != 0) prepareDownload(server)
+                        else launchChapterChecker(server.videoList,true)
+                    }
+                    else preparingIntent(server.videoList,server.isDirect)
                     dismiss()
                 }
                 else {
@@ -261,30 +272,39 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
                     embedServers.removeAt(pos)
                     binding.linearServer.removeViewAt(pos)
                     serverScript()
-                    DreamerApp.showShortToast( "error de servidor o video eliminado")
+                    DreamerApp.showShortToast(getString(R.string.server_warning_error))
                 }
             }
         }
     }
 
-    private fun preparingIntent(playList: List<VideoModel>,isDirect : Boolean) {
+    private fun prepareDownload(server: Server) {
+        val downloadManager = requireContext()
+            .getSystemService(Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
+        val request =
+            Tools.downloadRequest(chapter, server.videoList.last().directLink)
+        val idDownload = downloadManager.enqueue(request)
+        Chapter.addToDownloadList(Pair(idDownload, chapter.id))
+    }
+
+    private fun preparingIntent(playList: List<VideoModel>, isDirect : Boolean) {
         safeRun {
             val isExternalPlayerMode = Constants.isExternalPlayerMode()
-            Chapter.set(chapter)
             if (chapter.id != 0) {
                 if (isAdInterstitialTime(isDirect)) {
-                    launchIntent(InterstitialAdActivity::class.java,playList,isDirect)
+                    launchIntent(requireActivity(),chapter,
+                        InterstitialAdActivity::class.java,playList,isDirect)
                     Constants.resetCountedAds()
                 } else {
                     if (isDirect) {
-                        if (!isExternalPlayerMode) launchIntent(PlayerActivity::class.java,playList)
-                        else launchIntent(PlayerExternalActivity::class.java,playList)
+                        if (!isExternalPlayerMode) launchIntent(requireActivity(),chapter,PlayerActivity::class.java,playList)
+                        else launchIntent(requireActivity(),chapter,PlayerExternalActivity::class.java,playList)
                     }
-                    else launchIntent(PlayerWebActivity::class.java,playList)
+                    else launchIntent(requireActivity(),chapter,PlayerWebActivity::class.java,playList)
                 }
                 if (isFromContent && isExternalPlayerMode) activity?.finish()
             }
-            else launchChapterChecker(playList,isDirect)
+            else launchChapterChecker(playList,isDirect,isExternalPlayerMode)
 
             dismiss()
         }
@@ -312,32 +332,27 @@ class MenuPlayerFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun launchIntent(typeClass: Class<*>?, playList: List<VideoModel>,isDirect: Boolean=true) {
-        startActivity(Intent(activity,typeClass).apply {
-            putExtra(Constants.REQUESTED_CHAPTER, chapter)
-            putExtra(Constants.REQUESTED_IS_DIRECT,isDirect)
-            putParcelableArrayListExtra(Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>)
-        })
-    }
-
-    private fun launchChapterChecker(playList: List<VideoModel>,isDirect: Boolean) = ChapterCheckerFragment().apply {
+    private fun launchChapterChecker(playList: List<VideoModel>, isDirect: Boolean, isExternalPlayer: Boolean=false) = ChapterCheckerFragment().apply {
         val fragmentManager: FragmentManager =
-            (this@MenuPlayerFragment.context as FragmentActivity).supportFragmentManager
+            (this@MenuServerFragment.context as FragmentActivity).supportFragmentManager
         val data = Bundle()
         data.apply {
             putParcelable(Constants.REQUESTED_CHAPTER, chapter)
             putParcelableArrayList(Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>)
             putBoolean(Constants.REQUESTED_IS_DIRECT,isDirect)
+            putBoolean(Constants.PREFERENCE_EXTERNAL_PLAYER,isExternalPlayer)
+            putBoolean(Constants.IS_DATA_FOR_DOWNLOADING_MODE,isDownloadingMode)
         }
         arguments = data
         show(fragmentManager, Constants.CHAPTER_CHECKER_FRAGMENT)
     }
 
     private fun safeRun(task: () -> Unit) { try { task() } catch (e: Exception) { e.printStackTrace() } }
+    private fun launchInThread(task: () -> Unit) = ThreadUtil.execute { task() }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        webView?.destroy()
+        webView?.onDestroy()
         webView = null
         _binding = null
     }
