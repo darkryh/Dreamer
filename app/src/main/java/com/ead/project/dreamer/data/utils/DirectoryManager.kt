@@ -2,6 +2,7 @@ package com.ead.project.dreamer.data.utils
 
 import android.os.Environment
 import com.ead.project.dreamer.data.commons.Tools.Companion.manageFolder
+import com.ead.project.dreamer.data.database.model.Chapter
 import java.io.File
 
 class DirectoryManager {
@@ -16,6 +17,12 @@ class DirectoryManager {
             , mainFolder)
 
         fun getSeriesFolder() = File(getMainFolder().absolutePath, seriesFolder)
+
+        fun getChapterFolder(chapter: Chapter) =
+            getSeriesFolder().absolutePath + "/" +
+                    chapter.title + "/" + chapter.title +
+                    " Capítulo ${chapter.chapterNumber}" +".mp4"
+
 
         fun initDirectories() {
             val root = getMainFolder()
