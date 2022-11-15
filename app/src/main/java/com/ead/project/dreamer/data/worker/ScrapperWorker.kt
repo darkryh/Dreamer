@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.app.model.scrapping.*
@@ -50,7 +49,6 @@ class ScrapperWorker  @AssistedInject constructor(
                 Result.success()
             } catch (ex: IOException) {
                 ex.printStackTrace()
-                Log.d("testing", "doWork: ${ex.cause}")
                 Result.failure()
             }
         }
