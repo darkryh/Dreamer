@@ -40,7 +40,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/exo_duration"
                 app:layout_constraintStart_toEndOf="@+id/exo_position"
                 app:played_color="@color/blue_light"
-                app:unplayed_color="@color/whiteSecondary"/>
+                app:unplayed_color="@color/whiteSecondary"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <LinearLayout
                 android:id="@+id/ln_fullscreen"
@@ -133,25 +134,13 @@
                 app:tint="@color/white"/>
 
             <ImageButton
-                android:id="@+id/exo_play"
+                android:id="@+id/exo_play_pause"
+                style="@style/ExoStyledControls.Button.Center.PlayPause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/play"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                style="@style/ExoMediaButton.Play"
-                android:src="@drawable/ic_play"/>
-
-            <ImageButton
-                android:id="@+id/exo_pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/pause"
-                android:layout_gravity="center"
-                android:visibility="visible"
-                style="@style/ExoMediaButton.Pause"
-                android:src="@drawable/ic_pause"
-                app:tint="@color/white"/>
+                android:minWidth="48dp"
+                android:minHeight="48dp" />
 
             <ImageButton
                 android:id="@+id/exo_ffwd"
@@ -267,5 +256,4 @@
                 app:tint="@color/white"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
