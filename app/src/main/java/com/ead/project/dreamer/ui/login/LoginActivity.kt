@@ -2,7 +2,6 @@ package com.ead.project.dreamer.ui.login
 
 import android.content.Intent
 import android.content.res.Configuration
-
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -12,8 +11,8 @@ import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityLoginBinding
@@ -46,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(
                 Intent(this, WebActivity::class.java).apply {
                     putExtra(Constants.WEB_ACTION,WebActivity.ACTION_LOGIN_DISCORD)
-                    putExtra(Constants.WEB_ACTION_URL,Discord.ENDPOINT + Discord.LOGIN_PAGE)
+                    putExtra(Constants.WEB_ACTION_URL, Discord.ENDPOINT + Discord.LOGIN_PAGE)
                 }
             )
         }
@@ -124,9 +123,9 @@ class LoginActivity : AppCompatActivity() {
 
     private var countLaunch = 0
     private fun goToMain() {
-        if (!DataStore.readBoolean(Constants.VERSION_DEPRECATED))
+        if (Constants.isVersionNotDeprecated())
             if (++countLaunch == 1) {
-                if (DataStore.readBoolean(Constants.PREFERENCE_TERMS_AND_CONDITIONS) || !Constants.isAppFromGoogle()) {
+                if (Constants.isTermsAndConditionsNotNeeded()) {
                     startActivity(Intent(this, MainActivity::class.java))
                 } else
                     startActivity(Intent(this, TermsAndConditionsActivity::class.java))
@@ -137,12 +136,12 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        minVersion = DataStore.readDouble(Constants.MINIMUM_VERSION_REQUIRED)
+        minVersion = Constants.getMinimumVersion()
         if (minVersion != 0.0) {
             binding.txvVersioning.text = getString(R.string.status_app, currentVersion, minVersion.toString())
             binding.txvVersioning.visibility = View.VISIBLE
             binding.txvVersioning.setOnClickListener {
-                val redirectionIntent : Intent = if (DataStore.readBoolean(Constants.IS_THE_APP_FROM_GOOGLE))
+                val redirectionIntent : Intent = if (Constants.isAppFromGoogle())
                     Intent(Intent.ACTION_VIEW, Uri.parse(Constants.PLAY_STORE_APP))
                 else
                     Intent(Intent.ACTION_VIEW, Uri.parse(Constants.WEB_APP))
