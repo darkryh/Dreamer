@@ -11,12 +11,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recomendaciones" />
+            android:text="@string/recommendations" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Favoritos" />
+            android:text="@string/favorites" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/downloads" />
 
     </com.google.android.material.tabs.TabLayout>
 
