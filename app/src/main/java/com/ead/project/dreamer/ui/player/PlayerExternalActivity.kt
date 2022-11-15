@@ -17,7 +17,7 @@ import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.ui.player.content.PlayerContentFragment
