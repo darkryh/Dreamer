@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -21,10 +22,10 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
 import com.ead.project.dreamer.data.commons.Tools.Companion.margin
 import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
-import com.ead.project.dreamer.data.database.model.Image
-import com.ead.project.dreamer.data.database.model.NewsItemWeb
-import com.ead.project.dreamer.data.database.model.Title
-import com.ead.project.dreamer.data.database.model.Video
+import com.ead.project.dreamer.data.models.Image
+import com.ead.project.dreamer.data.models.NewsItemWeb
+import com.ead.project.dreamer.data.models.Title
+import com.ead.project.dreamer.data.models.Video
 import com.ead.project.dreamer.databinding.ActivityNewsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,13 +45,13 @@ class NewsActivity : AppCompatActivity() {
         settingLayouts()
         if (reference != "null") setupWebPage()
         else {
-            DreamerApp.showLongToast("error página null")
+            DreamerApp.showLongToast(getString(R.string.error_web_page_null))
             finish()
         }
     }
 
     private fun initVariables() {
-        reference = intent!!.extras!!.getString(Constants.REQUESTED_NEWS,"null")
+        reference = intent.extras!!.getString(Constants.REQUESTED_NEWS,"null")
     }
 
     private fun settingLayouts() {
@@ -66,6 +67,7 @@ class NewsActivity : AppCompatActivity() {
                 bindHeader(it)
                 bindBody(it)
                 bindFooter(it)
+                binding.imvCover.requestFocus()
             }
         }
     }
@@ -117,7 +119,6 @@ class NewsActivity : AppCompatActivity() {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1f
                         )
-                        layoutParams.height = resources.getDimensionPixelSize(R.dimen.dimen_300dp)
                     }
                 }
                 is Video -> {
@@ -138,9 +139,8 @@ class NewsActivity : AppCompatActivity() {
                             layoutParams = LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT, 1f
-                            )
-                            layoutParams.height =
-                                resources.getDimensionPixelSize(R.dimen.dimen_300dp)
+                            ).apply { gravity = Gravity.CENTER_HORIZONTAL }
+                            layoutParams.height = resources.getDimensionPixelSize(R.dimen.dimen_300dp)
                             setVideoURI(Uri.parse(item.source))
                             val mediaController = MediaController(this@NewsActivity)
                             this.setMediaController(mediaController)
