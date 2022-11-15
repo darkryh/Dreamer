@@ -41,7 +41,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun synchronizeNewContent() {
-
         val syncingRequest =
             PeriodicWorkRequestBuilder<NewContentWorker>(30, TimeUnit.MINUTES)
                 .setConstraints(constraints)
