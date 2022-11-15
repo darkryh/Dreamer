@@ -28,11 +28,6 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
         if (isHorizontal) behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {}
-    }
-
     private var _binding : BottomModalChapterSelectorBinding?= null
     private val binding get() = _binding!!
     private val playerViewModel : PlayerViewModel by viewModels()
