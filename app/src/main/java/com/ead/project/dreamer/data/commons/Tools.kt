@@ -2,21 +2,32 @@ package com.ead.project.dreamer.data.commons
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
+import android.content.Context.WIFI_SERVICE
 import android.content.Intent
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Insets
 import android.graphics.Rect
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.Environment
 import android.os.Parcelable
 import android.text.Layout
+import android.text.format.Formatter.formatIpAddress
 import android.util.Size
 import android.util.TypedValue
 import android.view.*
+import android.webkit.CookieManager
 import android.webkit.URLUtil
+import android.webkit.WebView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -24,18 +35,59 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.models.ChapterDownload
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.data.utils.DirectoryManager
+import com.ead.project.dreamer.data.utils.WebServer
 import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.gson.Gson
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.math.round
 
 
 class Tools {
 
     companion object {
+
+        private fun getWifiIpAddress(context: Context): String {
+            return if (SDK_INT >= Build.VERSION_CODES.R) {
+                val connectivityManager =
+                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val properties = connectivityManager.getLinkProperties(connectivityManager.activeNetwork)
+                properties?.let {
+                    it.linkAddresses[1].address?.hostAddress
+                }?:"localhost"
+            }
+            else {
+                val manager = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+                @Suppress("DEPRECATION") val dhcp = manager.dhcpInfo
+                @Suppress("DEPRECATION") formatIpAddress(dhcp.ipAddress)
+            }
+        }
+
+        fun getWebServerAddress() : String = "http://" + getWifiIpAddress(DreamerApp.INSTANCE) + ":${WebServer.PORT}"
+
+        fun isConnectionAvailable(url: String): Boolean {
+            return try {
+                val urlObject = URL(url)
+                val connection: HttpURLConnection = urlObject.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connect()
+                val code = connection.responseCode
+                connection.disconnect()
+                when (code) {
+                    200 -> true
+                    else -> false
+                }
+            } catch (e : Exception) { false }
+        }
 
         fun getAutomaticSizeReference(reference_measure : Int): Int {
             val dpWidth = getDeviceWidth()
@@ -54,6 +106,25 @@ class Tools {
             return string.trim()
         }
 
+        private fun connectionType(context: Context): Int {
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+            if (capabilities != null) {
+                if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    return NetworkCapabilities.TRANSPORT_CELLULAR
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    return NetworkCapabilities.TRANSPORT_WIFI
+                } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    return NetworkCapabilities.TRANSPORT_WIFI
+                }
+            }
+            return -1
+        }
+
+        fun isConnectionIncompatible() = connectionType(DreamerApp.INSTANCE) != NetworkCapabilities.TRANSPORT_WIFI
 
         fun longToSeconds(long: Long): Int = long.toInt() / 1000
 
@@ -62,6 +133,14 @@ class Tools {
         private fun getDeviceWidth() : Float {
             val metrics = DreamerApp.INSTANCE.resources.displayMetrics
             return metrics.widthPixels / metrics.density
+        }
+
+        fun launchIntent(activity: Activity, chapter : Chapter, typeClass: Class<*>?, playList: List<VideoModel>, isDirect: Boolean=true) {
+            activity.startActivity(Intent(activity,typeClass).apply {
+                putExtra(Constants.REQUESTED_CHAPTER, chapter)
+                putExtra(Constants.REQUESTED_IS_DIRECT,isDirect)
+                putParcelableArrayListExtra(Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>)
+            })
         }
 
         fun launchRequestedProfile(context: Context) {
@@ -130,6 +209,61 @@ class Tools {
                 }
             return value
         }
+
+        fun downloadRequest(chapter: Chapter,url : String) : DownloadManager.Request {
+            val request = DownloadManager.Request(Uri.parse(url))
+            val fileDirectory = File(DirectoryManager.getSeriesFolder().absolutePath, chapter.title)
+            fileDirectory.manageFolder()
+            request.configureChapter(chapter)
+            return request
+        }
+
+        @SuppressLint("Range")
+        fun Cursor.getChapterDownload() : ChapterDownload = getObject(getDescription())
+
+        @SuppressLint("Range")
+        fun Cursor.getDescription(): String = getString(getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
+
+        private fun DownloadManager.isChapterInProgress(chapter: Chapter) : Boolean {
+            val cursor : Cursor = this.query(DownloadManager.Query().setFilterByStatus(
+                DownloadManager.STATUS_SUCCESSFUL or DownloadManager.STATUS_RUNNING
+            or DownloadManager.STATUS_PENDING or DownloadManager.STATUS_PAUSED
+            ))
+            while (cursor.moveToNext()) if (chapter.id == cursor.getChapterDownload().idChapter) return true
+
+            return false
+        }
+
+        fun DownloadManager.isChapterNotInProgress(chapter: Chapter) = !isChapterInProgress(chapter)
+
+        private fun DownloadManager.Request.configureChapter(chapter: Chapter) {
+            apply {
+                setTitle("${chapter.title} Cap.${chapter.chapterNumber}")
+                setDescription(
+                    ChapterDownload(
+                    chapter.id,
+                    0,
+                    chapter.idProfile,
+                    chapter.title,
+                    chapter.chapterCover,
+                    chapter.chapterNumber,
+                    chapter.downloadState,
+                    0,
+                    0).toJson())
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    DirectoryManager.mainFolder
+                            + "/"  + DirectoryManager.seriesFolder
+                            + "/" + chapter.title + "/" + chapter.title +
+                            " Capítulo ${chapter.chapterNumber}" + ".mp4"
+                )
+            }
+        }
+
+        private inline fun <reified T> getObject(string: String) : T = Gson().fromJson(string, T::class.java)
+
+        fun Any.toJson() : String = try { Gson().toJson(this) } catch (e : Exception) { "null" }
 
         inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
             SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
@@ -201,16 +335,22 @@ class Tools {
             visibility = View.GONE
         }
 
+        fun <T> Collection<T>.notContains(e:T) = !this.contains(e)
+
+        fun String.delete(string: String) = replace(string,"")
+
         fun String.contains(stringList: List<String>) : Boolean {
             for (data in stringList) if (data in this) return true
             return false
         }
 
+        fun String?.isNotNullOrNotEmpty() = !isNullOrEmpty()
+
         fun List<String>.getCatch(index: Int) : String = try { this[index] } catch (e : Exception) {""}
 
-        fun String.toIntCatch() : Int = try { this.toInt() } catch (e : Exception) { -1 }
+        fun String.toIntCatch() : Int = try { toInt() } catch (e : Exception) { -1 }
 
-        fun String.toFloatCatch() : Float = try { this.toFloat() } catch (e : Exception) { -1f }
+        fun String.toFloatCatch() : Float = try { toFloat() } catch (e : Exception) { -1f }
 
         fun Elements.getCatch(index : Int) : Element = try{this[index]} catch (e : Exception) { Element("null") }
 
@@ -227,6 +367,16 @@ class Tools {
             var multiplier = 1.0
             repeat(decimals) { multiplier *= 10 }
             return round(this * multiplier) / multiplier
+        }
+
+        fun View.setVisibility(visible : Boolean) {
+            if (visible) this.visibility = View.VISIBLE
+            else this.visibility = View.GONE
+        }
+
+        fun View.setVisibilityReverse(visible : Boolean) {
+            if (visible) this.visibility = View.VISIBLE
+            else this.visibility = View.INVISIBLE
         }
 
         fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
@@ -266,6 +416,28 @@ class Tools {
 
         fun AppCompatActivity.onBackHandlePressed() {
             if (onBackPressedDispatcher.hasEnabledCallbacks()) onBackPressedDispatcher.onBackPressed()
+        }
+
+        fun WebView.clearCookies() {
+            CookieManager.getInstance().removeAllCookies(null)
+            CookieManager.getInstance().flush()
+        }
+
+        fun WebView.load(url : String) {
+            clearData()
+            loadUrl(url)
+        }
+
+        fun WebView.clearData() {
+            this.clearHistory()
+            this.clearCache(true)
+        }
+
+        fun WebView.onDestroy() {
+            this.loadUrl("about:blank")
+            this.onPause()
+            this.removeAllViews()
+            this.destroy()
         }
     }
 }
