@@ -1,6 +1,9 @@
 package com.ead.project.dreamer.data.retrofit.service
 
-import com.ead.project.dreamer.data.retrofit.model.discord.*
+import com.ead.project.dreamer.data.models.discord.AccessToken
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.models.discord.GuildMember
+import com.ead.project.dreamer.data.models.discord.User
 import retrofit2.Call
 import retrofit2.http.*
 
