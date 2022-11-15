@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.data.utils.media
 
-
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
@@ -15,8 +14,9 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.database.model.VideoModel
-import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.data.models.VideoModel
+import com.ead.project.dreamer.data.utils.ThreadUtil
+import com.ead.project.dreamer.data.utils.WebServer
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerViewModel
 import com.google.android.exoplayer2.*
@@ -39,6 +39,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
+import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -59,13 +60,12 @@ class PlayerManager(
     var exoPlayer : ExoPlayer?= null
     var castPlayer : CastPlayer?= null
     private var adsLoader: ImaAdsLoader? = null
+    private var isServerNotStarted = WebServer.isNotStarted()
 
     var isInPipMode : Boolean = false
-    var isPIPModeEnabled : Boolean = DataStore.
-    readBoolean(Constants.PREFERENCE_PIP_MODE_PLAYER)
+    var isPIPModeEnabled : Boolean = Constants.getPlayerPipMode()
 
     private var mediaSession : MediaSessionCompat? = null
-
     private var playWhenReady = true
     private var currentWindow = 0
     private var isVideoEnded = false
@@ -73,7 +73,6 @@ class PlayerManager(
     var playbackPosition = chapter.currentSeenToLong()
 
     private val playerActivity = activity as PlayerActivity
-
     lateinit var mediaRouteButton: MediaRouteButton
 
     fun initPlayer() {
@@ -87,13 +86,16 @@ class PlayerManager(
             castPlayer = CastPlayer(castManager.getContext())
             castPlayer?.setSessionAvailabilityListener(this)
         }
-        playOnPlayer(if (castPlayer?.isCastSessionAvailable == true) castPlayer else exoPlayer)
+
+        if (castPlayer?.isCastSessionAvailable == true)
+            playerOnCastPlayer()
+        else
+            playOnPlayer(exoPlayer)
     }
 
     private fun initMediaSettings() =  currentPlayer?.let {
         chapter.totalToSeen = Tools.longToSeconds(it.contentDuration)
     }
-
 
     private fun playOnPlayer(player: Player?) {
         if (currentPlayer == player || videoList.isEmpty()) return
@@ -122,11 +124,15 @@ class PlayerManager(
                     DefaultMediaSourceFactory(dataSourceFactory).setLocalAdInsertionComponents(adsProvider,playerView)
                 }
                 else  {
-                    val dataSourceFactory = DefaultHttpDataSource.Factory()
-                        .setConnectTimeoutMs(timeout)
-                        .setAllowCrossProtocolRedirects(true)
-                        .setKeepPostFor302Redirects(true)
-                        .setUserAgent(Util.getUserAgent(context, "Dreamer"))
+                    val dataSourceFactory : DataSource.Factory  =
+                        if (isStreamingVideo()) {
+                            DefaultHttpDataSource.Factory()
+                                .setConnectTimeoutMs(timeout)
+                                .setAllowCrossProtocolRedirects(true)
+                                .setKeepPostFor302Redirects(true)
+                                .setUserAgent(Util.getUserAgent(context, "Dreamer"))
+                        }
+                        else DefaultDataSource.Factory(context)
 
                     val mediaSource  = when (Util.inferContentType(Uri.parse(videoList.last().directLink))) {
                         C.CONTENT_TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
@@ -166,21 +172,28 @@ class PlayerManager(
 
         if (currentPlayer == castPlayer) {
             setCurrentCastingPlayerFlags()
-            val metadata = MediaMetadata.Builder()
-                .setTitle(chapter.title)
-                .setSubtitle("Capítulo ${chapter.chapterNumber}")
-                .setArtworkUri(Uri.parse(chapter.chapterCover))
-                .setWriter("Dreamer")
-                .build()
+            val reference : String = if (isLocalVideo()) chapter.getWebReference()
+            else videoList.last().directLink
 
-            val mediaItem = MediaItem.Builder()
-                .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build())
-                .setUri(videoList.last().directLink)
-                .setMimeType(MimeTypes.VIDEO_UNKNOWN)
-                .setMediaMetadata(metadata).build()
+            val metadata = MediaMetadata.Builder().apply {
+                setTitle(chapter.title)
+                setSubtitle("Capítulo ${chapter.chapterNumber}")
+                setArtworkUri(Uri.parse(chapter.chapterCover))
+                setWriter("Dreamer")
+            }.build()
 
-            currentPlayer?.addListener(this)
-            currentPlayer?.setMediaItem(mediaItem, playbackPosition)
+            val mediaItem = MediaItem.Builder().apply {
+                setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build())
+                setUri(reference)
+                setMimeType(MimeTypes.VIDEO_UNKNOWN)
+                setMediaMetadata(metadata)
+            } .build()
+
+            currentPlayer?.also {
+                it.addListener(this)
+                it.setMediaItem(mediaItem, playbackPosition)
+                it.prepare()
+            }
         }
     }
 
@@ -197,13 +210,16 @@ class PlayerManager(
     }
 
     private val adTagUri = Uri.parse(context.getString(R.string.ad_tag_url))
+
     private fun mediaItems() : List<MediaItem> =
-        videoList.map {
-            MediaItem.Builder()
-                .setUri(it.directLink)
-                .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build())
-                .build()
+        if (isStreamingVideo()) {
+            videoList.map {
+                MediaItem.Builder().apply {setUri(it.directLink)
+                    setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()) }.build()
+            }
         }
+    else { listOf(MediaItem.Builder().setUri(Uri.fromFile(File(chapter.getDownloadReference())))
+            .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()).build())}
 
     private fun Player.rememberState() {
         this@PlayerManager.playWhenReady = playWhenReady
@@ -242,6 +258,7 @@ class PlayerManager(
         currentPlayer?.let {
             playbackPosition = it.currentPosition
         }
+        Chapter.get()?.let { if (chapter.id == it.id) chapter.downloadState = it.downloadState }
         if (Constants.isAdTime()) Constants.resetCountedAds()
     }
 
@@ -272,9 +289,13 @@ class PlayerManager(
         castPlayer = null
     }
 
+    private fun isLocalVideo() = chapter.isDownloaded()
+
+    private fun isStreamingVideo() = chapter.isNotDownloaded()
+
     fun isPlayerCastMode() = currentPlayer is CastPlayer
 
-    fun isCasting() = isPlayerCastMode()
+    private fun isCasting() = isPlayerCastMode()
 
     fun isNotCasting() = !isCasting()
 
@@ -292,6 +313,11 @@ class PlayerManager(
         }
     }
 
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        DreamerApp.showLongToast(error.cause?.message.toString())
+    }
+
     private fun updateMedia() {
         chapter.currentSeen = Tools.longToSeconds(playbackPosition)
         chapter.lastSeen = Calendar.getInstance().time
@@ -302,25 +328,50 @@ class PlayerManager(
         }
         else if (mediaIsEnded()) Constants.quantityAdPlus()
 
-        viewModel.updateChapter(chapter)
+        if (chapter.needsToUpdate()) viewModel.updateChapter(chapter)
     }
 
     private fun mediaIsOnFinalState() : Boolean =
-        chapter.currentSeen >= (chapter.totalToSeen * 0.92).roundToInt()
+        chapter.currentSeen >= (chapter.totalToSeen * 0.91).roundToInt()
                 && chapter.totalToSeen > 0
 
     private fun mediaIsEnded() : Boolean = isVideoEnded || castPlayer?.isCastSessionAvailable == true
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
-        isVideoEnded = true
+        when(reason) {
+            ExoPlayer.MEDIA_ITEM_TRANSITION_REASON_AUTO -> { isVideoEnded = true }
+            Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED -> {}
+            Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT -> {}
+            Player.MEDIA_ITEM_TRANSITION_REASON_SEEK -> { isVideoEnded = true }
+        }
     }
 
     override fun onCastSessionAvailable() {
-        playOnPlayer(castPlayer)
+        playerOnCastPlayer()
     }
 
     override fun onCastSessionUnavailable() {
         playOnPlayer(exoPlayer)
     }
+
+    private fun playerOnCastPlayer() {
+        if (isLocalVideo()) startInCastLocalMode()
+        else playOnPlayer(castPlayer)
+    }
+
+    private fun startInCastLocalMode() {
+        if (isServerNotStarted) {
+            isServerNotStarted = false
+            WebServer.start()
+            WebServer.add(chapter)
+            startCasting { playOnPlayer(castPlayer) }
+        }
+        else {
+            WebServer.add(chapter)
+            playOnPlayer(castPlayer)
+        }
+    }
+
+    private fun startCasting(task: () -> Unit) = ThreadUtil.runInMs(task,1000)
 }
