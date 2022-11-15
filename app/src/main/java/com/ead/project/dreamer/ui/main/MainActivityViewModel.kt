@@ -102,6 +102,7 @@ class MainActivityViewModel @Inject constructor(
             syncingRequest)
     }
 
+
     fun synchronizeReleases() {
         val syncingReleasesRequest =
             PeriodicWorkRequestBuilder<UpdateReleasesWorker>(7, TimeUnit.DAYS)
@@ -121,4 +122,5 @@ class MainActivityViewModel @Inject constructor(
             repository.updateChapter(chapter)
         }
     }
+
 }
