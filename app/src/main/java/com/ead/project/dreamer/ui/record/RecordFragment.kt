@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.databinding.FragmentRecordsBinding
 import com.ead.project.dreamer.ui.record.adapters.BannerViewHolderAd
