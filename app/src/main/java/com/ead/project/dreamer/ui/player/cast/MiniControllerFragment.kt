@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.ui.DreamerUIMiniController
-import com.ead.project.dreamer.ui.player.cast.controller.MiniControllerFragment
-
 import dagger.hilt.android.AndroidEntryPoint
-
+import com.google.android.gms.cast.framework.media.widget.MiniControllerFragment
 
 @AndroidEntryPoint
 class MiniControllerFragment : MiniControllerFragment() {
