@@ -15,8 +15,8 @@ import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
@@ -46,12 +46,32 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityExpandedControllerCastBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        init(false)
+        castManager.setViewModel(playerViewModel)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        init(true)
+    }
+
+    private fun init(isNewIntent : Boolean) {
         settingVariables()
         setFunctionality()
         setCastingFunctionality()
         settingLayouts()
         settingProfile()
-        castManager.setViewModel(playerViewModel)
+        if (!isNewIntent) castManager.setViewModel(playerViewModel)
+    }
+
+    private fun settingVariables() {
+        chapter = Chapter.getCasting()!!
+        adManager = AdManager(
+            context = this,
+            adId = getString(R.string.ad_unit_id_native_casting)
+        )
+        adManager?.setUp(User.isNotVip())
+        castManager.initButtonFactory(this,binding.mediaRouteButton)
     }
 
     private fun settingProfile() {
@@ -95,16 +115,6 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         }
         binding.txvTitle.text = chapter.title
         binding.txvChapterNumber.text = getString(R.string.chapter_number,chapter.chapterNumber.toString())
-    }
-
-    private fun settingVariables() {
-        chapter = Chapter.getCasting()!!
-        adManager = AdManager(
-           context = this,
-           adId = getString(R.string.ad_unit_id_native_casting)
-        )
-        adManager?.setUp(User.isNotVip())
-        castManager.initButtonFactory(this,binding.mediaRouteButton)
     }
 
     private fun setFunctionality() {
