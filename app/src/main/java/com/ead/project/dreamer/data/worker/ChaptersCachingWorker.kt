@@ -23,7 +23,6 @@ class ChaptersCachingWorker @AssistedInject constructor(
     lateinit var repository: AnimeRepository
     lateinit var webProvider: WebProvider
 
-
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
