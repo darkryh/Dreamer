@@ -8,14 +8,15 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--keepclassmembers class fqcn.of.javascript.interface.for.webview** {
-  *;
-}
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview** {
+#  *;
+#}
 
--keep public class * extends com.ead.project.dreamer.data.utils.DataStore
--keep public class * extends com.ead.project.dreamer.data.commons.Constants
--keep public class * extends android.webkit**
-
+-keep class com.ead.project.dreamer.app.** { *; }
+-keep class com.ead.project.dreamer.data.utils.** { *; }
+-keep class com.ead.project.dreamer.data.models.discord.** { *; }
+-keep class com.ead.project.dreamer.data.retrofit.** { *; }
+-keep class io.netty.** { *;}
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
