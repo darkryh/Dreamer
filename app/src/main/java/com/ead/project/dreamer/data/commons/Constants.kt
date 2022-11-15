@@ -1,6 +1,6 @@
 package com.ead.project.dreamer.data.commons
 
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.receiver.DreamerNotifier
 
@@ -46,13 +46,15 @@ class Constants {
 
         const val REQUESTED_CHAPTER = "REQUESTED_CHAPTER"
 
-        const val REQUESTED_CHAPTER_LIST = "REQUESTED_CHAPTER_LIST"
-
         const val REQUESTED_IS_DIRECT = "REQUESTED_IS_DIRECT"
 
         const val REQUESTED_NEWS = "REQUESTED_NEWS"
 
         const val IS_FROM_CONTENT_PLAYER = "IS_FROM_CONTENT_PLAYER"
+
+        const val IS_DATA_FOR_DOWNLOADING_MODE = "IS_DATA_FOR_DOWNLOADING_MODE"
+
+        const val IS_CORRECT_DATA_FROM_CHAPTER = "IS_CORRECT_DATA_FROM_CHAPTER"
 
         const val SYNC_DIRECTORY = "CONSTANT_SYNC_DIRECTORY"
 
@@ -100,11 +102,11 @@ class Constants {
 
         const val CURRENT_NOTICED_CHAPTERS_HOME = "CURRENT_NOTICED_CHAPTERS_HOME"
 
+        const val DOWNLOADED_CHAPTERS = "DOWNLOADED_CHAPTERS"
+
         const val PROFILE_REPOSITORY = "PROFILE_REPOSITORY"
 
         const val CURRENT_EXECUTED_CHAPTER = "CURRENT_EXECUTED_CHAPTER"
-
-        const val CURRENT_EXECUTED_PLAYLIST = "CURRENT_EXECUTED_PLAYLIST"
 
         const val PROFILE_SENDER_VIDEO_PLAYER = "PROFILE_SENDER_PIP"
 
@@ -166,13 +168,13 @@ class Constants {
 
         const val PREFERENCE_SESSION = "PREFERENCE_SESSION"
 
-        const val PREFERENCE_CUSTOMIZE_COMMUNICATORS = "PREFERENCE_CUSTOMIZE_COMMUNICATORS"
+        const val PREFERENCE_OFFICIAL_ADVERTISER = "PREFERENCE_OFFICIAL_ADVERTISER"
 
         const val PREFERENCE_CUSTOMIZED_IMV_PROFILE = "PREFERENCE_CUSTOMIZED_IMV_PROFILE"
 
         const val PREFERENCE_PIP_MODE_PLAYER = "PREFERENCE_PIP_MODE_PLAYER"
 
-        const val PREFERENCE_CURRENT_WATCHED_VIDEOS = "PREFERENCE_CURRENT_WATCHED_VIDEOS"
+        private const val PREFERENCE_CURRENT_WATCHED_VIDEOS = "PREFERENCE_CURRENT_WATCHED_VIDEOS"
 
         const val PREFERENCE_TERMS_AND_CONDITIONS = "PREFERENCE_TERMS_AND_CONDITIONS"
 
@@ -191,6 +193,8 @@ class Constants {
         const val PREFERENCE_CLICK_FIXER = "PREFERENCE_CLICK_FIXER"
 
         const val PREFERENCE_SERVER_SCRIPT = "PREFERENCE_SERVER_SCRIPT"
+
+        private const val IS_FIRST_DOWNLOAD_CHECK = "IS_FIRST_DOWNLOAD_CHECK"
 
         const val MINIMUM_VERSION_REQUIRED = "MINIMUM_VERSION_REQUIRED"
 
@@ -225,6 +229,8 @@ class Constants {
         //PLAYER
 
         const val TITLE_FEMBED = "Fembed"
+
+        const val TITLE_DOOD_STREAM = "DoodStream"
 
         const val TITLE_PUJ = "Puj"
 
@@ -268,8 +274,12 @@ class Constants {
 
         const val TITLE_MEDIAFIRE = "Mediafire"
 
+        const val TITLE_VIDLOX = "Vidlox"
+
 
         const val SERVER_FEMBED = "fembed.com"
+
+        const val SERVER_DOOD_STREAM = "doodstream.com"
 
         const val SERVER_PUJ= "repro.monoschinos2.com/aqua"
 
@@ -279,7 +289,7 @@ class Constants {
 
         const val SERVER_OKRU = "ok.ru"
 
-        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
+        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
 
         const val SERVER_UQLOAD = "uqload.com"
 
@@ -313,6 +323,8 @@ class Constants {
 
         const val SERVER_MEDIAFIRE = "mediafire.com"
 
+        const val SERVER_VIDLOX = "vidlox.me"
+
         private fun isInQuantityAdLimit() = DataStore
             .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
             .readInt(PREFERENCE_QUANTITY_VIDEO_LIMIT, DEFAULT_AD_LIMIT)
@@ -326,6 +338,14 @@ class Constants {
                 .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1)
             DataStore.writeIntAsync(PREFERENCE_CURRENT_WATCHED_VIDEOS,++currentSeriesSeen)
         }
+
+        fun getMinimumVersion() = DataStore.readDouble(MINIMUM_VERSION_REQUIRED)
+
+        private fun isVersionDeprecated() = DataStore.readBoolean(VERSION_DEPRECATED)
+
+        fun isVersionNotDeprecated() = !isVersionDeprecated()
+
+        fun isTermsAndConditionsNotNeeded() = DataStore.readBoolean(PREFERENCE_TERMS_AND_CONDITIONS) || !isAppFromGoogle()
 
         fun isDirectoryActivityClicked() = DataStore.readBoolean(PREFERENCE_DIRECTORY_CLICKED,true)
 
@@ -342,19 +362,21 @@ class Constants {
 
         fun isAppFromGoogle() = DataStore.readBoolean(IS_THE_APP_FROM_GOOGLE)
 
+        fun setGooglePolicyTo(value: Boolean) = DataStore.writeBooleanAsync(
+            PREFERENCE_GOOGLE_POLICY, value)
+
         fun isGooglePolicyActivate() = DataStore.readBoolean(PREFERENCE_GOOGLE_POLICY)
 
         fun isAdInterstitialTime(isDirect : Boolean) = isInQuantityAdLimit() && User.isNotVip() && (isExternalPlayerMode() || !isDirect)
 
         fun isAdTime() = isInQuantityAdLimitVideo() && User.isNotVip()
 
-
         fun setQuantityAdsPlayer(value : Int) = DataStore.writeInt(QUANTITY_ADS_PLAYER,value)
 
         fun resetCountedAds() = DataStore.writeIntAsync(PREFERENCE_CURRENT_WATCHED_VIDEOS, 0)
 
         fun isCustomizedCommunicator() = DataStore
-            .readBoolean(PREFERENCE_CUSTOMIZE_COMMUNICATORS,true)
+            .readBoolean(PREFERENCE_OFFICIAL_ADVERTISER,true)
 
         fun isDirectorySynchronized() = DataStore
             .readBoolean(PREFERENCE_DIRECTORY_PROFILE)
@@ -372,5 +394,14 @@ class Constants {
         fun getDownloadMode() = DataStore.readBoolean(PREFERENCE_DOWNLOAD_MODE)
 
         fun setDownloadMode(value: Boolean) = DataStore.writeBooleanAsync(PREFERENCE_DOWNLOAD_MODE,value)
+
+        fun isActiveFirebaseNotifications() = DataStore.readBoolean(DREAMER_TOPIC,true)
+
+        fun isDownloadFirstCheck() = DataStore.readBoolean(IS_FIRST_DOWNLOAD_CHECK,true)
+
+        fun disableDownloadCheck() = DataStore.writeBooleanAsync(IS_FIRST_DOWNLOAD_CHECK,false)
+
+        fun getPlayerPipMode() = DataStore.
+        readBoolean(PREFERENCE_PIP_MODE_PLAYER,true)
     }
 }
