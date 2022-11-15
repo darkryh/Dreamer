@@ -67,14 +67,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:gravity="center|start"
             android:maxLines="2"
             android:text="@string/title"
             android:textColor="@color/blue_light"
             android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imvDownload"
             app:layout_constraintStart_toEndOf="@+id/relativeChapterProfile"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
@@ -102,6 +102,18 @@
             app:layout_constraintEnd_toEndOf="@+id/relativeChapterProfile"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
+
+        <ImageView
+            android:id="@+id/imvDownload"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/download"
+            app:layout_constraintBottom_toBottomOf="@+id/txvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txvTitle"
+            app:srcCompat="@drawable/ic_downloaded_chapter"
+            app:tint="@color/green" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
