@@ -1,6 +1,6 @@
 package com.ead.project.dreamer.data.retrofit.interceptor
 
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
+import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.utils.DataStore
 import com.google.gson.Gson
 import okhttp3.Interceptor
