@@ -9,10 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
+import com.ead.project.dreamer.data.commons.Tools.Companion.clearData
+import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.database.model.VideoModel
+import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.network.AdBlocker
 import com.ead.project.dreamer.data.network.DreamerBlockClient
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
@@ -62,16 +64,6 @@ class PlayerWebActivity : AppCompatActivity() {
         playerViewModel.updateChapter(chapter)
     }
 
-    private fun destroyWebView() {
-        binding.webView.clearHistory()
-        binding.webView.clearCache(true)
-        binding.webView.loadUrl("about:blank")
-        binding.webView.onPause()
-        binding.webView.removeAllViews()
-        binding.webView.destroyDrawingCache()
-        binding.webView.destroy()
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         hideSystemUI()
@@ -83,7 +75,8 @@ class PlayerWebActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        destroyWebView()
+        binding.webView.clearData()
+        binding.webView.onDestroy()
         super.onDestroy()
     }
 }
