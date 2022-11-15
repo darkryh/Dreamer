@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.data.database.model
+package com.ead.project.dreamer.data.models
 
 import android.graphics.Bitmap
 import android.webkit.WebResourceError
