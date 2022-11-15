@@ -26,7 +26,7 @@ object ThreadUtil {
         }
     }
 
-    fun runOnUiThread(action: () -> Unit) {
+    fun onUi(action: () -> Unit) {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             handler.post(action)
         } else {
