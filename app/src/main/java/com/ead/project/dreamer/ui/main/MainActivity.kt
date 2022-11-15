@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.ui.main
 
-
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -20,11 +19,12 @@ import com.ead.project.dreamer.app.AppManager
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.retrofit.model.discord.Discord
-import com.ead.project.dreamer.data.retrofit.model.discord.User
+import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DirectoryManager
 import com.ead.project.dreamer.data.utils.media.CastManager
+import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityMainBinding
 import com.ead.project.dreamer.ui.directory.DirectoryActivity
@@ -37,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private var directoryChecked = false
     private var timerAdv : Timer ?= null
     private var countAdv = 0
+    @Inject lateinit var downloadDesigner : DownloadDesigner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Dreamer)
@@ -86,10 +88,11 @@ class MainActivity : AppCompatActivity() {
         DirectoryManager.initDirectories()
     }
 
-    private fun init(){
+    private fun init() {
         DreamerApp.initAdsPreferences()
         prepareLayouts()
         initSettings()
+        connectionSettings()
         userSettings()
         appSettings()
         checkStatusApp()
@@ -143,14 +146,18 @@ class MainActivity : AppCompatActivity() {
     private fun initSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) splashScreen
         Constants.setAppFromGoogle(false)
+        downloadDesigner.checkOneTimeSetting()
     }
 
     private fun appSettings() {
-        if (DataStore.readBoolean(Constants.IS_THE_APP_FROM_GOOGLE)) DataStore
-            .writeBooleanAsync(Constants.PREFERENCE_GOOGLE_POLICY, true)
+        if (Constants.isAppFromGoogle()) Constants.setGooglePolicyTo(true)
         castManager.initButtonFactory(this,binding.mediaRouteButton)
         castManager.setViewModel(mainActivityViewModel)
         if (!Constants.isDirectorySynchronized()) syncState()
+    }
+
+    private fun connectionSettings() {
+        if (Tools.isConnectionIncompatible()) DreamerApp.showShortToast(getString(R.string.wifi_warning))
     }
 
     private fun userSettings() {
@@ -165,9 +172,7 @@ class MainActivity : AppCompatActivity() {
                         user.rank = User.getRank(user.rankLevel)
                         User.set(user)
                     }
-                }catch (e : Exception) {
-                    e.printStackTrace()
-                }
+                } catch (e : Exception) { e.printStackTrace() }
             }
         }
     }
@@ -233,7 +238,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkSubscribedTopic() {
-        if (DataStore.readBoolean(Constants.DREAMER_TOPIC,true))
+        if (Constants.isActiveFirebaseNotifications())
             FirebaseMessaging.getInstance().subscribeToTopic(Constants.DREAMER_TOPIC)
         else
             FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.DREAMER_TOPIC)
