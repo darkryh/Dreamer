@@ -10,8 +10,10 @@ open class DreamerClient : WebViewClient() {
 
     var timeout = true
     var timesLoaded = 0
-    fun run(task: () -> Unit) = ThreadUtil.runInMs(task, 10000)
+    private fun run(task: () -> Unit) = ThreadUtil.runInMs(task, 10000)
+    fun onUi(task: () -> Unit) = ThreadUtil.onUi { task() }
 
+    @Deprecated("OnPageInit option")
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
         onPageInit(view, url, favicon)
@@ -19,6 +21,7 @@ open class DreamerClient : WebViewClient() {
         run { if (timeout && url != Constants.BLANK_BROWSER) onTimeout(view, url, favicon) }
     }
 
+    @Deprecated("OnPageLoaded option")
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
         timeout = false
