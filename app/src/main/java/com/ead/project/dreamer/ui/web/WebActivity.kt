@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Size
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.metrics.getNavigationBarHeight
+import com.ead.commons.lib.metrics.getScreenSize
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.network.DreamerWebView.Companion.TIMEOUT_MS
 import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.utils.DataStore
@@ -31,7 +31,6 @@ class WebActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityWebBinding
     private val webViewModel : WebViewModel by viewModels()
-    private lateinit var screenSize : Size
     private var action = ACTION_NONE
     private var url = Constants.BLANK_BROWSER
     private var host = "null"
@@ -49,8 +48,10 @@ class WebActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        action = intent.extras!!.getInt(Constants.WEB_ACTION)
-        url = intent.extras!!.getString(Constants.WEB_ACTION_URL)!!
+        intent.extras?.let {
+            action = it.getInt(Constants.WEB_ACTION)
+            url = it.getString(Constants.WEB_ACTION_URL)!!
+        }
         orientation = resources.configuration.orientation
     }
 
@@ -63,8 +64,7 @@ class WebActivity : AppCompatActivity() {
 
     private fun settingLayouts() {
         supportActionBar?.hide()
-        screenSize = Tools.getScreenSize(this)
-        binding.webView.layoutParams.height = (screenSize.height - binding.lnBar.height) - Tools.getNavigationBarHeight(this,orientation)
+        binding.webView.layoutParams.height = (getScreenSize().height - binding.lnBar.height) - getNavigationBarHeight(orientation)
         host = URI(url).host
         binding.txvUrl.text = host
     }
@@ -96,7 +96,7 @@ class WebActivity : AppCompatActivity() {
                     settingWeb(view)
                     ThreadUtil.runInMs({
                         if (timeout) {
-                            DreamerApp.showLongToast(getString(R.string.timeout_message))
+                            showLongToast(getString(R.string.timeout_message))
                             finish()
                         }
                     }, TIMEOUT_MS)
