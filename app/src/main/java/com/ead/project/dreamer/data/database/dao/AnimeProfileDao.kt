@@ -27,6 +27,9 @@ interface AnimeProfileDao {
     suspend fun getFavoriteProfileReleasesTitles() : List<String>
 
     @Query("select * from anime_profile_table where id=:id")
+    suspend fun getProfile(id : Int) : AnimeProfile?
+
+    @Query("select * from anime_profile_table where id=:id")
     fun getFlowProfile(id : Int) : Flow<AnimeProfile?>
 
     @Query("select * from anime_profile_table where rawGenres like '%' || :rawGenre || '%'  and rating>=:rating and id !=:id order by RANDOM() limit :limit")
