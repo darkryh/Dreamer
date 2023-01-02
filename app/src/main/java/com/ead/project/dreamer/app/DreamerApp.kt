@@ -3,10 +3,10 @@ package com.ead.project.dreamer.app
 import android.app.Application
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.worker.factory.DaggerWorkerFactory
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.initialization.InitializationStatus
 import dagger.hilt.android.HiltAndroidApp
@@ -15,10 +15,10 @@ import javax.inject.Inject
 @HiltAndroidApp
 class DreamerApp : Application(), Configuration.Provider {
 
-    @Inject lateinit var workerFactory: DaggerWorkerFactory
+    @Inject lateinit var hiltWorkerFactory: HiltWorkerFactory
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder()
-        .setWorkerFactory(workerFactory)
+        .setWorkerFactory(hiltWorkerFactory)
         .build()
 
     companion object {
@@ -34,8 +34,7 @@ class DreamerApp : Application(), Configuration.Provider {
         }
 
         fun initAdsPreferences() {
-            if (AD_INSTANCE!= null)
-                MobileAds.initialize(INSTANCE) { AD_INSTANCE = it }
+            if (AD_INSTANCE!= null) MobileAds.initialize(INSTANCE) { AD_INSTANCE = it }
         }
     }
 
