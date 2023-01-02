@@ -16,12 +16,12 @@ import android.widget.VideoView
 import androidx.activity.viewModels
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.views.justifyInterWord
+import com.ead.commons.lib.views.margin
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
-import com.ead.project.dreamer.data.commons.Tools.Companion.margin
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.models.Image
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.models.Title
@@ -45,13 +45,15 @@ class NewsActivity : AppCompatActivity() {
         settingLayouts()
         if (reference != "null") setupWebPage()
         else {
-            DreamerApp.showLongToast(getString(R.string.error_web_page_null))
+            showLongToast(getString(R.string.error_web_page_null))
             finish()
         }
     }
 
     private fun initVariables() {
-        reference = intent.extras!!.getString(Constants.REQUESTED_NEWS,"null")
+        intent.extras?.let {
+            reference = it.getString(Constants.REQUESTED_NEWS,"null")
+        }
     }
 
     private fun settingLayouts() {
@@ -92,6 +94,7 @@ class NewsActivity : AppCompatActivity() {
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT, 1f
                         )
+                        setLineSpacing(0f,1.5f)
                     }
                 }
                 is Title -> {
@@ -163,12 +166,13 @@ class NewsActivity : AppCompatActivity() {
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT, 1f
                                 )
+                                setLineSpacing(0f,1.5f)
                             })
                         }
                     }
                 }
             }
-            view.margin(top = 4f, bottom = 4f, right = 16f, left = 16f)
+            view.margin(dpInTop = 8f, dpInBottom = 8f, dpInRight = 16f, dpInLeft = 16f)
             binding.linearBody.addView(view)
         }
     }
