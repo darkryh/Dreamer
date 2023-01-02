@@ -10,36 +10,29 @@ import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.lifecycle.activity.onBackHandle
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.lifecycle.activity.showShortToast
+import com.ead.commons.lib.views.*
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hide
-import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
-import com.ead.project.dreamer.data.commons.Tools.Companion.margin
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandle
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandlePressed
-import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.DownloadManager
 import com.ead.project.dreamer.data.utils.media.CastManager
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityAnimeProfileBinding
 import com.ead.project.dreamer.ui.profile.adapters.ChapterRecyclerViewAdapter
 import com.ead.project.dreamer.ui.profile.adapters.GenreRecyclerViewAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AnimeProfileActivity : AppCompatActivity() {
@@ -49,8 +42,6 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     var id = -1
     var reference = "reference"
-    private var chapterSize = 0
-    private var lastChapterId = -1
     private var animeProfileSender : AnimeProfile ?= null
     private lateinit var adapterChapters : ChapterRecyclerViewAdapter
     private var countTargeting = 0
@@ -67,9 +58,7 @@ class AnimeProfileActivity : AppCompatActivity() {
     private var isChaptersNotWorking = false
 
     var count = 0
-    private var countChapters = 0
     private var countSections = 0
-    @Inject lateinit var downloadManager : DownloadManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,13 +67,16 @@ class AnimeProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         prepareVariables()
         prepareLayout()
-        gettingProfile(id,reference)
+        configureProfile()
+        gettingProfile()
         setupAds()
     }
 
     private fun prepareVariables() {
-        id =  intent.getIntExtra(Constants.PREFERENCE_ID_BASE,0)
-        reference = intent.getStringExtra(Constants.PREFERENCE_LINK)!!
+        intent.let {
+            id =  it.getIntExtra(Constants.PREFERENCE_ID_BASE,0)
+            reference = it.getStringExtra(Constants.PREFERENCE_LINK)!!
+        }
         castManager.setViewModel(animeProfileViewModel)
         castManager.initButtonFactory(this,binding.mediaRouteButton)
         adManager = AdManager(
@@ -95,9 +87,7 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (DataStore.readBoolean(Constants.PROFILE_SENDER_VIDEO_PLAYER)) {
-            finish()
-        }
+        if (DataStore.readBoolean(Constants.PROFILE_SENDER_VIDEO_PLAYER)) { finish() }
     }
 
     override fun onResume() {
@@ -121,20 +111,17 @@ class AnimeProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.toolbar.navigationIcon =
-            DreamerLayout.getBackgroundColor(
-                binding.toolbar.navigationIcon!!,
-                R.color.white
-            )
-        binding.toolbar.setNavigationOnClickListener { onBackHandlePressed() }
+            binding.toolbar.navigationIcon?.getMutated(this,R.color.white)
+        binding.toolbar.setNavigationOnClickListener { onBack() }
         binding.imvFixer.setOnClickListener {
             it.isEnabled = false
-            DreamerApp.showLongToast(getString(R.string.warning_executing_manual_fixer))
+           showLongToast(getString(R.string.warning_executing_manual_fixer))
             if (isProfileNotWorking) animeProfileViewModel.repairingProfiles()
             if (isChaptersNotWorking) animeProfileViewModel.repairingChapters()
-            if (!isProfileNotWorking && !isChaptersNotWorking) DreamerApp.showShortToast(getString(R.string.all_is_working))
+            if (!isProfileNotWorking && !isChaptersNotWorking) showShortToast(getString(R.string.all_is_working))
         }
-        DreamerLayout.setClickEffect(binding.imvDownloads,this)
-        DreamerLayout.setClickEffect(binding.imvDownloadSelected,this)
+        binding.imvDownloads.addSelectableItemEffect()
+        binding.imvDownloadSelected.addSelectableItemEffect()
         binding.imvDownloads.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle(getString(R.string.to_download))
@@ -143,13 +130,33 @@ class AnimeProfileActivity : AppCompatActivity() {
                 .setNegativeButton(R.string.cancel,null)
                 .show()
         }
-        binding.imvDownloadSelected.setOnClickListener { launchDownloads(adapterChapters.getDownloadList())}
+        binding.imvDownloadSelected.setOnClickListener { launchDownloads(adapterChapters.getSelectedList())}
+        binding.imvDownloadManualSelected.setOnClickListener {
+            showShortToast(getString(R.string.in_develop))
+            adapterChapters.removeEditMode()
+        }
+        binding.imvChapterModeDownloaded.setOnClickListener {
+            animeProfileViewModel.updateChapters(adapterChapters.getSelectedList().onEach {
+                it.downloadState = Chapter.DOWNLOAD_STATUS_COMPLETED
+            })
+            adapterChapters.removeEditMode()
+        }
+        binding.imvChapterModeNotDownloaded.setOnClickListener {
+            animeProfileViewModel.updateChapters(adapterChapters.getSelectedList().onEach {
+                it.downloadState = Chapter.DOWNLOAD_STATUS_INITIALIZED
+            })
+            adapterChapters.removeEditMode()
+        }
         adapterChapters = ChapterRecyclerViewAdapter(this,binding.editModeView)
         binding.rcvChapters.layoutManager = LinearLayoutManager(this)
         binding.rcvChapters.adapter = adapterChapters
     }
 
-    private fun gettingProfile(id : Int, reference: String) {
+    private fun configureProfile() = animeProfileViewModel.configureProfileData(id,reference)
+
+    private fun configureChapters() = animeProfileViewModel.configureChaptersData(id,reference)
+
+    private fun gettingProfile() {
         animeProfileViewModel.getAnimeProfile(id).observe(this) { animeProfile ->
             if (animeProfile != null) {
                 if (animeProfile.checkPolicies()) {
@@ -159,57 +166,31 @@ class AnimeProfileActivity : AppCompatActivity() {
                         showFixer(isProfileNotWorking)
                         likeProfile(animeProfile)
                         loadProfile(animeProfile)
-                        gettingChapters(animeProfile)
+                        configureChapters()
                     }
                     updateLike(animeProfile)
+                    if (animeProfile.size != 0) {
+                        if (++countSections == 1) {
+                            if (!needsSections(animeProfile.size)) gettingChapters()
+                            else adaptingChaptersInSections(animeProfile.size)
+                            binding.imvDownloads.setVisibility(true)
+                        }
+                    }
                 }
                 else {
-                    DreamerApp.showLongToast(getString(R.string.google_policies_message))
+                    showLongToast(getString(R.string.google_policies_message))
                     finish()
-                }
-            } else {
-                animeProfileViewModel.cachingProfile(id, reference)
-            }
-        }
-    }
-
-    private fun gettingChapters(animeProfile: AnimeProfile) {
-        animeProfileViewModel.getPreparation(id).observe(this) {
-            if (it.size >= 2) {
-                chapterSize = it[0]
-                lastChapterId = it[1]
-                if (++countSections == 1) {
-                    updateData()
-                    binding.imvDownloads.setVisibility(chapterSize > 0)
-                    if (!needsSections(chapterSize))
-                        adaptingChapters()
-                    else
-                        adaptingChaptersInSections(chapterSize)
-                }
-            }
-            if (cachingChaptersTrigger(chapterSize, animeProfile)) {
-                if (++countChapters == 1) {
-                    animeProfileViewModel.cachingChapters(
-                        id,
-                        reference,
-                        animeProfile.size - chapterSize,
-                        animeProfile.lastChapterId
-                    )
                 }
             }
         }
     }
 
     private fun fixerUiUpdate() {
-        lifecycleScope.launch (Dispatchers.IO) {
-            Constants.isProfileFixerLaunched().collect {
-                runOnUiThread {
-                    if (it) {
-                        animeProfileSender?.let {
-                            loadProfile(it)
-                            Constants.setProfileFixer(false)
-                        }
-                    }
+        Constants.isProfileFixerLaunched().observe(this@AnimeProfileActivity) {
+            if (it) {
+                animeProfileSender?.let { animeProfile->
+                    loadProfile(animeProfile)
+                    Constants.setProfileFixer(false)
                 }
             }
         }
@@ -250,11 +231,18 @@ class AnimeProfileActivity : AppCompatActivity() {
         val arrayAdapter = ArrayAdapter(this,R.layout.drop_down_item,layoutRanges)
         binding.actChapters.setAdapter(arrayAdapter)
         binding.actChapters.setOnItemClickListener { _, _, i, _ ->
-            getChaptersBySections(pairNumberList[i].first,pairNumberList[i].second)
+            gettingChaptersBySections(pairNumberList[i].first,pairNumberList[i].second)
         }
     }
 
-    private fun getChaptersBySections(start: Int,end: Int) {
+    private fun gettingChapters() {
+        animeProfileViewModel.getChaptersFromProfile(id).observe(this) {
+            preventChaptersWorking(it)
+            adapterChapters.submitList(it)
+        }
+    }
+
+    private fun gettingChaptersBySections(start: Int, end: Int) {
         animeProfileViewModel.getChaptersFromProfile(id,start,end).observe(this) {
             preventChaptersWorking(it)
             adapterChapters.submitList(it)
@@ -264,7 +252,7 @@ class AnimeProfileActivity : AppCompatActivity() {
     private fun loadProfile(animeProfile: AnimeProfile) {
         binding.collapsingToolbar.title = animeProfile.title
         binding.txvStateProfile.text = getString(R.string.wordDecorate,animeProfile.state)
-        DreamerLayout.setClickEffect(binding.txvDescriptionContent,this)
+        binding.txvDescriptionContent.addSelectableItemEffect()
 
         if (animeProfile.description.length > minLettersCharacter) {
             descriptionOverloaded = true
@@ -315,9 +303,6 @@ class AnimeProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun cachingChaptersTrigger (size : Int,animeProfile: AnimeProfile) =
-        size == 0 || animeProfile.state != Constants.PROFILE_FINAL_STATE
-
     private fun settingGenres (it : AnimeProfile) {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         binding.rcvGenres.layoutManager = layoutManager
@@ -332,40 +317,19 @@ class AnimeProfileActivity : AppCompatActivity() {
     }
 
     private fun updateLike (animeProfile: AnimeProfile) {
-        if (animeProfile.isFavorite) {
-            binding.imvLikeProfile.setImageResource(R.drawable.ic_favorite_24)
-            binding.imvLikeProfile.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLikeProfile.drawable,
-                    R.color.pink
-                )
-            )
-        } else {
-            binding.imvLikeProfile.setImageResource(R.drawable.ic_favorite_border_24)
-            binding.imvLikeProfile.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLikeProfile.drawable,
-                    R.color.white
-                )
-            )
-        }
+        if (animeProfile.isFavorite)
+            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24,R.color.pink)
+        else
+            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24,R.color.white)
     }
 
     private fun launchDownloads(downloadList : MutableList<Chapter>) {
         if (downloadList.isNotEmpty()) {
-            if (downloadList.size == 1) downloadManager.init(downloadList.first())
-            else downloadManager.init(downloadList,false)
+            if (downloadList.size == 1) animeProfileViewModel.downloadFromChapter(downloadList.first())
+            else animeProfileViewModel.downloadFromChapters(downloadList)
             adapterChapters.removeEditMode()
         }
-        else DreamerApp.showLongToast(getString(R.string.error_download))
-    }
-
-    private fun updateData() {
-        animeProfileSender?.let {
-            it.size = chapterSize
-            it.lastChapterId = lastChapterId
-            animeProfileViewModel.updateAnimeProfile(it)
-        }
+        else showLongToast(getString(R.string.error_download))
     }
 
     private fun preventChaptersWorking(list: List<Chapter>) {
@@ -377,15 +341,8 @@ class AnimeProfileActivity : AppCompatActivity() {
     private fun showFixer(isNeeded: Boolean) {
         if (isNeeded) {
             binding.imvFixer.visibility = View.VISIBLE
-            binding.imvFixer.margin(right = 8f)
+            binding.imvFixer.margin(dpInRight = 8f)
             fixerUiUpdate()
-        }
-    }
-
-    private fun adaptingChapters() {
-        animeProfileViewModel.getChaptersFromProfile(id).observe(this) {
-            preventChaptersWorking(it)
-            adapterChapters.submitList(it)
         }
     }
 

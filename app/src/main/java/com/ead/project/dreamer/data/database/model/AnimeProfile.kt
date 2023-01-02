@@ -22,7 +22,7 @@ data class AnimeProfile (
     val date : String,
     val genres : List<String>,
     val rawGenres : String,
-    var size : Int,
+    var size : Int = 0,
     var lastChapterId : Int = 0,
     var reference : String? = null,
     var isFavorite : Boolean = false
