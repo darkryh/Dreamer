@@ -19,7 +19,7 @@ class Okru(embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onExtract() {
         try {
-            url = url.replace("//","https://")
+            url = url.replace("http://","https://")
 
             val response = OkHttpClient()
                 .newCall(
