@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.models.VideoModel
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.databinding.BottomModalTrackSelectorBinding
 import com.google.android.exoplayer2.ExoPlayer
@@ -22,14 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class TrackSelectorFragment : BottomSheetDialogFragment() {
 
-    override fun onStart() {
-        super.onStart()
-        val behavior = BottomSheetBehavior.from(requireView().parent as View)
-        behavior.maxWidth = ViewGroup.LayoutParams.MATCH_PARENT
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-
     private var _binding : BottomModalTrackSelectorBinding?= null
     private val binding get() = _binding!!
     lateinit var videoModelList: List<VideoModel>
@@ -40,6 +32,12 @@ class TrackSelectorFragment : BottomSheetDialogFragment() {
     private var trackGroups: TrackGroupArray? = null*/
     lateinit var trackSelector : DefaultTrackSelector
 
+    override fun onStart() {
+        super.onStart()
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.maxWidth = ViewGroup.LayoutParams.MATCH_PARENT
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,7 +99,7 @@ class TrackSelectorFragment : BottomSheetDialogFragment() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1f
             )
-            DreamerLayout.setClickEffect(textVideoModel,requireContext())
+            textVideoModel.addSelectableItemEffect()
             textVideoModel.setOnClickListener {
                 ThreadUtil.runInMs({
                     player.seekTo(pos,player.currentPosition)
