@@ -62,7 +62,7 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
     private fun setupRecords() {
         playerViewModel.getChaptersFromProfile(chapter.idProfile).observe(viewLifecycleOwner) {
             adapterChapters.submitList(it)
-            binding.rcvChapters.layoutManager?.scrollToPosition(chapter.chapterNumber-1)
+            binding.rcvChapters.layoutManager?.scrollToPosition(chapter.number-1)
         }
     }
 

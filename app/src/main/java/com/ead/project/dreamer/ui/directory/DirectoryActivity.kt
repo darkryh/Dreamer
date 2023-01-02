@@ -10,11 +10,12 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.metrics.getAvailableWidthReference
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
+import com.ead.project.dreamer.data.database.model.AnimeBase
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -39,15 +40,15 @@ class DirectoryActivity : AppCompatActivity() {
         prepareAdapter()
     }
 
+    override fun onStart() {
+        super.onStart()
+        Tools.launchRequestedProfile(this)
+    }
+
     override fun finish() {
         super.finish()
         overridePendingTransition(
             R.anim.fade_in, R.anim.fade_out)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Tools.launchRequestedProfile(this)
     }
 
     private fun prepareLayout() {
@@ -58,7 +59,6 @@ class DirectoryActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        settingThemeLayouts()
         toolbar.setNavigationOnClickListener { onBack() }
         recyclerView = findViewById(R.id.rcvFinder)
         recyclerView.adapter?.stateRestorationPolicy =
@@ -67,39 +67,25 @@ class DirectoryActivity : AppCompatActivity() {
     }
 
     private fun getLayoutManager() : RecyclerView.LayoutManager =
-        when(Tools.getAutomaticSizeReference(380)) {
+        when(getAvailableWidthReference(380)) {
             0 -> {
                 isLinear = true
                 recyclerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 LinearLayoutManager(this)
             }
-            else -> {
-                GridLayoutManager(this,Tools.getAutomaticSizeReference(110))
-            }
+            else -> GridLayoutManager(this,getAvailableWidthReference(110))
         }
 
     private fun prepareAdapter() {
         if (isDirectoryProfileStateCompleted)
-            edtSearch.addTextChangedListener {
-            directoryViewModel.getFullDirectory(edtSearch.text.toString()).observe(this) {
-                this.adapter = AnimeBaseRecyclerViewAdapter(it, this,isLinear)
-                recyclerView.adapter = adapter
-            }
-        }
+            edtSearch.addTextChangedListener { directoryViewModel.getFullDirectory(edtSearch.text.toString()).observe(this) {updateData(it) } }
         else
-            edtSearch.addTextChangedListener {
-                directoryViewModel.getDirectory(edtSearch.text.toString()).observe(this) {
-                    this.adapter = AnimeBaseRecyclerViewAdapter(it, this,isLinear)
-                    recyclerView.adapter = adapter
-                }
-            }
+            edtSearch.addTextChangedListener { directoryViewModel.getDirectory(edtSearch.text.toString()).observe(this) { updateData(it)} }
     }
 
-    private fun settingThemeLayouts() {
-        toolbar.navigationIcon =
-            DreamerLayout.getBackgroundColor(
-                toolbar.navigationIcon!!,
-                R.color.whitePrimary)
+    private fun updateData(animeBaseList: List<AnimeBase>) {
+        this.adapter = AnimeBaseRecyclerViewAdapter(animeBaseList, this,isLinear)
+        recyclerView.adapter = adapter
     }
 
     override fun onStop() {

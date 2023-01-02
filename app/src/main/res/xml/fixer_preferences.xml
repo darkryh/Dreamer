@@ -3,40 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <PreferenceCategory
-        android:layout="@layout/preferences_category"
-        android:title="Diagnostico Dreamer"
-        tools:ignore="TextContrastCheck">
+    <com.ead.project.dreamer.ui.settings.layouts.DiagnosticViewPreference
+        app:key="PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW"
+        app:layout="@layout/layout_diagnostic_view_preference"/>
 
-        <Preference
-            android:icon="@drawable/ic_cell_tower_24"
-            android:key="try"
-            app:title="Conexión con la API" />
 
-        <Preference
-            app:key="PREFERENCE_CLICK_DREAMER_CONNECTION"
-            android:icon="@drawable/ic_api_24"
-            android:summary="Realizar pruebas de conexión a Dreamer." />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:layout="@layout/preferences_category"
-        android:title="Diagnostico MC2"
-        android:key="try"
-        tools:ignore="TextContrastCheck">
-
-        <Preference
-            android:icon="@drawable/ic_cell_tower_24"
-            app:title="Conexión con el Proveedor"
-            android:key="try"/>
-
-        <Preference
-            app:key="PREFERENCE_CLICK_MC2_CONNECTION"
-            android:icon="@drawable/ic_data_exploration_24"
-            android:summary="Realizar pruebas de conexión a proveedor MonosChinos2."/>
-
-    </PreferenceCategory>
 
     <PreferenceCategory
         android:layout="@layout/preferences_category"

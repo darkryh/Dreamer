@@ -48,6 +48,7 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         newsViewModel.synchronizeNews()
+        setupLayouts()
         binding.rcvNews.apply {
             layoutManager = LinearLayoutManager(context)
             this@NewsFragment.adapter = NewsItemRecyclerViewAdapter(requireContext())
@@ -63,12 +64,26 @@ class NewsFragment : Fragment() {
         }
     }
 
+    private fun setupLayouts() {
+        binding.swipeRefresh.apply {
+            setColorSchemeColors(resources.getColor(R.color.blackPrimary,requireContext().theme))
+            setOnRefreshListener {
+                isRefreshing = true
+                newsViewModel.synchronizeNews()
+            }
+        }
+    }
+
     private fun setupNews() {
         newsViewModel.getNewsItems().observe(viewLifecycleOwner) {
             adManager?.setAnyList(it)
             adManager?.submitList(it)
+            binding.swipeRefresh.isRefreshing = false
         }
-        adManager?.getAds()?.observe(viewLifecycleOwner) { adManager?.submitList(it) }
+        adManager?.getAds()?.observe(viewLifecycleOwner) {
+            adManager?.submitList(it)
+            binding.swipeRefresh.isRefreshing = false
+        }
     }
 
     override fun onDestroyView() {

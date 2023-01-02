@@ -1,8 +1,9 @@
 package com.ead.project.dreamer.data.commons
 
+import androidx.lifecycle.asLiveData
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.receiver.DreamerNotifier
+import com.ead.project.dreamer.data.utils.NotificationManager
 
 class Constants {
 
@@ -23,6 +24,8 @@ class Constants {
         const val PLAY_STORE_APP = "https://play.google.com/store/apps/details?id=com.ead.project.dreamer"
 
         const val DREAMER_TOPIC = "Dreamer_Topic"
+
+        const val LOGO_URL = "https://i.ibb.co/6nfLSKL/logo-app.png"
 
         //CONSTANTS
 
@@ -50,11 +53,15 @@ class Constants {
 
         const val REQUESTED_NEWS = "REQUESTED_NEWS"
 
+        private const val VERSION_UPDATE = "VERSION_UPDATE"
+
         const val IS_FROM_CONTENT_PLAYER = "IS_FROM_CONTENT_PLAYER"
 
         const val IS_DATA_FOR_DOWNLOADING_MODE = "IS_DATA_FOR_DOWNLOADING_MODE"
 
-        const val IS_CORRECT_DATA_FROM_CHAPTER = "IS_CORRECT_DATA_FROM_CHAPTER"
+        const val IS_CORRECT_DATA_FROM_CHAPTER_SETTINGS = "IS_CORRECT_DATA_FROM_CHAPTER_SETTINGS"
+
+        const val IS_CORRECT_DATA_FROM_RECORDS_SETTINGS = "IS_CORRECT_DATA_FROM_RECORDS_SETTINGS"
 
         const val SYNC_DIRECTORY = "CONSTANT_SYNC_DIRECTORY"
 
@@ -68,7 +75,7 @@ class Constants {
 
         const val SYNC_RELEASES = "SYNC_RELEASES"
 
-        const val SYNC_NOTIFICATIONS_FIRST_TIME = "SYNC_NOTIFICATIONS_FIRST_TIME"
+        private const val SYNC_NOTIFICATIONS_FIRST_TIME = "SYNC_NOTIFICATIONS_FIRST_TIME"
 
         const val SYNC_SCRAPPER = "SYNC_SCRAPPER"
 
@@ -87,8 +94,6 @@ class Constants {
         const val SYNC_PROFILE_FIXER_CHECKER = "SYNC_PROFILE_FIXER_CHECKER"
 
         const val SYNC_CHAPTER_FIXER_SIZE = "SYNC_CHAPTER_FIXER_SIZE"
-
-        const val SYNC_CHAPTER_SIZE_CHECKER = "SYNC_CHAPTER_SIZE_CHECKER"
 
         const val PROFILE_FINAL_STATE = "Finalizado"
 
@@ -172,6 +177,8 @@ class Constants {
 
         const val PREFERENCE_CUSTOMIZED_IMV_PROFILE = "PREFERENCE_CUSTOMIZED_IMV_PROFILE"
 
+        const val PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW = "PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW"
+
         const val PREFERENCE_PIP_MODE_PLAYER = "PREFERENCE_PIP_MODE_PLAYER"
 
         private const val PREFERENCE_CURRENT_WATCHED_VIDEOS = "PREFERENCE_CURRENT_WATCHED_VIDEOS"
@@ -186,15 +193,13 @@ class Constants {
 
         const val PREFERENCE_APP_VERSION = "PREFERENCE_APP_VERSION"
 
-        const val PREFERENCE_CLICK_DREAMER_CONNECTION = "PREFERENCE_CLICK_DREAMER_CONNECTION"
-
-        const val PREFERENCE_CLICK_MC2_CONNECTION = "PREFERENCE_CLICK_MC2_CONNECTION"
-
         const val PREFERENCE_CLICK_FIXER = "PREFERENCE_CLICK_FIXER"
 
         const val PREFERENCE_SERVER_SCRIPT = "PREFERENCE_SERVER_SCRIPT"
 
         private const val IS_FIRST_DOWNLOAD_CHECK = "IS_FIRST_DOWNLOAD_CHECK"
+
+        private const val IS_FIRST_DIRECTORY_INSTALL = "IS_FIRST_DIRECTORY_INSTALL"
 
         const val MINIMUM_VERSION_REQUIRED = "MINIMUM_VERSION_REQUIRED"
 
@@ -289,7 +294,7 @@ class Constants {
 
         const val SERVER_OKRU = "ok.ru"
 
-        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
+        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com","sbchill.com","sblongvu.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
 
         const val SERVER_UQLOAD = "uqload.com"
 
@@ -352,11 +357,18 @@ class Constants {
         fun setDirectoryActivityClicked(value: Boolean) =DataStore.writeBooleanAsync(
             PREFERENCE_DIRECTORY_CLICKED,value)
 
-        fun getNotificationMode() = DataStore.readInt(PREFERENCE_NOTIFICATIONS,DreamerNotifier.ALL)
+        fun isConfigurationActivityClicked() = DataStore.readBoolean(PREFERENCE_SETTINGS_CLICKED,true)
+
+        fun setConfigurationActivityClicked(value: Boolean) = DataStore.writeBoolean(
+            PREFERENCE_SETTINGS_CLICKED,value)
+
+        fun getNotificationMode() = DataStore.readInt(PREFERENCE_NOTIFICATIONS, NotificationManager.ALL)
 
         fun isExternalPlayerMode() = DataStore.readBoolean(PREFERENCE_EXTERNAL_PLAYER)
 
         fun isAutomaticPlayerMode() = DataStore.readBoolean(PREFERENCE_RANK_AUTOMATIC_PLAYER)
+
+        fun setAutomaticPlayerMode(value: Boolean) = DataStore.writeBoolean(PREFERENCE_RANK_AUTOMATIC_PLAYER,value)
 
         fun setAppFromGoogle(value : Boolean) = DataStore.writeBooleanAsync(IS_THE_APP_FROM_GOOGLE,value)
 
@@ -366,6 +378,8 @@ class Constants {
             PREFERENCE_GOOGLE_POLICY, value)
 
         fun isGooglePolicyActivate() = DataStore.readBoolean(PREFERENCE_GOOGLE_POLICY)
+
+        fun isGooglePolicyNotActivate() = !isGooglePolicyActivate()
 
         fun isAdInterstitialTime(isDirect : Boolean) = isInQuantityAdLimit() && User.isNotVip() && (isExternalPlayerMode() || !isDirect)
 
@@ -381,7 +395,7 @@ class Constants {
         fun isDirectorySynchronized() = DataStore
             .readBoolean(PREFERENCE_DIRECTORY_PROFILE)
 
-        fun isProfileFixerLaunched() = DataStore.flowBoolean(ANIME_PROFILE_FIXER_KEY)
+        fun isProfileFixerLaunched() = DataStore.flowBoolean(ANIME_PROFILE_FIXER_KEY).asLiveData()
 
         fun setProfileFixer(value: Boolean) = DataStore.writeBoolean(ANIME_PROFILE_FIXER_KEY,value)
 
@@ -397,11 +411,25 @@ class Constants {
 
         fun isActiveFirebaseNotifications() = DataStore.readBoolean(DREAMER_TOPIC,true)
 
+        fun isFirstDirectoryInstall() = DataStore.readBoolean(IS_FIRST_DIRECTORY_INSTALL,true)
+
+        fun disableDirectoryInstall() = DataStore.writeBooleanAsync(IS_FIRST_DIRECTORY_INSTALL,false)
+
         fun isDownloadFirstCheck() = DataStore.readBoolean(IS_FIRST_DOWNLOAD_CHECK,true)
 
         fun disableDownloadCheck() = DataStore.writeBooleanAsync(IS_FIRST_DOWNLOAD_CHECK,false)
 
         fun getPlayerPipMode() = DataStore.
         readBoolean(PREFERENCE_PIP_MODE_PLAYER,true)
+
+        fun isFirstTimeShowingNotification() =
+            DataStore.readBoolean(SYNC_NOTIFICATIONS_FIRST_TIME,true)
+
+        fun disableFirstTimeShowingNotifications() =
+            DataStore.writeBoolean(SYNC_NOTIFICATIONS_FIRST_TIME,false)
+
+        fun setVersionUpdateRoute(code: String) = DataStore.writeString(VERSION_UPDATE,code)
+
+        fun getVersionUpdateRoute() : String = DataStore.readString(VERSION_UPDATE)
     }
 }

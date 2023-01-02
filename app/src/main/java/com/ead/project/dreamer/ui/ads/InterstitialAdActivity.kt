@@ -4,10 +4,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.lifecycle.parcelableArrayList
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.databinding.ActivityInterstitialAdBinding
@@ -26,7 +26,6 @@ class InterstitialAdActivity : AppCompatActivity() {
     private lateinit var chapter: Chapter
     private lateinit var videoList : List<VideoModel>
     private var isDirect = true
-
     private lateinit var binding: ActivityInterstitialAdBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +38,11 @@ class InterstitialAdActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
-        videoList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
-        isDirect = intent.extras!!.getBoolean(Constants.REQUESTED_IS_DIRECT)
+        intent.extras?.let {
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
+            videoList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+            isDirect = it.getBoolean(Constants.REQUESTED_IS_DIRECT)
+        }
     }
 
     private fun initAds() {

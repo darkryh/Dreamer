@@ -7,14 +7,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.views.setResourceColor
 import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityLoginBinding
 import com.ead.project.dreamer.ui.login.termsandconditions.TermsAndConditionsActivity
 import com.ead.project.dreamer.ui.main.MainActivity
@@ -29,6 +29,8 @@ class LoginActivity : AppCompatActivity() {
 
     private var currentVersion = BuildConfig.VERSION_NAME
     private var minVersion : Double ?= null
+
+    private var countLaunch = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +52,7 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
-        binding.buttonGuest.setOnClickListener {
-            goToMain()
-        }
+        binding.buttonGuest.setOnClickListener { goToMain() }
     }
 
     private fun screenInit() {
@@ -61,20 +61,10 @@ class LoginActivity : AppCompatActivity() {
 
         when (nightModeFlags) {
             Configuration.UI_MODE_NIGHT_YES ->
-                binding.imvLogoLogin.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLogoLogin.drawable,
-                    R.color.whitePrimary
-                )
-            )
+                binding.imvLogoLogin.setResourceColor(R.color.whitePrimary)
             Configuration.UI_MODE_NIGHT_NO ->
-                binding.imvLogoLogin.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLogoLogin.drawable,
-                    R.color.blackPrimary
-                ))
+                binding.imvLogoLogin.setResourceColor(R.color.blackPrimary)
         }
-
     }
 
     private fun getToken() {
@@ -101,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
             }
             catch (e : Exception) {
                 e.printStackTrace()
-                DreamerApp.showLongToast(getString(R.string.discord_error))
+                showLongToast(getString(R.string.discord_error))
             }
         }
     }
@@ -121,7 +111,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private var countLaunch = 0
     private fun goToMain() {
         if (Constants.isVersionNotDeprecated())
             if (++countLaunch == 1) {
@@ -132,7 +121,6 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
     }
-
 
     override fun onResume() {
         super.onResume()

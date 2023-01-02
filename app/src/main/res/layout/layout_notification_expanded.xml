@@ -32,8 +32,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/expanded"
         android:src="@mipmap/ic_launcher_round"
-        android:layout_marginHorizontal="32dp"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         tools:ignore="ImageContrastCheck"/>
 
 </LinearLayout>

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.commons.Constants
@@ -148,7 +149,7 @@ class HomeFragment : Fragment() {
         binding.appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                 when(state) {
-                    State.EXPANDED -> binding.rcvLiveRecommendations.visibility = View.VISIBLE
+                    State.EXPANDED -> binding.  rcvLiveRecommendations.visibility = View.VISIBLE
                     State.COLLAPSED -> binding.rcvLiveRecommendations.visibility = View.GONE
                     else -> { }
                 }
@@ -159,13 +160,7 @@ class HomeFragment : Fragment() {
     private fun prepareSecondaryLayouts() {
         binding.edtMainSearch.setOnClickListener{ goToDirectory() }
         binding.imvSearch.setOnClickListener { goToDirectory() }
-        binding.imvProfile.setImageResource(R.drawable.ic_person_outline_24)
-        binding.imvProfile.setImageDrawable(
-            DreamerLayout.getBackgroundColor(
-                binding.imvProfile.drawable,
-                R.color.white
-            )
-        )
+        binding.imvProfile.setResourceImageAndColor(R.drawable.ic_person_outline_24,R.color.white)
         if (user?.avatar != null) {
             binding.imvProfile.load(Discord.PROFILE_IMAGE) {
                 transformations(CircleCropTransformation())

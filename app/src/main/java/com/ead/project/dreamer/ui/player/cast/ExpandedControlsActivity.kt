@@ -9,9 +9,12 @@ import androidx.activity.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.resource.getDrawableFromIdNotNull
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Tools.Companion.hide
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
@@ -19,7 +22,6 @@ import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.data.utils.media.CastManager
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityExpandedControllerCastBinding
 import com.ead.project.dreamer.ui.player.PlayerViewModel
 import com.ead.project.dreamer.ui.player.cast.adapters.CastingViewPagerAdapter
@@ -75,7 +77,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     }
 
     private fun settingProfile() {
-        playerViewModel.getProfile(chapter.idProfile).observe(this) { animeProfile ->
+        playerViewModel.getProfileData(chapter.idProfile).observe(this) { animeProfile ->
             if (animeProfile != null) {
                 if (++count == 1) likeProfile(animeProfile)
                 updateLike(animeProfile)
@@ -114,7 +116,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
             } catch (e: Exception) { e.toString() }
         }
         binding.txvTitle.text = chapter.title
-        binding.txvChapterNumber.text = getString(R.string.chapter_number,chapter.chapterNumber.toString())
+        binding.txvChapterNumber.text = getString(R.string.chapter_number,chapter.number.toString())
     }
 
     private fun setFunctionality() {
@@ -122,11 +124,11 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.bannerShimmer.show()
-        binding.toolbar.navigationIcon = DreamerLayout.getDrawable(R.drawable.ic_expand_38)
+        binding.toolbar.navigationIcon = getDrawableFromIdNotNull(R.drawable.ic_expand_38)
         binding.toolbar.setNavigationOnClickListener { onBack() }
-        DreamerLayout.setClickEffect(binding.btnForward,this)
-        DreamerLayout.setClickEffect(binding.btnRewind,this)
-        DreamerLayout.setClickEffect(binding.btnPlay,this)
+        binding.btnForward.addSelectableItemEffect()
+        binding.btnRewind.addSelectableItemEffect()
+        binding.btnPlay.addSelectableItemEffect()
         castViewHolderAd = CastViewHolderAd(binding.banner)
         if (User.isVip()) {
             binding.lnBanner.visibility = View.GONE
@@ -141,9 +143,9 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         uiMediaController.bindTextViewToStreamDuration(binding.txvTotalProgress)
         uiMediaController.bindImageViewToPlayPauseToggle(
             binding.btnPlay,
-            DreamerLayout.getDrawable(R.drawable.ic_play),
-            DreamerLayout.getDrawable(R.drawable.ic_pause),
-            DreamerLayout.getDrawable(R.drawable.cast_ic_expanded_controller_stop),
+            getDrawableFromIdNotNull(R.drawable.ic_play),
+            getDrawableFromIdNotNull(R.drawable.ic_pause),
+            getDrawableFromIdNotNull(R.drawable.cast_ic_expanded_controller_stop),
             binding.progressBar,
             true)
         uiMediaController.bindViewToRewind(binding.btnRewind,30 * DateUtils.SECOND_IN_MILLIS)
@@ -179,23 +181,10 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     }
 
     private fun updateLike (animeProfile: AnimeProfile) {
-        if (animeProfile.isFavorite) {
-            binding.imvLikeProfile.setImageResource(R.drawable.ic_favorite_24)
-            binding.imvLikeProfile.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLikeProfile.drawable,
-                    R.color.pink
-                )
-            )
-        } else {
-            binding.imvLikeProfile.setImageResource(R.drawable.ic_favorite_border_24)
-            binding.imvLikeProfile.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    binding.imvLikeProfile.drawable,
-                    R.color.white
-                )
-            )
-        }
+        if (animeProfile.isFavorite)
+            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
+         else
+             binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
     }
 
     override fun onPause() {

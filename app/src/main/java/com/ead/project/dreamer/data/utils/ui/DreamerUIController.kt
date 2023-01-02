@@ -13,7 +13,7 @@ class DreamerUIController (private val view: View) : UIController() {
         view.visibility = View.VISIBLE
         view.layoutParams.height = 120
         view.layoutParams.width = 120
-        view.background = DreamerLayout.getDrawable(R.drawable.background_circular)
+        /*view.background = DreamerLayout.getDrawable(R.drawable.background_circular)*/
         (view as ImageView).apply {
             load(R.mipmap.ic_launcher_round) {
                 transformations(CircleCropTransformation())

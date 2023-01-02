@@ -6,7 +6,6 @@ import com.ead.project.dreamer.data.models.Server
 class DoodStream(embeddedUrl:String) : Server(embeddedUrl) {
 
     //private val token = "needsToken"
-
     //regex dsplayer\.hotkeys[^']+'([^']+).+?function
     //regex makePlay.+?return[^?]+([^"]+)
 
