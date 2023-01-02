@@ -1,14 +1,11 @@
 package com.ead.project.dreamer.ui.menuserver
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,30 +17,25 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.lifecycle.fragment.showLongToast
+import com.ead.commons.lib.lifecycle.fragment.showShortToast
+import com.ead.commons.lib.lifecycle.observeOnce
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Constants.Companion.BLANK_BROWSER
 import com.ead.project.dreamer.data.commons.Constants.Companion.isAdInterstitialTime
 import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.commons.Tools.Companion.observeOnce
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.commons.Tools.Companion.launchIntent
-import com.ead.project.dreamer.data.commons.Tools.Companion.load
-import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
 import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.data.models.VideoChecker
+import com.ead.project.dreamer.data.utils.ServerChecker
 import com.ead.project.dreamer.data.models.VideoModel
-import com.ead.project.dreamer.data.network.DreamerClient
-import com.ead.project.dreamer.data.network.DreamerWebView
-import com.ead.project.dreamer.data.network.DreamerWebView.Companion.getServerScript
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ServerManager
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.databinding.BottomModalMenuPlayerBinding
+import com.ead.project.dreamer.domain.DownloadManager
 import com.ead.project.dreamer.ui.chapter.checker.ChapterCheckerFragment
 import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
@@ -51,11 +43,15 @@ import com.ead.project.dreamer.ui.player.PlayerExternalActivity
 import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MenuServerFragment : BottomSheetDialogFragment() {
 
+    @Inject lateinit var downloadManager : DownloadManager
+
     private lateinit var chapter: Chapter
-    private lateinit var rawServers : List<String>
     private var embedServers : MutableList<String> = ArrayList()
     private var serverList : List<Server> = ArrayList()
     private var optionsHeight = 0
@@ -64,7 +60,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private lateinit var menuServerViewModel : MenuServerViewModel
     private lateinit var serverBase : LinearLayout
-    private var webView : DreamerWebView?= null
     private val castManager = CastManager(true)
 
     private var _binding : BottomModalMenuPlayerBinding? = null
@@ -100,63 +95,38 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (Tools.urlIsValid(chapter.reference)) {
-            Constants.setDownloadMode(false)
-            webView = DreamerWebView(requireContext())
+            Constants.setDownloadMode(isDownloadingMode)
             settingCast()
             loadingLayouts()
-            settingJavaScript()
+            settingServer()
         }
         else {
-            DreamerApp.showLongToast(requireContext().getString(R.string.error_url_message))
+            showLongToast(requireContext().getString(R.string.error_url_message))
             dismiss()
         }
     }
 
+    private fun settingServer() {
+        menuServerViewModel.getEmbedServers({timeoutAction()},chapter).observeOnce(this) {
+            embedServers = it.toMutableList()
+            if (Constants.isAutomaticPlayerMode() && !isDownloadingMode) {
+                parsingServersList()
+            }
+            else {
+                configuringSpaceLayouts()
+                applyingLayoutsServers()
+                serverScript()
+                showingLayoutsServers()
+            }
+        }
+    }
+
+    private fun timeoutAction() {
+        showShortToast(requireContext().getString(R.string.timeout_message))
+        dismiss()
+    }
+
     private fun settingCast() { if (castManager.castIsConnected()) castManager.setPreviousCast() }
-
-
-    private fun settingJavaScript() {
-        webView?.webViewClient = object : DreamerClient() {
-
-            override fun onTimeout(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onTimeout(view, url, favicon)
-                safeRun {
-                    webView?.loadUrl(BLANK_BROWSER)
-                    DreamerApp.showLongToast(requireContext().getString(R.string.timeout_message))
-                    dismiss()
-                }
-            }
-
-            override fun onPageLoaded(view: WebView?, url: String?) {
-                super.onPageLoaded(view, url)
-                safeRun {
-                    webView?.evaluateJavascript(getServerScript()) {
-                        webView = null
-                        rawServers = Tools.stringRawArrayToList(it)
-                        embeddingServers()
-                        if (Constants.isAutomaticPlayerMode() && !isDownloadingMode) {
-                            parsingServersList()
-                        }
-                        else {
-                            configuringSpaceLayouts()
-                            applyingLayoutsServers()
-                            serverScript()
-                            showingLayoutsServers()
-                        }
-                    }
-                }
-            }
-        }
-        webView?.load(chapter.reference)
-    }
-
-    private fun embeddingServers() {
-        safeRun {
-            for (server in rawServers) {
-                embedServers.add(Tools.embedLink(server))
-            }
-        }
-    }
 
     private fun configuringSpaceLayouts() {
         optionsHeight = if (embedServers.size <= 8) resources.getDimensionPixelSize(R.dimen.dimen_15dp)
@@ -166,10 +136,10 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     private fun applyingLayoutsServers() {
         for (pos in embedServers.indices) {
             val embeddedVideo = embedServers[pos]
-            val serverName = ServerManager.identify(embeddedVideo)
+            val serverName = ServerChecker.identify(embeddedVideo)
 
             serverBase = LinearLayout(requireContext())
-            serverBase.id = serverBaseId + pos
+            serverBase.id = SERVER_BASE_ID + pos
             serverBase.tag = Constants.SERVER_VIDEOS
             serverBase.gravity = Gravity.START
             serverBase.background = ContextCompat
@@ -179,11 +149,11 @@ class MenuServerFragment : BottomSheetDialogFragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT, 1f
             )
             serverBase.orientation = LinearLayout.HORIZONTAL
-            DreamerLayout.setClickEffect(serverBase,requireContext())
+            serverBase.addSelectableItemEffect()
 
-            if (ServerManager.isRecommended(serverName)) addLogoServer(R.drawable.ic_thumb_up_24)
-            if (ServerManager.isWebServer(serverName)) addLogoServer(R.drawable.ic_web_24)
-            if (isOtherServer(serverName)) addLogoServer(R.drawable.ic_play_circle_outline_24)
+            if (ServerChecker.isRecommended(serverName)) addLogoServer(R.drawable.ic_thumb_up_24)
+            if (ServerChecker.isWebServer(serverName)) addLogoServer(R.drawable.ic_web_24)
+            if (ServerChecker.isOtherServer(serverName)) addLogoServer(R.drawable.ic_play_circle_outline_24)
 
             val textViewServer = TextView(requireContext())
             textViewServer.text = serverName
@@ -200,10 +170,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         hidingLayoutsServers()
     }
 
-    private fun isOtherServer(serverName : String) : Boolean
-    = !ServerManager.isRecommended(serverName) && !ServerManager.isWebServer(serverName)
-            && serverName != "null"
-
     private fun addLogoServer(imageSource : Int) {
         val imageViewServer = ImageView(requireContext())
         imageViewServer.setImageResource(imageSource)
@@ -218,12 +184,12 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
 
     private fun parsingServersList() {
-        embedServers = VideoChecker.getSorterServerList(embedServers)
+        embedServers = menuServerViewModel.getSortedServer(embedServers,isDownloadingMode)
         factoringServersPlayers()
     }
 
     private fun factoringServersPlayers () {
-        menuServerViewModel.getServerList(embedServers).observeOnce(this) {
+        menuServerViewModel.getServers(embedServers).observeOnce(this) {
             serverList = it
             this.isCancelable = false
             launchInThread { executingAutomaticPlay() }
@@ -272,20 +238,14 @@ class MenuServerFragment : BottomSheetDialogFragment() {
                     embedServers.removeAt(pos)
                     binding.linearServer.removeViewAt(pos)
                     serverScript()
-                    DreamerApp.showShortToast(getString(R.string.server_warning_error))
+                    showShortToast(getString(R.string.server_warning_error))
                 }
             }
         }
     }
 
-    private fun prepareDownload(server: Server) {
-        val downloadManager = requireContext()
-            .getSystemService(Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
-        val request =
-            Tools.downloadRequest(chapter, server.videoList.last().directLink)
-        val idDownload = downloadManager.enqueue(request)
-        Chapter.addToDownloadList(Pair(idDownload, chapter.id))
-    }
+    private fun prepareDownload(server: Server) =
+        downloadManager.launchManualDownload(chapter,server.videoList.last().directLink)
 
     private fun preparingIntent(playList: List<VideoModel>, isDirect : Boolean) {
         safeRun {
@@ -312,10 +272,10 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun loadingLayouts() {
         binding.lavLoadingServer.visibility = View.VISIBLE
-        binding.imvChapterMenu.load(chapter.chapterCover){
+        binding.imvChapterMenu.load(chapter.cover){
             transformations(RoundedCornersTransformation(10f))
         }
-        binding.txvTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.chapterNumber)
+        binding.txvTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.number)
     }
 
     private fun showingLayoutsServers() {
@@ -334,7 +294,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun launchChapterChecker(playList: List<VideoModel>, isDirect: Boolean, isExternalPlayer: Boolean=false) = ChapterCheckerFragment().apply {
         val fragmentManager: FragmentManager =
-            (this@MenuServerFragment.context as FragmentActivity).supportFragmentManager
+            (this@MenuServerFragment.activity as FragmentActivity).supportFragmentManager
         val data = Bundle()
         data.apply {
             putParcelable(Constants.REQUESTED_CHAPTER, chapter)
@@ -352,8 +312,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        webView?.onDestroy()
-        webView = null
+        menuServerViewModel.onDestroy()
         _binding = null
     }
 
@@ -363,6 +322,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val serverBaseId = 100000
+        const val SERVER_BASE_ID = 100000
     }
 }
