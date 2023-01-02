@@ -1,11 +1,15 @@
 package com.ead.project.dreamer.ui.main
 
+import android.Manifest
+import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.mediarouter.app.MediaRouteButton
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,35 +17,43 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.lifecycle.observeOnce
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppManager
 import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.app.model.AppStatus
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DirectoryManager
+import com.ead.project.dreamer.data.utils.NotificationManager
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityMainBinding
+import com.ead.project.dreamer.domain.DownloadManager
 import com.ead.project.dreamer.ui.directory.DirectoryActivity
 import com.ead.project.dreamer.ui.login.LoginActivity
 import com.ead.project.dreamer.ui.settings.SettingsActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject lateinit var downloadDesigner : DownloadDesigner
+    @Inject lateinit var notifier: NotificationManager
+    @Inject lateinit var downloadManager: DownloadManager
 
     private lateinit var binding: ActivityMainBinding
     val mainActivityViewModel : MainActivityViewModel by viewModels()
@@ -53,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     private var directoryChecked = false
     private var timerAdv : Timer ?= null
     private var countAdv = 0
-    @Inject lateinit var downloadDesigner : DownloadDesigner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Dreamer)
@@ -71,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         mainActivityViewModel.synchronizeDirectory()
         mainActivityViewModel.synchronizeReleases()
 
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
@@ -83,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_records,
             )
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         DirectoryManager.initDirectories()
@@ -90,6 +103,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         DreamerApp.initAdsPreferences()
+        settingPermissions()
         prepareLayouts()
         initSettings()
         connectionSettings()
@@ -102,23 +116,24 @@ class MainActivity : AppCompatActivity() {
     private fun prepareLayouts() {
         binding.edtMainSearch.setOnClickListener{ goToDirectory() }
         binding.imvSearch.setOnClickListener { goToDirectory() }
-        binding.imvProfile.setImageResource(R.drawable.ic_person_outline_24)
-        binding.imvProfile.setImageDrawable(
-            DreamerLayout.getBackgroundColor(
-                binding.imvProfile.drawable,
-                R.color.white
-            )
-        )
+        binding.imvProfile.setResourceImageAndColor(R.drawable.ic_person_outline_24,R.color.white)
         binding.imvProfile.setOnClickListener {
-            if (!DataStore.readBoolean(Constants.PREFERENCE_SETTINGS_CLICKED)) {
-                DataStore.writeBooleanAsync(Constants.PREFERENCE_SETTINGS_CLICKED,true)
+            if (!Constants.isConfigurationActivityClicked()) {
+                Constants.setConfigurationActivityClicked(true)
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
         }
+
         if (user?.avatar != null) {
             binding.imvProfile.load(Discord.PROFILE_IMAGE) {
                 transformations(CircleCropTransformation())
             }
+        }
+    }
+
+    private fun settingPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
@@ -146,7 +161,7 @@ class MainActivity : AppCompatActivity() {
     private fun initSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) splashScreen
         Constants.setAppFromGoogle(false)
-        downloadDesigner.checkOneTimeSetting()
+        downloadDesigner.firstTimeReset()
     }
 
     private fun appSettings() {
@@ -157,14 +172,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun connectionSettings() {
-        if (Tools.isConnectionIncompatible()) DreamerApp.showShortToast(getString(R.string.wifi_warning))
+        if (Tools.isConnectionIncompatible())
+            showLongToast(getString(R.string.wifi_warning))
     }
 
     private fun userSettings() {
-        if (user == null) {
-            DataStore.writeBooleanAsync(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER,false)
-        }
-        else {
+        if (user == null) Constants.setAutomaticPlayerMode(false)
+        else
             mainActivityViewModel.getGuildMember(user.id).observe(this) {
                 try {
                     if (it != null && it.roles.isNotEmpty()) {
@@ -174,51 +188,69 @@ class MainActivity : AppCompatActivity() {
                     }
                 } catch (e : Exception) { e.printStackTrace() }
             }
-        }
     }
 
     private fun checkStatusApp() {
-        mainActivityViewModel.getStatusApp().observe(this) {
-            if (currentVersion < it.version ) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                DataStore.writeDouble(Constants.MINIMUM_VERSION_REQUIRED,it.version)
-                DataStore.writeBooleanAsync(Constants.VERSION_DEPRECATED,true)
-                finish()
-            }
+        mainActivityViewModel.getStatusApp().observeOnce(this) { appStatus ->
+            val updateAvailable = currentVersion < appStatus.lastVersion
+            if (updateAvailable) checkUpdate(appStatus)
+            if (currentVersion < appStatus.minVersion && !updateAvailable) goToLogin(appStatus.minVersion)
         }
     }
 
-    private fun syncState() {
-        lifecycleScope.launch (Dispatchers.Main) {
-            mainActivityViewModel.directoryState().collect {
-                runOnUiThread {
-                    if (!directoryChecked)
-                        if (it) {
-                            DreamerLayout.showSnackbar(
-                                view = binding.coordinator,
-                                text = getString(R.string.successfully_sync),
-                                color = R.color.green
-                            )
-                            directoryChecked = true
-                        }
-                        else {
-                            if (timerAdv == null) {
-                                DreamerLayout.showSnackbar(
-                                    view = binding.coordinator,
-                                    text = getString(R.string.requesting_data),
-                                    color = R.color.red,
-                                    length = Snackbar.LENGTH_INDEFINITE
-                                )
-                                timerAdv = Timer()
-                                timerAdv?.schedule(object : TimerTask() {
-                                    override fun run() {
-                                        showAdvices()
-                                    }
-                                }, 5000, 13000)
-                            }
-                        }
-                }
+    private fun checkUpdate(appStatus: AppStatus) {
+        val updateApk = getString(R.string.apk_title_new_version_download, appStatus.lastVersion.toString())
+        Constants.setVersionUpdateRoute(updateApk)
+        if (!downloadManager.checkIfUpdateIsAlreadyDownloaded())
+            showUpdateMessage(appStatus,updateApk)
+    }
+
+    private fun showUpdateMessage(appStatus: AppStatus,title : String) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.title_new_version_download,appStatus.lastVersion.toString()))
+            .setMessage(appStatus.resumedVersionNotes?:getString(R.string.content_new_version_download))
+            .setPositiveButton(getString(R.string.to_download)) { _: DialogInterface?, _: Int ->
+                downloadManager.launchUpdate(title, appStatus.downloadReference)
             }
+            .setNegativeButton(R.string.cancel,null)
+            .show()
+    }
+
+    private fun goToLogin(version : Double) {
+        startActivity(Intent(this, LoginActivity::class.java))
+        DataStore.writeDouble(Constants.MINIMUM_VERSION_REQUIRED,version)
+        DataStore.writeBooleanAsync(Constants.VERSION_DEPRECATED,true)
+        finish()
+    }
+
+    private fun syncState() {
+        mainActivityViewModel.directoryState().observe(this) {
+            if (!directoryChecked)
+                if (it) {
+                    DreamerLayout.showSnackbar(
+                        view = binding.coordinator,
+                        text = getString(R.string.successfully_sync),
+                        color = R.color.green
+                    )
+                    directoryChecked = true
+                }
+                else {
+                    if (timerAdv == null) {
+                        DreamerLayout.showSnackbar(
+                            view = binding.coordinator,
+                            text = getString(R.string.requesting_data),
+                            color = R.color.red,
+                            length = Snackbar.LENGTH_INDEFINITE
+                        )
+                        timerAdv = Timer()
+                        timerAdv?.schedule(object : TimerTask() {
+                            override fun run() {
+                                showAdvices()
+                            }
+                        }, 5000, 13000)
+                    }
+                }
+
         }
     }
 
@@ -249,5 +281,18 @@ class MainActivity : AppCompatActivity() {
             Constants.setDirectoryActivityClicked(true)
             startActivity(Intent(this, DirectoryActivity::class.java))
         }
+    }
+
+    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        val result = when {
+            isGranted -> {
+                if (Constants.isFirstTimeShowingNotification())
+                    NotificationManager.showSettingNotification(notifier,this)
+                "Granted permission"
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> "Rational permission"
+            else -> "Denied permission"
+        }
+        Log.d(ContentValues.TAG, "permission manager: $result")
     }
 }
