@@ -5,8 +5,8 @@ import android.app.DownloadManager
 import android.database.Cursor
 import androidx.lifecycle.MutableLiveData
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.getChapterDownload
-import com.ead.project.dreamer.data.models.ChapterDownload
+import com.ead.project.dreamer.data.commons.Tools.Companion.downloadItem
+import com.ead.project.dreamer.data.models.DownloadItem
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import javax.inject.Inject
 
@@ -16,14 +16,11 @@ class DownloadDesigner @Inject constructor(
     private var isExecuting = true
     private lateinit var cursor : Cursor
     private var position = 0
-    private var downloadedChapters : MutableLiveData<List<ChapterDownload>> = MutableLiveData()
-    private var temporalList : MutableList<ChapterDownload> = mutableListOf()
+    private var downloadedItems : MutableLiveData<List<DownloadItem>> = MutableLiveData()
+    private var tempList : MutableList<DownloadItem> = mutableListOf()
 
-    fun checkOneTimeSetting() {
-        execute {
-            checkFirstTime()
-        }
-    }
+    fun firstTimeReset() = execute { checkFirstTime() }
+
 
     fun onResume() {
         execute {
@@ -31,23 +28,21 @@ class DownloadDesigner @Inject constructor(
                 isExecuting = true
                 cursor = downloadManager.query(DownloadManager.Query())
                 while (cursor.moveToNext() && isExecuting) {
-                    if (cursor.isFirst) temporalList.clear()
-                    temporalList.add(cursor.getChapterDownload()
+                    if (cursor.isFirst) tempList.clear()
+                    tempList.add(cursor.downloadItem()
                         .apply {
-                            this.idDownload = cursor.getId()
+                            this.id = cursor.getId()
                             this.state = cursor.getStatus()
                             this.current = cursor.getCurrentDownloaded()
                             this.total = cursor.getTotalDownloaded()
                         })
-                    manageIteration(temporalList)
+                    manageIteration(tempList)
                 }
             } catch (e : Exception) { e.printStackTrace() }
         }
     }
 
-    fun onPause() {
-        isExecuting = false
-    }
+    fun onPause() { isExecuting = false }
 
     private fun execute(task : () -> Unit) = ThreadUtil.execute { task() }
 
@@ -55,11 +50,11 @@ class DownloadDesigner @Inject constructor(
         if (Constants.isDownloadFirstCheck()) {
             Constants.disableDownloadCheck()
             cursor = downloadManager.query(DownloadManager.Query())
-            cursor.removeAll()
+            cursor.removeDownloadedChapters()
         }
     }
 
-    fun getChapters() : MutableLiveData<List<ChapterDownload>> = downloadedChapters
+    fun getChapters() : MutableLiveData<List<DownloadItem>> = downloadedItems
 
     @SuppressLint("Range")
     private fun Cursor.getStatus() : Int = getInt(getColumnIndex(DownloadManager.COLUMN_STATUS))
@@ -73,13 +68,13 @@ class DownloadDesigner @Inject constructor(
     @SuppressLint("Range")
     private fun Cursor.getTotalDownloaded() : Int = getInt(getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
 
-    private fun Cursor.removeAll() { while (moveToNext()) { downloadManager.remove(getId()) } }
+    private fun Cursor.removeDownloadedChapters() { while (moveToNext()) { if (downloadItem().idReference != -1) downloadManager.remove(getId()) } }
 
-    private fun manageIteration(tempList: MutableList<ChapterDownload>) {
+    private fun manageIteration(tempList: MutableList<DownloadItem>) {
         if (cursor.isLast) {
             this@DownloadDesigner.position = 0
             cursor = downloadManager.query(DownloadManager.Query())
-            downloadedChapters.postValue(tempList.sortedByDescending { it.idDownload })
+            downloadedItems.postValue(tempList.sortedByDescending { it.id })
             Thread.sleep(1000)
         }
     }
