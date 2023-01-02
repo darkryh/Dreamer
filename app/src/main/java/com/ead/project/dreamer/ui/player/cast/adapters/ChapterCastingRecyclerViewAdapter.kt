@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterCastingBinding
@@ -33,9 +33,7 @@ class ChapterCastingRecyclerViewAdapter (private val context: Context) :
         holder.bindTo(chapter)
     }
 
-    fun submitList (list: List<Chapter>) {
-        differ.submitList(list)
-    }
+    fun submitList (list: List<Chapter>) = differ.submitList(list)
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -50,11 +48,11 @@ class ChapterCastingRecyclerViewAdapter (private val context: Context) :
 
         private fun settingsLayouts(chapter: Chapter) {
             binding.txvTitle.text = context
-                .getString(R.string.chapter_number,chapter.chapterNumber.toString())
+                .getString(R.string.chapter_number,chapter.number.toString())
         }
 
         private fun settingImages(chapter: Chapter) {
-            binding.imvChapterProfile.load(chapter.chapterCover){
+            binding.imvChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(0f,16f,0f,16f))
