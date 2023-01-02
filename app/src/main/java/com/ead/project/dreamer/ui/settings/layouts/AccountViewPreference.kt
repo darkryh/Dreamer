@@ -1,8 +1,6 @@
 package com.ead.project.dreamer.ui.settings.layouts
 
-
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
@@ -11,45 +9,58 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.models.discord.User
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 
 
 class AccountViewPreference(context: Context, attrs: AttributeSet?) :
     Preference(context, attrs) {
-    private var profileView: ImageView? = null
-    private var stateView : ImageView?= null
-    private var txvUserName : TextView?= null
-    private var txvUserRank : TextView?= null
-    private var profileClickListener: View.OnClickListener? = null
+    private var _profile: ImageView? = null
+    val profile get() = _profile!!
+
+    private var _state : ImageView?= null
+    val state get() = _state!!
+
+    private var _userName : TextView?= null
+    val userName get() = _userName!!
+
+    private var _rank : TextView?= null
+    val rank get() = _rank!!
+
+    private var accountClickListener: View.OnClickListener? = null
     private val user = User.get()
 
-    //onBindViewHolder() will be called after we call setImageClickListener() from SettingsFragment
+    init { widgetLayoutResource = R.layout.layout_account_view_preference }
+
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        profileView = holder.findViewById(R.id.image) as ImageView
-        stateView = holder.findViewById(R.id.state_view) as ImageView
-        txvUserName = holder.findViewById(R.id.txvUserName) as TextView
-        txvUserRank = holder.findViewById(R.id.txvRank) as TextView
+        _profile = holder.findViewById(R.id.imageAccount) as ImageView
+        _state = holder.findViewById(R.id.state_view) as ImageView
+        _userName = holder.findViewById(R.id.txvUserName) as TextView
+        _rank = holder.findViewById(R.id.txvRank) as TextView
+        _profile?.setOnClickListener(accountClickListener)
+        val root = _profile?.parent as View
+        root.addSelectableItemEffect()
+        root.setOnClickListener { /*to do*/ }
+        bindUser()
+    }
 
-        profileView?.setOnClickListener(profileClickListener)
-        if (user != null) {
-            if (user.avatar != null)
-                profileView?.load(
-                    Discord.CDN_ENDPOINT +
-                            "/avatars/${user.id}/${user.avatar}") {
+    private fun bindUser() {
+        user?.let {
+            if (it.avatar != null)
+                profile.load(
+                    Discord.CDN_ENDPOINT + "/avatars/${it.id}/${it.avatar}") {
                     transformations(CircleCropTransformation())
-            }
-            txvUserName?.text = user.username
-            txvUserRank?.text = user.rank
-            val checkDrawable = DreamerLayout.getDrawable(R.drawable.ic_check_24)
-            DreamerLayout.setColorFilter(checkDrawable,Color.GREEN)
-            stateView?.setImageDrawable(checkDrawable)
+                }
+            userName.text = it.username
+            rank.text = it.rank
+            state.setResourceImageAndColor(R.drawable.ic_check_24,R.color.green)
         }
     }
 
-    @JvmName("setImageClickListener")
-    fun setImageClickListener(onClickListener: View.OnClickListener?) { profileClickListener = onClickListener }
+    @JvmName("setAccountClickListener")
+    fun setAccountClickListener(onClickListener: View.OnClickListener?) { accountClickListener = onClickListener }
 }

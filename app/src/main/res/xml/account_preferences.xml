@@ -5,7 +5,7 @@
 
     <com.ead.project.dreamer.ui.settings.layouts.AccountViewPreference
         app:key="PREFERENCE_CUSTOMIZED_IMV_PROFILE"
-        app:layout="@layout/layout_image_view_preference" />
+        app:layout="@layout/layout_account_view_preference" />
 
     <PreferenceCategory
         android:layout="@layout/preferences_category"

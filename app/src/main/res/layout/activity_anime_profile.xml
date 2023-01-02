@@ -291,23 +291,72 @@
             app:layout_constraintStart_toStartOf="parent"
             app:cardCornerRadius="8dp">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:gravity="center_vertical"
-                android:layoutDirection="rtl">
+                android:paddingHorizontal="16dp">
 
                 <ImageView
                     android:id="@+id/imvDownloadSelected"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:contentDescription="@string/download"
                     android:paddingVertical="0dp"
                     android:src="@drawable/ic_circle_download_24"
-                    app:tint="?attr/colorSecondaryVariant"
-                    android:contentDescription="@string/download"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imvDownloadManualSelected"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="?attr/colorSecondaryVariant" />
+
+                <ImageView
+                    android:id="@+id/imvDownloadManualSelected"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="24dp"
+                    android:contentDescription="@string/download"
+                    android:paddingVertical="0dp"
+                    android:src="@drawable/ic_download_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/imvDownloadSelected"
+                    app:layout_constraintEnd_toStartOf="@+id/imvDownloadSelected"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imvChapterModeDownloaded"
+                    app:layout_constraintTop_toTopOf="@+id/imvDownloadSelected"
+                    app:tint="?attr/colorSecondaryVariant" />
+
+
+                <ImageView
+                    android:id="@+id/imvChapterModeDownloaded"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="24dp"
+                    android:contentDescription="@string/download"
+                    android:paddingVertical="0dp"
+                    android:src="@drawable/ic_assignment_turned_in_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/imvDownloadManualSelected"
+                    app:layout_constraintEnd_toStartOf="@+id/imvDownloadManualSelected"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/imvChapterModeNotDownloaded"
+                    app:layout_constraintTop_toTopOf="@+id/imvDownloadManualSelected"
+                    app:tint="?attr/colorSecondaryVariant" />
+
+                <ImageView
+                    android:id="@+id/imvChapterModeNotDownloaded"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="24dp"
+                    android:contentDescription="@string/download"
+                    android:paddingVertical="0dp"
+                    android:src="@drawable/ic_assignment_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/imvChapterModeDownloaded"
+                    app:layout_constraintEnd_toStartOf="@+id/imvChapterModeDownloaded"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imvChapterModeDownloaded"
+                    app:tint="?attr/colorSecondaryVariant" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
 
