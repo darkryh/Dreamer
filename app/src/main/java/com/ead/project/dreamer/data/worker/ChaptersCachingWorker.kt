@@ -1,13 +1,14 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.app.model.scrapping.ChapterScrap
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.WebProvider
+import com.ead.project.dreamer.domain.ChapterManager
+import com.ead.project.dreamer.domain.ObjectManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -15,18 +16,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
+@HiltWorker
 class ChaptersCachingWorker @AssistedInject constructor(
     @Assisted context: Context,
-    @Assisted workerParameters: WorkerParameters
+    @Assisted workerParameters: WorkerParameters,
+    private val chapterManager: ChapterManager,
+    private val objectManager: ObjectManager,
+    private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
-
-    lateinit var repository: AnimeRepository
-    lateinit var webProvider: WebProvider
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val chapterScrap = ChapterScrap.get()?:ChapterScrap.getDataFromApi(repository)
                 val array = inputData
                     .getStringArray(Constants.CHAPTER_PROFILE_KEY)!!
                 val id = array[0].toInt()
@@ -40,11 +41,10 @@ class ChaptersCachingWorker @AssistedInject constructor(
                     webProvider.getChaptersFromProfile(
                         chapter,
                         reference,
-                        id,
-                        chapterScrap) }
+                        id) }
 
                 requestedProfileChapters.await().apply {
-                    repository.insertChapters(this)
+                    objectManager.insertObject(this)
                     Result.success()
                 }
                 Result.failure()
@@ -57,7 +57,7 @@ class ChaptersCachingWorker @AssistedInject constructor(
     }
 
     private suspend fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
-        if (size <= 0) repository.getChapterFromId(chapterId).apply { if (this != null) return this }
+        if (size <= 0) chapterManager.getChapter.fromId(chapterId).apply { if (this != null) return this }
         return Chapter.fake()
     }
 }

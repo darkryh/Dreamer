@@ -1,13 +1,14 @@
 package com.ead.project.dreamer.data.worker
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.app.model.scrapping.AnimeBaseScrap
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.domain.DirectoryManager
+import com.ead.project.dreamer.domain.ObjectManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -15,25 +16,26 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
+@HiltWorker
 class DirectoryWorker @AssistedInject constructor(
     @Assisted context: Context,
-    @Assisted workerParameters: WorkerParameters
+    @Assisted workerParameters: WorkerParameters,
+    private val directoryManager: DirectoryManager,
+    private val objectManager: ObjectManager,
+    private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
-
-    lateinit var repository: AnimeRepository
-    lateinit var webProvider: WebProvider
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val animeBaseScrap = AnimeBaseScrap.get()?:AnimeBaseScrap.getDataFromApi(repository)
-                val directory = repository.getDirectory()
+                val directory = directoryManager.getDirectoryList()
                 val sectionPos = inputData.getInt(Constants.DIRECTORY_KEY, -1)
+
                 if (directory.size <= Constants.HOME_ITEMS_LIMIT) {
-                    val directoryData = async { webProvider.requestingData(sectionPos,animeBaseScrap) }
+                    val directoryData = async { webProvider.requestingData(sectionPos) }
                     directoryData.await().apply {
                         if (isEmpty()) Result.failure()
-                        repository.insertAllAnimeBase(this)
+                        objectManager.insertObject(this)
                         final(sectionPos)
                         Result.success()
                     }
