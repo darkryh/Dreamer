@@ -2,7 +2,6 @@ package com.ead.project.dreamer.ui.chapter.checker
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,34 +10,34 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.lifecycle.fragment.showLongToast
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.lifecycle.parcelableArrayList
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.commons.Tools.Companion.launchIntent
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.databinding.FragmentDialogCheckerBinding
+import com.ead.project.dreamer.domain.DownloadManager
 import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerExternalActivity
 import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.concurrent.thread
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ChapterCheckerFragment : DialogFragment() {
 
+    @Inject lateinit var downloadManager : DownloadManager
     private lateinit var chapterCheckerViewModel : ChapterCheckerViewModel
     private lateinit var playList : List<VideoModel>
-    private var  animeProfile: AnimeProfile ?= null
     private lateinit var chapter : Chapter
-    private var lastChapterNeeded = false
     private var isDirect = true
     private var isExternalPlayerMode = false
     private var isDownloadingMode = false
+    private var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,7 @@ class ChapterCheckerFragment : DialogFragment() {
         _binding = FragmentDialogCheckerBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(binding.root)
-        binding.imvCoverChecker.load(chapter.chapterCover){
+        binding.imvCoverChecker.load(chapter.cover){
             transformations(RoundedCornersTransformation(8f))
         }
         return builder.create()
@@ -76,78 +75,45 @@ class ChapterCheckerFragment : DialogFragment() {
     }
 
     private fun gettingData() {
-        chapterCheckerViewModel.getChapter(chapter).observe(viewLifecycleOwner) { mChapter ->
+        chapterCheckerViewModel.getChapterData(chapter).observe(viewLifecycleOwner) { mChapter ->
             if (mChapter != null) {
                 if (isDownloadingMode) prepareDownload(mChapter)
                 else preparingIntent(mChapter)
                 dismiss()
-            } else {
-                lastChapterNeeded = true
-                gettingAnimeBase()
-            }
+            } else gettingAnimeBase()
         }
     }
 
     private fun gettingAnimeBase() {
-        chapterCheckerViewModel.getAnimeBase(chapter.title)
-            .observe(viewLifecycleOwner) { mAnimeBase ->
-                if (mAnimeBase != null) {
-                    gettingAnimeProfile(mAnimeBase)
-                }
-            }
+        chapterCheckerViewModel.synchronizeNewContent()
+        chapterCheckerViewModel.getAnimeBase(chapter.title).observe(viewLifecycleOwner) { mAnimeBase ->
+            if (mAnimeBase != null) gettingAnimeProfile(mAnimeBase)
+        }
     }
 
     private fun gettingAnimeProfile(animeBase: AnimeBase) {
         chapterCheckerViewModel.getAnimeProfile(animeBase.id)
             .observe(viewLifecycleOwner) { mAnimeProfile ->
-                if (mAnimeProfile == null) {
-                    chapterCheckerViewModel
-                        .cachingProfile(animeBase.id, animeBase.reference)
-                } else {
+                chapterCheckerViewModel.configureProfileData(mAnimeProfile,animeBase.id, animeBase.reference)
+                if (mAnimeProfile != null) {
                     if (mAnimeProfile.checkPolicies()) {
-                        this.animeProfile = mAnimeProfile
-                        gettingChapters(mAnimeProfile, animeBase)
+                        if (++count == 1)
+                            chapterCheckerViewModel
+                                .configureChaptersData(mAnimeProfile.id, animeBase.reference)
                     }
                     else {
-                        DreamerApp
-                            .showLongToast(getString(R.string.google_policies_message))
+                        showLongToast(getString(R.string.google_policies_message))
                         dismiss()
                     }
                 }
             }
     }
 
-    var count = 0
-    private fun gettingChapters(animeProfile: AnimeProfile,animeBase: AnimeBase) {
-        chapterCheckerViewModel
-            .getChaptersFromProfile(animeProfile.id)
-            .observe(viewLifecycleOwner) { chapterList ->
-                if (++count == 1) {
-                    chapterCheckerViewModel.cachingChapters(
-                            animeBase.id,
-                            animeBase.reference,
-                            animeProfile.size - chapterList.size,
-                            animeProfile.lastChapterId
-                        )
-                }
-
-                if (chapterList.isNotEmpty()) {
-                    this.animeProfile?.lastChapterId = chapterList.first().id
-                }
-            }
-    }
-
-    private fun prepareDownload(chapter: Chapter) {
-        val downloadManager = requireContext()
-            .getSystemService(Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
-        val request =
-            Tools.downloadRequest(chapter, playList.last().directLink)
-        val idDownload = downloadManager.enqueue(request)
-        Chapter.addToDownloadList(Pair(idDownload, chapter.id))
-    }
+    private fun prepareDownload(chapter: Chapter) =
+        downloadManager.launchManualDownload(chapter,playList.last().directLink)
 
     private fun preparingIntent(chapter: Chapter) {
-        if(Constants.isAdInterstitialTime(isDirect)) {
+        if (Constants.isAdInterstitialTime(isDirect)) {
             launchIntent(requireActivity(),chapter, InterstitialAdActivity::class.java,playList,isDirect)
             Constants.resetCountedAds()
         } else {
@@ -161,14 +127,8 @@ class ChapterCheckerFragment : DialogFragment() {
         }
     }
 
-    override fun onPause() {
-        thread { animeProfile?.let { if (lastChapterNeeded) chapterCheckerViewModel.updateAnimeProfile(it) } }
-        super.onPause()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
