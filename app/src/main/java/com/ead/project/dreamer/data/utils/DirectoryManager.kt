@@ -1,6 +1,8 @@
 package com.ead.project.dreamer.data.utils
 
 import android.os.Environment
+import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.commons.Tools.Companion.manageFirstTimeFolder
 import com.ead.project.dreamer.data.commons.Tools.Companion.manageFolder
 import com.ead.project.dreamer.data.database.model.Chapter
 import java.io.File
@@ -21,14 +23,18 @@ class DirectoryManager {
         fun getChapterFolder(chapter: Chapter) =
             getSeriesFolder().absolutePath + "/" +
                     chapter.title + "/" + chapter.title +
-                    " Capítulo ${chapter.chapterNumber}" +".mp4"
+                    " Capítulo ${chapter.number}" +".mp4"
 
 
         fun initDirectories() {
             val root = getMainFolder()
-            root.manageFolder()
+            root.manageFirstTimeFolder()
             val series = getSeriesFolder()
             series.manageFolder()
         }
+
+        fun getUpdateFile() : File = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
+            , "${Constants.getVersionUpdateRoute()}.apk")
      }
 }
