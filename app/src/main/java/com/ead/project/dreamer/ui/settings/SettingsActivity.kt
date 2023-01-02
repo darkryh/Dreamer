@@ -2,11 +2,11 @@ package com.ead.project.dreamer.ui.settings
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.views.getMutated
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivitySettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,24 +37,17 @@ class SettingsActivity : AppCompatActivity() {
         val data = DataStore
             .readBoolean(Constants.PREFERENCE_THEME_MODE)
 
-        if (data) {
+        if (data)
             binding.toolbar.navigationIcon =
-                DreamerLayout.getBackgroundColor(
-                    binding.toolbar.navigationIcon!!,
-                    R.color.whitePrimary
-                )
-        }
-        else {
+                binding.toolbar.navigationIcon?.getMutated(this,R.color.whitePrimary)
+        else
             binding.toolbar.navigationIcon =
-                DreamerLayout.getBackgroundColor(
-                    binding.toolbar.navigationIcon!!,
-                    R.color.blackPrimary
-                )
-        }
+                binding.toolbar.navigationIcon?.getMutated(this,R.color.blackPrimary)
+
     }
 
     override fun onStop() {
         super.onStop()
-        DataStore.writeBooleanAsync(Constants.PREFERENCE_SETTINGS_CLICKED,false)
+        Constants.setConfigurationActivityClicked(false)
     }
 }

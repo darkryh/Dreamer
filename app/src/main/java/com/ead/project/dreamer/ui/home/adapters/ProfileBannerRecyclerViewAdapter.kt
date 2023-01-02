@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.views.justifyInterWord
 import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdAppProfileBinding
@@ -63,11 +63,7 @@ class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
         }
     }
 
-    fun submitList(list: List<Any>) {
-        differ.submitList(list)
-    }
-
-
+    fun submitList(list: List<Any>) = differ.submitList(list)
 
     override fun getItemCount(): Int = differ.currentList.size
 

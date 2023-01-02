@@ -36,9 +36,7 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
     }
 
     private fun settingLayouts() {
-        if (imvpProfile != null)
-            imvpProfile?.setImageClickListener{}
-
+        //imvpProfile?.setAccountClickListener{ /*TO DO*/}
     }
 
     private fun userConfiguration() {

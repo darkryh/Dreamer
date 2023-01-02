@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.ead.commons.lib.lifecycle.fragment.showLongToast
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ThreadUtil
@@ -40,9 +40,9 @@ class SettingsContentRatingFragment : PreferenceFragmentCompat() {
                 if (!isTheAppFromGoogle)
                     DataStore.writeBooleanAsync(key, !data)
                 else run {
-                        pPrivacyPolicy.isChecked = true
-                        DreamerApp.showLongToast(requireActivity().getString(R.string.google_policies_mode))
-                    }
+                    pPrivacyPolicy.isChecked = true
+                    showLongToast(requireActivity().getString(R.string.google_policies_mode))
+                }
                 return data
             }
         }

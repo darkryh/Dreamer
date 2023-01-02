@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.LayoutAnimeProfileMiniBinding
 import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
 
@@ -48,7 +48,7 @@ class ProfileMiniRecyclerViewAdapter (private val context: Context) :
         fun bindTo (animeProfile: AnimeProfile) {
             binding.txvTitle.text = animeProfile.title
             binding.txvState.text = animeProfile.state
-            DreamerLayout.setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
             binding.imvCoverBase.load(animeProfile.profilePhoto){
                 crossfade(true)
                 crossfade(500)

@@ -11,15 +11,15 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentManager
 import coil.load
 import coil.transform.BlurTransformation
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.lifecycle.parcelableArrayList
+import com.ead.commons.lib.views.setResourceColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.ui.player.content.PlayerContentFragment
 import com.ead.project.dreamer.ui.player.content.chapterselector.ChapterSelectorFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,8 +67,10 @@ class PlayerExternalActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
-        videoList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        intent.extras?.let {
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
+            videoList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        }
     }
 
     private fun settingThemeLayouts() {
@@ -76,27 +78,13 @@ class PlayerExternalActivity : AppCompatActivity() {
         val data = DataStore
             .readBoolean(Constants.PREFERENCE_THEME_MODE)
 
-        if (data) {
-            closeButton.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    closeButton.drawable!!,
-                    R.color.whitePrimary
-                )
-            )
-        }
-        else {
-            closeButton.setImageDrawable(
-                DreamerLayout.getBackgroundColor(
-                    closeButton.drawable!!,
-                    R.color.blackPrimary
-                )
-            )
-        }
+        if (data) closeButton.setResourceColor(R.color.whitePrimary)
+        else closeButton.setResourceColor(R.color.blackPrimary)
     }
 
     private fun initSettings() {
         cover.apply {
-            load(chapter.chapterCover) {
+            load(chapter.cover) {
                 transformations(BlurTransformation(this@PlayerExternalActivity,14f))
             }
             alpha = 0.3f

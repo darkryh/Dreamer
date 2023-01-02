@@ -11,9 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.discord.User
@@ -61,11 +61,11 @@ class PlayerContentFragment : Fragment() {
     }
 
     private fun settingLayouts() {
-        binding.ChapterProfile.load(chapter.chapterCover){
+        binding.ChapterProfile.load(chapter.cover){
             transformations(CircleCropTransformation())
         }
         binding.txvTitle.text = getString(R.string.title_seeing,chapter.title)
-        binding.txvCurrentChapter.text = getString(R.string.chapter_number,chapter.chapterNumber.toString())
+        binding.txvCurrentChapter.text = getString(R.string.chapter_number,chapter.number.toString())
     }
 
     private fun settingRcvViews() {
@@ -89,14 +89,13 @@ class PlayerContentFragment : Fragment() {
     }
 
     private fun settingProfile() {
-        playerViewModel.getProfile(chapter.idProfile).observe(viewLifecycleOwner) {
+        playerViewModel.getProfileData(chapter.idProfile).observe(viewLifecycleOwner) {
             if (it != null) settingSuggestions(it)
         }
     }
 
     private fun settingSuggestions(animeProfile: AnimeProfile) {
-        playerViewModel
-            .getProfilesListFrom(animeProfile.genres as MutableList<String>,animeProfile.rating,animeProfile.id)
+        playerViewModel.getProfilesListFrom(animeProfile)
             .observe(viewLifecycleOwner) {
                 if (++countSuggestion == 1) {
                     Constants.setQuantityAdsPlayer(it.size)

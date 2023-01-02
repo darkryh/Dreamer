@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Constants.Companion.MS_CLICK_EFFECT_MEDIUM
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.databinding.BottomModalScaleGestureBinding
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -47,9 +47,9 @@ class ScaleGestureFragment : BottomSheetDialogFragment() {
     }
 
     private fun prepareLayout() {
-        DreamerLayout.setClickEffect(binding.lnStretch,requireContext())
-        DreamerLayout.setClickEffect(binding.lnZoom,requireContext())
-        DreamerLayout.setClickEffect(binding.lnFixedWidth,requireContext())
+        binding.lnStretch.addSelectableItemEffect()
+        binding.lnZoom.addSelectableItemEffect()
+        binding.lnFixedWidth.addSelectableItemEffect()
     }
 
     private fun settingLayout() {

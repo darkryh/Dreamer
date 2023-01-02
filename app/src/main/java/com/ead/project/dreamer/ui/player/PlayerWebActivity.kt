@@ -7,12 +7,12 @@ import android.view.WindowManager
 import android.webkit.WebSettings
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.lifecycle.parcelableArrayList
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.commons.Tools.Companion.clearData
 import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.network.AdBlocker
@@ -50,8 +50,10 @@ class PlayerWebActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
-        playList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        intent.extras?.let {
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
+            playList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         orientation = resources.configuration.orientation
     }

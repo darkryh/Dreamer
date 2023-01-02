@@ -48,7 +48,7 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
         else
             pState.summary = requireActivity().getString(R.string.sync_in_progress)
 
-        pVersion.summary = getString(R.string.version_description,"Beta",versionName)
+        pVersion.summary = getString(R.string.version_description,"Release",versionName)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {

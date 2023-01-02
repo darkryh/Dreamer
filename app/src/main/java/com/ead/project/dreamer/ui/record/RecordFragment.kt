@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ead.commons.lib.metrics.getAvailableWidthReference
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.databinding.FragmentRecordsBinding
@@ -80,13 +80,13 @@ class RecordFragment : Fragment() {
     }
 
     private fun getLayoutManagerMode() : RecyclerView.LayoutManager =
-        when(Tools.getAutomaticSizeReference(380)) {
+        when(getAvailableWidthReference(380)) {
             0 -> {
                 isLinear = true
                 binding.list.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 LinearLayoutManager(requireContext())
             }
-            else -> GridLayoutManager(requireContext(),Tools.getAutomaticSizeReference(180))
+            else -> GridLayoutManager(requireContext(),getAvailableWidthReference(180))
         }
 
     private fun setupRecords() {

@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.justifyInterWord
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBack
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.AdUnifiedAnimeProfileBinding
 import com.ead.project.dreamer.databinding.LayoutAnimeProfileBinding
 import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
@@ -75,9 +75,7 @@ class ProfileRecyclerViewAdapter (
         return IS_AD
     }
 
-    fun submitList (list: List<Any>) {
-        differ.submitList(list)
-    }
+    fun submitList (list: List<Any>) = differ.submitList(list)
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -89,7 +87,7 @@ class ProfileRecyclerViewAdapter (
             binding.txvTitle.text = animeProfile.title
             binding.txvContent.text = animeProfile.description
             binding.txvContent.justifyInterWord()
-            DreamerLayout.setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
             binding.imvCoverBase.load(animeProfile.profilePhoto){
                 crossfade(true)
                 crossfade(500)
