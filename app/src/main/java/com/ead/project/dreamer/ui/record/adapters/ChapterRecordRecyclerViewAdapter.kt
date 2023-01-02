@@ -9,20 +9,19 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.BlurTransformation
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Tools.Companion.round
-import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.LayoutChapterRecordGridBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordLinearBinding
 
 class ChapterRecordRecyclerViewAdapter (
     private val context: Context,
     private val isLinear : Boolean = false
-) :
-    RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
 
@@ -61,12 +60,12 @@ class ChapterRecordRecyclerViewAdapter (
 
         private fun bindToLinear(binding: LayoutChapterRecordLinearBinding, chapter: Chapter) {
             binding.txvTitle.text = chapter.title
-            binding.txvChapterRecord.text = chapter.chapterNumber.toString()
+            binding.txvChapterRecord.text = chapter.number.toString()
             binding.txvTitle.gravity = Gravity.CENTER_VERTICAL
             binding.imvChapterProfile.alpha = 0.93f
-            DreamerLayout.setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
 
-            binding.imvChapterProfile.load(chapter.chapterCover){
+            binding.imvChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -85,20 +84,19 @@ class ChapterRecordRecyclerViewAdapter (
 
             binding.root.setOnClickListener { Chapter.manageVideo(context, chapter) }
             binding.root.setOnLongClickListener {
-                Chapter.callInAdapterSettings(context, chapter)
+                Chapter.callInAdapterSettings(context, chapter, isRecord = true)
                 return@setOnLongClickListener true
             }
         }
 
         private fun bindToGrid(binding: LayoutChapterRecordGridBinding, chapter: Chapter) {
             binding.txvTitle.text = chapter.title
-            binding.txvChapterRecord.text = chapter.chapterNumber.toString()
+            binding.txvChapterRecord.text = chapter.number.toString()
             binding.txvTitle.gravity = Gravity.CENTER_VERTICAL
             binding.imvChapterProfile.alpha = 0.93f
-            DreamerLayout
-                .setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
 
-            binding.imvChapterProfile.load(chapter.chapterCover){
+            binding.imvChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -115,7 +113,7 @@ class ChapterRecordRecyclerViewAdapter (
 
             binding.root.setOnClickListener { Chapter.manageVideo(context,chapter) }
             binding.root.setOnLongClickListener {
-                Chapter.callInAdapterSettings(context, chapter)
+                Chapter.callInAdapterSettings(context, chapter, isRecord = true)
                 return@setOnLongClickListener true
             }
         }
