@@ -8,15 +8,13 @@ import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.app.model.scrapping.ChapterHomeScrap
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.receiver.DreamerNotifier
-import com.ead.project.dreamer.data.utils.receiver.NotificationReceiver
+import com.ead.project.dreamer.data.utils.NotificationManager
+import com.ead.project.dreamer.domain.HomeManager
+import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.ProfileManager
 import com.ead.project.dreamer.ui.main.MainActivity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -28,37 +26,20 @@ import java.io.IOException
 
 @HiltWorker
 class HomeWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParameters: WorkerParameters
+    @Assisted private val context: Context,
+    @Assisted private val workerParameters: WorkerParameters,
+    private val homeManager: HomeManager,
+    private val notifier: NotificationManager,
+    private val objectManager: ObjectManager,
+    private val profileManager: ProfileManager,
+    private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
-
-    lateinit var repository: AnimeRepository
-    lateinit var webProvider: WebProvider
-    lateinit var notifier : DreamerNotifier
 
     private lateinit var notification : NotificationCompat.Builder
     private val listToNotify : MutableList<ChapterHome> = ArrayList()
     private var currentPos = Constants.getNotificationIndex()
     private var isGroupedNeeded = false
     private lateinit var activeNotifications : Array<StatusBarNotification>
-
-    private val allNotifications = getPendingIntentSetting(NotificationReceiver.PREFERENCE_ACTIVATION_ALL)
-    private val favoriteNotifications = getPendingIntentSetting(NotificationReceiver.PREFERENCE_ACTIVATION_FAVORITES)
-    private val noNotifications = getPendingIntentSetting(NotificationReceiver.PREFERENCE_DEACTIVATION)
-
-    companion object {
-        const val CHANNEL_APP_SUMMARY = 0
-        const val CHANNEL_APP_SERIES_ID = 250
-        const val CHANNEL_SETTINGS_ID = 1500
-        const val CHANNEL_APP_KEY_SERIES = "CHANNEL_APP_KEY_SERIES"
-        const val GROUP_KEY_NOTIFICATIONS = "GROUP_KEY_NOTIFICATIONS"
-
-        const val NotificationTitle = "Configuración notificaciones"
-        const val NotificationContent = "Escoja el modo, en que desea recibir notificaciones de tus animes."
-
-        const val NotificationSummaryTitle = "Nuevos estrenos."
-        const val NotificationSummaryContent = "animes en estreno."
-    }
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
@@ -74,38 +55,42 @@ class HomeWorker @AssistedInject constructor(
         }
     }
 
+    //UPDATE HOME
+
     private suspend fun homeOperator(scope: CoroutineScope) {
         scope.apply {
-            val chapterHomeList = repository.getChaptersHome()
-            val chapterHomeScrap : ChapterHomeScrap =
-                ChapterHomeScrap.get()?:ChapterHomeScrap.getDataFromApi(repository)
+            val chapterHomeList = homeManager.getHomeList()
 
             val isDataEmpty = chapterHomeList.isEmpty()
             val chapter = if (isDataEmpty) ChapterHome.fake()
-            else repository.getChaptersHome().last()
+            else chapterHomeList.last()
 
-            val homeData = async { webProvider.getChaptersHome(chapter,chapterHomeScrap) }
+            val homeData = async { webProvider.getChaptersHome(chapter) }
             homeData.await().apply {
-                if (isDataEmpty) repository.insertAllChaptersHome(this)
-                else repository.updateHome(this)
-                Result.success()
+                if (isDataEmpty) objectManager.insertObject(this)
+                else objectManager.updateObject(this)
             }
         }
     }
 
+    //CONFIGURATION NOTIFICATIONS
+
     private suspend fun notificationOperator(scope: CoroutineScope) {
         scope.apply {
+
             val notificationLevel = Constants.getNotificationMode()
-            activeNotifications = notifier.notificationManager().activeNotifications
-            if (!isFirstTimeNotification()) notificationSetting()
-            if (notificationLevel > DreamerNotifier.NONE) {
+            activeNotifications = notifier.activeNotifications
+
+            if (notificationLevel > NotificationManager.NONE) {
+
                 isGroupedNeeded = isGroupedNeeded()
-                val releaseList = repository.getChaptersHome()
-                val favoriteList = repository.getFavoriteProfileReleasesTitles()
+                val releaseList = homeManager.getHomeList()
+                val favoriteList = profileManager.getProfilesFavoriteReleases.stringList()
                 val previousList = ChapterHome.getPreviousList()
+
                 previousList.apply {
                     if (isNotEmpty()) {
-                        if (notificationLevel == DreamerNotifier.FAVORITES) {
+                        if (notificationLevel == NotificationManager.FAVORITES) {
                             for (chapter in releaseList)
                                 if (!contains(chapter.title) && favoriteList.contains(chapter.title))
                                     listToNotify.add(chapter)
@@ -127,56 +112,34 @@ class HomeWorker @AssistedInject constructor(
             }
         }
     }
-
-    private suspend fun isFirstTimeNotification() : Boolean =
-        DataStore.readBooleanAsync(Constants.SYNC_NOTIFICATIONS_FIRST_TIME)
-
+    
     private fun notification(chapter: ChapterHome, index : Int,
                              isSummaryNeeded : Boolean,isAutoCancelNeeded : Boolean) {
-        notification = notifier.notifier(
-            chapter.title,
-            "Capítulo numero ${chapter.chapterNumber}",
-            R.drawable.ic_launcher_foreground,
-            CHANNEL_APP_KEY_SERIES,
-            imageUrl = chapter.chapterCover,
-            isCustom = false
+        notification = notifier.create(
+            title = chapter.title,
+            content = context.getString(R.string.chapter_number,chapter.chapterNumber.toString()),
+            idDrawable = R.drawable.ic_launcher_foreground,
+            channelKey =  CHANNEL_APP_KEY_SERIES,
+            imageUrl = chapter.chapterCover
         ).apply {
             setContentIntent(getPendingIntent())
             setGroup(GROUP_KEY_NOTIFICATIONS)
-            notifier.notificationManager().notify(CHANNEL_APP_SERIES_ID + index + 1,this.build())
+            notifier.notify(CHANNEL_APP_SERIES_ID + index + 1,this.build())
         }
         if (isSummaryNeeded) {
-            notifier.notifier(NotificationSummaryTitle,
-                NotificationSummaryContent,
-                R.drawable.ic_launcher_foreground,
-                CHANNEL_APP_KEY_SERIES,
-                isCustom = false).apply {
-                setStyle(NotificationCompat.InboxStyle().setSummaryText(NotificationSummaryContent))
+            notifier.create(
+                title = context.getString(R.string.notification_summary_title),
+                content = context.getString(R.string.notification_summary_description),
+                idDrawable = R.drawable.ic_launcher_foreground,
+                channelKey =  CHANNEL_APP_KEY_SERIES
+            ).apply {
+                setStyle(NotificationCompat.InboxStyle().setSummaryText(context.getString(R.string.notification_summary_description)))
                 setGroup(GROUP_KEY_NOTIFICATIONS)
                 setGroupSummary(true)
                 setAutoCancel(isAutoCancelNeeded)
-                notifier.notificationManager().notify(CHANNEL_APP_SUMMARY,this.build())
-                }
+                notifier.notify(CHANNEL_APP_SUMMARY,this.build())
+            }
         }
-    }
-
-    private fun notificationSetting() {
-        notification = notifier.notifier(
-            NotificationTitle,
-            NotificationContent,
-            R.drawable.ic_launcher_foreground,
-            CHANNEL_APP_KEY_SERIES,
-            imageUrl = "https://i.ibb.co/6nfLSKL/logo-app.png",
-            pixelSizeExpanded = 64,
-            isCustom = false
-        ).apply {
-            setOnlyAlertOnce(true)
-            addAction(0,"Todos",allNotifications)
-            addAction(0,"Solo favoritos",favoriteNotifications)
-            addAction(0,"Ninguno",noNotifications)
-        }
-        DataStore.writeBooleanAsync(Constants.SYNC_NOTIFICATIONS_FIRST_TIME,true)
-        notifier.notificationManager().notify(CHANNEL_SETTINGS_ID,notification.build())
     }
 
     private fun updateNotificationsStatus() {
@@ -186,30 +149,15 @@ class HomeWorker @AssistedInject constructor(
     }
 
     private fun getPendingIntent() : PendingIntent {
-        val notificationIntent = Intent(DreamerApp.INSTANCE, MainActivity::class.java)
-        notificationIntent.apply {
+        val notificationIntent = Intent(context, MainActivity::class.java).apply {
             flags = (Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
         return PendingIntent.getActivity(
-            DreamerApp.INSTANCE, 0,
+            context, 0,
             notificationIntent,
-            DreamerNotifier.flagIntentImmutable()
-
+            NotificationManager.flagIntentImmutable()
         )
-    }
-
-    private fun getPendingIntentSetting(value : String) : PendingIntent {
-        val broadCastIntent = Intent(DreamerApp.INSTANCE, NotificationReceiver::class.java)
-        broadCastIntent.apply {
-            action = value
-            putExtra(NotificationReceiver.NOTIFICATION_ID, CHANNEL_SETTINGS_ID)
-        }
-
-        return PendingIntent.getBroadcast(
-            DreamerApp.INSTANCE,0,
-            broadCastIntent,
-            DreamerNotifier.flagIntentMutable())
     }
 
     private fun isGroupedNeeded() : Boolean {
@@ -221,4 +169,11 @@ class HomeWorker @AssistedInject constructor(
     private fun isSummaryNeeded(i : Int) = isGroupedNeeded &&  (i == listToNotify.size-1)
 
     private fun isAutoCancelNeeded() = (activeNotifications.size + listToNotify.size) <= 1
+
+    companion object {
+        const val CHANNEL_APP_SUMMARY = 0
+        const val CHANNEL_APP_SERIES_ID = 250
+        const val CHANNEL_APP_KEY_SERIES = "CHANNEL_APP_KEY_SERIES"
+        const val GROUP_KEY_NOTIFICATIONS = "GROUP_KEY_NOTIFICATIONS"
+    }
 }
