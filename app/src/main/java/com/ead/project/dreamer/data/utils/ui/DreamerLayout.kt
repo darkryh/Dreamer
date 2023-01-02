@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.data.utils.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
@@ -17,8 +16,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.google.android.material.snackbar.Snackbar
@@ -28,24 +25,6 @@ class DreamerLayout {
 
     companion object {
 
-        fun setClickEffect (view: View,context: Context) {
-            view.foreground  = with(TypedValue()) {
-                context.theme.resolveAttribute(
-                    R.attr.selectableItemBackground, this, true)
-                ContextCompat.getDrawable(context, resourceId)
-            }
-        }
-
-
-        fun getBackgroundColor(drawable: Drawable, color :Int) : Drawable {
-            val colorDrawable = getDrawable(drawable)
-            colorDrawable.mutate().colorFilter = BlendModeColorFilterCompat
-                .createBlendModeColorFilterCompat(
-                    DreamerApp.INSTANCE.getColor(color),
-                    BlendModeCompat.SRC_ATOP)
-            return colorDrawable
-        }
-
         fun setColorFilter(drawable: Drawable, @ColorInt color: Int) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 drawable.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
@@ -54,13 +33,6 @@ class DreamerLayout {
             }
         }
 
-        private fun getDrawable(drawable: Drawable) : Drawable = drawable
-            .constantState?.newDrawable()!!
-
-        @SuppressLint("UseCompatLoadingForDrawables")
-        fun getDrawable(resourcesId : Int) : Drawable {
-            return DreamerApp.INSTANCE.resources.getDrawable(resourcesId,DreamerApp.INSTANCE.theme)
-        }
 
         private fun getColor(colorId: Int) = ContextCompat.getColor(DreamerApp.INSTANCE, colorId)
 
