@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
-import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.AdUnifiedChapterHomeBinding
 import com.ead.project.dreamer.databinding.LayoutChapterHomeBinding
 import com.google.android.gms.ads.nativead.NativeAd
@@ -50,7 +50,6 @@ class ChapterHomeRecyclerViewAdapter(
         )
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == NOT_AD) {
             val chapter = differ.currentList[position] as ChapterHome
@@ -64,9 +63,7 @@ class ChapterHomeRecyclerViewAdapter(
         }
     }
 
-    fun submitList (list: List<Any>) {
-        differ.submitList(list)
-    }
+    fun submitList (list: List<Any>) = differ.submitList(list)
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -91,7 +88,7 @@ class ChapterHomeRecyclerViewAdapter(
             binding.txvChapter.text = chapter.chapterNumber.toString()
             binding.txvType.text = chapter.type
             binding.txvType.setVisibility(chapter.type.isNotEmpty())
-            DreamerLayout.setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
         }
 
         private fun settingImages(chapter: ChapterHome) {
