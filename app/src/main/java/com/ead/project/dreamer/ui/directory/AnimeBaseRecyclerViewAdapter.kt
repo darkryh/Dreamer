@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.LayoutAnimeBaseGridBinding
 import com.ead.project.dreamer.databinding.LayoutAnimeBaseLinearBinding
 
@@ -57,7 +57,7 @@ class AnimeBaseRecyclerViewAdapter(
             binding.txvYearBase.text = animeBase.year.toString()
             binding.txvTypeBase.visibility = View.VISIBLE
             binding.txvYearBase.visibility = View.VISIBLE
-            DreamerLayout.setClickEffect(binding.root, context)
+            binding.root.addSelectableItemEffect()
             binding.imvCoverBase.load(animeBase.cover) {
                 crossfade(true)
                 crossfade(500)
@@ -84,7 +84,7 @@ class AnimeBaseRecyclerViewAdapter(
             binding.txvTitleBase.text = animeBase.title
             binding.txvTypeBase.text = animeBase.type
             binding.txvYearBase.text = animeBase.year.toString()
-            DreamerLayout.setClickEffect(binding.root, context)
+            binding.root.addSelectableItemEffect()
             binding.imvCoverBase.load(animeBase.cover) {
                 crossfade(true)
                 crossfade(500)
