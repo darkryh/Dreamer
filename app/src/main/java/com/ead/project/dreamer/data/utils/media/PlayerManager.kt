@@ -177,8 +177,8 @@ class PlayerManager(
 
             val metadata = MediaMetadata.Builder().apply {
                 setTitle(chapter.title)
-                setSubtitle("Capítulo ${chapter.chapterNumber}")
-                setArtworkUri(Uri.parse(chapter.chapterCover))
+                setSubtitle("Capítulo ${chapter.number}")
+                setArtworkUri(Uri.parse(chapter.cover))
                 setWriter("Dreamer")
             }.build()
 
