@@ -49,7 +49,7 @@ class CastingChaptersFragment : Fragment() {
     private fun setupChapters() {
         playerViewModel.getChaptersFromProfile(chapter.idProfile).observe(viewLifecycleOwner) {
             adapter.submitList(it)
-            binding.rcvList.layoutManager?.scrollToPosition(chapter.chapterNumber-1)
+            binding.rcvList.layoutManager?.scrollToPosition(chapter.number-1)
         }
     }
 
