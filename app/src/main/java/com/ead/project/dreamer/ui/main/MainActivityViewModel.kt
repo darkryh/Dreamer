@@ -1,126 +1,80 @@
 package com.ead.project.dreamer.ui.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.worker.*
+import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.configurations.InstallWorkers
+import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val workManager: WorkManager,
-    private val constraints: Constraints,
-    private val repository: AnimeRepository,
+    private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
+    private val applicationManager: ApplicationManager,
+    private val installWorkers: InstallWorkers,
+    private val discordManager: DiscordManager,
+    private val objectManager: ObjectManager
 ) : ViewModel() {
 
-    lateinit var directoryId : UUID
+    fun getStatusApp() = applicationManager.getAppStatusVersion.livedata()
 
-    fun getStatusApp() = repository.getAppStatus()!!
+    fun directoryState() = DataStore.flowBoolean(Constants.FINAL_DIRECTORY).asLiveData()
 
-    fun directoryState() = DataStore.flowBoolean(Constants.FINAL_DIRECTORY)
-
-    fun synchronizeDirectory (workersQuantity : Int = 3) {
-
-        val directoryRequest : MutableList<OneTimeWorkRequest> = ArrayList()
-        for (i in 1 until workersQuantity + 1) {
-
-            val data : Data = Data.Builder()
-                .putInt(Constants.DIRECTORY_KEY,i)
-                .build()
-
-            val syncingChaptersRequest =
-                OneTimeWorkRequestBuilder<DirectoryWorker>()
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .build()
-
-            if (i == 1) directoryId = syncingChaptersRequest.id
-
-            directoryRequest.add(syncingChaptersRequest)
-        }
-
-        var continuation = workManager.beginUniqueWork(
-            Constants.SYNC_DIRECTORY,
-            ExistingWorkPolicy.REPLACE,
-            directoryRequest)
-
-        val syncingProfilingRequest =
-            OneTimeWorkRequestBuilder<ProfileRepositoryWorker>()
-                .setConstraints(constraints)
-                .build()
-
-        continuation = continuation.then(syncingProfilingRequest)
-        continuation.enqueue()
-
-    }
-
-    //fun directoryObserver(context : Context) = WorkManager.getInstance(context).getWorkInfoByIdLiveData(directoryId)
+    fun synchronizeDirectory () = installWorkers()
 
     fun synchronizeHome() {
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<HomeWorker>(15, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.HomeWorkerCode,
+            15,
+            TimeUnit.MINUTES,
             Constants.SYNC_HOME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.REPLACE
+        )
     }
 
     fun synchronizeScrapper() {
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<ScrapperWorker>(3, TimeUnit.DAYS)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.ScrapperWorkerCode,
+            3,
+            TimeUnit.DAYS,
             Constants.SYNC_SCRAPPER,
-            ExistingPeriodicWorkPolicy.KEEP,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.KEEP
+        )
     }
 
     fun synchronizeNewContent() {
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<NewContentWorker>(30, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.NewContentWorkerCode,
+            30,
+            TimeUnit.MINUTES,
             Constants.SYNC_NEW_CONTENT,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.REPLACE
+        )
     }
 
 
     fun synchronizeReleases() {
-        val syncingReleasesRequest =
-            PeriodicWorkRequestBuilder<UpdateReleasesWorker>(7, TimeUnit.DAYS)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.UpdateReleasesWorkerCode,
+            7,
+            TimeUnit.DAYS,
             Constants.SYNC_RELEASES,
-            ExistingPeriodicWorkPolicy.KEEP,
-            syncingReleasesRequest)
+            ExistingPeriodicWorkPolicy.KEEP
+        )
     }
 
-    fun getGuildMember(id : String) = repository.getGuildMember(id)!!
+    fun getGuildMember(id : String) = discordManager.getDiscordMember.livedata(id)
 
-    fun updateChapter(chapter: Chapter) {
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.updateChapter(chapter)
-        }
-    }
+    fun updateChapter(chapter: Chapter) =
+        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapter) }
 
 }

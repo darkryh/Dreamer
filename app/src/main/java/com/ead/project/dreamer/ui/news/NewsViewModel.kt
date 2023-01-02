@@ -1,16 +1,13 @@
 package com.ead.project.dreamer.ui.news
 
 import androidx.lifecycle.*
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.ead.project.dreamer.app.model.scrapping.NewsItemWebScrap
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.worker.NewsWorker
+import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
+import com.ead.project.dreamer.domain.NewsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,32 +16,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-    private val repository: AnimeRepository,
-    private val workManager: WorkManager,
-    private val constraints: Constraints,
+    private val newsManager: NewsManager,
+    private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
     private val webProvider: WebProvider
 ): ViewModel() {
 
     private val newsItemWeb : MutableLiveData<NewsItemWeb?> = MutableLiveData()
 
     fun synchronizeNews() {
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<NewsWorker>(30, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.NewsWorkerCode,
+            30,
+            TimeUnit.MINUTES,
             Constants.SYNC_NEWS,
-            ExistingPeriodicWorkPolicy.KEEP,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.REPLACE,
+        )
     }
 
-    fun getNewsItems() = repository.getFlowNewsItems().asLiveData()
+    fun getNewsItems() : LiveData<List<NewsItem>> = newsManager.getNews.livedata()
 
     fun getWebPageData(reference : String) : MutableLiveData<NewsItemWeb?> {
         viewModelScope.launch (Dispatchers.IO) {
-            val newsItemScrap : NewsItemWebScrap = NewsItemWebScrap.get()?: NewsItemWebScrap.getDataFromApi(repository)
-            newsItemWeb.postValue(webProvider.getWebPageNews(reference,newsItemScrap))
+            newsItemWeb.postValue(webProvider.getWebPageNews(reference))
         }
         return newsItemWeb
     }

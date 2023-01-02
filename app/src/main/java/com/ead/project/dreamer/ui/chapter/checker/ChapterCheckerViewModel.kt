@@ -1,13 +1,15 @@
 package com.ead.project.dreamer.ui.chapter.checker
 
 import androidx.lifecycle.*
-import androidx.work.*
-import com.ead.project.dreamer.data.AnimeRepository
+import androidx.work.ExistingWorkPolicy
 import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.worker.ChaptersCachingWorker
-import com.ead.project.dreamer.data.worker.ProfileCachingWorker
+import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.configurations.ConfigureChapters
+import com.ead.project.dreamer.domain.configurations.ConfigureProfile
+import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,63 +17,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChapterCheckerViewModel @Inject constructor(
-    private val repository: AnimeRepository,
-    private val workManager: WorkManager,
-    private val constraints: Constraints
+    private val chapterManager: ChapterManager,
+    private val profileManager: ProfileManager,
+    private val directoryManager: DirectoryManager,
+    private val configureProfile: ConfigureProfile,
+    private val configureChapters: ConfigureChapters,
+    private val launchOneTimeRequest: LaunchOneTimeRequest
 ): ViewModel() {
 
-    fun getChapter(chapter : Chapter) = repository
-        .getFlowChapterFromTitleAndNumber(chapter.title,chapter.chapterNumber).asLiveData()
+    fun getChapterData(chapter : Chapter) : LiveData<Chapter?> = chapterManager.getChapter.livedata(chapter)
 
-    fun getAnimeBase(title : String) = repository.getFlowAnimeBaseFromTitle(title).asLiveData()
+    fun getAnimeBase(title : String) : LiveData<AnimeBase?> = directoryManager.getDirectory.livedata(title)
 
-    fun getAnimeProfile(id : Int) = repository.getFlowAnimeProfile(id).asLiveData()
+    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?> = profileManager.getProfile.livedata(id)
 
-    fun getChaptersFromProfile (id : Int) : LiveData<List<Chapter>> =
-        repository.getFlowChaptersFromProfile(id).asLiveData()
+    fun configureProfileData(animeProfile: AnimeProfile?,id : Int,reference: String) = configureProfile(animeProfile,id,reference)
 
-    fun cachingProfile(id : Int, reference : String) {
+    fun configureChaptersData(id : Int,reference: String) =
+        viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
 
-        val array = arrayOf(id.toString(), reference)
-
-        val data: Data = Data.Builder()
-            .putStringArray(Constants.ANIME_PROFILE_KEY, array)
-            .build()
-
-        val cachingProfile =  OneTimeWorkRequestBuilder<ProfileCachingWorker>()
-            .setInputData(data)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            Constants.SYNC_PROFILE_CHECKER,
-            ExistingWorkPolicy.KEEP,
-            cachingProfile)
-    }
-
-    fun cachingChapters(id : Int, reference : String, size : Int,lastChapterId : Int) {
-
-        val array = arrayOf(id.toString(),size.toString(),reference,lastChapterId.toString())
-
-        val data = Data.Builder()
-            .putStringArray(Constants.CHAPTER_PROFILE_KEY,array)
-            .build()
-
-
-        val syncingChaptersRequest = OneTimeWorkRequestBuilder<ChaptersCachingWorker>()
-            .setInputData(data)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            Constants.SYNC_CHAPTER_SIZE_CHECKER,
-            ExistingWorkPolicy.KEEP,
-            syncingChaptersRequest)
-    }
-
-    fun updateAnimeProfile(animeProfile: AnimeProfile) {
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.updateAnimeProfile(animeProfile)
-        }
+    fun synchronizeNewContent() {
+        launchOneTimeRequest(
+            LaunchOneTimeRequest.NewContentWorkerCode,
+            Constants.SYNC_NEW_CONTENT,
+            ExistingWorkPolicy.REPLACE
+        )
     }
 }

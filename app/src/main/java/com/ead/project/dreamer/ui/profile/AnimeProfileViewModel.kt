@@ -1,120 +1,74 @@
 package com.ead.project.dreamer.ui.profile
 
-
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.utils.DownloadManager
-import com.ead.project.dreamer.data.worker.*
+import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.configurations.ConfigureChapters
+import com.ead.project.dreamer.domain.configurations.ConfigureProfile
+import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
 import javax.inject.Inject
 
 @HiltViewModel
 class AnimeProfileViewModel @Inject constructor(
-    private val repository: AnimeRepository,
-    private val workManager: WorkManager,
-    private val constraints: Constraints,
+    private val profileManager: ProfileManager,
+    private val chapterManager: ChapterManager,
+    private val objectManager: ObjectManager,
+    private val configureChapters: ConfigureChapters,
+    private val configureProfile: ConfigureProfile,
+    private val launchOneTimeRequest: LaunchOneTimeRequest,
     private val downloadManager: DownloadManager
 ): ViewModel() {
 
-    fun getAnimeProfile(id : Int)  =
-        repository.getFlowAnimeProfile(id).asLiveData()
+    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileManager.getProfile.livedata(id)
 
-    fun getPreparation(id : Int) = repository.getFlowPreparationProfile(id).asLiveData()
+    fun configureProfileData(id : Int,reference: String) =
+        viewModelScope.launch (Dispatchers.IO) { configureProfile(id,reference) }
 
-    fun getChaptersFromProfile (id : Int) = repository.getFlowChaptersFromProfile(id).asLiveData()
+    fun configureChaptersData(id : Int,reference: String) =
+        viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
 
-    fun getChaptersFromProfile (id : Int,start: Int,end: Int) = repository.getFlowChaptersFromProfile(id).map {
-        it.filter { filter -> filter.chapterNumber >= start }
-            .filter { filter2 -> filter2.chapterNumber <= end }
-    }.asLiveData()
+    fun getChaptersFromProfile (id : Int) : LiveData<List<Chapter>> = chapterManager.getChapters.livedata(id)
 
-    fun updateChapter(chapter: Chapter) {
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.updateChapter(chapter)
-        }
-    }
+    fun getChaptersFromProfile (id : Int,start: Int,end: Int) : LiveData<List<Chapter>> =
+        chapterManager.getChapters.livedata(id,start,end)
 
-    fun updateAnimeProfile(animeProfile: AnimeProfile) {
-        viewModelScope.launch (Dispatchers.IO) {
-            repository.updateAnimeProfile(animeProfile)
-        }
-    }
+    fun updateChapter(chapter: Chapter) =
+        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapter) }
 
-    fun cachingProfile(id : Int, reference : String) {
+    fun updateChapters(chapters : List<Chapter>) =
+        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapters) }
 
-        val array = arrayOf(id.toString(), reference)
+    fun updateAnimeProfile(animeProfile: AnimeProfile) =
+        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(animeProfile) }
 
-        val data: Data = Data.Builder()
-            .putStringArray(Constants.ANIME_PROFILE_KEY, array)
-            .build()
+    fun downloadAllChapters(id: Int) =
+        viewModelScope.launch (Dispatchers.IO) { downloadManager.startDownload(chapterManager.getChaptersToDownload(id)) }
 
-        val cachingProfile =  OneTimeWorkRequestBuilder<ProfileCachingWorker>()
-            .setInputData(data)
-            .setConstraints(constraints)
-            .build()
+    fun downloadFromChapters(chapters: List<Chapter>) { downloadManager.startDownload(chapters) }
 
-        workManager.enqueueUniqueWork(
-            Constants.SYNC_PROFILE_CHECKER,
-            ExistingWorkPolicy.KEEP,
-            cachingProfile)
-    }
-
-    fun cachingChapters(id : Int, reference : String, size : Int,lastChapterId : Int) {
-
-        val array = arrayOf(id.toString(),size.toString(),reference,lastChapterId.toString())
-
-        val data = Data.Builder()
-            .putStringArray(Constants.CHAPTER_PROFILE_KEY,array)
-            .build()
-
-
-        val syncingChaptersRequest = OneTimeWorkRequestBuilder<ChaptersCachingWorker>()
-            .setInputData(data)
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            Constants.SYNC_CHAPTER_SIZE,
-            ExistingWorkPolicy.KEEP,
-            syncingChaptersRequest)
-    }
+    fun downloadFromChapter(chapter: Chapter) { downloadManager.startDownload(chapter) }
 
     fun repairingProfiles() {
-
-        val cachingProfile =  OneTimeWorkRequestBuilder<FixerProfileCachingWorker>()
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
+        launchOneTimeRequest(
+            LaunchOneTimeRequest.FixerProfileCachingWorkerCode,
             Constants.SYNC_PROFILE_FIXER_CHECKER,
-            ExistingWorkPolicy.KEEP,
-            cachingProfile)
-    }
-
-    fun downloadAllChapters(id: Int) {
-        viewModelScope.launch (Dispatchers.IO) {
-            downloadManager.init(repository.getNotDownloadedChaptersFromId(id))
-        }
+            ExistingWorkPolicy.KEEP
+        )
     }
 
     fun repairingChapters() {
-        val syncingChaptersRequest = OneTimeWorkRequestBuilder<FixerChaptersCachingWorker>()
-            .setConstraints(constraints)
-            .build()
-
-        workManager.enqueueUniqueWork(
+        launchOneTimeRequest(
+            LaunchOneTimeRequest.FixerChaptersCachingWorkerCode,
             Constants.SYNC_CHAPTER_FIXER_SIZE,
             ExistingWorkPolicy.KEEP,
-            syncingChaptersRequest)
+        )
     }
 }

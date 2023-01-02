@@ -1,23 +1,31 @@
 package com.ead.project.dreamer.ui.settings.viewmodels
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.worker.*
+import com.ead.project.dreamer.data.commons.Tools
+import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.domain.ChapterManager
+import com.ead.project.dreamer.domain.HomeManager
+import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
+import com.ead.project.dreamer.domain.ProfileManager
+import com.ead.project.dreamer.domain.ServerManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.jsoup.Connection
-import org.jsoup.Jsoup
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsFixerViewModel @Inject constructor(
-    private val workManager: WorkManager,
-    private val constraints: Constraints
+    private val launchOneTimeRequest: LaunchOneTimeRequest,
+    private val homeManager: HomeManager,
+    private val chapterManager: ChapterManager,
+    private val profileManager: ProfileManager,
+    private val serverManager: ServerManager
 ) : ViewModel() {
 
     fun getConnectionState(url: String) : MutableLiveData<Int> {
@@ -29,31 +37,23 @@ class SettingsFixerViewModel @Inject constructor(
     }
 
     fun synchronizeScrapper() {
-        val syncingRequest =
-            OneTimeWorkRequestBuilder<ScrapperWorker>()
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniqueWork(
+        launchOneTimeRequest(
+            LaunchOneTimeRequest.ScrapperWorkerCode,
             Constants.SYNC_SCRAPPER,
             ExistingWorkPolicy.REPLACE,
-            syncingRequest)
+        )
     }
 
-
-    private fun getConnection(url : String) : Int {
-        return try {
-            when (Jsoup.connect(url)
-                .ignoreContentType(true)
-                .method(Connection.Method.GET)
-                .execute()
-                .statusCode()) {
-                200 -> 1
-                else -> 0
-            }
-        } catch (e : Exception) {
-            Log.d("testing", "getConnection: ${e.cause}")
-            -1
-        }
+    fun isDataFromDatabaseOK() : Boolean  = runBlocking {
+        try {
+            homeManager.getHomeList().first().isWorking()
+                    && chapterManager.getChaptersToFix().isEmpty()
+                    && profileManager.getProfilesToFix().isEmpty()
+        } catch (e : Exception) { false }
     }
+
+    fun getEmbedServers(timeoutTask : () -> Unit, chapter: Chapter) : LiveData<List<String>> =
+        serverManager.getEmbedServersMutable(timeoutTask,chapter)
+
+    private fun getConnection(url : String) : Int = Tools.isConnectionAvailableInt(url)
 }

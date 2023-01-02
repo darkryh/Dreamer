@@ -1,30 +1,44 @@
 package com.ead.project.dreamer.ui.menuserver
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.data.utils.ServerManager
+import com.ead.project.dreamer.domain.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MenuServerViewModel @Inject constructor () : ViewModel() {
+@HiltViewModel
+class MenuServerViewModel @Inject constructor (
+    private val serverManager: ServerManager)
+: ViewModel() {
 
-    private var serverList : MutableLiveData<List<Server>> = MutableLiveData()
+    private var servers : MutableLiveData<List<Server>> = MutableLiveData()
 
-    fun getServerList(embedList : MutableList<String>): MutableLiveData<List<Server>> {
+    fun getEmbedServers(timeoutTask : () -> Unit, chapter: Chapter) : LiveData<List<String>> =
+        serverManager.getEmbedServersMutable(timeoutTask,chapter)
+
+    fun getServers(embedList : List<String>): LiveData<List<Server>> {
         viewModelScope.launch (Dispatchers.IO) {
-            serverList.postValue(ServerManager.getServersList(embedList))
+            servers.postValue(serverManager.getServers(embedList))
         }
-        return serverList
+        return servers
     }
 
-    fun getServer(rawServer : String) : MutableLiveData<Server>  {
-        val serverSelector : MutableLiveData<Server> = MutableLiveData()
+    fun getServer(embedUrl : String) : LiveData<Server>  {
+        val tempServer : MutableLiveData<Server> = MutableLiveData()
         viewModelScope.launch (Dispatchers.IO) {
-            serverSelector.postValue(ServerManager.getServer(rawServer))
+            tempServer.postValue(serverManager.getServer(embedUrl))
         }
-        return serverSelector
+        return tempServer
     }
+
+    fun getSortedServer(embedList: List<String>, isDownload : Boolean) =
+        serverManager.getSortedServers(embedList,isDownload)
+
+    fun onDestroy() { serverManager.getEmbedServersMutable.onDestroy() }
 }

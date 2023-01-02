@@ -2,53 +2,47 @@ package com.ead.project.dreamer.ui.home
 
 import androidx.lifecycle.*
 import androidx.work.*
-import com.ead.project.dreamer.data.AnimeRepository
+import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.worker.HomeWorker
-import com.ead.project.dreamer.data.worker.NewContentWorker
+import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: AnimeRepository,
-    private val workManager: WorkManager,
-    private val constraints: Constraints
+    private val applicationManager: ApplicationManager,
+    private val homeManager: HomeManager,
+    private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
 ): ViewModel() {
 
 
-    fun getChaptersHome() : LiveData<List<ChapterHome>> = repository.getFlowChapterHome().asLiveData()
+    fun getChaptersHome() : LiveData<List<ChapterHome>> = homeManager.getHomeList.livedata()
 
-    fun getPublicity() = repository.getPublicityApp()!!
+    fun getPublicity() : LiveData<List<Publicity>> = applicationManager.getApplicationAds.livedata()
 
-    fun getRecommendations() : LiveData<List<AnimeProfile>> =
-        repository.getFlowProfileRandomRecommendationsList().asLiveData()
+    fun getRecommendations() : LiveData<List<AnimeProfile>> = homeManager.getHomeRecommendations.livedata()
 
     fun synchronizeHome() {
-
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<HomeWorker>(30, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.HomeWorkerCode,
+            30,
+            TimeUnit.MINUTES,
             Constants.SYNC_HOME,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.REPLACE
+        )
     }
 
     fun synchronizeNewContent() {
-        val syncingRequest =
-            PeriodicWorkRequestBuilder<NewContentWorker>(30, TimeUnit.MINUTES)
-                .setConstraints(constraints)
-                .build()
-
-        workManager.enqueueUniquePeriodicWork(
+        launchPeriodicTimeRequest(
+            LaunchPeriodicTimeRequest.NewContentWorkerCode,
+            30,
+            TimeUnit.MINUTES,
             Constants.SYNC_NEW_CONTENT,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            syncingRequest)
+            ExistingPeriodicWorkPolicy.REPLACE
+        )
     }
 }
