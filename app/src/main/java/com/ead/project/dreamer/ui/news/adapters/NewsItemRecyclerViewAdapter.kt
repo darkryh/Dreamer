@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.justifyInterWord
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
-import com.ead.project.dreamer.data.commons.Tools.Companion.justifyInterWord
-import com.ead.project.dreamer.data.commons.Tools.Companion.setVisibility
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.AdUnifiedNewsItemBinding
 import com.ead.project.dreamer.databinding.LayoutNewsItemBinding
 import com.ead.project.dreamer.ui.news.NewsActivity
@@ -65,9 +65,7 @@ class NewsItemRecyclerViewAdapter(private val context: Context) :
         }
     }
 
-    fun submitList (list: List<Any>) {
-        differ.submitList(list)
-    }
+    fun submitList (list: List<Any>) = differ.submitList(list)
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -80,7 +78,7 @@ class NewsItemRecyclerViewAdapter(private val context: Context) :
 
     inner class ViewHolder(val binding: LayoutNewsItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindTo (newsItem: NewsItem) {
-            DreamerLayout.setClickEffect(binding.root,context)
+            binding.root.addSelectableItemEffect()
             binding.txvTitle.text = newsItem.title
             binding.txvDate.text = newsItem.date
             binding.txvType.text = newsItem.type
