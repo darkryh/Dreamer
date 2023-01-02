@@ -11,6 +11,7 @@ import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.models.Title
 import com.ead.project.dreamer.data.models.Video
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
+import com.ead.project.dreamer.domain.apis.app.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -19,12 +20,26 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class WebProvider @Inject constructor() {
+class WebProvider @Inject constructor(
+    getHomeScrap: GetHomeScrap,
+    getDirectoryScrap: GetDirectoryScrap,
+    getProfileScrap: GetProfileScrap,
+    getChapterScrap: GetChapterScrap,
+    getNewsItemScrap: GetNewsItemScrap,
+    getNewsItemWebScrap: GetNewsItemWebScrap
+) {
+
+    private val chapterHomeScrap : ChapterHomeScrap = getHomeScrap()
+    private val animeBaseScrap : AnimeBaseScrap = getDirectoryScrap()
+    private val animeProfileScrap : AnimeProfileScrap = getProfileScrap()
+    private val chapterScrap : ChapterScrap = getChapterScrap()
+
+    private val newsItemScrap : NewsItemScrap = getNewsItemScrap()
+    private val newsItemWebScrap : NewsItemWebScrap = getNewsItemWebScrap()
 
     fun getChaptersHome(
         firstChapter: ChapterHome,
-        chapterHomeScrap: ChapterHomeScrap
-    ): MutableList<ChapterHome> {
+    ): List<ChapterHome> {
 
         val auxChapterList = mutableListOf<ChapterHome>()
 
@@ -60,7 +75,7 @@ class WebProvider @Inject constructor() {
         return auxChapterList
     }
 
-    fun requestingData (sectionPos : Int,animeBaseScrap: AnimeBaseScrap) : MutableList<AnimeBase> {
+    fun requestingData (sectionPos : Int) : List<AnimeBase> {
 
         val document = Jsoup.connect(Constants.PROVIDER_URL + Constants.LIST)
             .userAgent(DreamerRequest.userAgent()).get()
@@ -73,7 +88,7 @@ class WebProvider @Inject constructor() {
         val elementsTesting = Jsoup.connect(Constants.PROVIDER_URL + Constants.PAGE + 1)
             .userAgent(DreamerRequest.userAgent()).get().getElementsByClass(animeBaseScrap.classList)
         val attrImage = getAttrImage(elementsTesting,animeBaseScrap.imageContainer)
-        val animeBaseTest = getAnimeBaseTest(elementsTesting,animeBaseScrap,attrImage)
+        val animeBaseTest = getAnimeBaseTest(elementsTesting,attrImage)
         if (animeBaseTest.isWorking())
             for (page in section.first until section.second + 1) {
 
@@ -105,14 +120,14 @@ class WebProvider @Inject constructor() {
         return auxChapterList
     }
 
-    private fun getAnimeBaseTest(elements: Elements,animeBaseScrap: AnimeBaseScrap,attrImage: String) : AnimeBase = AnimeBase(0, elements.getCatch(0).select(animeBaseScrap.titleContainer).attr("title"), elements.getCatch(0).select(animeBaseScrap.imageContainer).attr(attrImage), elements.getCatch(0).select(animeBaseScrap.referenceContainer).attr("href"), elements.getCatch(0).select(animeBaseScrap.typeContainer).text().split(" · ").getCatch(0), elements.getCatch(0).select(animeBaseScrap.yearContainer).text().split(" · ").getCatch(1).toIntCatch())
+    private fun getAnimeBaseTest(elements: Elements,attrImage: String) : AnimeBase = AnimeBase(0, elements.getCatch(0).select(animeBaseScrap.titleContainer).attr("title"), elements.getCatch(0).select(animeBaseScrap.imageContainer).attr(attrImage), elements.getCatch(0).select(animeBaseScrap.referenceContainer).attr("href"), elements.getCatch(0).select(animeBaseScrap.typeContainer).text().split(" · ").getCatch(0), elements.getCatch(0).select(animeBaseScrap.yearContainer).text().split(" · ").getCatch(1).toIntCatch())
 
     private fun requestDirectorySize(document: Document) : Int {
         val refLinkPages = document.getElementsByClass("page-item")
         return refLinkPages.getCatch(refLinkPages.size - 2).text().toIntCatch()
     }
 
-    fun getAnimeProfile(idProfile: Int,reference: String,animeProfileScrap: AnimeProfileScrap): AnimeProfile {
+    fun getAnimeProfile(idProfile: Int,reference: String): AnimeProfile {
 
         val document = Jsoup.connect(reference).get()
 
@@ -126,7 +141,7 @@ class WebProvider @Inject constructor() {
         val rating = document.select(animeProfileScrap.ratingContainer).attr("data-rating").toFloatCatch()
         val profilePhoto = document.select(animeProfileScrap.profilePhotoContainer).attr(attrImageProfile)
         val coverPhoto = document.select(animeProfileScrap.coverPhotoContainer).attr(attrImageCover)
-        val genre : List<String> = try { document.select(animeProfileScrap.genresContainer).map{ it.text() } } catch (e : Exception) { emptyList()}
+        val genre : List<String> = try { document.select(animeProfileScrap.genresContainer).map { it.text() } } catch (e : Exception) { emptyList()}
         val rawGenre = genre.toString()
         val date = document.select(animeProfileScrap.dateContainer).text()
         val size = document.getElementsByClass(animeProfileScrap.sizeContainer).size.toString().toIntCatch()
@@ -140,8 +155,7 @@ class WebProvider @Inject constructor() {
     fun getChaptersFromProfile(
         lastChapter: Chapter,
         reference : String,
-        idProfile : Int,
-        chapterScrap: ChapterScrap) : MutableList<Chapter> {
+        idProfile : Int) : List<Chapter> {
 
         val document = Jsoup.connect(reference).get()
 
@@ -151,10 +165,10 @@ class WebProvider @Inject constructor() {
 
         val chaptersList: MutableList<Chapter> = ArrayList()
 
-        for (i in elementsChapters.indices) {
-            val number = elementsChapters[i].attr("data-episode").toIntCatch()
-            val cover = elementsChapters[i].select(chapterScrap.coverContainer).attr(attrImage)
-            val chapterReference = elementsChapters[i].select(chapterScrap.referenceContainer).attr("href")
+        for (element in elementsChapters) {
+            val number = element.attr("data-episode").toIntCatch()
+            val cover = element.select(chapterScrap.coverContainer).attr(attrImage)
+            val chapterReference = element.select(chapterScrap.referenceContainer).attr("href")
             val chapter = Chapter(
                 0,
                 idProfile,
@@ -169,7 +183,7 @@ class WebProvider @Inject constructor() {
         return chaptersList
     }
 
-    fun getNews(firstNewItem : NewsItem, newsItemScrap: NewsItemScrap) : MutableList<NewsItem> {
+    fun getNews(firstNewItem : NewsItem) : List<NewsItem> {
         val auxNewsList = mutableListOf<NewsItem>()
         try {
             val doc = Jsoup.connect(Constants.PROVIDER_NEWS_URL).get()
@@ -195,7 +209,7 @@ class WebProvider @Inject constructor() {
         return auxNewsList
     }
 
-    fun getWebPageNews(reference: String, newsItemWebScrap: NewsItemWebScrap) : NewsItemWeb? {
+    fun getWebPageNews(reference: String) : NewsItemWeb? {
         return try {
             val doc = Jsoup.connect(reference).get()
 
