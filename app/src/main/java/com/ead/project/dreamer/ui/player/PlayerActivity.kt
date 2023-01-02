@@ -20,20 +20,20 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.mediarouter.app.MediaRouteButton
 import coil.load
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.lifecycle.activity.onBackHandle
+import com.ead.commons.lib.lifecycle.activity.showLongToast
+import com.ead.commons.lib.lifecycle.parcelable
+import com.ead.commons.lib.lifecycle.parcelableArrayList
+import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandle
-import com.ead.project.dreamer.data.commons.Tools.Companion.onBackHandlePressed
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelable
-import com.ead.project.dreamer.data.commons.Tools.Companion.parcelableArrayList
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.media.PlayerManager
-import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.data.utils.ui.DreamerOnScaleGestureListener
 import com.ead.project.dreamer.ui.player.content.PlayerContentFragment
 import com.ead.project.dreamer.ui.player.content.chapterselector.ChapterSelectorFragment
@@ -122,8 +122,10 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun initVariables() {
-        chapter = intent.extras!!.parcelable(Constants.REQUESTED_CHAPTER)!!
-        playList = intent.extras!!.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        intent.extras?.let {
+            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
+            playList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
+        }
         orientation = resources.configuration.orientation
         Chapter.set(chapter)
     }
@@ -154,11 +156,11 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun prepareLayout() {
-        imvChapterCover.load(chapter.chapterCover)
-        DreamerLayout.setClickEffect(lnPlaylist,this)
-        DreamerLayout.setClickEffect(lnSettings,this)
-        DreamerLayout.setClickEffect(buttonScreen,this)
-        DreamerLayout.setClickEffect(lnGesture,this)
+        imvChapterCover.load(chapter.cover)
+        lnPlaylist.addSelectableItemEffect()
+        lnSettings.addSelectableItemEffect()
+        buttonScreen.addSelectableItemEffect()
+        lnGesture.addSelectableItemEffect()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -177,7 +179,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         }
         buttonClose.setOnClickListener {
             playerManager.playerView.hideController()
-            onBackHandlePressed()
+            onBack()
         }
         setOnClickInPlayer()
     }
@@ -193,7 +195,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
                 trackSelectorFragment.playerView = playerManager.playerView
                 trackSelectorFragment.show(fragmentManager, null)
             }
-            else DreamerApp.showLongToast(getString(R.string.casting_mode))
+            else showLongToast(getString(R.string.casting_mode))
         }
         lnGesture.setOnClickListener {
             if (!playerManager.isPlayerCastMode()) {
@@ -202,7 +204,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
                 scaleGestureFragment.playerView = playerManager.playerView
                 scaleGestureFragment.show(fragmentManager, null)
             }
-            else DreamerApp.showLongToast(getString(R.string.casting_mode))
+            else showLongToast(getString(R.string.casting_mode))
         }
         lnPlaylist.setOnClickListener {
             val fragmentManager: FragmentManager = supportFragmentManager
@@ -341,7 +343,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private fun checkPIPPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             playerManager.isPIPModeEnabled = isInPictureInPictureMode
-            if(!isInPictureInPictureMode) { onBackHandlePressed() }
+            if(!isInPictureInPictureMode) { onBack() }
         }
     }
 
@@ -367,7 +369,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     fun setMetaData() {
-        txvTitle.text = getString(R.string.title_player,chapter.title,chapter.chapterNumber)
+        txvTitle.text = getString(R.string.title_player,chapter.title,chapter.number)
     }
 
     fun preparingLayoutByMode() {
