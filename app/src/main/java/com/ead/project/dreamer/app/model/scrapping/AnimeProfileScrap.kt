@@ -1,7 +1,5 @@
 package com.ead.project.dreamer.app.model.scrapping
 
-import android.util.Log
-import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.DataStore
 import com.google.gson.Gson
@@ -32,11 +30,5 @@ data class AnimeProfileScrap (
         fun set(value : AnimeProfileScrap) =
             DataStore.writeStringAsync(Constants.ANIME_PROFILE_SCRAP, Gson().toJson(value))
 
-        fun getDataFromApi(repository: AnimeRepository) : AnimeProfileScrap {
-            val data = repository.getAnimeProfileScrap()
-            Log.d("testing", "AnimeProfileScrap: getting data")
-            set(data)
-            return data
-        }
     }
 }
