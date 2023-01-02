@@ -25,30 +25,33 @@ interface ChapterDao {
     @Query("select * from anime_chapter_table  where id =:id")
     suspend fun getChapterFromId(id : Int) : Chapter?
 
-    @Query("select * from anime_chapter_table where title='' or chapterCover='' or chapterNumber=-1 or reference='' GROUP by idProfile")
+    @Query("select * from anime_chapter_table  where idProfile =:id and currentSeen > 0")
+    suspend fun getChaptersRecordsFromId(id : Int) : List<Chapter>
+
+    @Query("select * from anime_chapter_table where title='' or cover='' or number=-1 or reference='' GROUP by idProfile")
     suspend fun getChaptersToFix() : List<Chapter>
 
-    @Query("select * from(select count(*) as id from anime_chapter_table where idProfile =:id) as a union all select * from(select id from anime_chapter_table where idProfile =:id order by chapterNumber desc Limit 1) as b")
-    fun getFlowPreparation(id : Int) : Flow<List<Int>>
+    @Query("select * from(select count(*) as id from anime_chapter_table where idProfile =:id) as a union all select * from(select id from anime_chapter_table where idProfile =:id order by number desc Limit 1) as b")
+    suspend fun getPreparation(id : Int) : List<Int>
 
-    @Query("select * from anime_chapter_table  where idProfile =:id order by chapterNumber desc")
+    @Query("select * from anime_chapter_table  where idProfile =:id order by number desc")
     fun getFlowChaptersFromProfile(id : Int) : Flow<List<Chapter>>
 
-    @Query("select * from anime_chapter_table  where idProfile =:id and chapterNumber >=:start and chapterNumber <=:end order by chapterNumber desc ")
+    @Query("select * from anime_chapter_table  where idProfile =:id and number >=:start and number <=:end order by number desc ")
     fun getFlowChaptersFromProfileInSections(id : Int,start : Int,end: Int) : Flow<List<Chapter>>
 
-    @Query("select * from anime_chapter_table  where idProfile =:id order by chapterNumber asc")
+    @Query("select * from anime_chapter_table  where idProfile =:id order by number asc")
     fun getFlowChaptersFromProfileAsc(id : Int) : Flow<List<Chapter>>
 
     @Query("select * from(select * from (select * from anime_chapter_table where currentSeen > 0 order by lastSeen desc) as X group by X.title) as T order by lastSeen desc")
     fun getFlowDataRecords() : Flow<List<Chapter>>
 
-    @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
+    @Query("select * from anime_chapter_table where title=:title and number=:chapterNumber")
     suspend fun getChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Chapter?
 
-    @Query("select * from anime_chapter_table where title=:title and chapterNumber=:chapterNumber")
+    @Query("select * from anime_chapter_table where title=:title and number=:chapterNumber")
     fun getFlowChapterFromTitleAndNumber(title : String, chapterNumber: Int) : Flow<Chapter?>
 
-    @Query("select * from ( select * from anime_chapter_table where idProfile=:id order by chapterNumber asc ) as x where downloadState='${Chapter.STATUS_INITIALIZED}' or downloadState='${Chapter.STATUS_FAILED}'")
+    @Query("select * from ( select * from anime_chapter_table where idProfile=:id order by number asc ) as x where downloadState='${Chapter.DOWNLOAD_STATUS_INITIALIZED}' or downloadState='${Chapter.DOWNLOAD_STATUS_FAILED}'")
     suspend fun getNotDownloadedChaptersFromId(id: Int) : List<Chapter>
 }
