@@ -117,6 +117,7 @@
     <string name="expanded">expanded</string>
     <string name="sign_in_twitter">Iniciar con Twitter</string>
     <string name="cover_notification">cover_notification</string>
+    <string name="update">Actualización</string>
 
     <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=]]></string>
     <string name="complete_percent">100%</string>
@@ -218,6 +219,7 @@
     </string-array>
 
 
+    <string name="null_word">null</string>
     <string name="date">date</string>
     <string name="casting">casting</string>
     <string name="author">author</string>
@@ -229,7 +231,11 @@
     <string name="download">Descarga</string>
     <string name="to_download">Descargar</string>
     <string name="automatic_download">Descarga Automatica</string>
+    <string name="title_new_version_download">¡Nueva versión %1$s disponible!</string>
+    <string name="apk_title_new_version_download">Dreamer %1$s</string>
+    <string name="content_new_version_download">Se recomienda instalar la nueva versión, para una mejor experiencia.</string>
     <string name="manual_download">Descarga Manual</string>
+    <string name="chapter_mode">Modo capítulo</string>
     <string name="downloads">Descargas</string>
     <string name="imv_favorites">imv_favorites</string>
     <string name="favorites">Favoritos</string>
@@ -238,10 +244,13 @@
     <string name="share">share</string>
     <string name="random_description">description aleatorias</string>
     <string name="warning_logout">\n¿Estas seguro de querer cerrar sesión. %1$s?\n</string>
+    <string name="warning_chapter_status_starting">Empezando Descarga.</string>
     <string name="warning_chapter_status_in_progress">Capítulo descarga en progreso.</string>
     <string name="warning_chapter_status_pending">Capítulo descarga pendiente.</string>
     <string name="warning_chapter_status_paused">Capítulo descarga pausado.</string>
+    <string name="warning_chapter_status_failed">Capítulo descarga fallida, Reitendando descarga.</string>
     <string name="warning_chapter_status_completed">Capítulo descarga completado.</string>
+    <string name="warning_chapter_all_downloaded">Todos los capítulos descargados.</string>
     <string name="warning_manual_fixer">¡Se detecto problema de actualización!, ejecuta el reparador manual. En configuración.</string>
     <string name="warning_executing_manual_fixer">Reparador ejecutando. En caso de no funcionar ejecutar más tarde.</string>
     <string name="in_develop">En desarrollo</string>
@@ -259,7 +268,23 @@
     <string name="version_description">Versión : %1$s %2$s</string>
     <string name="status_api">¡Conexión %1$s con la API!</string>
     <string name="status_provider">¡Conexión %1$s con el Proveedor!</string>
-    <string name="try_reconnecting">Intentando conectar.</string>
+    <string name="status_try_reconnecting">Intentando conectar con %1$s.</string>
     <string name="empty_short">          </string>
     <string name="empty_medium">               </string>
+    <string name="add_to_favorites">Añadir anime a favoritos</string>
+    <string name="remove_from_favorites">Remover anime de favoritos</string>
+    <string name="chapter_mode_to_dont_downloaded">Cambiar modo de capítulo a no descargado</string>
+    <string name="chapter_mode_to_downloaded">Cambiar modo de capítulo a descargado</string>
+    <string name="status_database_items_correct">Items de bases de datos correcta.</string>
+    <string name="status_database_items_incorrect">Items de bases de datos incorrecta, reparador habilitado. Presione el boton de reparar para Inicializar.</string>
+    <string name="status_server_script_correct">Script de extractor en funcionamiento.</string>
+    <string name="status_server_script_incorrect">Script de extractor, no en funcionamiento, reparador habilitado. Presione el boton de reparar para Inicializar.</string>
+    <string name="first_time_notification_title">Configuración notificaciones</string>
+    <string name="first_time_notification_description">Escoja el modo, en que desea recibir notificaciones de tus animes.</string>
+    <string name="notification_summary_title">Nuevos estrenos.</string>
+    <string name="notification_summary_description">animes en estreno.</string>
+    <string name="records_delete">Eliminar del Historial</string>
+    <string name="diagnostic">diagnostic</string>
+    <string name="automatic_diagnostic">Diagnostico Automatico</string>
+    <string name="launch_test">Iniciar Test</string>
 </resources>
