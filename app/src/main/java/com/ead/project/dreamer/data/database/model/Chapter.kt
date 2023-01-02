@@ -34,10 +34,10 @@ data class Chapter (
     val id : Int,
     val idProfile : Int,
     val title : String,
-    val chapterCover : String,
-    val chapterNumber : Int,
+    val cover : String,
+    val number : Int,
     val reference : String,
-    var downloadState : Int = STATUS_INITIALIZED,
+    var downloadState : Int = DOWNLOAD_STATUS_INITIALIZED,
     var currentSeen : Int = 0,
     var totalToSeen : Int = 0,
     var alreadySeen : Boolean = false,
@@ -47,12 +47,12 @@ data class Chapter (
 
     companion object {
 
-        const val STATUS_INITIALIZED = 0
-        const val STATUS_COMPLETED = 1
-        const val STATUS_PAUSED = 2
-        const val STATUS_RUNNING = 3
-        const val STATUS_PENDING = 4
-        const val STATUS_FAILED = -1
+        const val DOWNLOAD_STATUS_INITIALIZED = 0
+        const val DOWNLOAD_STATUS_COMPLETED = 1
+        const val DOWNLOAD_STATUS_PAUSED = 2
+        const val DOWNLOAD_STATUS_RUNNING = 3
+        const val DOWNLOAD_STATUS_PENDING = 4
+        const val DOWNLOAD_STATUS_FAILED = -1
 
         fun get(): Chapter? = try {
             Gson().fromJson(DataStore.readString(Constants.CURRENT_EXECUTED_CHAPTER), Chapter::class.java)
@@ -131,12 +131,13 @@ data class Chapter (
             }
         }
 
-        fun callInAdapterSettings(context : Context,chapter: Chapter,isCorrectData : Boolean = true) {
+        fun callInAdapterSettings(context : Context, chapter: Chapter, isChapter : Boolean = true,isRecord : Boolean = false) {
             val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
             val data = Bundle()
             data.apply {
                 putParcelable(Constants.REQUESTED_CHAPTER, chapter)
-                putBoolean(Constants.IS_CORRECT_DATA_FROM_CHAPTER,isCorrectData)
+                putBoolean(Constants.IS_CORRECT_DATA_FROM_CHAPTER_SETTINGS,isChapter)
+                putBoolean(Constants.IS_CORRECT_DATA_FROM_RECORDS_SETTINGS,isRecord)
             }
             val chapterMenu = ChapterSettingsFragment()
             chapterMenu.apply {
@@ -168,14 +169,14 @@ data class Chapter (
         .delete("(")
         .delete(")")
         .delete(":")
-        .lowercase() + chapterNumber
+        .lowercase() + number
 
-    fun isDownloaded() = downloadState == STATUS_COMPLETED
+    fun isDownloaded() = downloadState == DOWNLOAD_STATUS_COMPLETED
 
     fun isNotDownloaded() = !isDownloaded()
 
-    private fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
-            && chapterNumber != -1 && reference.isNotEmpty()
+    private fun isWorking() = title.isNotEmpty() && cover.isNotEmpty()
+            && number != -1 && reference.isNotEmpty()
 
     fun isNotWorking () = !isWorking()
 
@@ -184,8 +185,8 @@ data class Chapter (
     fun sameData(other : Chapter) : Boolean
             = this.idProfile == other.idProfile
             && this.title == other.title
-            && this.chapterCover == other.chapterCover
-            && this.chapterNumber == other.chapterNumber
+            && this.cover == other.cover
+            && this.number == other.number
             && this.reference == other.reference
 
     override fun equalsHeader(other: Any?): Boolean {
@@ -199,8 +200,8 @@ data class Chapter (
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val chapter: Chapter = other as Chapter
-        return  chapterNumber == chapter.chapterNumber
-                && chapterCover == chapter.chapterCover
+        return  number == chapter.number
+                && cover == chapter.cover
                 && currentSeen == chapter.currentSeen
                 && reference == chapter.reference
                 && selected == chapter.selected
