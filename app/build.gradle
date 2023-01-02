@@ -58,11 +58,17 @@ dependencies {
 
     def room_version = "2.4.3"
     def lottieVersion = "4.2.1"
-    def exoplayer_version = "2.18.1"
+    def exoplayer_version = "2.18.2"
     def okhttpVersion = "4.9.2"
     def retrofitVersion = "2.9.0"
-    def admobVersion = "21.3.0"
+    def admobVersion = "21.4.0"
     def ktor_version = "1.6.2"
+
+    //own libs
+    implementation 'com.github.darkryh:lifecycle-commons-ktx:0.0.3'
+    implementation 'com.github.darkryh:views-commons-ktx:0.0.5'
+    implementation 'com.github.darkryh:resource-commons-ktx:0.0.1'
+    implementation 'com.github.darkryh:metrics-commons-ktx:0.0.1'
 
     //basics
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -118,12 +124,14 @@ dependencies {
     implementation 'androidx.hilt:hilt-common:1.0.0'
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
+
     //gson
     implementation 'com.google.code.gson:gson:2.9.0'
 
     //dagger hilt
     implementation 'com.google.dagger:hilt-android:2.43.2'
     kapt 'com.google.dagger:hilt-android-compiler:2.43.2'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //lottie
     implementation "com.airbnb.android:lottie:$lottieVersion"
