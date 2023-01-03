@@ -18,7 +18,7 @@ class ConfigureDownloadRequest @Inject constructor() {
         fileDirectory.manageFolder()
         return DownloadManager.Request(Uri.parse(url)).apply {
             setTitle("${chapter.title} Cap.${chapter.number}")
-            setDescription(DownloadItem(0,chapter.id,chapter.title,chapter.number,0,0,0).toJson())
+            setDescription(DownloadItem(0,chapter.id,chapter.title,chapter.number,DownloadItem.DOWNLOAD_TYPE_CHAPTER,0,0,0).toJson())
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
                 DirectoryManager.mainFolder + "/"  + DirectoryManager.seriesFolder + "/" + chapter.title + "/" + chapter.title + " Capítulo ${chapter.number}" + ".mp4"
@@ -29,7 +29,7 @@ class ConfigureDownloadRequest @Inject constructor() {
     operator fun invoke(title: String, url: String) : DownloadManager.Request {
         return DownloadManager.Request(Uri.parse(url)).apply {
             setTitle(title)
-            setDescription(DownloadItem(0,-1,title,-1,0,0,0).toJson())
+            setDescription(DownloadItem(0,-1,title,-1,DownloadItem.DOWNLOAD_TYPE_UPDATE,0,0,0).toJson())
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"$title.apk")
         }
