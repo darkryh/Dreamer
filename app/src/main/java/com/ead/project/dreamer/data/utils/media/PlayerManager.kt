@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
@@ -316,6 +317,7 @@ class PlayerManager(
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
         DreamerApp.showLongToast(error.cause?.message.toString())
+        Log.d("testing", "onPlayerError: ${error.cause?.message}")
     }
 
     private fun updateMedia() {
