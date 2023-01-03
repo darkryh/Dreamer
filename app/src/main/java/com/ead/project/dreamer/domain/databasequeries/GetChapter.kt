@@ -13,6 +13,9 @@ class GetChapter @Inject constructor(
     suspend fun fromId(id : Int) : Chapter? =
         repository.getChapterFromId(id)
 
+    suspend fun fromTitleAndNumber(title : String, number: Int) : Chapter? =
+        repository.getChapterFromTitleAndNumber(title, number)
+
     fun livedata (chapter: Chapter) : LiveData<Chapter?> =
         repository.getFlowChapterFromTitleAndNumber(chapter.title,chapter.number).asLiveData()
 }
