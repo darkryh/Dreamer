@@ -330,6 +330,11 @@ class Constants {
 
         const val SERVER_VIDLOX = "vidlox.me"
 
+        // SYSTEM
+
+        const val INSTALL_MIME_TYPE = "application/vnd.android.package-archive"
+        const val FILES_PROVIDER_PATH = ".provider"
+
         private fun isInQuantityAdLimit() = DataStore
             .readInt(PREFERENCE_CURRENT_WATCHED_VIDEOS,1) >= DataStore
             .readInt(PREFERENCE_QUANTITY_VIDEO_LIMIT, DEFAULT_AD_LIMIT)
@@ -431,5 +436,7 @@ class Constants {
         fun setVersionUpdateRoute(code: String) = DataStore.writeString(VERSION_UPDATE,code)
 
         fun getVersionUpdateRoute() : String = DataStore.readString(VERSION_UPDATE)
+
+
     }
 }
