@@ -18,6 +18,7 @@ import android.text.format.Formatter.formatIpAddress
 import android.view.*
 import android.webkit.URLUtil
 import android.webkit.WebView
+import androidx.core.content.FileProvider
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.DownloadItem
@@ -117,6 +118,21 @@ class Tools {
                 putExtra(Constants.REQUESTED_IS_DIRECT,isDirect)
                 putParcelableArrayListExtra(Constants.PLAY_VIDEO_LIST, playList as java.util.ArrayList<out Parcelable>)
             })
+        }
+
+        fun installApk(context: Context, apkFile: File) {
+            val intent = Intent(Intent.ACTION_INSTALL_PACKAGE)
+            intent.setDataAndType(
+                FileProvider
+                    .getUriForFile(
+                        context,
+                        context.applicationContext.packageName + Constants.FILES_PROVIDER_PATH,
+                        apkFile),
+                Constants.INSTALL_MIME_TYPE
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            context.startActivity(intent)
         }
 
         fun launchRequestedProfile(context: Context) {
@@ -233,7 +249,7 @@ class Tools {
 
         fun File.manageFirstTimeFolder()  {
             if (Constants.isFirstDirectoryInstall()) {
-                if (exists()) delete()
+                if (exists()) deleteRecursively()
                 else mkdirs()
                 Constants.disableDirectoryInstall()
             }
