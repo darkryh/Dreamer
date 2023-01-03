@@ -79,7 +79,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         super.onStart()
         val behavior = BottomSheetBehavior.from(requireView().parent as View)
         behavior.maxWidth = ViewGroup.LayoutParams.MATCH_PARENT
-        if (!DataStore.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER) || isDownloadingMode) {
+        if (!Constants.isAutomaticPlayerMode() || isDownloadingMode) {
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
