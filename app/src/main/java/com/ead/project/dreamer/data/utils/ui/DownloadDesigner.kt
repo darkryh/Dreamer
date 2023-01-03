@@ -21,7 +21,6 @@ class DownloadDesigner @Inject constructor(
 
     fun firstTimeReset() = execute { checkFirstTime() }
 
-
     fun onResume() {
         execute {
             try {
@@ -50,7 +49,7 @@ class DownloadDesigner @Inject constructor(
         if (Constants.isDownloadFirstCheck()) {
             Constants.disableDownloadCheck()
             cursor = downloadManager.query(DownloadManager.Query())
-            cursor.removeDownloadedChapters()
+            cursor.removeAll()
         }
     }
 
@@ -68,7 +67,7 @@ class DownloadDesigner @Inject constructor(
     @SuppressLint("Range")
     private fun Cursor.getTotalDownloaded() : Int = getInt(getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
 
-    private fun Cursor.removeDownloadedChapters() { while (moveToNext()) { if (downloadItem().idReference != -1) downloadManager.remove(getId()) } }
+    private fun Cursor.removeAll() { while (moveToNext()) { downloadManager.remove(getId()) } }
 
     private fun manageIteration(tempList: MutableList<DownloadItem>) {
         if (cursor.isLast) {
