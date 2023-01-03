@@ -265,6 +265,8 @@
     <string name="d_letter">D</string>
     <string name="message_to_download_all_series">\n¿Estas seguro de querer descargar todos los capítulos del anime %1$s?\n</string>
     <string name="error_download">Error en descargar..</string>
+    <string name="error_chapter_not_founded">Error capítulo no encontrado.</string>
+    <string name="error_file_not_founded">Error archivo no encontrado.</string>
     <string name="version_description">Versión : %1$s %2$s</string>
     <string name="status_api">¡Conexión %1$s con la API!</string>
     <string name="status_provider">¡Conexión %1$s con el Proveedor!</string>
