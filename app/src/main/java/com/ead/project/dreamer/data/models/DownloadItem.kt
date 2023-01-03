@@ -8,10 +8,16 @@ data class DownloadItem(
     val idReference : Int,
     val title : String,
     val number : Int,
+    val type : Int,
     var current : Int,
     var total : Int,
     var state : Int
 ) : DiffUtilEquality {
+
+    companion object {
+        const val DOWNLOAD_TYPE_CHAPTER = 1
+        const val DOWNLOAD_TYPE_UPDATE = 2
+    }
 
     fun isInProgress() =  state != DownloadManager.STATUS_FAILED &&
             state != DownloadManager.STATUS_SUCCESSFUL
@@ -30,6 +36,7 @@ data class DownloadItem(
         return this.idReference == downloadItem.idReference
                 && this.title == downloadItem.title
                 && this.number == downloadItem.number
+                && this.type == downloadItem.type
                 && this.current == downloadItem.current
                 && this.state == downloadItem.state
     }
