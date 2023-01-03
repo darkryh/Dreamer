@@ -36,5 +36,9 @@ class DirectoryManager {
         fun getUpdateFile() : File = File(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
             , "${Constants.getVersionUpdateRoute()}.apk")
+
+        fun getVersionFile(version : String) : File = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString()
+            , "$version.apk")
      }
 }
