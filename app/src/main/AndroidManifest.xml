@@ -24,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dreamer"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="UnusedAttribute">
         <activity
             android:name=".ui.news.NewsActivity"
