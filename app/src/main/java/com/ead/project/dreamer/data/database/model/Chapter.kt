@@ -25,7 +25,9 @@ import com.ead.project.dreamer.ui.player.PlayerWebActivity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.parcelize.Parcelize
+import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Parcelize
 @Entity(tableName = "anime_chapter_table")
@@ -156,29 +158,33 @@ data class Chapter (
 
     }
 
-    fun needsToUpdate() = currentSeen > 0L
+    fun needsToUpdate() : Boolean = currentSeen > 0L
 
-    private fun toVideoModelArray() = arrayListOf(VideoModel("default",getDownloadReference()))
+    private fun toVideoModelArray() : ArrayList<VideoModel> =
+        arrayListOf(VideoModel("default",getDownloadedRouteReference()))
 
-    fun getDownloadReference() = DirectoryManager.getChapterFolder(this)
+    fun getDownloadedRouteReference() : String = DirectoryManager.getChapterFolder(this)
 
-    fun getWebReference() = Tools.getWebServerAddress() + "/${routeName()}"
+    fun getFile() : File = File(getDownloadedRouteReference())
 
-    fun routeName() = title
+    fun getWebReference() : String = Tools.getWebServerAddress() + "/${routeName()}"
+
+    fun routeName() : String = title
         .delete(" ")
         .delete("(")
         .delete(")")
         .delete(":")
         .lowercase() + number
 
-    fun isDownloaded() = downloadState == DOWNLOAD_STATUS_COMPLETED
+    fun isDownloaded() : Boolean =
+        downloadState == DOWNLOAD_STATUS_COMPLETED && getFile().exists()
 
-    fun isNotDownloaded() = !isDownloaded()
+    fun isNotDownloaded() : Boolean = !isDownloaded()
 
-    private fun isWorking() = title.isNotEmpty() && cover.isNotEmpty()
+    private fun isWorking() : Boolean = title.isNotEmpty() && cover.isNotEmpty()
             && number != -1 && reference.isNotEmpty()
 
-    fun isNotWorking () = !isWorking()
+    fun isNotWorking () : Boolean = !isWorking()
 
     fun currentSeenToLong() = Tools.secondsToLong(this.currentSeen)
 
@@ -200,7 +206,7 @@ data class Chapter (
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val chapter: Chapter = other as Chapter
-        return  number == chapter.number
+        return number == chapter.number
                 && cover == chapter.cover
                 && currentSeen == chapter.currentSeen
                 && reference == chapter.reference
