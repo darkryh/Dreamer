@@ -9,6 +9,7 @@ class DownloadManager @Inject constructor(
     val launchManualDownload: LaunchManualDownload,
     val launchUpdate: LaunchUpdate,
     val filterDownloads: FilterDownloads,
+    val isDownloaded: IsDownloaded,
     val checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
     val removeDownload: RemoveDownload
 )
