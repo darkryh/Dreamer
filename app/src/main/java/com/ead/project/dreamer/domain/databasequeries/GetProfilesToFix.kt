@@ -9,7 +9,7 @@ class GetProfilesToFix @Inject constructor(
 ) {
 
     suspend operator fun invoke () : List<AnimeProfile> = repository.getProfilesToFix().filter {
-        it.title != "Jantama Pong☆"
+        it.title != "Jantama Pong☆" &&
         it.title != "Vinland Saga Season 2"
     }
 }
