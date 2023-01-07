@@ -40,7 +40,6 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
-import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -61,7 +60,7 @@ class PlayerManager(
     var exoPlayer : ExoPlayer?= null
     var castPlayer : CastPlayer?= null
     private var adsLoader: ImaAdsLoader? = null
-    private var isServerNotStarted = WebServer.isNotStarted()
+    private var isServerStarted = WebServer.isStarted()
 
     var isInPipMode : Boolean = false
     var isPIPModeEnabled : Boolean = Constants.getPlayerPipMode()
@@ -219,7 +218,7 @@ class PlayerManager(
                     setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()) }.build()
             }
         }
-    else { listOf(MediaItem.Builder().setUri(Uri.fromFile(File(chapter.getDownloadReference())))
+    else { listOf(MediaItem.Builder().setUri(Uri.fromFile(chapter.getFile()))
             .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()).build())}
 
     private fun Player.rememberState() {
@@ -316,8 +315,12 @@ class PlayerManager(
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        DreamerApp.showLongToast(error.cause?.message.toString())
-        Log.d("testing", "onPlayerError: ${error.cause?.message}")
+        when(error.errorCode) {
+            PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND ->{
+                DreamerApp.showLongToast("Error Archivo de descarga no encontrado.")
+                Log.d("testing", "onPlayerError: ${error.cause?.message}")
+            }
+        }
     }
 
     private fun updateMedia() {
@@ -363,15 +366,15 @@ class PlayerManager(
     }
 
     private fun startInCastLocalMode() {
-        if (isServerNotStarted) {
-            isServerNotStarted = false
+        if (isServerStarted) {
+            WebServer.add(chapter)
+            playOnPlayer(castPlayer)
+        }
+        else {
+            isServerStarted = false
             WebServer.start()
             WebServer.add(chapter)
             startCasting { playOnPlayer(castPlayer) }
-        }
-        else {
-            WebServer.add(chapter)
-            playOnPlayer(castPlayer)
         }
     }
 
