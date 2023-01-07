@@ -9,15 +9,15 @@ import javax.inject.Inject
 
 class StartManualDownload @Inject constructor(
     private val context: Context,
+    private val isInDownloadProgress: IsInDownloadProgress,
     private val getDownloads: GetDownloads,
-    private val filterDownloads: FilterDownloads,
     private val removeDownload: RemoveDownload
 ) {
 
     operator fun invoke(chapter: Chapter,mContext: Context) {
         when (chapter.downloadState) {
             Chapter.DOWNLOAD_STATUS_INITIALIZED -> {
-                if (filterDownloads.isDataNotInDownloadProgress(chapter))
+                if (!isInDownloadProgress(chapter))
                     Chapter.launchServer(mContext, chapter, true)
                 else showToast(context.getString(R.string.warning_chapter_status_in_progress))
             }

@@ -10,6 +10,7 @@ import javax.inject.Inject
 class StartDownload @Inject constructor(
     private val context: Context,
     private val filterDownloads: FilterDownloads,
+    private val isInDownloadProgress: IsInDownloadProgress,
     private val addDownload: AddDownload,
     private val removeDownload: RemoveDownload,
     private val getDownloads: GetDownloads
@@ -26,7 +27,7 @@ class StartDownload @Inject constructor(
     operator fun invoke(chapter: Chapter) {
         when (chapter.downloadState) {
             Chapter.DOWNLOAD_STATUS_INITIALIZED -> {
-                if (filterDownloads.isDataNotInDownloadProgress(chapter)) {
+                if (!isInDownloadProgress(chapter)) {
                     addDownload(chapter)
                     showToast(context.getString(R.string.warning_chapter_status_starting))
                 }
@@ -40,7 +41,13 @@ class StartDownload @Inject constructor(
                 addDownload(chapter)
                 showToast(context.getString(R.string.warning_chapter_status_failed))
             }
-            Chapter.DOWNLOAD_STATUS_COMPLETED -> showToast(context.getString(R.string.warning_chapter_status_completed))
+            Chapter.DOWNLOAD_STATUS_COMPLETED -> {
+                if (chapter.getFile().exists()) showToast(context.getString(R.string.warning_chapter_status_completed))
+                else {
+                    addDownload(chapter)
+                    showToast(context.getString(R.string.warning_chapter_status_starting))
+                }
+            }
         }
     }
 
