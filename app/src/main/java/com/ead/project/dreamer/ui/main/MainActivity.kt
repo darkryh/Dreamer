@@ -1,15 +1,15 @@
 package com.ead.project.dreamer.ui.main
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.mediarouter.app.MediaRouteButton
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -47,6 +47,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -65,6 +66,9 @@ class MainActivity : AppCompatActivity() {
     private var directoryChecked = false
     private var timerAdv : Timer ?= null
     private var countAdv = 0
+
+    private var isPostNotificationPermissionGranted = false
+    private var isWriteExternalPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Dreamer)
@@ -132,9 +136,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun settingPermissions() {
+        val permissionRequest : MutableList<String> = ArrayList()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            isPostNotificationPermissionGranted =
+                ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) ==
+                        PackageManager.PERMISSION_GRANTED
+            if (!isPostNotificationPermissionGranted) permissionRequest.add(Manifest.permission.POST_NOTIFICATIONS)
         }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            isWriteExternalPermissionGranted =
+                ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED
+            if (!isWriteExternalPermissionGranted) permissionRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (permissionRequest.isNotEmpty()) requestPermission.launch(permissionRequest.toTypedArray())
     }
 
     override fun onStart() {
@@ -283,16 +299,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        val result = when {
-            isGranted -> {
+    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            isPostNotificationPermissionGranted =
+                permissions[Manifest.permission.POST_NOTIFICATIONS]?:isPostNotificationPermissionGranted
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            isWriteExternalPermissionGranted =
+                permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE]?:isWriteExternalPermissionGranted
+    }
+
+    /* para mostrar notificación de configuración
+
+    * isGranted -> {
                 if (Constants.isFirstTimeShowingNotification())
                     NotificationManager.showSettingNotification(notifier,this)
                 "Granted permission"
             }
             shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> "Rational permission"
-            else -> "Denied permission"
-        }
-        Log.d(ContentValues.TAG, "permission manager: $result")
-    }
+            else -> "Denied permission"*/
 }
