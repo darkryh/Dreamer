@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.ui.settings.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,9 +47,13 @@ class SettingsFixerViewModel @Inject constructor(
 
     fun isDataFromDatabaseOK() : Boolean  = runBlocking {
         try {
+            val chaptersToFix = chapterManager.getChaptersToFix()
+            val profilesToFix = profileManager.getProfilesToFix()
+            Log.d("testing", "isDataFromDatabaseOK: chapters = $chaptersToFix")
+            Log.d("testing", "isDataFromDatabaseOK: profiles = $profilesToFix")
             homeManager.getHomeList().first().isWorking()
-                    && chapterManager.getChaptersToFix().isEmpty()
-                    && profileManager.getProfilesToFix().isEmpty()
+                    && chaptersToFix.isEmpty()
+                    && profilesToFix.isEmpty()
         } catch (e : Exception) { false }
     }
 
