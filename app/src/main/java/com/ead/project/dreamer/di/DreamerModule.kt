@@ -248,19 +248,19 @@ object DreamerModule {
         launchManualDownload: LaunchManualDownload,
         launchUpdate: LaunchUpdate,
         filterDownloads: FilterDownloads,
+        isDownloaded: IsDownloaded,
         checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
         removeDownload: RemoveDownload
     ) : DownloadManager
-    = DownloadManager(startDownload,startManualDownload, launchManualDownload, launchUpdate , filterDownloads, checkIfUpdateIsAlreadyDownloaded, removeDownload)
+    = DownloadManager(startDownload,startManualDownload, launchManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
 
     @Singleton
     @Provides
     fun provideFilterDownloads(
         getDownloads: GetDownloads,
-        getTempDownloads: GetTempDownloads,
-        isInDownloadManagerProgress: IsInDownloadManagerProgress
+        isInDownloadProgress: IsInDownloadProgress
     ) : FilterDownloads
-    = FilterDownloads(getDownloads, getTempDownloads, isInDownloadManagerProgress)
+    = FilterDownloads(getDownloads,isInDownloadProgress)
 
     @Singleton
     @Provides
@@ -497,6 +497,11 @@ object DreamerModule {
 
     @Singleton
     @Provides
+    fun provideIsDownloaded(isInDownloadManagerProgress: IsInDownloadManagerProgress) : IsDownloaded
+    = IsDownloaded(isInDownloadManagerProgress)
+
+    @Singleton
+    @Provides
     fun provideInstallWorkers(workManager: WorkManager,constraints: Constraints) : InstallWorkers
     = InstallWorkers(workManager,constraints)
 
@@ -504,6 +509,14 @@ object DreamerModule {
     @Provides
     fun provideIsInDownloadManagerProgress(getCursorFromDownloads: GetCursorFromDownloads) : IsInDownloadManagerProgress
     = IsInDownloadManagerProgress(getCursorFromDownloads)
+
+    @Singleton
+    @Provides
+    fun provideIsInDownloadProgress(
+        getDownloads: GetDownloads,
+        getTempDownloads: GetTempDownloads,
+        isInDownloadManagerProgress: IsInDownloadManagerProgress
+    ) : IsInDownloadProgress = IsInDownloadProgress(getDownloads, getTempDownloads, isInDownloadManagerProgress)
 
     @Singleton
     @Provides
@@ -599,21 +612,22 @@ object DreamerModule {
     fun provideStartDownload(
         @ApplicationContext context: Context,
         filterDownloads: FilterDownloads,
+        isInDownloadProgress: IsInDownloadProgress,
         addDownload: AddDownload,
         removeDownload: RemoveDownload,
         getDownloads: GetDownloads
     ) : StartDownload
-    = StartDownload(context, filterDownloads, addDownload, removeDownload, getDownloads)
+    = StartDownload(context, filterDownloads, isInDownloadProgress ,addDownload, removeDownload, getDownloads)
 
     @Singleton
     @Provides
     fun provideStartManualDownload(
         @ApplicationContext context: Context,
         getDownloads: GetDownloads,
-        filterDownloads: FilterDownloads,
+        isInDownloadProgress: IsInDownloadProgress,
         removeDownload: RemoveDownload
     ) : StartManualDownload
-    = StartManualDownload(context, getDownloads, filterDownloads, removeDownload)
+    = StartManualDownload(context, isInDownloadProgress ,getDownloads, removeDownload)
 
     @Singleton
     @Provides
