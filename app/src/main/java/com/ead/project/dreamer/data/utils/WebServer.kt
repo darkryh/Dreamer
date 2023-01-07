@@ -41,19 +41,15 @@ class WebServer {
 
         fun add (chapter: Chapter) =  server.application.routing {
             get("/${chapter.routeName()}") {
-                val file = File(chapter.getDownloadReference())
+                val file = File(chapter.getDownloadedRouteReference())
                 call.respondFile(file)
             }
         }
 
-        private fun isStarted() : Boolean {
-            return runBlocking {
-                withContext(Dispatchers.IO) {
-                    Tools.isConnectionAvailable(localAddress)
-                }
+        fun isStarted() : Boolean = runBlocking {
+            withContext(Dispatchers.IO) {
+                Tools.isConnectionAvailable(localAddress)
             }
         }
-
-        fun isNotStarted() = !isStarted()
     }
 }
