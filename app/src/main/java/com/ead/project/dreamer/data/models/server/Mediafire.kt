@@ -22,7 +22,7 @@ class Mediafire(embeddedUrl:String) : Server(embeddedUrl) {
             webView?.webViewClient = object : ServerWebClient(webView) {
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
-                    view?.let { if (timesLoaded <= 2) it.evaluateJavascript(scriptLoader()) {} }
+                    view?.let { if (timesLoaded <= 1) it.evaluateJavascript(scriptLoader()) {} }
                 }
             }
             complainWebView()
