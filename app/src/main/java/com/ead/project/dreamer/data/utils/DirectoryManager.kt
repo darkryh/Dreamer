@@ -25,7 +25,6 @@ class DirectoryManager {
                     chapter.title + "/" + chapter.title +
                     " Capítulo ${chapter.number}" +".mp4"
 
-
         fun initDirectories() {
             val root = getMainFolder()
             root.manageFirstTimeFolder()
