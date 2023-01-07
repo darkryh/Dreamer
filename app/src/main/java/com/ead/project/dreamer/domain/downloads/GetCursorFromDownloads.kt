@@ -15,4 +15,9 @@ class GetCursorFromDownloads @Inject constructor(
                     or DownloadManager.STATUS_PENDING
                     or DownloadManager.STATUS_PAUSED
     ))
+
+    operator fun invoke(queryId : Long) : Cursor = downloadManager.query(
+        DownloadManager.Query().setFilterById(queryId)
+    )
+
 }
