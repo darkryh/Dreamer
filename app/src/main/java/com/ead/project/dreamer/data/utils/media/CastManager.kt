@@ -20,24 +20,16 @@ import com.ead.project.dreamer.ui.profile.AnimeProfileViewModel
 import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.tasks.await
 import java.util.*
-import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
 
 class CastManager (private val initOnCreate : Boolean = false) {
 
     private val context : Context = DreamerApp.INSTANCE
-    private var taskCastContext : Task<CastContext> =
-        CastContext.getSharedInstance(context,Executors.newSingleThreadExecutor())
-            .addOnSuccessListener {}
-            .addOnFailureListener {}
-
-    private var castContext = runBlocking { taskCastContext.await() }
+    @Suppress("DEPRECATION")
+    private var castContext : CastContext = CastContext.getSharedInstance(context)
 
     private lateinit var castStateListener : CastStateListener
     private var introductoryOverlay : IntroductoryOverlay?= null
