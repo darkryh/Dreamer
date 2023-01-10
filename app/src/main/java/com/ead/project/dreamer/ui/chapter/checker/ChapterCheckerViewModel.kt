@@ -1,15 +1,12 @@
 package com.ead.project.dreamer.ui.chapter.checker
 
 import androidx.lifecycle.*
-import androidx.work.ExistingWorkPolicy
-import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.configurations.ConfigureChapters
 import com.ead.project.dreamer.domain.configurations.ConfigureProfile
-import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +19,6 @@ class ChapterCheckerViewModel @Inject constructor(
     private val directoryManager: DirectoryManager,
     private val configureProfile: ConfigureProfile,
     private val configureChapters: ConfigureChapters,
-    private val launchOneTimeRequest: LaunchOneTimeRequest
 ): ViewModel() {
 
     fun getChapterData(chapter : Chapter) : LiveData<Chapter?> = chapterManager.getChapter.livedata(chapter)
@@ -35,12 +31,4 @@ class ChapterCheckerViewModel @Inject constructor(
 
     fun configureChaptersData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
-
-    fun synchronizeNewContent() {
-        launchOneTimeRequest(
-            LaunchOneTimeRequest.NewContentWorkerCode,
-            Constants.SYNC_NEW_CONTENT,
-            ExistingWorkPolicy.REPLACE
-        )
-    }
 }
