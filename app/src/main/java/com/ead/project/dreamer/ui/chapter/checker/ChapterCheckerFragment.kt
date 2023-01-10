@@ -85,7 +85,6 @@ class ChapterCheckerFragment : DialogFragment() {
     }
 
     private fun gettingAnimeBase() {
-        chapterCheckerViewModel.synchronizeNewContent()
         chapterCheckerViewModel.getAnimeBase(chapter.title).observe(viewLifecycleOwner) { mAnimeBase ->
             if (mAnimeBase != null) gettingAnimeProfile(mAnimeBase)
         }
@@ -94,7 +93,6 @@ class ChapterCheckerFragment : DialogFragment() {
     private fun gettingAnimeProfile(animeBase: AnimeBase) {
         chapterCheckerViewModel.getAnimeProfile(animeBase.id)
             .observe(viewLifecycleOwner) { mAnimeProfile ->
-                chapterCheckerViewModel.configureProfileData(mAnimeProfile,animeBase.id, animeBase.reference)
                 if (mAnimeProfile != null) {
                     if (mAnimeProfile.checkPolicies()) {
                         if (++count == 1)
@@ -106,6 +104,9 @@ class ChapterCheckerFragment : DialogFragment() {
                         dismiss()
                     }
                 }
+                else
+                    chapterCheckerViewModel
+                        .configureProfileData(null,animeBase.id, animeBase.reference)
             }
     }
 
