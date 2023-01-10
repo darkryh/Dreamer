@@ -54,13 +54,12 @@ class MainActivityViewModel @Inject constructor(
     fun synchronizeNewContent() {
         launchPeriodicTimeRequest(
             LaunchPeriodicTimeRequest.NewContentWorkerCode,
-            30,
+            15,
             TimeUnit.MINUTES,
             Constants.SYNC_NEW_CONTENT,
             ExistingPeriodicWorkPolicy.REPLACE
         )
     }
-
 
     fun synchronizeReleases() {
         launchPeriodicTimeRequest(
