@@ -19,6 +19,7 @@ import android.view.*
 import android.webkit.URLUtil
 import android.webkit.WebView
 import androidx.core.content.FileProvider
+import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.DownloadItem
@@ -121,20 +122,24 @@ class Tools {
         }
 
         fun installApk(context: Context, apkFile: File) {
-            val intent = Intent(Intent.ACTION_INSTALL_PACKAGE)
-            intent.setDataAndType(
-                FileProvider
-                    .getUriForFile(
-                        context,
-                        context.applicationContext.packageName + Constants.FILES_PROVIDER_PATH,
-                        apkFile),
-                Constants.INSTALL_MIME_TYPE
-            )
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            context.startActivity(intent)
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setDataAndType(
+                    FileProvider
+                        .getUriForFile(
+                            context,
+                            context.applicationContext.packageName + Constants.FILES_PROVIDER_PATH,
+                            apkFile),
+                    Constants.INSTALL_MIME_TYPE
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.startActivity(intent)
+            } catch (e : Exception) {
+                e.printStackTrace()
+                DreamerApp.showLongToast(context.getString(R.string.warning_error_installing))
+            }
         }
-
         fun launchRequestedProfile(context: Context) {
             try {
                 if (DataStore.readBoolean(Constants.PROFILE_SENDER_VIDEO_PLAYER)) {
