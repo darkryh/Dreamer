@@ -30,5 +30,5 @@ class ChapterCheckerViewModel @Inject constructor(
     fun configureProfileData(animeProfile: AnimeProfile?,id : Int,reference: String) = configureProfile(animeProfile,id,reference)
 
     fun configureChaptersData(id : Int,reference: String) =
-        viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
+        viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference,true) }
 }
