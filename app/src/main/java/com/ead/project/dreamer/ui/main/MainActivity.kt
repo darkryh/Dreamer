@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var downloadManager: DownloadManager
 
     private lateinit var binding: ActivityMainBinding
-    val mainActivityViewModel : MainActivityViewModel by viewModels()
+    private val mainActivityViewModel : MainActivityViewModel by viewModels()
     private val user : User? = User.get()
     private val currentVersion = BuildConfig.VERSION_NAME.toDouble()
     var castManager: CastManager = CastManager()
@@ -85,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         mainActivityViewModel.synchronizeNewContent()
         mainActivityViewModel.synchronizeDirectory()
         mainActivityViewModel.synchronizeReleases()
-
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
