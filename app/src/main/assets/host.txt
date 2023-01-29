@@ -2,6 +2,7 @@ acacdn.com
 cdn4ads.com
 cloudfront.net
 d3g5ovfngjw9bw.cloudfront.net
+d13k7prax1yi04.cloudfront.net
 direct.apus.tech
 googletagmanager.com
 google-analytics.com
@@ -12,3 +13,6 @@ static.cloudflareinsights.com
 tqwgfiphrnxppt.com
 waisheph.com
 zikroarg.com
+visariomedia.com
+vixmwnivtbqk.com
+www.gdrisajx.com
