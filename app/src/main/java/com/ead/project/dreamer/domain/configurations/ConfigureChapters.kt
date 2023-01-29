@@ -11,7 +11,7 @@ class ConfigureChapters @Inject constructor(
     private val launchOneTimeRequest: LaunchOneTimeRequest,
 ) {
 
-    suspend operator fun invoke (id : Int,reference: String) {
+    suspend operator fun invoke(id : Int,reference: String,byPassFinalState : Boolean = false) {
         val dataList : List<Int> = repository.getPreparationProfile(id)
         val animeProfile : AnimeProfile = repository.getAnimeProfile(id)!!
         if (dataList.size >= 2) {
@@ -19,7 +19,7 @@ class ConfigureChapters @Inject constructor(
             animeProfile.lastChapterId = dataList[1]
             animeProfile.reference = reference
         }
-        if (cachingChaptersTrigger(animeProfile)) cachingChapters(
+        if (cachingChaptersTrigger(animeProfile,byPassFinalState)) cachingChapters(
             animeProfile.id,
             animeProfile.reference?:"null",
             animeProfile.size - dataList[0],
@@ -28,8 +28,10 @@ class ConfigureChapters @Inject constructor(
         repository.updateAnimeProfile(animeProfile)
     }
 
-    private fun cachingChaptersTrigger (animeProfile: AnimeProfile) =
-        animeProfile.lastChapterId == 0 || animeProfile.state != Constants.PROFILE_FINAL_STATE
+    private fun cachingChaptersTrigger (animeProfile: AnimeProfile,byPassFinalState: Boolean) =
+        animeProfile.lastChapterId == 0 ||
+        animeProfile.state != Constants.PROFILE_FINAL_STATE ||
+        byPassFinalState
 
     private fun cachingChapters(id : Int, reference : String, size : Int, lastChapterId : Int) {
         val array = arrayOf(id.toString(),size.toString(),reference,lastChapterId.toString())
