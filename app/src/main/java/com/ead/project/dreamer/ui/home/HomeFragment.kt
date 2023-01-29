@@ -1,41 +1,29 @@
 package com.ead.project.dreamer.ui.home
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
-import coil.load
-import coil.transform.CircleCropTransformation
-import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools.Companion.hide
 import com.ead.project.dreamer.data.commons.Tools.Companion.show
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.models.discord.Discord
 import com.ead.project.dreamer.data.models.discord.User
 import com.ead.project.dreamer.data.utils.AdManager
-import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.ThreadUtil
-import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.ui.AppBarStateChangeListener
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.data.utils.ui.ScrollTimer
 import com.ead.project.dreamer.databinding.FragmentHomeBinding
-import com.ead.project.dreamer.ui.directory.DirectoryActivity
 import com.ead.project.dreamer.ui.home.adapters.ChapterHomeRecyclerViewAdapter
 import com.ead.project.dreamer.ui.home.adapters.ProfileBannerRecyclerViewAdapter
-import com.ead.project.dreamer.ui.main.MainActivity
-import com.ead.project.dreamer.ui.settings.SettingsActivity
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,9 +51,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var count = -1
     private var countHome = 0
-    private val user : User? = User.get()
-    private lateinit var castManager : CastManager
-    private lateinit var toolbarMain: Toolbar
 
     private var adManager : AdManager?=null
 
@@ -85,11 +70,6 @@ class HomeFragment : Fragment() {
         adManager?.onViewStateRestored()
     }
 
-    override fun onResume() {
-        castManager.showIfExist()
-        super.onResume()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,8 +87,6 @@ class HomeFragment : Fragment() {
 
     private fun settingVariables() {
         count = 0
-        castManager = (requireActivity() as MainActivity).castManager
-        toolbarMain = requireActivity().findViewById(R.id.toolbarMain)
     }
 
     private fun prepareSettings() {
@@ -117,25 +95,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun prepareLayouts() {
-        hideToolbarMain()
-        prepareUserSettings()
-        prepareCastingSettings()
         preparePrincipalLayouts()
-        prepareSecondaryLayouts()
         prepareRecyclerViews()
-    }
-
-    private fun prepareUserSettings() {
-        binding.imvProfile.setOnClickListener {
-            if (!DataStore.readBoolean(Constants.PREFERENCE_SETTINGS_CLICKED)) {
-                DataStore.writeBooleanAsync(Constants.PREFERENCE_SETTINGS_CLICKED,true)
-                startActivity(Intent(requireContext(), SettingsActivity::class.java))
-            }
-        }
-    }
-
-    private fun prepareCastingSettings() {
-        castManager.initButtonFactory(requireActivity(),binding.mediaRouteButton)
     }
 
     private fun preparePrincipalLayouts() {
@@ -155,17 +116,6 @@ class HomeFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun prepareSecondaryLayouts() {
-        binding.edtMainSearch.setOnClickListener{ goToDirectory() }
-        binding.imvSearch.setOnClickListener { goToDirectory() }
-        binding.imvProfile.setResourceImageAndColor(R.drawable.ic_person_outline_24,R.color.white)
-        if (user?.avatar != null) {
-            binding.imvProfile.load(Discord.PROFILE_IMAGE) {
-                transformations(CircleCropTransformation())
-            }
-        }
     }
 
     private fun prepareRecyclerViews() {
@@ -243,8 +193,7 @@ class HomeFragment : Fragment() {
 
     private fun setupRecommendations() {
         homeViewModel.getRecommendations().observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.appBarLayout.layoutParams.height = resources
-                    .getDimensionPixelSize(R.dimen.dimen_48dp)
+            if (it.isEmpty()) binding.appBarLayout.layoutParams.height = 0
             else {
                 if (++count == 1) {
                     objectProfileList = it.toMutableList()
@@ -261,26 +210,6 @@ class HomeFragment : Fragment() {
                 binding.rcvLiveRecommendations, fTimer) {}, 10000, 10000)
     }
 
-    private fun hideToolbarMain() {
-        toolbarMain.animate().translationY(0f).duration = 400
-        toolbarMain.visibility = View.GONE
-    }
-
-    private fun showToolbarMain() {
-        toolbarMain.animate().translationY(0f).duration = 400
-        ThreadUtil.runInMs({ toolbarMain.visibility = View.VISIBLE },400)
-        castManager.initButtonFactory(requireActivity(),(requireActivity() as MainActivity).mediaRouteButton)
-        castManager.setViewModel((requireActivity() as MainActivity).mainActivityViewModel)
-        castManager.showIfExist()
-    }
-
-    private fun goToDirectory() {
-        if (!Constants.isDirectoryActivityClicked()) {
-            Constants.setDirectoryActivityClicked(true)
-            startActivity(Intent(requireContext(), DirectoryActivity::class.java))
-        }
-    }
-
     private fun refreshData() {
         homeViewModel.synchronizeHome()
         homeViewModel.synchronizeNewContent()
@@ -288,7 +217,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        showToolbarMain()
         _binding = null
     }
 
