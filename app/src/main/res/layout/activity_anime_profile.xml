@@ -373,5 +373,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="FragmentTagUsage"/>
+        tools:layout="@layout/cast_mini_controller"
+        tools:ignore="FragmentTagUsage" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
