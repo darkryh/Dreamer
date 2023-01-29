@@ -1,5 +1,6 @@
 package com.ead.project.dreamer.data.utils.media
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -63,7 +64,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
     fun initButtonFactory(activity: Activity,mediaRouteButton: MediaRouteButton) {
         this.mediaRouteButton = mediaRouteButton
         castStateListener = CastStateListener { newState ->
-            val isCastingAvailable = newState != CastState.NO_DEVICES_AVAILABLE && !policies()
+            val isCastingAvailable = newState != CastState.NO_DEVICES_AVAILABLE
             if (isCastingAvailable) {
                 mediaRouteButton.visibility = View.VISIBLE
                 showIntroductoryOverlay(activity,mediaRouteButton)
@@ -84,7 +85,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
     }
 
     fun setButtonFactory(mediaRouteButton: MediaRouteButton) {
-        CastButtonFactory.setUpMediaRouteButton(DreamerApp.INSTANCE,mediaRouteButton)
+        CastButtonFactory.setUpMediaRouteButton(context,mediaRouteButton)
     }
 
     fun castIsConnected() = castContext.castState == CastState.CONNECTED
@@ -102,7 +103,7 @@ class CastManager (private val initOnCreate : Boolean = false) {
         castContext.sessionManager.addSessionManagerListener(sessionManagerListener)
     }
 
-    fun showIfExist() {
+    private fun showIfExist() {
         if (isAvailable() && !policies() && mediaRouteButton.visibility == View.GONE)
             mediaRouteButton.visibility = View.VISIBLE
     }
@@ -264,17 +265,14 @@ class CastManager (private val initOnCreate : Boolean = false) {
 
     private val callback : RemoteMediaClient.Callback = object : RemoteMediaClient.Callback() {
 
-        private var remoteError = false
-
+        @SuppressLint("VisibleForTests")
         override fun onStatusUpdated() {
             super.onStatusUpdated()
             when(remoteMediaClient?.mediaStatus?.playerState) {
                 MediaStatus.IDLE_REASON_FINISHED -> {
                     Log.d(TAG, "onStatusUpdated: IDLE_REASON_FINISHED")
-                    if (!remoteError) { updateChapterFinalMetaData() }
-                    else remoteError = false
+                    updateChapterFinalMetaData()
                 }
-                MediaStatus.IDLE_REASON_ERROR -> remoteError = true
             }
         }
     }
