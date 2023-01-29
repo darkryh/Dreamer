@@ -19,7 +19,7 @@ class Anonfiles(embeddedUrl:String) : Server(embeddedUrl) {
                 .execute()
 
             url = PatternManager.singleMatch(
-                response.body!!.string(),
+                response.body?.string().toString(),
                 "https?:\\/\\/(cdn-[0123456789][0123456789][0123456789]).(anonfiles\\.com\\/.+)",
                 0
             )

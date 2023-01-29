@@ -8,7 +8,6 @@ import com.ead.project.dreamer.data.network.DreamerWebView
 
 class GoogleDrive(embeddedUrl:String) : Server(embeddedUrl) {
 
-
     override fun onExtract() {
         try {
             url = fixUrl(url)

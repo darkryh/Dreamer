@@ -18,7 +18,7 @@ class Voe(embeddedUrl:String) : Server(embeddedUrl) {
             .newCall(Request.Builder().url(url).build())
             .execute()
         url = PatternManager.singleMatch(
-            response.body!!.string(),
+            response.body?.string().toString(),
             "\"hls\": \"(.*?)\"")?.replace(",","")
 
         if (url != null) addVideo(VideoModel("Default",url))
