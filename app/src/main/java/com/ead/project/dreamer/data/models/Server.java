@@ -38,7 +38,7 @@ public class Server {
         OnExtractEnded();
     }
 
-    protected int CONNECTION_STABLE = 4000;
+    protected int CONNECTION_STABLE = 5000;
 
     protected int CONNECTION_MIDDLE_STABLE = 80000;
 
