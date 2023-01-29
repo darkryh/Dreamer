@@ -29,6 +29,7 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
         dvpPreference = findPreference(Constants.PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW)!!
         preferenceFixer.isEnabled = false
         dvpPreference.setOnTestClickListener {
+            dvpPreference.isEnabled = false
             dvpPreference.clearStringBuilder()
             connecting(
                 Constants.API_APP,
