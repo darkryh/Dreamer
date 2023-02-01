@@ -16,7 +16,7 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 22
-        versionName "1.5"
+        versionName "1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -56,12 +56,12 @@ android {
 
 dependencies {
 
-    def room_version = "2.3.0"
+    def room_version = "2.4.3"
     def lottieVersion = "4.2.1"
     def exoplayer_version = "2.18.2"
     def okhttpVersion = "4.9.2"
     def retrofitVersion = "2.9.0"
-    def admobVersion = "21.4.0"
+    def admobVersion = "21.5.0"
     def ktor_version = "1.6.2"
 
     //own libs
