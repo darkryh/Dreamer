@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
@@ -96,6 +97,8 @@ class ChapterHomeRecyclerViewAdapter(
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(35f))
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
             }
         }
 

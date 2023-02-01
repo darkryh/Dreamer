@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.justifyInterWord
@@ -84,6 +85,8 @@ class NewsItemRecyclerViewAdapter(private val context: Context) :
             binding.txvType.text = newsItem.type
             binding.imvCover.load(newsItem.cover) {
                 transformations(RoundedCornersTransformation(55f))
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
             }
 
             binding.root.setOnClickListener {

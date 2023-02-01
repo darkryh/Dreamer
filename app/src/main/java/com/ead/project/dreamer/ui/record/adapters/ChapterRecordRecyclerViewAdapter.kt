@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import coil.transform.BlurTransformation
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
@@ -72,6 +73,8 @@ class ChapterRecordRecyclerViewAdapter (
                     BlurTransformation(context,1f)
                     , RoundedCornersTransformation(30f,0f,30f,0f)
                 )
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
             }
             val percent = ((chapter.currentSeen * 100f) / chapter.totalToSeen).round(2).toString()
             binding.txvCurrentProgress.text = context.getString(R.string.current_progress,percent)
@@ -103,6 +106,8 @@ class ChapterRecordRecyclerViewAdapter (
                     BlurTransformation(context,1f)
                     , RoundedCornersTransformation(30f)
                 )
+                memoryCachePolicy(CachePolicy.ENABLED)
+                diskCachePolicy(CachePolicy.ENABLED)
             }
 
             if (chapter.totalToSeen > 0) {

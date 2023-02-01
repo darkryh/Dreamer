@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.views.addSelectableItemEffect
@@ -25,7 +26,8 @@ import java.lang.StringBuilder
 
 class ProfileRecyclerViewAdapter (
     private val context: Context,
-    private var isFromContent: Boolean = false
+    private var isFromContent: Boolean = false,
+    private var isFavoriteSegment : Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -92,6 +94,10 @@ class ProfileRecyclerViewAdapter (
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(35f))
+                if (isFavoriteSegment) {
+                    memoryCachePolicy(CachePolicy.ENABLED)
+                    diskCachePolicy(CachePolicy.ENABLED)
+                }
             }
 
             binding.txvRating.text = context
