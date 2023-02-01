@@ -47,7 +47,8 @@ class FavoriteFragment : Fragment() {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            this@FavoriteFragment.adapter = ProfileRecyclerViewAdapter(activity as Context)
+            this@FavoriteFragment.adapter = ProfileRecyclerViewAdapter(
+                context = activity as Context, isFavoriteSegment = true)
             adapter = this@FavoriteFragment.adapter
             setupDirectoryFavoriteList()
         }
