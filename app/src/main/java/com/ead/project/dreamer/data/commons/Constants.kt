@@ -294,7 +294,7 @@ class Constants {
 
         const val SERVER_OKRU = "ok.ru"
 
-        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com","sbchill.com","sblongvu.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com")
+        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com","sbchill.com","sblongvu.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com","sbrity.com")
 
         const val SERVER_UQLOAD = "uqload.com"
 
