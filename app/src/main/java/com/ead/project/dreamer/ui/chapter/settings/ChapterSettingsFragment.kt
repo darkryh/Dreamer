@@ -13,7 +13,7 @@ import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.databinding.FragmentChapterSettingsBinding
-import com.ead.project.dreamer.domain.DownloadManager
+import com.ead.project.dreamer.domain.DownloadUseCase
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ChapterSettingsFragment : BottomSheetDialogFragment() {
 
-    @Inject lateinit var downloadManager : DownloadManager
+    @Inject lateinit var downloadUseCase : DownloadUseCase
     private lateinit var chapterSettingsViewModel: ChapterSettingsViewModel
     private lateinit var chapter: Chapter
     private var isChapter = false
@@ -105,14 +105,14 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
 
     private fun settingAutomaticDownload() {
         binding.lnDownload.setOnClickListener {
-            downloadManager.startDownload(chapter)
+            downloadUseCase.startDownload(chapter)
             dismiss()
         }
     }
 
     private fun settingManualDownload() {
         binding.lnManualDownload.setOnClickListener {
-            downloadManager.startManualDownload(chapter, activity as Context)
+            downloadUseCase.startManualDownload(chapter, activity as Context)
             dismiss()
         }
     }

@@ -14,17 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MenuServerViewModel @Inject constructor (
-    private val serverManager: ServerManager)
+    private val serverUseCase: ServerUseCase)
 : ViewModel() {
 
     private var servers : MutableLiveData<List<Server>> = MutableLiveData()
 
     fun getEmbedServers(timeoutTask : () -> Unit, chapter: Chapter) : LiveData<List<String>> =
-        serverManager.getEmbedServersMutable(timeoutTask,chapter)
+        serverUseCase.getEmbedServersMutable(timeoutTask,chapter)
 
     fun getServers(embedList : List<String>): LiveData<List<Server>> {
         viewModelScope.launch (Dispatchers.IO) {
-            servers.postValue(serverManager.getServers(embedList))
+            servers.postValue(serverUseCase.getServers(embedList))
         }
         return servers
     }
@@ -32,13 +32,13 @@ class MenuServerViewModel @Inject constructor (
     fun getServer(embedUrl : String) : LiveData<Server>  {
         val tempServer : MutableLiveData<Server> = MutableLiveData()
         viewModelScope.launch (Dispatchers.IO) {
-            tempServer.postValue(serverManager.getServer(embedUrl))
+            tempServer.postValue(serverUseCase.getServer(embedUrl))
         }
         return tempServer
     }
 
     fun getSortedServer(embedList: List<String>, isDownload : Boolean) =
-        serverManager.getSortedServers(embedList,isDownload)
+        serverUseCase.getSortedServers(embedList,isDownload)
 
-    fun onDestroy() { serverManager.getEmbedServersMutable.onDestroy() }
+    fun onDestroy() { serverUseCase.getEmbedServersMutable.onDestroy() }
 }

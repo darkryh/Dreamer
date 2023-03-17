@@ -149,20 +149,20 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideApplicationManager(
+    fun provideApplicationUseCase(
         getApplicationAds: GetApplicationAds,
         getAppStatusVersion: GetAppStatusVersion
-    ) : ApplicationManager = ApplicationManager(getApplicationAds, getAppStatusVersion)
+    ) : ApplicationUseCase = ApplicationUseCase(getApplicationAds, getAppStatusVersion)
 
     @Singleton
     @Provides
-    fun provideChapterManager(
+    fun provideChapterUseCase(
         getChapter: GetChapter,
         getChapters: GetChapters,
         getChaptersToDownload: GetChaptersToDownload,
         getChaptersToFix: GetChaptersToFix,
         getChapterScrap: GetChapterScrap
-    ) : ChapterManager = ChapterManager(getChapter,getChapters, getChaptersToDownload,getChaptersToFix,getChapterScrap)
+    ) : ChapterUseCase = ChapterUseCase(getChapter,getChapters, getChaptersToDownload,getChaptersToFix,getChapterScrap)
 
     @Singleton
     @Provides
@@ -211,21 +211,21 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideDirectoryManager(
+    fun provideDirectoryUseCase(
         getDirectoryList: GetDirectoryList,
         getDirectory: GetDirectory,
         getDirectoryScrap: GetDirectoryScrap
-    ) : DirectoryManager = DirectoryManager(getDirectoryList, getDirectory,getDirectoryScrap)
+    ) : DirectoryUseCase = DirectoryUseCase(getDirectoryList, getDirectory,getDirectoryScrap)
 
     @Singleton
     @Provides
-    fun provideDiscordManager(
+    fun provideDiscordUseCase(
         getDiscordMember: GetDiscordMember,
         getDiscordUserData: GetDiscordUserData,
         getDiscordUserInToGuild: GetDiscordUserInToGuild,
         getDiscordUserRefreshToken: GetDiscordUserRefreshToken,
         getDiscordUserToken: GetDiscordUserToken
-    ) : DiscordManager = DiscordManager(getDiscordMember, getDiscordUserData, getDiscordUserInToGuild, getDiscordUserRefreshToken, getDiscordUserToken)
+    ) : DiscordUseCase = DiscordUseCase(getDiscordMember, getDiscordUserData, getDiscordUserInToGuild, getDiscordUserRefreshToken, getDiscordUserToken)
 
     @Singleton
     @Provides
@@ -242,7 +242,7 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideDownloadManager(
+    fun provideDownloadUseCase(
         startDownload: StartDownload,
         startManualDownload: StartManualDownload,
         launchManualDownload: LaunchManualDownload,
@@ -251,8 +251,8 @@ object DreamerModule {
         isDownloaded: IsDownloaded,
         checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
         removeDownload: RemoveDownload
-    ) : DownloadManager
-    = DownloadManager(startDownload,startManualDownload, launchManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
+    ) : DownloadUseCase
+    = DownloadUseCase(startDownload,startManualDownload, launchManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
 
     @Singleton
     @Provides
@@ -329,8 +329,11 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetDiscordUserInToGuild(repository: AnimeRepository) : GetDiscordUserInToGuild
-    = GetDiscordUserInToGuild(repository)
+    fun provideGetDiscordUserInToGuild(
+        repository: AnimeRepository,
+        @ApplicationContext context: Context
+    ) : GetDiscordUserInToGuild
+    = GetDiscordUserInToGuild(repository,context)
 
     @Singleton
     @Provides
@@ -477,12 +480,12 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideHomeManager(
+    fun provideHomeUseCase(
         getHomeList: GetHomeList,
         getHomeRecommendations: GetHomeRecommendations,
         getHomeReleaseList: GetHomeReleaseList,
         getHomeScrap: GetHomeScrap
-    ) : HomeManager = HomeManager(getHomeList, getHomeRecommendations,getHomeReleaseList,getHomeScrap)
+    ) : HomeUseCase = HomeUseCase(getHomeList, getHomeRecommendations,getHomeReleaseList,getHomeScrap)
 
     @Singleton
     @Provides
@@ -551,23 +554,23 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideNewsManager(
+    fun provideNewsUseCase(
         getNews: GetNews,
         getNewsItemScrap: GetNewsItemScrap,
         getNewsItemWebScrap: GetNewsItemWebScrap
-    ) : NewsManager = NewsManager(getNews, getNewsItemScrap ,getNewsItemWebScrap)
+    ) : NewsUseCase = NewsUseCase(getNews, getNewsItemScrap ,getNewsItemWebScrap)
 
     @Singleton
     @Provides
-    fun provideObjectManager(
+    fun provideObjectUseCase(
         insertObject: InsertObject,
         updateObject: UpdateObject,
         deleteObject: DeleteObject
-    ) : ObjectManager = ObjectManager(insertObject, updateObject, deleteObject)
+    ) : ObjectUseCase = ObjectUseCase(insertObject, updateObject, deleteObject)
 
     @Singleton
     @Provides
-    fun provideProfileManager(
+    fun provideProfileUseCase(
         getProfile: GetProfile,
         getProfileList: GetProfileList,
         getProfilesToFix: GetProfilesToFix,
@@ -578,14 +581,14 @@ object DreamerModule {
         getProfilesReleases: GetProfilesReleases,
         getProfilesFavoriteReleases: GetProfilesFavoriteReleases,
         getProfileScrap: GetProfileScrap
-    ) : ProfileManager = ProfileManager(getProfile, getProfileList , getProfilesToFix ,getLikedProfiles, getMostViewedProfiles, getProfileInboxRecommendations, getProfilePlayerRecommendations,getProfilesReleases,getProfilesFavoriteReleases,getProfileScrap)
+    ) : ProfileUseCase = ProfileUseCase(getProfile, getProfileList , getProfilesToFix ,getLikedProfiles, getMostViewedProfiles, getProfileInboxRecommendations, getProfilePlayerRecommendations,getProfilesReleases,getProfilesFavoriteReleases,getProfileScrap)
 
     @Singleton
     @Provides
-    fun provideRecordsManager(
+    fun provideRecordsUseCase(
         getRecords: GetRecords,
         configureRecords: ConfigureRecords
-    ) : RecordsManager = RecordsManager(getRecords, configureRecords)
+    ) : RecordsUseCase = RecordsUseCase(getRecords, configureRecords)
 
     @Singleton
     @Provides
@@ -604,8 +607,8 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideServerManager(getServer: GetServer, getServers: GetServers, getEmbedServers: GetEmbedServers ,getEmbedServersMutable: GetEmbedServersMutable, getSortedServers: GetSortedServers, getServerScript: GetServerScript) : ServerManager
-    = ServerManager(getServer, getServers, getEmbedServers,getEmbedServersMutable, getSortedServers,getServerScript)
+    fun provideServerUseCase(getServer: GetServer, getServers: GetServers, getEmbedServers: GetEmbedServers ,getEmbedServersMutable: GetEmbedServersMutable, getSortedServers: GetSortedServers, getServerScript: GetServerScript) : ServerUseCase
+    = ServerUseCase(getServer, getServers, getEmbedServers,getEmbedServersMutable, getSortedServers,getServerScript)
 
     @Singleton
     @Provides

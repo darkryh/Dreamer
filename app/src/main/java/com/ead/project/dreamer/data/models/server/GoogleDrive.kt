@@ -19,7 +19,7 @@ class GoogleDrive(embeddedUrl:String) : Server(embeddedUrl) {
 
     private fun initWeb() {
         runUI {
-            webView = DreamerWebView(DreamerApp.INSTANCE)
+            webView = DreamerWebView(DreamerApp.Instance)
             webView?.webViewClient = object : ServerWebClient(webView) {
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)

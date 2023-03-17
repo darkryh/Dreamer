@@ -35,7 +35,7 @@ import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.databinding.BottomModalMenuPlayerBinding
-import com.ead.project.dreamer.domain.DownloadManager
+import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.ui.chapter.checker.ChapterCheckerFragment
 import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
@@ -49,7 +49,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MenuServerFragment : BottomSheetDialogFragment() {
 
-    @Inject lateinit var downloadManager : DownloadManager
+    @Inject lateinit var downloadUseCase : DownloadUseCase
 
     private lateinit var chapter: Chapter
     private var embedServers : MutableList<String> = ArrayList()
@@ -122,7 +122,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     }
 
     private fun timeoutAction() {
-        showShortToast(requireContext().getString(R.string.timeout_message))
+        if (_binding != null) showShortToast(requireContext().getString(R.string.timeout_message))
         dismiss()
     }
 
@@ -245,7 +245,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     }
 
     private fun prepareDownload(server: Server) =
-        downloadManager.launchManualDownload(chapter,server.videoList.last().directLink)
+        downloadUseCase.launchManualDownload(chapter,server.videoList.last().directLink)
 
     private fun preparingIntent(playList: List<VideoModel>, isDirect : Boolean) {
         safeRun {

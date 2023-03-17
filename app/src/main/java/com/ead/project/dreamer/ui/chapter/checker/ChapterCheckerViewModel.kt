@@ -14,18 +14,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChapterCheckerViewModel @Inject constructor(
-    private val chapterManager: ChapterManager,
-    private val profileManager: ProfileManager,
-    private val directoryManager: DirectoryManager,
+    private val chapterUseCase: ChapterUseCase,
+    private val profileUseCase: ProfileUseCase,
+    private val directoryUseCase: DirectoryUseCase,
     private val configureProfile: ConfigureProfile,
     private val configureChapters: ConfigureChapters,
 ): ViewModel() {
 
-    fun getChapterData(chapter : Chapter) : LiveData<Chapter?> = chapterManager.getChapter.livedata(chapter)
+    fun getChapterData(chapter : Chapter) : LiveData<Chapter?> = chapterUseCase.getChapter.livedata(chapter)
 
-    fun getAnimeBase(title : String) : LiveData<AnimeBase?> = directoryManager.getDirectory.livedata(title)
+    fun getAnimeBase(title : String) : LiveData<AnimeBase?> = directoryUseCase.getDirectory.livedata(title)
 
-    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?> = profileManager.getProfile.livedata(id)
+    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?> = profileUseCase.getProfile.livedata(id)
 
     fun configureProfileData(animeProfile: AnimeProfile?,id : Int,reference: String) = configureProfile(animeProfile,id,reference)
 

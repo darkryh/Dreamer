@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
 
 class CastManager (private val initOnCreate : Boolean = false) {
 
-    private val context : Context = DreamerApp.INSTANCE
+    private val context : Context = DreamerApp.Instance
     @Suppress("DEPRECATION")
     private var castContext : CastContext = CastContext.getSharedInstance(context)
 

@@ -6,9 +6,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.domain.DirectoryManager
-import com.ead.project.dreamer.domain.HomeManager
-import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.DirectoryUseCase
+import com.ead.project.dreamer.domain.HomeUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -21,15 +21,15 @@ import kotlin.collections.ArrayList
 class NewContentWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val directoryManager: DirectoryManager,
-    private val homeManager: HomeManager,
-    private val objectManager: ObjectManager
+    private val directoryUseCase: DirectoryUseCase,
+    private val homeUseCase: HomeUseCase,
+    private val objectUseCase: ObjectUseCase
 ) : CoroutineWorker(context,workerParameters) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val chapterHomeList = homeManager.getHomeReleaseList()
+                val chapterHomeList = homeUseCase.getHomeReleaseList()
                 operatingData(chapterHomeList)
                 Result.success()
             }
@@ -43,7 +43,7 @@ class NewContentWorker @AssistedInject constructor(
     private suspend fun operatingData(chapterHomeList : List<ChapterHome>) {
         val seriesList : MutableList<AnimeBase> = ArrayList()
         for (chapter in chapterHomeList) {
-            if (!directoryManager.getDirectory.checkIfTitleExist(chapter.title)) {
+            if (!directoryUseCase.getDirectory.checkIfTitleExist(chapter.title)) {
                 seriesList.add(AnimeBase(
                     0,
                     chapter.title,
@@ -54,7 +54,7 @@ class NewContentWorker @AssistedInject constructor(
                 )
             }
         }
-        if (seriesList.isNotEmpty()) objectManager.insertObject(seriesList)
+        if (seriesList.isNotEmpty()) objectUseCase.insertObject(seriesList)
     }
 
     private fun fixLinker(link : String) = link.substringBefore("-episodio-")

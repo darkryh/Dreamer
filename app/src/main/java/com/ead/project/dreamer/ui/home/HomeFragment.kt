@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
 
     private fun prepareSettings() {
         binding.shimmerClassic.show()
-        if (Constants.isCustomizedCommunicator()) setupCustomizedAdsApp()
+        if (Constants.isCustomizedAdvertiserActivated()) setupCustomizedAdsApp()
     }
 
     private fun prepareLayouts() {
@@ -180,7 +180,7 @@ class HomeFragment : Fragment() {
         try {
             val adapterCount = adapterProfile.itemCount
             if (objectProfileList.isEmpty() || adapterCount == 0 || publicityList.isEmpty()) return
-            if (Constants.isCustomizedCommunicator() && objectProfileList.first() !is Publicity) {
+            if (Constants.isCustomizedAdvertiserActivated() && objectProfileList.first() !is Publicity) {
                 val offset: Int = adapterCount / publicityList.size + 1
                 var index = 0
                 for (publicity in publicityList) {

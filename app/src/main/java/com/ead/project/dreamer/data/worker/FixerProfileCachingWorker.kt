@@ -7,9 +7,9 @@ import androidx.work.WorkerParameters
 import com.ead.project.dreamer.app.model.scrapping.AnimeProfileScrap
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.domain.DirectoryManager
-import com.ead.project.dreamer.domain.ObjectManager
-import com.ead.project.dreamer.domain.ProfileManager
+import com.ead.project.dreamer.domain.DirectoryUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -21,27 +21,27 @@ import java.io.IOException
 class FixerProfileCachingWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val directoryManager: DirectoryManager,
-    private val objectManager: ObjectManager,
-    private val profileManager: ProfileManager,
+    private val directoryUseCase: DirectoryUseCase,
+    private val objectUseCase: ObjectUseCase,
+    private val profileUseCase: ProfileUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val animeProfileScrap = profileManager.getProfileScrap.fromApi()
+                val animeProfileScrap = profileUseCase.getProfileScrap.fromApi()
                 if (AnimeProfileScrap.get() == animeProfileScrap) return@withContext Result.success()
 
                 AnimeProfileScrap.set(animeProfileScrap)
-                val profilesToFix = profileManager.getProfilesToFix()
+                val profilesToFix = profileUseCase.getProfilesToFix()
 
                 for (profile in profilesToFix) {
-                    val animeBase = directoryManager.getDirectory.byId(profile.id)
+                    val animeBase = directoryUseCase.getDirectory.byId(profile.id)
                     val requestedAnimeProfile = async { webProvider.getAnimeProfile(profile.id,animeBase.reference) }
                     requestedAnimeProfile.await().apply {
                         this.reference = animeBase.reference
-                        objectManager.updateObject(this)
+                        objectUseCase.updateObject(this)
                     }
                 }
                 Constants.setProfileFixer(true)

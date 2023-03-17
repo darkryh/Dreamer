@@ -19,13 +19,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
-    private val applicationManager: ApplicationManager,
+    private val applicationUseCase: ApplicationUseCase,
     private val installWorkers: InstallWorkers,
-    private val discordManager: DiscordManager,
-    private val objectManager: ObjectManager
+    private val discordUseCase: DiscordUseCase,
+    private val objectUseCase: ObjectUseCase
 ) : ViewModel() {
 
-    fun getStatusApp() = applicationManager.getAppStatusVersion.livedata()
+    fun getStatusApp() = applicationUseCase.getAppStatusVersion.livedata()
 
     fun directoryState() = DataStore.flowBoolean(Constants.FINAL_DIRECTORY).asLiveData()
 
@@ -37,7 +37,7 @@ class MainActivityViewModel @Inject constructor(
             15,
             TimeUnit.MINUTES,
             Constants.SYNC_HOME,
-            ExistingPeriodicWorkPolicy.REPLACE
+            ExistingPeriodicWorkPolicy.UPDATE
         )
     }
 
@@ -57,7 +57,7 @@ class MainActivityViewModel @Inject constructor(
             15,
             TimeUnit.MINUTES,
             Constants.SYNC_NEW_CONTENT,
-            ExistingPeriodicWorkPolicy.REPLACE
+            ExistingPeriodicWorkPolicy.UPDATE
         )
     }
 
@@ -71,9 +71,9 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
-    fun getGuildMember(id : String) = discordManager.getDiscordMember.livedata(id)
+    fun getGuildMember(id : String) = discordUseCase.getDiscordMember.livedata(id)
 
     fun updateChapter(chapter: Chapter) =
-        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapter) }
+        viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(chapter) }
 
 }

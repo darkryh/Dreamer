@@ -19,13 +19,13 @@ import com.ead.project.dreamer.data.models.DownloadItem
 import com.ead.project.dreamer.data.utils.DirectoryManager
 import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutDownloadBinding
-import com.ead.project.dreamer.domain.ChapterManager
+import com.ead.project.dreamer.domain.ChapterUseCase
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
 class DownloadRecyclerViewAdapter (
     private val context: Context,
-    private val chapterManager: ChapterManager
+    private val chapterUseCase: ChapterUseCase
     ) : RecyclerView.Adapter<DownloadRecyclerViewAdapter.ViewHolder>() {
 
     private val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -80,7 +80,7 @@ class DownloadRecyclerViewAdapter (
                         DownloadItem.DOWNLOAD_TYPE_CHAPTER -> {
                             runBlocking {
                                 val chapter : Chapter? =
-                                    chapterManager.getChapter.fromTitleAndNumber(downloadItem.title,downloadItem.number)
+                                    chapterUseCase.getChapter.fromTitleAndNumber(downloadItem.title,downloadItem.number)
 
                                 if (chapter != null) Chapter.manageVideo(context,chapter)
                                 else activity.showShortToast(context.getString(R.string.error_chapter_not_founded))

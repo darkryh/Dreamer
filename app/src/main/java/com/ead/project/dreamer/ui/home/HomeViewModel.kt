@@ -14,17 +14,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val applicationManager: ApplicationManager,
-    private val homeManager: HomeManager,
+    private val applicationUseCase: ApplicationUseCase,
+    private val homeUseCase: HomeUseCase,
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
 ): ViewModel() {
 
 
-    fun getChaptersHome() : LiveData<List<ChapterHome>> = homeManager.getHomeList.livedata()
+    fun getChaptersHome() : LiveData<List<ChapterHome>> = homeUseCase.getHomeList.livedata()
 
-    fun getPublicity() : LiveData<List<Publicity>> = applicationManager.getApplicationAds.livedata()
+    fun getPublicity() : LiveData<List<Publicity>> = applicationUseCase.getApplicationAds.livedata()
 
-    fun getRecommendations() : LiveData<List<AnimeProfile>> = homeManager.getHomeRecommendations.livedata()
+    fun getRecommendations() : LiveData<List<AnimeProfile>> = homeUseCase.getHomeRecommendations.livedata()
 
     fun synchronizeHome() {
         launchPeriodicTimeRequest(
@@ -32,7 +32,7 @@ class HomeViewModel @Inject constructor(
             30,
             TimeUnit.MINUTES,
             Constants.SYNC_HOME,
-            ExistingPeriodicWorkPolicy.REPLACE
+            ExistingPeriodicWorkPolicy.UPDATE
         )
     }
 
@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
             30,
             TimeUnit.MINUTES,
             Constants.SYNC_NEW_CONTENT,
-            ExistingPeriodicWorkPolicy.REPLACE
+            ExistingPeriodicWorkPolicy.UPDATE
         )
     }
 }

@@ -6,8 +6,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.domain.NewsManager
-import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.NewsUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -20,8 +20,8 @@ import java.io.IOException
 class NewsWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val newsManager: NewsManager,
-    private val objectManager: ObjectManager,
+    private val newsUseCase: NewsUseCase,
+    private val objectUseCase: ObjectUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
@@ -40,7 +40,7 @@ class NewsWorker @AssistedInject constructor(
 
     private suspend fun newsOperator(scope: CoroutineScope) {
         scope.apply {
-            val newsItemsList = newsManager.getNews()
+            val newsItemsList = newsUseCase.getNews()
 
             val isDataEmpty = newsItemsList.isEmpty()
             val newsItem = if (isDataEmpty) NewsItem.fake()
@@ -48,8 +48,8 @@ class NewsWorker @AssistedInject constructor(
 
             val newsData = async { webProvider.getNews(newsItem) }
             newsData.await().apply {
-                if (isDataEmpty) objectManager.insertObject (this)
-                else objectManager.updateObject(this)
+                if (isDataEmpty) objectUseCase.insertObject (this)
+                else objectUseCase.updateObject(this)
                 Result.success()
             }
         }

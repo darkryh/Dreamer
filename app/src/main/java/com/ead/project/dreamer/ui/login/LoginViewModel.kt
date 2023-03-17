@@ -11,14 +11,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val discordManager: DiscordManager
+    private val discordUseCase: DiscordUseCase
 ) : ViewModel() {
 
-    fun getToken() : MutableLiveData<AccessToken?> = discordManager.getDiscordUserToken.livedata()
+    fun getToken() : MutableLiveData<AccessToken?> = discordUseCase.getDiscordUserToken.livedata()
 
-    fun getRefreshToken() : MutableLiveData<AccessToken?> = discordManager.getDiscordUserRefreshToken.livedata()
+    fun getRefreshToken() : MutableLiveData<AccessToken?> = discordUseCase.getDiscordUserRefreshToken.livedata()
 
-    fun getUserData() : MutableLiveData<User?> = discordManager.getDiscordUserData.livedata()
+    fun getUserData() : MutableLiveData<User?> = discordUseCase.getDiscordUserData.livedata()
 
-    fun getUserInToGuild(id: String) : MutableLiveData<GuildMember?> = discordManager.getDiscordUserInToGuild.livedata(id)
+    fun getUserInToGuild(id: String) : MutableLiveData<GuildMember?> = discordUseCase.getDiscordUserInToGuild.livedata(id)
 }

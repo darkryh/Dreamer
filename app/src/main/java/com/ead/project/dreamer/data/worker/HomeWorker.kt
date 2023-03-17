@@ -12,9 +12,9 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.utils.NotificationManager
-import com.ead.project.dreamer.domain.HomeManager
-import com.ead.project.dreamer.domain.ObjectManager
-import com.ead.project.dreamer.domain.ProfileManager
+import com.ead.project.dreamer.domain.HomeUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import com.ead.project.dreamer.ui.main.MainActivity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -28,10 +28,10 @@ import java.io.IOException
 class HomeWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted private val workerParameters: WorkerParameters,
-    private val homeManager: HomeManager,
+    private val homeUseCase: HomeUseCase,
     private val notifier: NotificationManager,
-    private val objectManager: ObjectManager,
-    private val profileManager: ProfileManager,
+    private val objectUseCase: ObjectUseCase,
+    private val profileUseCase: ProfileUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
@@ -59,7 +59,7 @@ class HomeWorker @AssistedInject constructor(
 
     private suspend fun homeOperator(scope: CoroutineScope) {
         scope.apply {
-            val chapterHomeList = homeManager.getHomeList()
+            val chapterHomeList = homeUseCase.getHomeList()
 
             val isDataEmpty = chapterHomeList.isEmpty()
             val chapter = if (isDataEmpty) ChapterHome.fake()
@@ -67,8 +67,8 @@ class HomeWorker @AssistedInject constructor(
 
             val homeData = async { webProvider.getChaptersHome(chapter) }
             homeData.await().apply {
-                if (isDataEmpty) objectManager.insertObject(this)
-                else objectManager.updateObject(this)
+                if (isDataEmpty) objectUseCase.insertObject(this)
+                else objectUseCase.updateObject(this)
             }
         }
     }
@@ -84,8 +84,8 @@ class HomeWorker @AssistedInject constructor(
             if (notificationLevel > NotificationManager.NONE) {
 
                 isGroupedNeeded = isGroupedNeeded()
-                val releaseList = homeManager.getHomeList()
-                val favoriteList = profileManager.getProfilesFavoriteReleases.stringList()
+                val releaseList = homeUseCase.getHomeList()
+                val favoriteList = profileUseCase.getProfilesFavoriteReleases.stringList()
                 val previousList = ChapterHome.getPreviousList()
 
                 previousList.apply {

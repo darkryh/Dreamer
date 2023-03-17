@@ -24,6 +24,7 @@ import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.DownloadItem
 import com.ead.project.dreamer.data.models.VideoModel
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.WebServer
 import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
@@ -57,7 +58,7 @@ class Tools {
             }
         }
 
-        fun getWebServerAddress() : String = "http://" + getWifiIpAddress(DreamerApp.INSTANCE) + ":${WebServer.PORT}"
+        fun getWebServerAddress() : String = "http://" + getWifiIpAddress(DreamerApp.Instance) + ":${WebServer.PORT}"
 
         fun isConnectionAvailable(url: String): Boolean {
             return try {
@@ -107,7 +108,7 @@ class Tools {
             return -1
         }
 
-        fun isConnectionIncompatible() = connectionType(DreamerApp.INSTANCE) != NetworkCapabilities.TRANSPORT_WIFI
+        fun isConnectionIncompatible() = connectionType(DreamerApp.Instance) != NetworkCapabilities.TRANSPORT_WIFI
 
         fun longToSeconds(long: Long): Int = long.toInt() / 1000
 
@@ -137,7 +138,7 @@ class Tools {
                 context.startActivity(intent)
             } catch (e : Exception) {
                 e.printStackTrace()
-                DreamerApp.showLongToast(context.getString(R.string.warning_error_installing))
+                context.toast(context.getString(R.string.warning_error_installing))
             }
         }
         fun launchRequestedProfile(context: Context) {
@@ -157,20 +158,6 @@ class Tools {
                 e.printStackTrace()
             }
         }
-
-        fun filterGenreByGooglePolicies(genres: List<String>) : String {
-            var value = genres.random()
-            if (value == Constants.TYPE_ECCHI) {
-                for (genre in genres) {
-                    if (genre != Constants.TYPE_ECCHI){
-                        value = genre
-                        break
-                    }
-                }
-            }
-            return value
-        }
-
         @SuppressLint("Range")
         fun Cursor.downloadItem() : DownloadItem = getObject(getDescription())
 
@@ -179,9 +166,7 @@ class Tools {
 
         private inline fun <reified T> getObject(string: String) : T = Gson().fromJson(string, T::class.java)
 
-
         fun Any.toJson() : String = try { Gson().toJson(this) } catch (e : Exception) { "null" }
-
 
         fun Activity.hideSystemUI() {
             if (SDK_INT >= Build.VERSION_CODES.R) {

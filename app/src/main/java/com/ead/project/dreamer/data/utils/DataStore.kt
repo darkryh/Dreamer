@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 const val API_SETTINGS_FILE = "API_SETTINGS_FILE"
-val Context.datastore : DataStore<Preferences> by preferencesDataStore(API_SETTINGS_FILE)
+private val Context.store : DataStore<Preferences> by preferencesDataStore(API_SETTINGS_FILE)
 class DataStore {
 
     companion object {
@@ -24,7 +24,7 @@ class DataStore {
         fun writeStringAsync(stringKey :String, value : String?) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dataStoreKey = stringPreferencesKey(stringKey)
-                DreamerApp.INSTANCE.datastore.edit { settings ->
+                DreamerApp.Instance.store.edit { settings ->
                     settings[dataStoreKey] = value?:"null"
                 }
             }
@@ -33,7 +33,7 @@ class DataStore {
         fun writeIntAsync(stringKey :String, value : Int) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dataStoreKey = intPreferencesKey(stringKey)
-                DreamerApp.INSTANCE.datastore.edit { settings ->
+                DreamerApp.Instance.store.edit { settings ->
                     settings[dataStoreKey] = value
                 }
             }
@@ -42,7 +42,7 @@ class DataStore {
         fun writeDoubleAsync(stringKey :String, value : Double) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dataStoreKey = doublePreferencesKey(stringKey)
-                DreamerApp.INSTANCE.datastore.edit { settings ->
+                DreamerApp.Instance.store.edit { settings ->
                     settings[dataStoreKey] = value
                 }
             }
@@ -51,7 +51,7 @@ class DataStore {
         fun writeBooleanAsync(stringKey :String, value : Boolean) {
             CoroutineScope(Dispatchers.IO).launch {
                 val dataStoreKey = booleanPreferencesKey(stringKey)
-                DreamerApp.INSTANCE.datastore.edit { settings ->
+                DreamerApp.Instance.store.edit { settings ->
                     settings[dataStoreKey] = value
                 }
             }
@@ -59,28 +59,28 @@ class DataStore {
 
         private suspend fun writeSuspendString(stringKey :String, value : String?) {
             val dataStoreKey = stringPreferencesKey(stringKey)
-            DreamerApp.INSTANCE.datastore.edit { settings ->
+            DreamerApp.Instance.store.edit { settings ->
                 settings[dataStoreKey] = value?:"null"
             }
         }
 
         private suspend fun writeSuspendInt(stringKey :String, value : Int) {
             val dataStoreKey = intPreferencesKey(stringKey)
-            DreamerApp.INSTANCE.datastore.edit { settings ->
+            DreamerApp.Instance.store.edit { settings ->
                 settings[dataStoreKey] = value
             }
         }
 
         private suspend fun writeSuspendDouble(stringKey :String, value : Double) {
             val dataStoreKey = doublePreferencesKey(stringKey)
-            DreamerApp.INSTANCE.datastore.edit { settings ->
+            DreamerApp.Instance.store.edit { settings ->
                 settings[dataStoreKey] = value
             }
         }
 
         private suspend fun writeSuspendBoolean(stringKey :String, value : Boolean) {
             val dataStoreKey = booleanPreferencesKey(stringKey)
-            DreamerApp.INSTANCE.datastore.edit { settings ->
+            DreamerApp.Instance.store.edit { settings ->
                 settings[dataStoreKey] = value
             }
         }
@@ -101,32 +101,32 @@ class DataStore {
             writeSuspendBoolean(stringKey, value)
         }
 
-        suspend fun readStringAsync(stringKey: String,string: String? = null) : String? {
+        suspend fun readStringAsync(stringKey: String,value: String = "null") : String {
             val dataStoreKey = stringPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.first()
-            return preference[dataStoreKey]
+            val preference = DreamerApp.Instance.store.data.first()
+            return preference[dataStoreKey]?:value
         }
 
         suspend fun readIntAsync(stringKey: String,value: Int = 0) : Int {
             val dataStoreKey = intPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.first()
+            val preference = DreamerApp.Instance.store.data.first()
             return preference[dataStoreKey]?: value
         }
 
         suspend fun readDoubleAsync(stringKey: String,value: Double = 0.0) : Double {
             val dataStoreKey = doublePreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.first()
+            val preference = DreamerApp.Instance.store.data.first()
             return preference[dataStoreKey]?: value
         }
 
         suspend fun readBooleanAsync(stringKey :String, value : Boolean = false) : Boolean {
             val dataStoreKey = booleanPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.first()
+            val preference = DreamerApp.Instance.store.data.first()
             return preference[dataStoreKey]?: value
         }
 
-        fun readString(stringKey :String, value : String? = null) : String = runBlocking {
-            readStringAsync(stringKey, value)?: value?:"null"
+        fun readString(stringKey :String, value : String = "null") : String = runBlocking {
+            readStringAsync(stringKey, value)
         }
 
         fun readInt(stringKey :String, value : Int = 0) : Int = runBlocking {
@@ -143,7 +143,7 @@ class DataStore {
 
         fun flowString(stringKey: String) : Flow<String?> {
             val dataStoreKey = stringPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.map {
+            val preference = DreamerApp.Instance.store.data.map {
                 it[dataStoreKey] }.catch { exception ->
                 if (exception is IOException) {
                     emit(null)
@@ -156,7 +156,7 @@ class DataStore {
 
         fun flowInt(stringKey: String) : Flow<Int> {
             val dataStoreKey = intPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.map {
+            val preference = DreamerApp.Instance.store.data.map {
                 it[dataStoreKey]?:0 }.catch { exception ->
                 if (exception is IOException) {
                     emit(0)
@@ -169,7 +169,7 @@ class DataStore {
 
         fun flowDouble(stringKey: String) : Flow<Double> {
             val dataStoreKey = doublePreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.map {
+            val preference = DreamerApp.Instance.store.data.map {
                 it[dataStoreKey]?:0.0 }.catch { exception ->
                 if (exception is IOException) {
                     emit(0.0)
@@ -182,7 +182,7 @@ class DataStore {
 
         fun flowBoolean(stringKey: String) : Flow<Boolean> {
             val dataStoreKey = booleanPreferencesKey(stringKey)
-            val preference = DreamerApp.INSTANCE.datastore.data.map {
+            val preference = DreamerApp.Instance.store.data.map {
                 it[dataStoreKey]?:false }.catch { exception ->
                 if (exception is IOException) {
                     emit(false)

@@ -7,8 +7,8 @@ import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.domain.ChapterManager
-import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.ChapterUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +20,8 @@ import java.io.IOException
 class ChaptersCachingWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val chapterManager: ChapterManager,
-    private val objectManager: ObjectManager,
+    private val chapterUseCase: ChapterUseCase,
+    private val objectUseCase: ObjectUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
@@ -44,7 +44,7 @@ class ChaptersCachingWorker @AssistedInject constructor(
                         id) }
 
                 requestedProfileChapters.await().apply {
-                    objectManager.insertObject(this)
+                    objectUseCase.insertObject(this)
                     Result.success()
                 }
                 Result.failure()
@@ -57,7 +57,7 @@ class ChaptersCachingWorker @AssistedInject constructor(
     }
 
     private suspend fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
-        if (size <= 0) chapterManager.getChapter.fromId(chapterId).apply { if (this != null) return this }
+        if (size <= 0) chapterUseCase.getChapter.fromId(chapterId).apply { if (this != null) return this }
         return Chapter.fake()
     }
 }

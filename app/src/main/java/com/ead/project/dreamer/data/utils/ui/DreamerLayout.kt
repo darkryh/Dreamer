@@ -34,12 +34,12 @@ class DreamerLayout {
         }
 
 
-        private fun getColor(colorId: Int) = ContextCompat.getColor(DreamerApp.INSTANCE, colorId)
+        private fun getColor(colorId: Int) = ContextCompat.getColor(DreamerApp.Instance, colorId)
 
         @SuppressLint("CutPasteId")
         fun showSnackbar(view: View, text : String, color: Int = R.color.blackPrimary,size : Int = R.dimen.snackbar_text_size,length : Int = Snackbar.LENGTH_SHORT) {
             val snackbar: Snackbar = Snackbar.make(view, text, length)
-            snackbar.setBackgroundTint(ContextCompat.getColor(DreamerApp.INSTANCE, color))
+            snackbar.setBackgroundTint(ContextCompat.getColor(DreamerApp.Instance, color))
             val viewGroup = snackbar.view
                 .findViewById<View>(com.google.android.material.R.id.snackbar_text).parent as ViewGroup
             viewGroup.layoutParams = FrameLayout.LayoutParams(
@@ -51,10 +51,10 @@ class DreamerLayout {
             viewGroup.setPadding(64,0,64,0)
             val textView = snackbar.view
                 .findViewById<View>(com.google.android.material.R.id.snackbar_text) as TextView
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, DreamerApp.INSTANCE.resources.getDimension(size))
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, DreamerApp.Instance.resources.getDimension(size))
 
             if (length == Snackbar.LENGTH_INDEFINITE) {
-                val progressBar = ProgressBar(DreamerApp.INSTANCE)
+                val progressBar = ProgressBar(DreamerApp.Instance)
 
                 setColorFilter(progressBar.indeterminateDrawable, getColor(R.color.blue_light))
                 viewGroup.addView(progressBar)

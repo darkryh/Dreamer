@@ -19,7 +19,7 @@ import com.ead.project.dreamer.data.commons.Tools.Companion.launchIntent
 import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.databinding.FragmentDialogCheckerBinding
-import com.ead.project.dreamer.domain.DownloadManager
+import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.ui.ads.InterstitialAdActivity
 import com.ead.project.dreamer.ui.player.PlayerActivity
 import com.ead.project.dreamer.ui.player.PlayerExternalActivity
@@ -30,7 +30,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ChapterCheckerFragment : DialogFragment() {
 
-    @Inject lateinit var downloadManager : DownloadManager
+    @Inject lateinit var downloadUseCase : DownloadUseCase
     private lateinit var chapterCheckerViewModel : ChapterCheckerViewModel
     private lateinit var playList : List<VideoModel>
     private lateinit var chapter : Chapter
@@ -111,7 +111,7 @@ class ChapterCheckerFragment : DialogFragment() {
     }
 
     private fun prepareDownload(chapter: Chapter) =
-        downloadManager.launchManualDownload(chapter,playList.last().directLink)
+        downloadUseCase.launchManualDownload(chapter,playList.last().directLink)
 
     private fun preparingIntent(chapter: Chapter) {
         if (Constants.isAdInterstitialTime(isDirect)) {

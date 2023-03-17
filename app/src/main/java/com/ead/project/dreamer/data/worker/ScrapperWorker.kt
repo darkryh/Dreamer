@@ -17,25 +17,25 @@ import java.io.IOException
 class ScrapperWorker  @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val serverManager: ServerManager,
-    private val chapterManager: ChapterManager,
-    private val directoryManager: DirectoryManager,
-    private val homeManager: HomeManager,
-    private val newsManager: NewsManager,
-    private val profileManager: ProfileManager
+    private val serverUseCase: ServerUseCase,
+    private val chapterUseCase: ChapterUseCase,
+    private val directoryUseCase: DirectoryUseCase,
+    private val homeUseCase: HomeUseCase,
+    private val newsUseCase: NewsUseCase,
+    private val profileUseCase: ProfileUseCase
 ) : CoroutineWorker(context,workerParameters) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
 
-                DreamerWebView.setServerScript(serverManager.getServerScript())
-                AnimeBaseScrap.set(directoryManager.getDirectoryScrap.fromApi())
-                AnimeProfileScrap.set(profileManager.getProfileScrap.fromApi())
-                ChapterHomeScrap.set(homeManager.getHomeScrap.fromApi())
-                ChapterScrap.set(chapterManager.getChapterScrap.fromApi())
-                NewsItemScrap.set(newsManager.getNewsItemScrap.fromApi())
-                NewsItemWebScrap.set(newsManager.getNewsItemWebScrap.fromApi())
+                DreamerWebView.setServerScript(serverUseCase.getServerScript())
+                AnimeBaseScrap.set(directoryUseCase.getDirectoryScrap.fromApi())
+                AnimeProfileScrap.set(profileUseCase.getProfileScrap.fromApi())
+                ChapterHomeScrap.set(homeUseCase.getHomeScrap.fromApi())
+                ChapterScrap.set(chapterUseCase.getChapterScrap.fromApi())
+                NewsItemScrap.set(newsUseCase.getNewsItemScrap.fromApi())
+                NewsItemWebScrap.set(newsUseCase.getNewsItemWebScrap.fromApi())
 
                 Result.success()
             } catch (ex: IOException) {

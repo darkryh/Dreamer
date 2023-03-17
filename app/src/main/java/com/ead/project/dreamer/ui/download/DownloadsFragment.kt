@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
 import com.ead.project.dreamer.databinding.FragmentDownloadsBinding
-import com.ead.project.dreamer.domain.ChapterManager
+import com.ead.project.dreamer.domain.ChapterUseCase
 import com.ead.project.dreamer.ui.download.adapter.DownloadRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,7 +21,7 @@ class DownloadsFragment : Fragment() {
     private var _binding : FragmentDownloadsBinding?=null
     private val binding get() = _binding!!
    @Inject lateinit var downloadDesigner : DownloadDesigner
-   @Inject lateinit var chapterManager: ChapterManager
+   @Inject lateinit var chapterUseCase: ChapterUseCase
    private lateinit var adapter : DownloadRecyclerViewAdapter
 
     override fun onCreateView(
@@ -36,7 +36,7 @@ class DownloadsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.root.apply {
             layoutManager = LinearLayoutManager(context)
-            this@DownloadsFragment.adapter = DownloadRecyclerViewAdapter(activity as Context,chapterManager)
+            this@DownloadsFragment.adapter = DownloadRecyclerViewAdapter(activity as Context,chapterUseCase)
             adapter = this@DownloadsFragment.adapter
             setupData()
         }

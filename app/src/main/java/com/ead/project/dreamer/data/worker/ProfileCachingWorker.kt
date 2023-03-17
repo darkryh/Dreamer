@@ -6,8 +6,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.domain.DirectoryManager
-import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.DirectoryUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +19,8 @@ import java.io.IOException
 class ProfileCachingWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val directoryManager: DirectoryManager,
-    private val objectManager: ObjectManager,
+    private val directoryUseCase: DirectoryUseCase,
+    private val objectUseCase: ObjectUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
@@ -32,10 +32,10 @@ class ProfileCachingWorker @AssistedInject constructor(
                 val reference = array[1]
 
                 val requestedProfile = async { webProvider.getAnimeProfile(id,reference) }
-                val animeBase = directoryManager.getDirectory.byId(id)
+                val animeBase = directoryUseCase.getDirectory.byId(id)
                 requestedProfile.await().apply {
                     this.reference = animeBase.reference
-                    objectManager.insertObject(this)
+                    objectUseCase.insertObject(this)
                     Result.success()
                 }
                 Result.failure()

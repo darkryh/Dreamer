@@ -22,8 +22,7 @@ import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.AppManager
-import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.app.ProviderVerifier
 import com.ead.project.dreamer.app.model.AppStatus
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
@@ -36,7 +35,7 @@ import com.ead.project.dreamer.data.utils.media.CastManager
 import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
 import com.ead.project.dreamer.data.utils.ui.DreamerLayout
 import com.ead.project.dreamer.databinding.ActivityMainBinding
-import com.ead.project.dreamer.domain.DownloadManager
+import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.ui.directory.DirectoryActivity
 import com.ead.project.dreamer.ui.login.LoginActivity
 import com.ead.project.dreamer.ui.settings.SettingsActivity
@@ -47,21 +46,20 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var downloadDesigner : DownloadDesigner
     @Inject lateinit var notifier: NotificationManager
-    @Inject lateinit var downloadManager: DownloadManager
+    @Inject lateinit var downloadUseCase: DownloadUseCase
 
     private lateinit var binding: ActivityMainBinding
     private val mainActivityViewModel : MainActivityViewModel by viewModels()
     private val user : User? = User.get()
     private val currentVersion = BuildConfig.VERSION_NAME.toDouble()
     var castManager: CastManager = CastManager()
-    private val appManager = AppManager()
+    private lateinit var providerVerifier : ProviderVerifier
     lateinit var mediaRouteButton : MediaRouteButton
     private var directoryChecked = false
     private var timerAdv : Timer ?= null
@@ -105,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        DreamerApp.initAdsPreferences()
+        initVariables()
         settingPermissions()
         prepareLayouts()
         initSettings()
@@ -114,6 +112,10 @@ class MainActivity : AppCompatActivity() {
         appSettings()
         checkStatusApp()
         checkSubscribedTopic()
+    }
+
+    private fun initVariables() {
+        providerVerifier = ProviderVerifier(this)
     }
 
     private fun prepareLayouts() {
@@ -169,7 +171,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         castManager.onDestroy()
-        appManager.onDestroy()
+        providerVerifier.onDestroy()
         super.onDestroy()
     }
 
@@ -216,7 +218,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkUpdate(appStatus: AppStatus) {
         val updateApk = getString(R.string.apk_title_new_version_download, appStatus.lastVersion.toString())
         Constants.setVersionUpdateRoute(updateApk)
-        if (!downloadManager.checkIfUpdateIsAlreadyDownloaded())
+        if (!downloadUseCase.checkIfUpdateIsAlreadyDownloaded())
             showUpdateMessage(appStatus,updateApk)
     }
 
@@ -225,7 +227,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle(getString(R.string.title_new_version_download,appStatus.lastVersion.toString()))
             .setMessage(appStatus.resumedVersionNotes?:getString(R.string.content_new_version_download))
             .setPositiveButton(getString(R.string.to_download)) { _: DialogInterface?, _: Int ->
-                downloadManager.launchUpdate(title, appStatus.downloadReference)
+                downloadUseCase.launchUpdate(title, appStatus.downloadReference)
             }
             .setNegativeButton(R.string.cancel,null)
             .show()

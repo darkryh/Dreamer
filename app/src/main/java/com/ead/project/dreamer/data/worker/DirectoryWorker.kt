@@ -7,8 +7,8 @@ import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.domain.DirectoryManager
-import com.ead.project.dreamer.domain.ObjectManager
+import com.ead.project.dreamer.domain.DirectoryUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -20,22 +20,22 @@ import java.io.IOException
 class DirectoryWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val directoryManager: DirectoryManager,
-    private val objectManager: ObjectManager,
+    private val directoryUseCase: DirectoryUseCase,
+    private val objectUseCase: ObjectUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val directory = directoryManager.getDirectoryList()
+                val directory = directoryUseCase.getDirectoryList()
                 val sectionPos = inputData.getInt(Constants.DIRECTORY_KEY, -1)
 
                 if (directory.size <= Constants.HOME_ITEMS_LIMIT) {
                     val directoryData = async { webProvider.requestingData(sectionPos) }
                     directoryData.await().apply {
                         if (isEmpty()) Result.failure()
-                        objectManager.insertObject(this)
+                        objectUseCase.insertObject(this)
                         final(sectionPos)
                         Result.success()
                     }

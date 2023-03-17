@@ -7,9 +7,9 @@ import androidx.work.WorkerParameters
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.domain.DirectoryManager
-import com.ead.project.dreamer.domain.ObjectManager
-import com.ead.project.dreamer.domain.ProfileManager
+import com.ead.project.dreamer.domain.DirectoryUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -21,17 +21,17 @@ import java.io.IOException
 class ProfileRepositoryWorker  @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val directoryManager: DirectoryManager,
-    private val objectManager: ObjectManager,
-    private val profileManager: ProfileManager,
+    private val directoryUseCase: DirectoryUseCase,
+    private val objectUseCase: ObjectUseCase,
+    private val profileUseCase: ProfileUseCase,
     private val webProvider: WebProvider
 ) : CoroutineWorker(context,workerParameters) {
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val repositoryData = directoryManager.getDirectoryList()
-                val repositoryProfile = profileManager.getProfileList()
+                val repositoryData = directoryUseCase.getDirectoryList()
+                val repositoryProfile = profileUseCase.getProfileList()
 
                 if (repositoryData.size != repositoryProfile.size) {
                     val currentPos = DataStore.readInt(Constants.PROFILE_REPOSITORY)
@@ -45,7 +45,7 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                         }
                         profile.await().apply {
                             reference = repositoryData[pos].reference
-                            objectManager.insertObject(this)
+                            objectUseCase.insertObject(this)
                             DataStore.writeIntAsync(Constants.PROFILE_REPOSITORY,pos)
                         }
                     }
