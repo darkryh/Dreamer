@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentManager
 import coil.load
-import coil.transform.BlurTransformation
 import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
@@ -84,9 +83,7 @@ class PlayerExternalActivity : AppCompatActivity() {
 
     private fun initSettings() {
         cover.apply {
-            load(chapter.cover) {
-                transformations(BlurTransformation(this@PlayerExternalActivity,14f))
-            }
+            load(chapter.cover)
             alpha = 0.3f
         }
         relaunchButton.setOnClickListener {
