@@ -4,7 +4,7 @@ import com.ead.project.dreamer.domain.configurations.ConfigureRecords
 import com.ead.project.dreamer.domain.databasequeries.GetRecords
 import javax.inject.Inject
 
-class RecordsManager @Inject constructor(
+class RecordsUseCase @Inject constructor(
     val getRecords: GetRecords,
     val configureRecords: ConfigureRecords,
 )

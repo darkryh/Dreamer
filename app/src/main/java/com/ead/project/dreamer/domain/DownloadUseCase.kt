@@ -3,7 +3,7 @@ package com.ead.project.dreamer.domain
 import com.ead.project.dreamer.domain.downloads.*
 import javax.inject.Inject
 
-class DownloadManager @Inject constructor(
+class DownloadUseCase @Inject constructor(
     val startDownload: StartDownload,
     val startManualDownload: StartManualDownload,
     val launchManualDownload: LaunchManualDownload,

@@ -3,7 +3,7 @@ package com.ead.project.dreamer.domain
 import com.ead.project.dreamer.domain.servers.*
 import javax.inject.Inject
 
-class ServerManager @Inject constructor(
+class ServerUseCase @Inject constructor(
     val getServer: GetServer,
     val getServers: GetServers,
     val getEmbedServers: GetEmbedServers,

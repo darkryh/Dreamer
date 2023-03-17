@@ -6,7 +6,7 @@ import com.ead.project.dreamer.domain.databasequeries.GetHomeRecommendations
 import com.ead.project.dreamer.domain.databasequeries.GetHomeReleaseList
 import javax.inject.Inject
 
-class HomeManager @Inject constructor(
+class HomeUseCase @Inject constructor(
     val getHomeList: GetHomeList,
     val getHomeRecommendations: GetHomeRecommendations,
     val getHomeReleaseList: GetHomeReleaseList,

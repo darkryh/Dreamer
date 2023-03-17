@@ -4,7 +4,7 @@ import com.ead.project.dreamer.domain.apis.app.GetAppStatusVersion
 import com.ead.project.dreamer.domain.apis.app.GetApplicationAds
 import javax.inject.Inject
 
-class ApplicationManager @Inject constructor(
+class ApplicationUseCase @Inject constructor(
     val getApplicationAds: GetApplicationAds,
     val getAppStatusVersion: GetAppStatusVersion
 )

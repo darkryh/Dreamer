@@ -7,7 +7,7 @@ import com.ead.project.dreamer.domain.databasequeries.GetChaptersToDownload
 import com.ead.project.dreamer.domain.databasequeries.GetChaptersToFix
 import javax.inject.Inject
 
-class ChapterManager @Inject constructor(
+class ChapterUseCase @Inject constructor(
     val getChapter: GetChapter,
     val getChapters: GetChapters,
     val getChaptersToDownload: GetChaptersToDownload,
