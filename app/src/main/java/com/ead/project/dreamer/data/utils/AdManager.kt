@@ -38,7 +38,7 @@ class AdManager(
         else if (adLiveData == null) adLiveData = MutableLiveData()
 
         try {
-            DreamerApp.AD_INSTANCE.apply {
+            DreamerApp.InitializationStatus.apply {
                 adLoader = AdLoader.Builder(context,adId)
                     .forNativeAd { workingAd(it) }
                     .withAdListener(object : AdListener() {
