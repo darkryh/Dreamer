@@ -56,9 +56,9 @@ android {
 
 dependencies {
 
-    def room_version = "2.4.3"
+    def room_version = "2.5.0"
     def lottieVersion = "4.2.1"
-    def exoplayer_version = "2.18.2"
+    def exoplayer_version = "2.18.4"
     def okhttpVersion = "4.9.2"
     def retrofitVersion = "2.9.0"
     def admobVersion = "21.5.0"
@@ -72,16 +72,16 @@ dependencies {
 
     //basics
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -94,13 +94,13 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //image loader coil
-    implementation 'io.coil-kt:coil:1.4.0'
+    implementation 'io.coil-kt:coil:2.2.2'
 
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     //html parser
-    implementation 'org.jsoup:jsoup:1.14.3'
+    implementation 'org.jsoup:jsoup:1.15.3'
 
     //data store
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
@@ -120,13 +120,13 @@ dependencies {
     implementation 'org.apache.commons:commons-text:1.9'
 
     //workManager
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation "androidx.work:work-runtime-ktx:2.8.0"
     implementation 'androidx.hilt:hilt-common:1.0.0'
     implementation 'androidx.hilt:hilt-work:1.0.0'
 
 
     //gson
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     //dagger hilt
     implementation 'com.google.dagger:hilt-android:2.44'
