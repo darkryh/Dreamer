@@ -294,7 +294,7 @@ class Constants {
 
         const val SERVER_OKRU = "ok.ru"
 
-        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com","sbchill.com","sblongvu.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com","sbrity.com")
+        val SERVER_STREAMSB_DOMAINS = listOf("sblanh.com","sbbrisk.com","sbchill.com","sblongvu.com", "sbanh.com", "playersb.com","embedsb.com","sbspeed.com","tubesb.com","sbrity.com")
 
         const val SERVER_UQLOAD = "uqload.com"
 
@@ -394,7 +394,7 @@ class Constants {
 
         fun resetCountedAds() = DataStore.writeIntAsync(PREFERENCE_CURRENT_WATCHED_VIDEOS, 0)
 
-        fun isCustomizedCommunicator() = DataStore
+        fun isCustomizedAdvertiserActivated() = DataStore
             .readBoolean(PREFERENCE_OFFICIAL_ADVERTISER,true)
 
         fun isDirectorySynchronized() = DataStore
