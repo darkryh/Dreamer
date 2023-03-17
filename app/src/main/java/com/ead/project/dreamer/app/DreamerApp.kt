@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.app
 
 import android.app.Application
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
@@ -22,28 +21,21 @@ class DreamerApp : Application(), Configuration.Provider {
         .build()
 
     companion object {
-        lateinit var INSTANCE : DreamerApp
-        var AD_INSTANCE: InitializationStatus? = null
 
-        fun showShortToast(message : String) {
-            Toast.makeText(INSTANCE,message,Toast.LENGTH_SHORT).show()
-        }
-
-        fun showLongToast(message : String) {
-            Toast.makeText(INSTANCE,message,Toast.LENGTH_LONG).show()
-        }
+        lateinit var Instance : DreamerApp
+        var InitializationStatus: InitializationStatus? = null
 
         fun initAdsPreferences() {
-            if (AD_INSTANCE!= null) MobileAds.initialize(INSTANCE) { AD_INSTANCE = it }
+            if (InitializationStatus!= null) MobileAds.initialize(Instance) { InitializationStatus = it }
         }
     }
 
     override fun onCreate() {
-        super.onCreate()
-        INSTANCE = this
+        Instance = this
         initAdsPreferences()
         settingTheme()
         initPreferences()
+        super.onCreate()
     }
 
     private fun initPreferences() {
@@ -59,8 +51,8 @@ class DreamerApp : Application(), Configuration.Provider {
     }
 
     private fun settingTheme () {
-        val theme = Constants.isDarkThemeMode()
-        if (theme) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        val isDarkTheme = Constants.isDarkThemeMode()
+        if (isDarkTheme) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
     }
 
