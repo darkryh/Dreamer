@@ -2,15 +2,16 @@ package com.ead.project.dreamer.data.utils.receiver
 
 import android.util.Log
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.utils.NotificationManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DreamerMessaging: FirebaseMessagingService() {
 
-    private var notifier: NotificationManager? = null
-    private fun getNotifier() = notifier?: NotificationManager(DreamerApp.INSTANCE).also { notifier = it }
+    @Inject lateinit var notifier: NotificationManager
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -20,13 +21,13 @@ class DreamerMessaging: FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         val currentNotifier = message.notification
-        val notification = getNotifier().create(
+        val notification = notifier.create(
             title = currentNotifier?.title,
             content = currentNotifier?.body,
             idDrawable = R.drawable.ic_launcher_foreground,
             channelKey =  CHANNEL_APP_KEY
         )
-        getNotifier().notify(CHANNEL_APP_ID ,notification.build())
+        notifier.notify(CHANNEL_APP_ID ,notification.build())
     }
 
     companion object {

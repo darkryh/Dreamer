@@ -7,18 +7,23 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.util.Log
+import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.utils.ProvisionalRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ChaptersReceiver : BroadcastReceiver() {
 
     private lateinit var data: Pair<Long,Int>
     private var executor: ExecutorService = Executors.newSingleThreadExecutor()
     private lateinit var chapter: Chapter
+    @Inject lateinit var repository: AnimeRepository
+    @Inject lateinit var downloadManager : DownloadManager
 
     override fun onReceive(context: Context, intent: Intent) {
         try {
@@ -26,9 +31,8 @@ class ChaptersReceiver : BroadcastReceiver() {
             val query: DownloadManager.Query = DownloadManager.Query()
             query.setFilterById(id)
             data = Chapter.getDownloadList().single { it.first == id }
-            chapter = runBlocking(Dispatchers.IO) { ProvisionalRepository.get(context).getChapterFromId(data.second)!! }
+            chapter = runBlocking(Dispatchers.IO) { repository.getChapterFromId(data.second)!! }
 
-            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val cursor: Cursor = downloadManager.query(query)
 
             if (cursor.moveToFirst()) {
@@ -62,13 +66,13 @@ class ChaptersReceiver : BroadcastReceiver() {
                     DownloadManager.ERROR_UNKNOWN -> { Log.d(TAG, "ERROR_UNKNOWN") }
                 }
             }
-            updateCases(context)
+            updateCases()
         } catch (e : Exception) { e.printStackTrace() }
     }
 
-    private fun updateCases(context: Context) {
+    private fun updateCases() {
         if (chapter.id == (Chapter.get()?.id ?: -1)) Chapter.set(chapter)
         if (chapter.id == (Chapter.getCasting()?.id?:-1)) Chapter.setCasting(chapter)
-        executor.execute { ProvisionalRepository.get(context).updateChapterNormal(chapter) }
+        executor.execute { repository.updateChapterNormal(chapter) }
     }
 }

@@ -6,15 +6,18 @@ import android.content.Intent
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.NotificationManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NotificationReceiver : BroadcastReceiver() {
 
     private val scope = CoroutineScope(SupervisorJob())
-    private var notifier : NotificationManager?=null
+    @Inject lateinit var notifier : NotificationManager
 
     override fun onReceive(context: Context, intent: Intent?) {
         val pendingResult: PendingResult = goAsync()
@@ -30,13 +33,10 @@ class NotificationReceiver : BroadcastReceiver() {
                     PREFERENCE_CHAPTER_INTERESTED -> {}
                     PREFERENCE_CHAPTER_NOT_INTERESTED -> {}
                 }
-                getNotifier(context).cancel(id)
+                notifier.cancel(id)
             } finally { pendingResult.finish() /* Must call finish() so the BroadcastReceiver can be recycled */ }
         }
     }
-
-    private fun getNotifier(context: Context) : NotificationManager
-    = notifier?: NotificationManager(context).also { notifier = it }
 
     companion object {
         const val PREFERENCE_DEACTIVATION = "PREFERENCE_DEACTIVATION"

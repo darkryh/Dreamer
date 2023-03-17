@@ -9,16 +9,19 @@ import android.database.Cursor
 import android.util.Log
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.utils.DirectoryManager
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class InstallerReceiver : BroadcastReceiver() {
+
+    @Inject lateinit var downloadManager : DownloadManager
 
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         val query: DownloadManager.Query = DownloadManager.Query()
         query.setFilterById(id)
 
-        val downloadManager =
-            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val cursor: Cursor = downloadManager.query(query)
 
         if (cursor.moveToFirst()) {
