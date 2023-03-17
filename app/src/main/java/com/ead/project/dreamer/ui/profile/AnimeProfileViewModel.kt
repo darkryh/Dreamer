@@ -18,16 +18,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeProfileViewModel @Inject constructor(
-    private val profileManager: ProfileManager,
-    private val chapterManager: ChapterManager,
-    private val objectManager: ObjectManager,
+    private val profileUseCase: ProfileUseCase,
+    private val chapterUseCase: ChapterUseCase,
+    private val objectUseCase: ObjectUseCase,
     private val configureChapters: ConfigureChapters,
     private val configureProfile: ConfigureProfile,
     private val launchOneTimeRequest: LaunchOneTimeRequest,
-    private val downloadManager: DownloadManager
+    private val downloadUseCase: DownloadUseCase
 ): ViewModel() {
 
-    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileManager.getProfile.livedata(id)
+    fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
 
     fun configureProfileData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureProfile(id,reference) }
@@ -35,26 +35,26 @@ class AnimeProfileViewModel @Inject constructor(
     fun configureChaptersData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
 
-    fun getChaptersFromProfile (id : Int) : LiveData<List<Chapter>> = chapterManager.getChapters.livedata(id)
+    fun getChaptersFromProfile (id : Int) : LiveData<List<Chapter>> = chapterUseCase.getChapters.livedata(id)
 
     fun getChaptersFromProfile (id : Int,start: Int,end: Int) : LiveData<List<Chapter>> =
-        chapterManager.getChapters.livedata(id,start,end)
+        chapterUseCase.getChapters.livedata(id,start,end)
 
     fun updateChapter(chapter: Chapter) =
-        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapter) }
+        viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(chapter) }
 
     fun updateChapters(chapters : List<Chapter>) =
-        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(chapters) }
+        viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(chapters) }
 
     fun updateAnimeProfile(animeProfile: AnimeProfile) =
-        viewModelScope.launch (Dispatchers.IO) { objectManager.updateObject(animeProfile) }
+        viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(animeProfile) }
 
     fun downloadAllChapters(id: Int) =
-        viewModelScope.launch (Dispatchers.IO) { downloadManager.startDownload(chapterManager.getChaptersToDownload(id)) }
+        viewModelScope.launch (Dispatchers.IO) { downloadUseCase.startDownload(chapterUseCase.getChaptersToDownload(id)) }
 
-    fun downloadFromChapters(chapters: List<Chapter>) { downloadManager.startDownload(chapters) }
+    fun downloadFromChapters(chapters: List<Chapter>) { downloadUseCase.startDownload(chapters) }
 
-    fun downloadFromChapter(chapter: Chapter) { downloadManager.startDownload(chapter) }
+    fun downloadFromChapter(chapter: Chapter) { downloadUseCase.startDownload(chapter) }
 
     fun repairingProfiles() {
         launchOneTimeRequest(
