@@ -37,6 +37,6 @@ open class DreamerBlockClient : WebViewClient() {
         } else {
             ad = loadedUrls[url] == true
         }
-        return if (ad) AdBlocker.createEmptyResource() else super.shouldInterceptRequest(view, url)
+        @Suppress("DEPRECATION") return if (ad) AdBlocker.createEmptyResource() else super.shouldInterceptRequest(view, url)
     }
 }
