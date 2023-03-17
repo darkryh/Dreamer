@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
-import coil.transform.BlurTransformation
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
@@ -70,8 +69,7 @@ class ChapterRecordRecyclerViewAdapter (
                 crossfade(true)
                 crossfade(500)
                 transformations(
-                    BlurTransformation(context,1f)
-                    , RoundedCornersTransformation(30f,0f,30f,0f)
+                    RoundedCornersTransformation(30f,0f,30f,0f)
                 )
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
@@ -103,8 +101,7 @@ class ChapterRecordRecyclerViewAdapter (
                 crossfade(true)
                 crossfade(500)
                 transformations(
-                    BlurTransformation(context,1f)
-                    , RoundedCornersTransformation(30f)
+                    RoundedCornersTransformation(30f)
                 )
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
