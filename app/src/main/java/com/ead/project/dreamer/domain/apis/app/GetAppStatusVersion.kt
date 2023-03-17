@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.domain.apis.app
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.app.model.AppStatus
 import com.ead.project.dreamer.data.AnimeRepository
 import retrofit2.Call
@@ -26,7 +26,7 @@ class GetAppStatusVersion @Inject constructor(
                 catch ( e : Exception) { e.printStackTrace() }
             }
             override fun onFailure(call: Call<AppStatus>, t: Throwable) {
-                DreamerApp.showLongToast(t.cause?.message.toString())
+                Log.e("error", "onFailure: ${t.cause?.message.toString()}", )
             }
         })
         return appStatus?:MutableLiveData<AppStatus>().also { appStatus = it }

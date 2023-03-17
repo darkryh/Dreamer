@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.domain.apis.app
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.AnimeRepository
 import retrofit2.Call
@@ -27,7 +27,7 @@ class GetApplicationAds @Inject constructor(
             }
 
             override fun onFailure(call: Call<List<Publicity>>, t: Throwable) {
-                DreamerApp.showLongToast(t.cause?.message.toString())
+                Log.e("error", "onFailure: ${t.cause?.message.toString()}", )
             }
         })
         return publicity?:MutableLiveData<List<Publicity>>().also { publicity = it }

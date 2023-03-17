@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.domain.apis.discord
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.models.discord.AccessToken
 import retrofit2.Call
@@ -26,7 +26,7 @@ class GetDiscordUserToken @Inject constructor(
                 catch ( e : Exception) { e.printStackTrace() }
             }
             override fun onFailure(call: Call<AccessToken?>, t: Throwable) {
-                DreamerApp.showLongToast(t.cause?.message.toString())
+                Log.e("error", "onFailure: ${t.cause?.message.toString()}", )
             }
         })
         return accessToken?:MutableLiveData<AccessToken?>().also { accessToken = it }
