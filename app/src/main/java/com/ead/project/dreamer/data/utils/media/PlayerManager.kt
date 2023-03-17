@@ -10,12 +10,12 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.mediarouter.app.MediaRouteButton
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import com.ead.project.dreamer.data.utils.WebServer
 import com.ead.project.dreamer.ui.player.PlayerActivity
@@ -309,7 +309,7 @@ class PlayerManager(
             Player.STATE_IDLE -> {}
             Player.STATE_BUFFERING -> {}
             Player.STATE_ENDED -> {}
-            else -> { DreamerApp.showLongToast("error") }
+            else -> { context.toast("error") }
         }
     }
 
@@ -317,7 +317,7 @@ class PlayerManager(
         super.onPlayerError(error)
         when(error.errorCode) {
             PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND ->{
-                DreamerApp.showLongToast("Error Archivo de descarga no encontrado.")
+                context.toast("Error Archivo de descarga no encontrado.")
                 Log.d("testing", "onPlayerError: ${error.cause?.message}")
             }
         }

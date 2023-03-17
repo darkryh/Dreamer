@@ -1,9 +1,10 @@
 package com.ead.project.dreamer.domain.downloads
 
 import android.content.Context
+import android.widget.Toast
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
 import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.ThreadUtil
 import javax.inject.Inject
 
@@ -20,8 +21,8 @@ class StartDownload @Inject constructor(
         val filteredList = filterDownloads(chapters)
         if (filteredList.isNotEmpty()) {
             addDownload(filteredList)
-            showToast(context.getString(R.string.warning_chapter_status_starting))
-        } else showToast(context.getString(R.string.warning_chapter_all_downloaded))
+            toast(context.getString(R.string.warning_chapter_status_starting))
+        } else toast(context.getString(R.string.warning_chapter_all_downloaded))
     }
 
     operator fun invoke(chapter: Chapter) {
@@ -29,28 +30,28 @@ class StartDownload @Inject constructor(
             Chapter.DOWNLOAD_STATUS_INITIALIZED -> {
                 if (!isInDownloadProgress(chapter)) {
                     addDownload(chapter)
-                    showToast(context.getString(R.string.warning_chapter_status_starting))
+                    toast(context.getString(R.string.warning_chapter_status_starting))
                 }
-                else showToast(context.getString(R.string.warning_chapter_status_in_progress))
+                else toast(context.getString(R.string.warning_chapter_status_in_progress))
             }
-            Chapter.DOWNLOAD_STATUS_RUNNING -> showToast(context.getString(R.string.warning_chapter_status_in_progress))
-            Chapter.DOWNLOAD_STATUS_PENDING -> showToast(context.getString(R.string.warning_chapter_status_pending))
-            Chapter.DOWNLOAD_STATUS_PAUSED -> showToast(context.getString(R.string.warning_chapter_status_paused))
+            Chapter.DOWNLOAD_STATUS_RUNNING -> toast(context.getString(R.string.warning_chapter_status_in_progress))
+            Chapter.DOWNLOAD_STATUS_PENDING -> toast(context.getString(R.string.warning_chapter_status_pending))
+            Chapter.DOWNLOAD_STATUS_PAUSED -> toast(context.getString(R.string.warning_chapter_status_paused))
             Chapter.DOWNLOAD_STATUS_FAILED -> {
                 removeDownload(getDownloads().singleOrNull{ it.second == chapter.id })
                 addDownload(chapter)
-                showToast(context.getString(R.string.warning_chapter_status_failed))
+                toast(context.getString(R.string.warning_chapter_status_failed))
             }
             Chapter.DOWNLOAD_STATUS_COMPLETED -> {
-                if (chapter.getFile().exists()) showToast(context.getString(R.string.warning_chapter_status_completed))
+                if (chapter.getFile().exists()) toast(context.getString(R.string.warning_chapter_status_completed))
                 else {
                     addDownload(chapter)
-                    showToast(context.getString(R.string.warning_chapter_status_starting))
+                    toast(context.getString(R.string.warning_chapter_status_starting))
                 }
             }
         }
     }
 
-    private fun showToast(string: String) = runOnUI { DreamerApp.showShortToast(string) }
+    private fun toast(string: String) = runOnUI { context.toast(string,Toast.LENGTH_SHORT) }
     private fun runOnUI(task: () -> Unit) = ThreadUtil.onUi { task() }
 }
