@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import javax.inject.Inject
 
@@ -16,7 +15,11 @@ class GetProfilePlayerRecommendations @Inject constructor(
         if (Constants.isGooglePolicyNotActivate())
             repository.getFlowRandomProfileListFrom(animeProfile.genres.random(), animeProfile)
         else {
-            val genre = Tools.filterGenreByGooglePolicies(animeProfile.genres)
+            val genre = filterGenreByGooglePolicies(animeProfile.genres)
             repository.getFlowRandomProfileListCensuredFrom(genre, animeProfile)
         }.asLiveData()
+
+    private fun filterGenreByGooglePolicies(genres: List<String>): String =
+        genres.filter { it != Constants.TYPE_ECCHI }.random()
+
 }
