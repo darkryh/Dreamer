@@ -1,10 +1,11 @@
 package com.ead.project.dreamer.data.utils.media
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.text.format.DateUtils
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.ui.player.cast.ExpandedControlsActivity
 import com.google.android.gms.cast.CredentialsData
 import com.google.android.gms.cast.LaunchOptions
@@ -17,6 +18,7 @@ import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.google.android.gms.cast.framework.media.NotificationOptions
 
 @Suppress("unused")
+@SuppressLint("VisibleForTests")
 class CastOptionsProvider : OptionsProvider {
 
     companion object {
@@ -68,17 +70,24 @@ class CastOptionsProvider : OptionsProvider {
     }
 }
 
-internal class DreamerMediaIntentReceiver : MediaIntentReceiver() {
+internal class CastMediaIntentReceiver : MediaIntentReceiver() {
+
+    private var context: Context?= null
+
+    override fun onReceive(context: Context, intent: Intent) {
+        this.context = context
+        super.onReceive(context, intent)
+    }
 
     override fun onReceiveActionTogglePlayback(currentSession: Session) {
-        DreamerApp.showLongToast("onReceiveActionTogglePlayback")
+        context?.toast("onReceiveActionTogglePlayback")
     }
 
     override fun onReceiveActionMediaButton(currentSession: Session, intent: Intent) {
-        DreamerApp.showLongToast("onReceiveActionMediaButton")
+        context?.toast("onReceiveActionMediaButton")
     }
 
     override fun onReceiveOtherAction(context: Context?, action: String, intent: Intent) {
-        DreamerApp.showLongToast("onReceiveOtherAction")
+        context?.toast("onReceiveOtherAction")
     }
 }
