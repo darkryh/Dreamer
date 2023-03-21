@@ -34,11 +34,7 @@ class Discord {
 
         const val USER_TOKEN = "USER_TOKEN"
 
-        private const val FIRST_BOT_TOKEN_PART = "OTM0Mjc4ODg2NDEyNDA2ODE0"
-        private const val SECOND_BOT_TOKEN_PART = ".GPxZq7"
-        private const val THIRD_BOT_TOKEN_PART = ".E3TjMEluvZE0Zr_R3yn4zF9wwD9MtxcPkkox6w"
-
-        const val BOT_TOKEN = FIRST_BOT_TOKEN_PART + SECOND_BOT_TOKEN_PART + THIRD_BOT_TOKEN_PART
+        const val BOT_TOKEN = YOUR_DISCORD_TOKEN
 
 
         //VALUES TO WORK
