@@ -37,6 +37,9 @@ class Mediafire(embeddedUrl:String) : Server(embeddedUrl) {
                                 this@Mediafire.url = tempUrl
                                 webView?.isLoading = false
                             }
+                            else {
+                                webView?.loadUrl(url?:return@evaluateJavascript)
+                            }
                         }
                     }
                 }
