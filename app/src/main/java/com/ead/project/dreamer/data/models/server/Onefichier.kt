@@ -39,5 +39,5 @@ class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
     }
 
     private fun fixUrl(url: String): String = "$url?=&auth=1"
-    private fun getToken() = "YWxleF9ibGFjay14Y0Bob3RtYWlsLmNvbTpLaXJhMTAwOA=="
+    private fun getToken() = ONE_FICHIER_TOKEN
 }
