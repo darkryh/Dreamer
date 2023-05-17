@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.ead.project.dreamer.ui.settings.layouts.AccountViewPreference
+    <com.ead.project.dreamer.presentation.settings.layouts.AccountViewPreference
         app:key="PREFERENCE_CUSTOMIZED_IMV_PROFILE"
         app:layout="@layout/layout_account_view_preference" />
 
