@@ -1,14 +1,16 @@
 package com.ead.project.dreamer.data.retrofit.interceptor
 
-import com.ead.project.dreamer.data.models.discord.Discord
-import com.ead.project.dreamer.data.utils.DataStore
-import okhttp3.*
+import com.ead.project.dreamer.app.data.discord.Discord
+import okhttp3.FormBody
+import okhttp3.Interceptor
+import okhttp3.Response
 
 class AccessInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
-            val code = DataStore.readString(Discord.EXCHANGE_CODE)
             var request = chain.request()
+            val code = Discord.getExchangeCode()?:return chain.proceed(request)
+
             val requestBuilder = request.newBuilder()
             val formBody = FormBody.Builder()
                 .add("client_id", Discord.CLIENT_ID)
