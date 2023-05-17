@@ -7,12 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarMain"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/blackSurface"
+        android:background="?attr/colorSurface"
         app:layout_collapseMode="pin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,23 +23,6 @@
             android:layoutDirection="rtl"
             android:orientation="horizontal"
             android:padding="8dp">
-
-            <ImageView
-                android:id="@+id/imvProfile"
-                android:layout_width="32dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/background_circular"
-                android:backgroundTint="@color/backgroundSmooth"
-                android:contentDescription="@string/state_of_the_app"
-                android:padding="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_person_outline_24"
-                tools:ignore="ImageContrastCheck" />
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -55,10 +37,8 @@
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:mediaRouteTypes="user"
-                    android:visibility="gone"
-                    app:mediaRouteButtonTint="@color/whiteSecondary" />
-
-
+                    android:visibility="visible"
+                    app:mediaRouteButtonTint="?attr/colorPrimaryVariant" />
             </LinearLayout>
 
             <ImageView
@@ -74,13 +54,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_search_24"
-                app:tint="@color/white"
+                app:tint="?attr/colorPrimaryVariant"
                 tools:ignore="ImageContrastCheck" />
 
             <TextView
                 android:id="@+id/edtMainSearch"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:background="@drawable/background_rounded_20dp"
                 android:backgroundTint="@color/backgroundSmooth"
                 android:hint="@string/search_in_directory"
@@ -90,10 +71,24 @@
                 android:textSize="13sp"
                 tools:ignore="TextContrastCheck" />
 
+            <ImageView
+                android:id="@+id/imvProfile"
+                android:layout_width="32dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="@color/backgroundSmooth"
+                android:contentDescription="@string/state_of_the_app"
+                android:padding="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_user"
+                tools:ignore="ImageContrastCheck" />
+
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
-
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
@@ -118,7 +113,7 @@
 
     <fragment
         android:id="@+id/castMiniController"
-        class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
+        class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -126,8 +121,8 @@
         android:visibility="visible"
         app:castButtonColor="?attr/colorPrimaryVariant"
         app:castControlButtons="@array/cast_mini_controller_control_buttons"
-        app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
-        app:castProgressBarColor="@color/blue_light"
+        app:castMiniControllerLoadingIndicatorColor="@color/orange_peel"
+        app:castProgressBarColor="@color/orange_peel"
         app:layout_constraintBottom_toTopOf="@id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,5 +144,4 @@
         tools:ignore="VisualLintBottomNav">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.AnimeProfileActivity">
+    tools:context=".presentation.profile.AnimeProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -15,27 +15,25 @@
         app:layout_constraintBottom_toTopOf="@id/castMiniController">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:fitsSystemWindows="false">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="false"
+                android:fitsSystemWindows="true"
                 app:collapsedTitleTextAppearance="@style/CollapsedAppBar"
                 app:expandedTitleTextAppearance="@style/ExpandedAppBar"
-                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
-                app:maxLines="4"
-                app:title="@string/title">
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/imvCoverProfile"
+                        android:id="@+id/imvCover"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -51,46 +49,12 @@
                         android:src="@drawable/gradient_transparent_vertical" />
 
                 </RelativeLayout>
-
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
+                    android:layout_marginTop="24dp"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="48dp"
                     app:layout_collapseMode="pin">
-
-                    <ImageView
-                        android:id="@+id/imvProfileBase"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="end|center"
-                        android:layout_marginEnd="12dp"
-                        android:contentDescription="@string/profile_logo"
-                        app:srcCompat="@drawable/ic_person_pin_24"
-                        tools:ignore="ImageContrastCheck" />
-
-                    <ImageView
-                        android:id="@+id/imvLikeProfile"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="end|center"
-                        android:layout_marginEnd="8dp"
-                        android:contentDescription="@string/cover_profile"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/ic_favorite_border_24"
-                        tools:ignore="ImageContrastCheck" />
-
-                    <ImageView
-                        android:id="@+id/imvFixer"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="end|center"
-                        android:layout_marginEnd="0dp"
-                        android:contentDescription="@string/cover_profile"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_fixer_24"
-                        app:tint="@color/white"
-                        tools:ignore="ImageContrastCheck" />
 
                     <androidx.mediarouter.app.MediaRouteButton
                         android:id="@+id/mediaRouteButton"
@@ -99,7 +63,7 @@
                         android:layout_gravity="end|center"
                         android:layout_margin="8dp"
                         android:mediaRouteTypes="user"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:layout_anchor="@id/rcvGenres"
                         app:mediaRouteButtonTint="@color/white" />
 
@@ -112,268 +76,147 @@
                         android:layout_marginEnd="8dp"
                         android:contentDescription="@string/cover_profile"
                         android:scaleType="centerCrop"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:tint="@color/white"
                         app:srcCompat="@drawable/ic_circle_download_24"
                         tools:ignore="ImageContrastCheck"/>
-
                 </androidx.appcompat.widget.Toolbar>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imvProfile"
+                        android:layout_width="110dp"
+                        android:layout_height="140dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="74dp"
+                        android:layout_marginBottom="24dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/txvTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="@string/title"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imvProfile"
+                        app:layout_constraintTop_toTopOf="@+id/imvProfile" />
+
+                    <TextView
+                        android:id="@+id/txvSecondTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="second title"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/txvTitle"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/txvTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/txvTitle" />
+
+                    <TextView
+                        android:id="@+id/txvAnimeState"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="En Emisión"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/txvTitle"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/txvTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/txvSecondTitle" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
-
         </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-            <androidx.core.widget.NestedScrollView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardview_tab_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:cardCornerRadius="30dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp">
 
-                <LinearLayout
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/colorSecondaryVariant"
+                    app:tabIndicatorColor="@color/orange_peel"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabIndicatorFullWidth="true"
+                    app:tabIndicatorGravity="stretch"
+                    app:tabSelectedTextColor="@color/white"
+                    app:tabTextColor="@android:color/darker_gray">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcvGenres"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/background_horizonal_border_down"
-                        tools:listitem="@layout/layout_genre" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="45dp"
-                        android:layout_gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/txvState_Profile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|center"
-                            android:layout_marginEnd="16dp"
-                            android:text="@string/state"
-                            android:textSize="13sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/txvYear"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/txvYear"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/year"
-                            app:layout_constraintBottom_toBottomOf="@+id/txvState_Profile"
-                            app:layout_constraintEnd_toStartOf="@+id/txvRating"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/txvState_Profile"
-                            app:layout_constraintTop_toTopOf="@+id/txvState_Profile" />
-
-                        <TextView
-                            android:id="@+id/txvRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginEnd="16dp"
-                            android:text="@string/rating"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toBottomOf="@+id/txvYear"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/txvYear"
-                            app:layout_constraintTop_toTopOf="@+id/txvYear" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/txvDescriptionContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:background="@drawable/background_horizontal_border"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="8dp"
-                        android:text="@string/lorem"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:id="@+id/lnBanner"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingVertical="4dp">
+                        android:text="Detalles"/>
 
-                        <com.facebook.shimmer.ShimmerFrameLayout
-                            android:id="@+id/bannerShimmer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="visible">
-
-                            <include layout="@layout/layout_banner_shimmer" />
-                        </com.facebook.shimmer.ShimmerFrameLayout>
-
-                        <include
-                            android:id="@+id/banner"
-                            layout="@layout/ad_unified_mini_banner"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txvChapterTitle"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/background_horizontal_border"
-                        android:gravity="center"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="8dp"
-                        android:text="@string/chapterList"
-                        android:textSize="15sp" />
+                        android:text="Capítulos"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txInputChapters"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
-                        android:hint="@string/chapterList"
-                        android:visibility="gone"
-                        app:startIconDrawable="@drawable/ic_list_24">
+                </com.google.android.material.tabs.TabLayout>
 
-                        <AutoCompleteTextView
-                            android:id="@+id/actChapters"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:inputType="none"
-                            android:text="@string/chapters"
-                            tools:ignore="LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcvChapters"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/background_horizonal_border_down"
-                        android:layoutAnimation="@anim/layout_animation"
-                        android:paddingHorizontal="4dp"
-                        android:paddingVertical="4dp"
-                        android:paddingBottom="8dp"
-                        tools:listitem="@layout/layout_chapter" />
-
-
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/editModeView"
-            android:backgroundTint="?attr/colorPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="16dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@id/castMiniController"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:cardCornerRadius="8dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
+                android:layout_below="@id/cardview_tab_container"/>
 
-                <ImageView
-                    android:id="@+id/imvDownloadSelected"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:contentDescription="@string/download"
-                    android:paddingVertical="0dp"
-                    android:src="@drawable/ic_circle_download_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/imvDownloadManualSelected"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?attr/colorSecondaryVariant" />
-
-                <ImageView
-                    android:id="@+id/imvDownloadManualSelected"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="24dp"
-                    android:contentDescription="@string/download"
-                    android:paddingVertical="0dp"
-                    android:src="@drawable/ic_download_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/imvDownloadSelected"
-                    app:layout_constraintEnd_toStartOf="@+id/imvDownloadSelected"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/imvChapterModeDownloaded"
-                    app:layout_constraintTop_toTopOf="@+id/imvDownloadSelected"
-                    app:tint="?attr/colorSecondaryVariant" />
-
-
-                <ImageView
-                    android:id="@+id/imvChapterModeDownloaded"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="24dp"
-                    android:contentDescription="@string/download"
-                    android:paddingVertical="0dp"
-                    android:src="@drawable/ic_assignment_turned_in_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/imvDownloadManualSelected"
-                    app:layout_constraintEnd_toStartOf="@+id/imvDownloadManualSelected"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/imvChapterModeNotDownloaded"
-                    app:layout_constraintTop_toTopOf="@+id/imvDownloadManualSelected"
-                    app:tint="?attr/colorSecondaryVariant" />
-
-                <ImageView
-                    android:id="@+id/imvChapterModeNotDownloaded"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="24dp"
-                    android:contentDescription="@string/download"
-                    android:paddingVertical="0dp"
-                    android:src="@drawable/ic_assignment_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/imvChapterModeDownloaded"
-                    app:layout_constraintEnd_toStartOf="@+id/imvChapterModeDownloaded"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/imvChapterModeDownloaded"
-                    app:tint="?attr/colorSecondaryVariant" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <fragment
         android:id="@+id/castMiniController"
-        class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
+        class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:castButtonColor="?attr/colorPrimaryVariant"
         app:castControlButtons="@array/cast_mini_controller_control_buttons"
-        app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
-        app:castProgressBarColor="@color/blue_light"
+        app:castMiniControllerLoadingIndicatorColor="@color/orange_peel"
+        app:castProgressBarColor="@color/orange_peel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout="@layout/cast_mini_controller"
-        tools:ignore="FragmentTagUsage" />
+        tools:ignore="FragmentTagUsage"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

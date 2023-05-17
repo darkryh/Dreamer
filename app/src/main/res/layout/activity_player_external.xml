@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.player.PlayerExternalActivity">
+    tools:context=".presentation.player.PlayerExternalActivity">
 
     <LinearLayout
-        android:id="@+id/ln_play_list_cast"
+        android:id="@+id/ln_playlist_cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/coverChapterExternal"
+        android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/chapterLogo"
@@ -41,29 +41,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/bt_close_external_player"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:id="@+id/btn_close"
+        android:layout_width="19dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/background_circular"
         android:backgroundTint="?attr/colorSecondary"
-        android:layout_marginTop="4dp"
         android:contentDescription="@string/close"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_expand_38"
+        android:src="@drawable/ic_down_back_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ImageContrastCheck" />
 
     <Button
-        android:id="@+id/buttonRelaunchExternal"
+        android:id="@+id/btnRelaunchExternal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:text="@string/relaunch_play"
         android:textColor="?attr/colorSecondaryVariant"
-        app:layout_constraintBottom_toBottomOf="@+id/coverChapterExternal"
-        app:layout_constraintEnd_toStartOf="@+id/coverChapterExternal"
-        app:layout_constraintStart_toEndOf="@+id/coverChapterExternal" />
+        app:layout_constraintBottom_toBottomOf="@+id/cover"
+        app:layout_constraintEnd_toStartOf="@+id/cover"
+        app:layout_constraintStart_toEndOf="@+id/cover" />
 
     <LinearLayout
         android:id="@+id/content_reference"
@@ -74,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coverChapterExternal">
+        app:layout_constraintTop_toBottomOf="@+id/cover">
 
         <FrameLayout
             android:id="@+id/Frame_Content"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/blackPrimary"
-    tools:context=".ui.web.WebActivity">
+    tools:context=".presentation.web.WebActivity">
 
     <LinearLayout
         android:id="@+id/lnBar"

@@ -4,41 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsActivity">
+    tools:context=".presentation.settings.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:backgroundTint="?attr/colorSurface"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:orientation="vertical"
-            tools:ignore="UseCompoundDrawables">
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp"
+            android:layoutDirection="rtl">
 
-
-            <TextView
-                android:id="@+id/txvTitle"
-                android:layout_width="match_parent"
+            <FrameLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?attr/colorSecondary"
-                android:layout_marginEnd="16dp"
-                android:autofillHints="no"
-                android:text="@string/title_settings"
-                android:paddingVertical="6dp"
-                android:textColor="?attr/colorPrimaryVariant"
-                android:textColorHint="@color/grey_accent"
-                android:textSize="17sp"
-                tools:ignore="TextContrastCheck,TouchTargetSizeCheck" />
-
-        </LinearLayout>
+                android:padding="8dp"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="?attr/colorSecondaryVariant">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    app:tint="?attr/colorPrimaryVariant"
+                    android:src="@drawable/ic_settings_24"
+                    android:contentDescription="@string/settings"/>
+            </FrameLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -49,7 +47,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:ignore="UselessLeaf" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

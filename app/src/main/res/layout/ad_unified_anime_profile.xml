@@ -58,7 +58,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/title"
-                android:textColor="@color/blue_light"
+                android:textColor="@color/orange_peel"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/adAppIcon"
@@ -119,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginStart="16dp"
-                    android:backgroundTint="@color/blue_light"
+                    android:backgroundTint="@color/orange_peel"
                     android:gravity="center"
                     android:textSize="10sp"
                     tools:ignore="SmallSp,SpeakableTextPresentCheck,TouchTargetSizeCheck" />

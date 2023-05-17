@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.termsandconditions.TermsAndConditionsActivity">
+    tools:context=".presentation.login.termsandconditions.TermsAndConditionsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -74,7 +74,7 @@
                 android:justificationMode="inter_word"
                 android:text="@string/legalWarningContent"
                 android:autoLink="web"
-                android:textColorLink="@color/blue_light"
+                android:textColorLink="@color/orange_peel_dark"
                 tools:targetApi="o" />
 
             <TextView
@@ -102,7 +102,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/email_protected"
                 android:textStyle="italic"
-                android:textColor="@color/blue_light"
+                android:textColor="@color/orange_peel_dark"
                 tools:targetApi="o" />
 
         </LinearLayout>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".ui.player.PlayerActivity"
+    tools:context=".presentation.player.PlayerActivity"
     android:orientation="vertical">
 
     <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -59,15 +59,16 @@
 
         <fragment
             android:id="@+id/castMiniController"
-            class="com.ead.project.dreamer.ui.player.cast.MiniControllerFragment"
+            class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             app:castControlButtons="@array/cast_mini_controller_control_buttons"
-            app:castProgressBarColor="@color/blue_light"
-            app:castMiniControllerLoadingIndicatorColor="@color/blue_light"
+            app:castProgressBarColor="@color/orange_peel"
+            app:castMiniControllerLoadingIndicatorColor="@color/orange_peel"
             app:castButtonColor="?attr/colorPrimaryVariant"
             android:visibility="visible"
+            tools:layout="@layout/cast_mini_controller"
             tools:ignore="FragmentTagUsage" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
