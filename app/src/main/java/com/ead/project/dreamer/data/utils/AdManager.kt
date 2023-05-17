@@ -1,117 +1,158 @@
 package com.ead.project.dreamer.data.utils
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.RecyclerView
-import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.ui.home.adapters.ChapterHomeRecyclerViewAdapter
-import com.ead.project.dreamer.ui.news.adapters.NewsItemRecyclerViewAdapter
-import com.ead.project.dreamer.ui.player.content.adapters.ProfileRecyclerViewAdapter
+import com.ead.project.dreamer.app.App
+import com.ead.project.dreamer.presentation.home.adapters.ChapterHomeRecyclerViewAdapter
+import com.ead.project.dreamer.presentation.news.adapters.NewsItemRecyclerViewAdapter
+import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AdManager(
-    private val context : Context,
-    private val adId : String,
-    private var anyList : MutableList<Any>?=null,
-    private val adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>?=null,
-    private val quantityAds : Int = 1
+class AdManager @Inject constructor(
+    private val context : Context
 )  {
 
-    private var adListLivedata : MutableLiveData<MutableList<Any>>? = null
-    private var adLiveData: MutableLiveData<NativeAd>? = null
+    private var adId : String = ""
+    private var quantityAds : Int = 1
+
+    private val mutableAdsFlow : MutableSharedFlow<List<Any>> = MutableSharedFlow()
+    private val mutableAdFlow : MutableSharedFlow<NativeAd?> = MutableSharedFlow()
+
 
     private var adLoader: AdLoader?= null
-    private var ads : MutableList<NativeAd>?=null
-    private var ad : NativeAd?=null
+    private var adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>?=null
+    private val nativeAdClass = NativeAd::class.java
 
-    fun setUp(returnIfNot : Boolean = false) {
-        if (!returnIfNot) return
+    private var items : MutableList<Any> = mutableListOf()
+    private var ads : MutableList<NativeAd> = mutableListOf()
 
-        if (quantityAds > 1) {
-            ads = mutableListOf()
-            if (adListLivedata == null) adListLivedata = MutableLiveData()
+    private var scope = CoroutineScope(Dispatchers.IO)
+    fun setUp(
+        returnCase : Boolean,
+        adId : String,
+        adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>? = null,
+        quantityAds : Int = 1
+    ) {
+        restore()
+        this@AdManager.adapter = adapter
+        if (returnCase || adId.isBlank()) return
+
+        this@AdManager.adId = adId
+        this@AdManager.quantityAds = quantityAds
+
+        App.InitializationStatus.apply {
+            adLoader = AdLoader.Builder(context,adId)
+                .forNativeAd { scope.launch { workingAd(it) } }
+                .withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        workingOnFailedAd(loadAdError)
+                    }
+                }).build()
+
+            loadAds()
         }
-        else if (adLiveData == null) adLiveData = MutableLiveData()
-
-        try {
-            DreamerApp.InitializationStatus.apply {
-                adLoader = AdLoader.Builder(context,adId)
-                    .forNativeAd { workingAd(it) }
-                    .withAdListener(object : AdListener() {
-                        override fun onAdFailedToLoad(p0: LoadAdError) { workingOnFailedAd(p0)}
-                    })
-                    .build()
-
-                if (quantityAds > 1) adLoader?.loadAds(AdRequest.Builder().build(), quantityAds)
-                else adLoader?.loadAd(AdRequest.Builder().build())
-            }
-        } catch (e : Exception) { e.printStackTrace() }
     }
 
-    private fun workingAd(it : NativeAd) {
-        if (ads != null) {
-            ads?.add(it)
-            if (adLoader?.isLoading == false) implementAds()
+
+    private fun loadAds() {
+        when(this@AdManager.quantityAds) {
+            in 2..5 -> adLoader?.loadAds(AdRequest.Builder().build(), quantityAds)
+            else -> adLoader?.loadAd(AdRequest.Builder().build())
         }
-        else {
-            ad = it
-            adLiveData?.postValue(ad!!)
+    }
+
+    fun restore() {
+        restoreItems()
+        scope.launch {
+            restoreAds()
+        }
+    }
+
+    private fun restoreItems() {
+        items.clear()
+        ads.clear()
+    }
+
+    private suspend fun restoreAds() {
+        mutableAdsFlow.emit(emptyList())
+        mutableAdFlow.emit(null)
+    }
+
+    fun setItems(items : List<Any>) {
+        this.items = items.toMutableList()
+        if (ads.isNotEmpty()) {
+            implementAds()
+        }
+    }
+
+    private suspend fun workingAd(it : NativeAd) {
+        ads.add(it)
+        if (adLoader?.isLoading == false) {
+            if (ads.size > 1) {
+                implementAds()
+            }
+            else {
+                mutableAdFlow.emit(ads.first())
+            }
         }
     }
 
     private fun workingOnFailedAd(it: LoadAdError) { print(it.message) }
 
-    fun onViewStateRestored() {
-        ads?.clear()
-    }
-
     fun onDestroy() {
-        if (ads != null) {
-            for (adItem in ads!!)
-                adItem.destroy()
+        for (adItem in ads) {
+            adItem.destroy()
         }
-        ad?.destroy()
-        adLoader = null
     }
 
     private fun implementAds() {
-        if (ads != null && adapter != null && anyList != null && anyList?.isNotEmpty() == true) {
-            val offset: Int = adapter.itemCount / ads!!.size + 1
-            var index = 0
-            if (anyList!!.first() !is NativeAd) {
-                for (ad in ads!!) {
-                    anyList!!.add(index, ad)
-                    index += offset
+        scope.launch {
+            if (isItemsPrepared()) {
+                val offset: Int = (adapter?.itemCount?.div(ads.size) ?: -1) + 1
+                var index = 0
+
+                if (!items.any { nativeAdClass.isInstance(it) }) {
+                    for (ad in ads) {
+                        items.add(index, ad)
+                        index += offset
+                    }
+                    mutableAdsFlow.emit(items)
                 }
-                adListLivedata?.postValue(anyList!!)
             }
         }
     }
 
-    fun setAnyList (list: List<Any>) {
-        anyList = list.toMutableList()
-        if (ads?.isNotEmpty() == true) implementAds()
+    private fun isItemsPrepared() : Boolean {
+        return adapter != null && items.isNotEmpty()
     }
 
-    fun getAds() : MutableLiveData<MutableList<Any>> {
-        if (adListLivedata == null) adListLivedata = MutableLiveData()
-        return adListLivedata!!
+    fun getItems() : LiveData<List<Any>> {
+        return mutableAdsFlow.asLiveData()
     }
 
-    fun getAd() : MutableLiveData<NativeAd> {
-        if (adLiveData == null) adLiveData = MutableLiveData()
-        return adLiveData!!
+    fun getItem() : LiveData<NativeAd?> {
+        return mutableAdFlow.asLiveData()
     }
 
     fun submitList(list: List<Any>) {
         when(adapter) {
-            is ChapterHomeRecyclerViewAdapter -> adapter.submitList(list)
-            is NewsItemRecyclerViewAdapter -> adapter.submitList(list)
-            is ProfileRecyclerViewAdapter -> adapter.submitList(list)
+            is ChapterHomeRecyclerViewAdapter ->
+                (adapter as ChapterHomeRecyclerViewAdapter).submitList(list)
+            is NewsItemRecyclerViewAdapter ->
+                (adapter as NewsItemRecyclerViewAdapter).submitList(list)
+            is ProfileRecyclerViewAdapter ->
+                (adapter as ProfileRecyclerViewAdapter).submitList(list)
         }
     }
 }
