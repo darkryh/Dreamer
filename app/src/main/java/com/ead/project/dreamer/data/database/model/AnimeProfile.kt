@@ -3,8 +3,7 @@ package com.ead.project.dreamer.data.database.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DiffUtilEquality
+import com.ead.project.dreamer.data.utils.ui.mechanism.EqualsDiffUtil
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -26,14 +25,17 @@ data class AnimeProfile (
     var lastChapterId : Int = 0,
     var reference : String? = null,
     var isFavorite : Boolean = false
-) : Parcelable, DiffUtilEquality {
+) : Parcelable, EqualsDiffUtil {
 
-    fun isWorking() = title.isNotEmpty() && coverPhoto.isNotEmpty() && rating != -1f
-            && profilePhoto.isNotEmpty() && reference?.isNotEmpty() == true
-            && state.isNotEmpty() && description.isNotEmpty() && size != -1
-            && date.isNotEmpty() && rawGenres.isNotEmpty()
+    companion object {
+        const val PROFILE_FINAL_STATE = "Finalizado"
+        const val PROFILE_RELEASE_STATE = "Estreno"
+        const val MINIMUM_RECOMMEND_VALUE = 4.6f
 
-    fun isNotWorking () = !isWorking()
+        const val TYPE_UNCENSORED = "Sin Censura"
+        const val TYPE_ECCHI = "Ecchi"
+        const val TYPE_BOYS_LOVE = "Yaoi"
+    }
 
     override fun equalsHeader(other: Any?): Boolean {
         if (this === other) return true
@@ -59,9 +61,9 @@ data class AnimeProfile (
 
     }
 
-    fun checkPolicies() = ((!Constants.isGooglePolicyActivate() || (Constants.TYPE_BOYS_LOVE !in this.rawGenres
-                && (Constants.TYPE_ECCHI !in this.rawGenres && isNotBlacklisted())))
-                || isWhiteListedTitle())
+    fun checkPolicies() = (TYPE_BOYS_LOVE !in this.rawGenres
+                && (TYPE_ECCHI !in this.rawGenres && isNotBlacklisted()))
+                || isWhiteListedTitle()
 
     private fun isNotBlacklisted() = "DxD" !in this.title && "Zero no Tsukaima" !in this.title
             && "Trinity Seven" !in this.title && "Bannou Bunka Neko-Musume" !in this.title
