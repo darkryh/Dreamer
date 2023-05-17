@@ -35,14 +35,14 @@
         tools:ignore="TextContrastCheck">
 
         <Preference
-            android:icon="@drawable/ic_cloud_sync_24"
+            android:icon="@drawable/ic_sync_24"
             android:summary="Sync : Progress State"
             app:key="SYNC_DIRECTORY_PROFILE" />
 
         <Preference
             android:icon="@drawable/ic_plumbing_24"
             android:summary="Versión: Build Versión"
-            app:key="PREFERENCE_APP_VERSION" />
+            app:key="APP_VERSION" />
     </PreferenceCategory>
 
 </PreferenceScreen>
