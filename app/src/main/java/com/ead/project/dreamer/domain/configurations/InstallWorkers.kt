@@ -1,7 +1,12 @@
 package com.ead.project.dreamer.domain.configurations
 
-import androidx.work.*
-import com.ead.project.dreamer.data.commons.Constants
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.worker.DirectoryWorker
 import com.ead.project.dreamer.data.worker.ProfileRepositoryWorker
 import javax.inject.Inject
@@ -16,7 +21,7 @@ class InstallWorkers @Inject constructor(
         for (i in 1 until workersQuantity + 1) {
 
             val data : Data = Data.Builder()
-                .putInt(Constants.DIRECTORY_KEY,i)
+                .putInt(Worker.DIRECTORY_KEY,i)
                 .build()
 
             val syncingChaptersRequest =
@@ -29,7 +34,7 @@ class InstallWorkers @Inject constructor(
         }
 
         var continuation = workManager.beginUniqueWork(
-            Constants.SYNC_DIRECTORY,
+            Worker.SYNC_DIRECTORY,
             ExistingWorkPolicy.REPLACE,
             directoryRequest)
 
