@@ -31,7 +31,7 @@ class Streamtape(embeddedUrl:String) : Server(embeddedUrl) {
             url = "https://$reference"
 
             videoList.add(VideoModel("Default",url))
-            breakOperation()
+            endProcessing()
         } catch (e: Exception) { e.printStackTrace() }
     }
 }

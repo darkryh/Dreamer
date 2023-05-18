@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.data.models.server
 
 import android.webkit.WebView
-import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.data.models.Player
 import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.models.ServerWebClient
@@ -52,7 +52,7 @@ class StreamSB(embeddedUrl:String) : Server(embeddedUrl) {
 
     private fun initWebView() {
         runUI {
-            webView = DreamerWebView(DreamerApp.Instance)
+            webView = DreamerWebView(App.Instance)
             webView?.webViewClient = object : ServerWebClient(webView) {
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
@@ -76,10 +76,23 @@ class StreamSB(embeddedUrl:String) : Server(embeddedUrl) {
     private fun skipCaptcha() = "document.getElementsByClassName('g-recaptcha')[0].click();"
 
     private fun getDownloadScript() =
-        "let data = document.getElementsByTagName('span')[0].lastElementChild; " +
+        "let data = document.getElementsByClassName('btn btn-light btn-lg d-inline-flex align-items-center justify-content-center py-3 px-5')[0]; " +
                 "(function() { return data.getAttribute('href'); })(); "
 
-    private fun fixUrl(url : String) = url.replace("/e/","/d/")
+    private fun fixUrl(url : String) : String {
+        if (url.contains("/e/"))
+            return url.replace("/e/","/d/")
+
+        if (url.contains("/d/"))
+            return url
+
+        val regex = Regex("(https?://[^/]+)(/.*)")
+
+        return regex.replace(url) { result ->
+            val (host, path) = result.destructured
+            "$host/d$path"
+        }
+    }
 
     private fun fixPreviewUrl(url : String) = url.removePrefix("(").removeSuffix(")")
             .replace("'","").split(",")
