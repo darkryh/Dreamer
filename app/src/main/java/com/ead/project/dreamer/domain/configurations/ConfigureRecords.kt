@@ -8,12 +8,15 @@ import javax.inject.Inject
 class ConfigureRecords @Inject constructor(
     private val repository: AnimeRepository
 ) {
+
+    private val chaptersToUpdate: MutableList<Chapter> = ArrayList()
+
     suspend operator fun invoke(chapterList: List<Chapter>) {
-        val nexToChapterList: MutableList<Chapter> = ArrayList()
+        chaptersToUpdate.clear()
         var isUpgradeable = false
         for (chapter in chapterList) {
             if (chapter.isContentConsumed) {
-                //todo chapter.alreadySeen = false
+
                 isUpgradeable = true
                 val nextChapter = repository
                     .getChapterFromTitleAndNumber(
@@ -22,7 +25,14 @@ class ConfigureRecords @Inject constructor(
                     )
 
                 if (nextChapter != null) {
-                    nexToChapterList.add(
+
+                    chaptersToUpdate.add(
+                        chapter.copy(
+                            isContentConsumed = false
+                        )
+                    )
+
+                    chaptersToUpdate.add(
                         nextChapter.copy(
                             currentProgress = 1,
                             lastDateSeen = TimeUtil.getNow()
@@ -32,8 +42,8 @@ class ConfigureRecords @Inject constructor(
             }
         }
         if (isUpgradeable) {
-            nexToChapterList.addAll(chapterList)
-            repository.updateChapterList(nexToChapterList.reversed())
+            chaptersToUpdate.addAll(chapterList)
+            repository.updateChapterList(chaptersToUpdate.reversed())
         }
     }
 
