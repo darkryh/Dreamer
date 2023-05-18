@@ -2,10 +2,9 @@
 <resources>
     <color name="blackPrimary">#212121</color>
     <color name="whitePrimary">#fafafa</color>
-    <color name="blackSecondary">#000000</color>
+    <color name="blackSecondary">#1c1c1c</color>
     <color name="blackSurface">#121212</color>
-    <color name="whiteSecondary">#ebebeb</color>
-    <color name="blue">#1976D2</color>
+    <color name="whiteSecondary">#f5f5f5</color>
     <color name="yellow_700">#ffeb3b</color>
     <color name="grey_accent">#838383</color>
     <color name="grey">#373737</color>
@@ -13,17 +12,22 @@
     <color name="green">#249721</color>
     <color name="red">#a61919</color>
 
+    <color name="orange_peel">#FFA500</color>
+    <color name="orange_peel_dark">#FF8C00</color>
+    <color name="orange_light">#FCC97F</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="textBackgroundSmooth">#11000000</color>
     <color name="textBackgroundSmoothDark">#44000000</color>
     <color name="backgroundSmooth">#33000000</color>
     <color name="backgroundImageSmooth">#22000000</color>
+    <color name="backgroundImageDarkSmooth">#99000000</color>
     <color name="backgroundCastImageSmooth">#55000000</color>
     <color name="transparentBackground">#88000000</color>
     <color name="transparent">#00000000</color>
 
     <color name="dark_surface_light">#2D2D2D</color>
-    <color name="blue_light">#81d4fa</color>
-
+    <color name="blue">#00BFFF</color>
+    <color name="purple">#6B5B95</color>
 </resources>
