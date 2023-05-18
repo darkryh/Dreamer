@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.ImageView
 import coil.load
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.utils.media.CastManager
+import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.google.android.gms.cast.framework.media.uicontroller.UIController
 
-class DreamerUIMiniController (view: View, private val castManager: CastManager?) : UIController() {
+class DreamerUIMiniController (view: View, private val castManager: CastManager) : UIController() {
 
     private val imageView = view as ImageView
 
@@ -17,7 +17,7 @@ class DreamerUIMiniController (view: View, private val castManager: CastManager?
         imageView.layoutParams.height = 100
         imageView.layoutParams.width = 100
         imageView.load(R.drawable.ic_close_24)
-        imageView.setOnClickListener { castManager?.stopCasting() }
+        imageView.setOnClickListener { castManager.stopSession() }
     }
 
 }
