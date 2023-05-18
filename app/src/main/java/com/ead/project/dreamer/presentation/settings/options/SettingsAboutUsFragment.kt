@@ -1,14 +1,21 @@
-package com.ead.project.dreamer.ui.settings.options
+package com.ead.project.dreamer.presentation.settings.options
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.ead.project.dreamer.BuildConfig
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.preference.Settings
+import com.ead.project.dreamer.presentation.settings.viewmodels.SettingsViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SettingsAboutUsFragment : PreferenceFragmentCompat() {
 
     companion object {
@@ -18,18 +25,16 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
         const val PREFERENCE_TWITTER = "PREFERENCE_TWITTER"
         const val PREFERENCE_DISCORD = "PREFERENCE_DISCORD"
 
-
         const val TIKTOK = "https://www.tiktok.com/@darkryh"
         const val INSTAGRAM = "https://www.instagram.com/darkryh"
         const val TWITTER = "https://twitter.com/Darkryh"
         const val DISCORD = "https://discord.gg/mvMfenSazJ"
     }
 
-    private lateinit var pVersion : Preference
-    private lateinit var pState : Preference
-    private var versionName = BuildConfig.VERSION_NAME
+    private val viewModel : SettingsViewModel by viewModels()
 
-    private val isDirectoryProfileStateCompleted = Constants.isDirectorySynchronized()
+    private lateinit var prefVersion : Preference
+    private lateinit var prefState : Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.about_us_preferences, rootKey)
@@ -38,21 +43,26 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
     }
 
     private fun initLayouts() {
-        pVersion = findPreference(Constants.PREFERENCE_APP_VERSION)!!
-        pState = findPreference(Constants.PREFERENCE_DIRECTORY_PROFILE)!!
+        prefVersion = findPreference(Settings.APP_VERSION)?:return
+        prefState = findPreference(Settings.SYNC_DIRECTORY_PROFILE)?:return
     }
 
     private fun settingLayouts() {
-        if (isDirectoryProfileStateCompleted)
-            pState.summary = requireActivity().getString(R.string.sync_complete)
-        else
-            pState.summary = requireActivity().getString(R.string.sync_in_progress)
-
-        pVersion.summary = getString(R.string.version_description,"Release",versionName)
+        lifecycleScope.launch {
+            viewModel.preferences.getBooleanFlow(Settings.SYNC_DIRECTORY_PROFILE).collectLatest { isSynchronized ->
+                if (isSynchronized) {
+                    prefState.summary = requireActivity().getString(R.string.sync_complete)
+                }
+                else {
+                    prefState.summary = requireActivity().getString(R.string.sync_in_progress)
+                }
+            }
+        }
+        prefVersion.summary = getString(R.string.version_description,"Release",AppInfo.version, AppInfo.versionCode.toString())
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        when (preference.key!!) {
+        when (preference.key) {
             PREFERENCE_TIKTOK -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(TIKTOK))
                 startActivity(intent)
