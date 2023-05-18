@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.data.models.server
 
 import android.webkit.WebView
-import com.ead.project.dreamer.app.DreamerApp
+import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
@@ -19,7 +19,7 @@ class GoogleDrive(embeddedUrl:String) : Server(embeddedUrl) {
 
     private fun initWeb() {
         runUI {
-            webView = DreamerWebView(DreamerApp.Instance)
+            webView = DreamerWebView(App.Instance)
             webView?.webViewClient = object : ServerWebClient(webView) {
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
