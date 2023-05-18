@@ -6,7 +6,7 @@ import javax.inject.Inject
 class DownloadUseCase @Inject constructor(
     val startDownload: StartDownload,
     val startManualDownload: StartManualDownload,
-    val launchManualDownload: LaunchManualDownload,
+    val createManualDownload: CreateManualDownload,
     val launchUpdate: LaunchUpdate,
     val filterDownloads: FilterDownloads,
     val isDownloaded: IsDownloaded,
