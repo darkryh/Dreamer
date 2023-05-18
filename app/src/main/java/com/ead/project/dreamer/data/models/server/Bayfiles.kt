@@ -1,6 +1,6 @@
 package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.commons.Tools.Companion.delete
+import com.ead.project.dreamer.app.data.util.system.delete
 import com.ead.project.dreamer.data.models.Player
 import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.models.VideoModel
