@@ -1,45 +1,96 @@
-package com.ead.project.dreamer.di
+package com.ead.project.dreamer.app
 
+import android.app.DownloadManager
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import androidx.room.Room
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.WorkManager
+import com.ead.project.dreamer.app.data.action.ActionStore
+import com.ead.project.dreamer.app.data.ads.AD_PREFERENCE
+import com.ead.project.dreamer.app.data.ads.AdPreferences
+import com.ead.project.dreamer.app.data.ads.AdPreferencesSerializer
+import com.ead.project.dreamer.app.data.discord.Discord
+import com.ead.project.dreamer.app.data.downloads.DOWNLOADS_ENQUEUE
+import com.ead.project.dreamer.app.data.downloads.DownloadSerializer
+import com.ead.project.dreamer.app.data.downloads.DownloadStore
+import com.ead.project.dreamer.app.data.files.FILES_PREFERENCE
+import com.ead.project.dreamer.app.data.files.FilesPreferences
+import com.ead.project.dreamer.app.data.files.FilesSerializer
+import com.ead.project.dreamer.app.data.home.HOME_PREFERENCES
+import com.ead.project.dreamer.app.data.home.HomeNotifier
+import com.ead.project.dreamer.app.data.home.HomePreferences
+import com.ead.project.dreamer.app.data.home.HomeSerializer
+import com.ead.project.dreamer.app.data.player.PLAYER_PREFERENCE
+import com.ead.project.dreamer.app.data.player.PlayerPreferenceSerializer
+import com.ead.project.dreamer.app.data.player.PlayerPreferences
+import com.ead.project.dreamer.app.data.preference.APP_BUILD
+import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
+import com.ead.project.dreamer.app.data.preference.AppBuildSerializer
+import com.ead.project.dreamer.app.data.preference.Preferences
+import com.ead.project.dreamer.app.model.AdPreference
+import com.ead.project.dreamer.app.model.AppBuild
+import com.ead.project.dreamer.app.model.FilePreference
+import com.ead.project.dreamer.app.model.HomePreference
+import com.ead.project.dreamer.app.model.PlayerPreference
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.AnimeDatabase
 import com.ead.project.dreamer.data.database.dao.*
+import com.ead.project.dreamer.data.models.DownloadList
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.models.discord.Discord
-import com.ead.project.dreamer.data.utils.NotificationManager
-import com.ead.project.dreamer.data.utils.media.CastManager
-import com.ead.project.dreamer.data.utils.ui.DownloadDesigner
+import com.ead.project.dreamer.app.data.player.casting.CastManager
+import com.ead.project.dreamer.data.utils.AdManager
+import com.ead.project.dreamer.app.data.notifications.NotificationManager
+import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.apis.app.*
 import com.ead.project.dreamer.domain.apis.discord.*
 import com.ead.project.dreamer.domain.configurations.*
 import com.ead.project.dreamer.domain.databasequeries.*
+import com.ead.project.dreamer.domain.directory.GetDirectoryState
+import com.ead.project.dreamer.domain.directory.SetDirectoryState
 import com.ead.project.dreamer.domain.downloads.*
 import com.ead.project.dreamer.domain.operations.DeleteObject
 import com.ead.project.dreamer.domain.operations.InsertObject
 import com.ead.project.dreamer.domain.operations.UpdateObject
 import com.ead.project.dreamer.domain.servers.*
+import com.google.android.gms.cast.framework.CastContext
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DreamerModule {
+object AppModule {
+
+     @Singleton
+     @Provides
+     fun provideContext(@ApplicationContext context: Context) : Context
+     = context
+
+    @Singleton
+    @Provides
+    @Suppress("DEPRECATION")
+    fun provideCastContext(context: Context) : CastContext {
+        return CastContext.getSharedInstance(context)
+    }
 
     @Singleton
     @Provides
     fun provideRoomInstance(
-        @ApplicationContext context: Context
+        context: Context
     ): AnimeDatabase = Room.databaseBuilder(
         context,
         AnimeDatabase::class.java,
@@ -73,6 +124,43 @@ object DreamerModule {
 
     @Singleton
     @Provides
+    fun provideActionStore(context: Context) : ActionStore
+    = ActionStore(context = context)
+    @Singleton
+    @Provides
+    fun provideAdManager(context: Context) : AdManager
+    = AdManager(context)
+
+    @Singleton
+    @Provides
+    fun provideAdPreferences(
+        store : DataStore<AdPreference>
+    ) : AdPreferences
+    = AdPreferences(store)
+
+    @Singleton
+    @Provides
+    fun provideAppBuildPreferences(
+        store: DataStore<AppBuild>
+    ) : AppBuildPreferences
+    = AppBuildPreferences(store)
+
+    @Singleton
+    @Provides
+    fun provideFilesPreferences(
+        store : DataStore<FilePreference>,
+    ) : FilesPreferences
+    = FilesPreferences(store)
+
+    @Singleton
+    @Provides
+    fun provideHomePreferences(
+        store: DataStore<HomePreference>
+    ) : HomePreferences
+    = HomePreferences(store)
+
+    @Singleton
+    @Provides
     fun provideAnimeBaseDao(database: AnimeDatabase): AnimeBaseDao = database.animeBaseDao()
 
     @Singleton
@@ -82,11 +170,92 @@ object DreamerModule {
 
     @Singleton
     @Provides
+    fun provideCastManager(
+        context: Context,
+        castContext: CastContext,
+        objectUseCase: ObjectUseCase,
+        preferenceUseCase: PreferenceUseCase
+    ) : CastManager = CastManager(null, context ,objectUseCase , castContext, preferenceUseCase)
+
+    @Singleton
+    @Provides
     fun provideChapterHomeDao(database: AnimeDatabase): ChapterHomeDao = database.chapterHomeDao()
 
     @Singleton
     @Provides
     fun provideChapterDao(database: AnimeDatabase): ChapterDao = database.chapterDao()
+
+    @Singleton
+    @Provides
+    fun provideCoroutineScope() : CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+    @Singleton
+    @Provides
+    fun provideDownloadStore(
+        store: DataStore<DownloadList>,
+        downloadManager: DownloadManager
+    ) : DownloadStore
+    = DownloadStore(store,downloadManager)
+
+    @Singleton
+    @Provides
+    fun provideDataStoreAdPreferences(context: Context) : DataStore<AdPreference> {
+        return DataStoreFactory.create(
+            serializer = AdPreferencesSerializer,
+            produceFile = { context.dataStoreFile(AD_PREFERENCE) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreAppBuildPreferences(context: Context) : DataStore<AppBuild> {
+        return DataStoreFactory.create(
+            serializer = AppBuildSerializer,
+            produceFile = { context.dataStoreFile(APP_BUILD) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreDownloadsPreferences(context: Context) : DataStore<DownloadList> {
+        return DataStoreFactory.create(
+            serializer = DownloadSerializer,
+            produceFile = { context.dataStoreFile(DOWNLOADS_ENQUEUE) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreFilePreference(context: Context) : DataStore<FilePreference> {
+        return DataStoreFactory.create(
+            serializer = FilesSerializer,
+            produceFile = { context.dataStoreFile(FILES_PREFERENCE) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreHomePreferences(context: Context) : DataStore<HomePreference> {
+        return DataStoreFactory.create(
+            serializer = HomeSerializer,
+            produceFile = { context.dataStoreFile(HOME_PREFERENCES) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStorePlayerPreferences(context: Context) : DataStore<PlayerPreference> {
+        return DataStoreFactory.create(
+            serializer = PlayerPreferenceSerializer,
+            produceFile = { context.dataStoreFile(PLAYER_PREFERENCE) },
+            corruptionHandler = null
+        )
+    }
 
     @Singleton
     @Provides
@@ -106,7 +275,7 @@ object DreamerModule {
     @Singleton
     @Provides
     fun provideWorkManager(
-        @ApplicationContext context: Context
+        context: Context
     ): WorkManager = WorkManager.getInstance(context)
 
     @Singleton
@@ -117,27 +286,18 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideNotificationManagerGoogle(@ApplicationContext context: Context) : android.app.NotificationManager =
+    fun provideNotificationManagerGoogle(context: Context) : android.app.NotificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
 
     @Singleton
     @Provides
-    fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager =
+    fun provideNotificationManager(context: Context): NotificationManager =
         NotificationManager(context)
 
     @Singleton
     @Provides
-    fun provideDreamerCast() : CastManager = CastManager()
-
-    @Singleton
-    @Provides
-    fun provideDownloadManagerGoogle(@ApplicationContext context: Context) : android.app.DownloadManager =
-        context.getSystemService(Context.DOWNLOAD_SERVICE) as android.app.DownloadManager
-
-    @Singleton
-    @Provides
-    fun provideDownloadDesigner(downloadManager: android.app.DownloadManager) : DownloadDesigner =
-        DownloadDesigner(downloadManager)
+    fun provideDownloadManagerGoogle(context: Context) : DownloadManager =
+        context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
 
     //DOMAIN
@@ -166,8 +326,10 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideCheckIfUpdateIsAlreadyDownloaded() : CheckIfUpdateIsAlreadyDownloaded
-    = CheckIfUpdateIsAlreadyDownloaded()
+    fun provideCheckIfUpdateIsAlreadyDownloaded(
+        preferenceUseCase: PreferenceUseCase
+    ) : CheckIfUpdateIsAlreadyDownloaded
+    = CheckIfUpdateIsAlreadyDownloaded(preferenceUseCase)
 
     @Singleton
     @Provides
@@ -178,8 +340,11 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideConfigureDownloadRequest() : ConfigureDownloadRequest
-    = ConfigureDownloadRequest()
+    fun provideConfigureDownloadRequest(
+        gson: Gson,
+        preferenceUseCase: PreferenceUseCase
+    ) : ConfigureDownloadRequest
+    = ConfigureDownloadRequest(gson, preferenceUseCase)
 
     @Singleton
     @Provides
@@ -199,9 +364,10 @@ object DreamerModule {
     @Singleton
     @Provides
     fun provideCreateDownloadRequest(
-        downloadManager: android.app.DownloadManager
+        downloadManager: DownloadManager,
+        enqueueDownload: EnqueueDownload
     ) : CreateDownloadRequest
-    = CreateDownloadRequest(downloadManager)
+    = CreateDownloadRequest(downloadManager,enqueueDownload)
 
     @Singleton
     @Provides
@@ -214,8 +380,10 @@ object DreamerModule {
     fun provideDirectoryUseCase(
         getDirectoryList: GetDirectoryList,
         getDirectory: GetDirectory,
-        getDirectoryScrap: GetDirectoryScrap
-    ) : DirectoryUseCase = DirectoryUseCase(getDirectoryList, getDirectory,getDirectoryScrap)
+        getDirectoryScrap: GetDirectoryScrap,
+        getDirectoryState: GetDirectoryState,
+        setDirectoryState: SetDirectoryState
+    ) : DirectoryUseCase = DirectoryUseCase(getDirectoryList, getDirectory,getDirectoryScrap,getDirectoryState, setDirectoryState)
 
     @Singleton
     @Provides
@@ -227,32 +395,41 @@ object DreamerModule {
         getDiscordUserToken: GetDiscordUserToken
     ) : DiscordUseCase = DiscordUseCase(getDiscordMember, getDiscordUserData, getDiscordUserInToGuild, getDiscordUserRefreshToken, getDiscordUserToken)
 
+
     @Singleton
     @Provides
     fun provideDownloadEngine(
-        @ApplicationContext context: Context,
+        context: Context,
         repository: AnimeRepository,
         tempDownloads: GetTempDownloads,
         getServerResultToArray: GetServerResultToArray,
         getSortedServers: GetSortedServers,
         getServers: GetServers,
-        launchDownload: LaunchDownload
+        createDownload: CreateDownload,
+        serverScript: ServerScript
     ) : DownloadEngine
-    = DownloadEngine(context, repository, tempDownloads, getServerResultToArray, getSortedServers, getServers, launchDownload)
+    = DownloadEngine(context, repository, tempDownloads, getServerResultToArray, getSortedServers, getServers, createDownload,serverScript)
 
     @Singleton
     @Provides
     fun provideDownloadUseCase(
         startDownload: StartDownload,
         startManualDownload: StartManualDownload,
-        launchManualDownload: LaunchManualDownload,
+        createManualDownload: CreateManualDownload,
         launchUpdate: LaunchUpdate,
         filterDownloads: FilterDownloads,
         isDownloaded: IsDownloaded,
         checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
         removeDownload: RemoveDownload
     ) : DownloadUseCase
-    = DownloadUseCase(startDownload,startManualDownload, launchManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
+    = DownloadUseCase(startDownload, startManualDownload, createManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
+
+    @Singleton
+    @Provides
+    fun provideEnqueueDownload(
+        downloadStore: DownloadStore
+    ) : EnqueueDownload
+    = EnqueueDownload(downloadStore)
 
     @Singleton
     @Provides
@@ -261,6 +438,11 @@ object DreamerModule {
         isInDownloadProgress: IsInDownloadProgress
     ) : FilterDownloads
     = FilterDownloads(getDownloads,isInDownloadProgress)
+
+    @Singleton
+    @Provides
+    fun provideFirebaseClient() : FirebaseClient
+    = FirebaseClient()
 
     @Singleton
     @Provides
@@ -284,8 +466,8 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetChapterScrap(repository: AnimeRepository) : GetChapterScrap
-    = GetChapterScrap(repository)
+    fun provideGetChapterScrap(repository: AnimeRepository, gson: Gson,preferenceUseCase: PreferenceUseCase) : GetChapterScrap
+    = GetChapterScrap(repository,gson, preferenceUseCase)
 
     @Singleton
     @Provides
@@ -299,7 +481,7 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetCursorFromDownloads(downloadManager: android.app.DownloadManager) : GetCursorFromDownloads
+    fun provideGetCursorFromDownloads(downloadManager: DownloadManager) : GetCursorFromDownloads
     = GetCursorFromDownloads(downloadManager)
 
     @Singleton
@@ -309,13 +491,27 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetDirectoryList(repository: AnimeRepository) : GetDirectoryList
-    = GetDirectoryList(repository)
+    fun provideGetDirectoryList(
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetDirectoryList
+    = GetDirectoryList(repository,preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetDirectoryScrap(repository: AnimeRepository) : GetDirectoryScrap
-    = GetDirectoryScrap(repository)
+    fun provideGetDirectoryScrap(
+        repository: AnimeRepository,
+        gson: Gson,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetDirectoryScrap
+    = GetDirectoryScrap(repository, gson, preferenceUseCase)
+
+    @Singleton
+    @Provides
+    fun provideGetDirectoryState(
+        preferenceUseCase: PreferenceUseCase
+    ) : GetDirectoryState
+    = GetDirectoryState(preferenceUseCase)
 
     @Singleton
     @Provides
@@ -331,7 +527,7 @@ object DreamerModule {
     @Provides
     fun provideGetDiscordUserInToGuild(
         repository: AnimeRepository,
-        @ApplicationContext context: Context
+        context: Context
     ) : GetDiscordUserInToGuild
     = GetDiscordUserInToGuild(repository,context)
 
@@ -351,23 +547,34 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetEmbedServer(@ApplicationContext context: Context,getServerResultToArray: GetServerResultToArray) : GetEmbedServers
-    = GetEmbedServers(context, getServerResultToArray)
+    fun provideGetEmbedServer(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServers
+    = GetEmbedServers(context, getServerResultToArray,serverScript)
 
     @Singleton
     @Provides
-    fun provideGetEmbedServerMutable(@ApplicationContext context: Context,getServerResultToArray: GetServerResultToArray) : GetEmbedServersMutable
-    = GetEmbedServersMutable(context, getServerResultToArray)
+    fun provideGetEmbedServerMutable(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServersMutable
+    = GetEmbedServersMutable(context, getServerResultToArray,serverScript)
 
     @Singleton
     @Provides
-    fun provideGetHomeList(repository: AnimeRepository) : GetHomeList
-    = GetHomeList(repository)
+    fun provideGetHomeList(
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetHomeList
+    = GetHomeList(repository,preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetHomeRecommendations(repository: AnimeRepository) : GetHomeRecommendations
-    = GetHomeRecommendations(repository)
+    fun provideHomeNotifier(context: Context) : HomeNotifier
+    = HomeNotifier(context)
+
+    @Singleton
+    @Provides
+    fun provideGetHomeRecommendations(
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetHomeRecommendations
+    = GetHomeRecommendations(repository,preferenceUseCase)
 
     @Singleton
     @Provides
@@ -376,8 +583,12 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetHomeScrap(repository: AnimeRepository) : GetHomeScrap
-    = GetHomeScrap(repository)
+    fun provideGetHomeScrap(
+        repository: AnimeRepository,
+        gson: Gson,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetHomeScrap
+    = GetHomeScrap(repository, gson , preferenceUseCase)
 
     @Singleton
     @Provides
@@ -391,18 +602,21 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetNews(repository: AnimeRepository) : GetNews
-    = GetNews(repository)
+    fun provideGetNews(
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetNews
+    = GetNews(repository,preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetNewsItemScrap(repository: AnimeRepository) : GetNewsItemScrap
-    = GetNewsItemScrap(repository)
+    fun provideGetNewsItemScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetNewsItemScrap
+    = GetNewsItemScrap(repository,gson, preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetNewsItemWebScrap(repository: AnimeRepository) : GetNewsItemWebScrap
-    = GetNewsItemWebScrap(repository)
+    fun provideGetNewsItemWebScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetNewsItemWebScrap
+    = GetNewsItemWebScrap(repository, gson, preferenceUseCase)
 
     @Singleton
     @Provides
@@ -421,13 +635,17 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetProfilePlayerRecommendations(repository: AnimeRepository) : GetProfilePlayerRecommendations
-    = GetProfilePlayerRecommendations(repository)
+    fun provideGetProfilePlayerRecommendations(
+        repository: AnimeRepository,
+        context: Context,
+        preferenceUseCase: PreferenceUseCase
+    ): GetProfilePlayerRecommendations
+    = GetProfilePlayerRecommendations(repository,context, preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetProfileScrap(repository: AnimeRepository) : GetProfileScrap
-    = GetProfileScrap(repository)
+    fun provideGetProfileScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetProfileScrap
+    = GetProfileScrap(repository, gson, preferenceUseCase)
 
     @Singleton
     @Provides
@@ -466,17 +684,39 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideGetServerScript(repository: AnimeRepository) : GetServerScript
-    = GetServerScript(repository)
+    fun provideGetServerScript(repository: AnimeRepository,preferenceUseCase: PreferenceUseCase) : ServerScript
+    = ServerScript(repository,preferenceUseCase)
 
     @Singleton
     @Provides
-    fun provideGetSortedServer(serverIdentifier: ServerIdentifier) : GetSortedServers
-    = GetSortedServers(serverIdentifier)
+    fun provideGetSortedServer(
+        serverIdentifier: ServerIdentifier,
+        preferenceUseCase: PreferenceUseCase
+    ) : GetSortedServers
+    = GetSortedServers(serverIdentifier,preferenceUseCase)
+
+    @Singleton
+    @Provides
+    fun provideGetPlayerType(
+        preferenceUseCase: PreferenceUseCase
+    ) : GetPlayerType
+    = GetPlayerType(preferenceUseCase)
 
     @Singleton
     @Provides
     fun provideGetTempDownloads() : GetTempDownloads = GetTempDownloads()
+
+    @Singleton
+    @Provides
+    fun provideGson() : Gson = Gson()
+
+    @Singleton
+    @Provides
+    fun provideHandleChapter(
+        launchServer: LaunchServer,
+        launchVideo: LaunchVideo
+    ) : HandleChapter
+    = HandleChapter(launchServer, launchVideo)
 
     @Singleton
     @Provides
@@ -495,7 +735,7 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideInstallUpdate(@ApplicationContext context: Context) : InstallUpdate
+    fun provideInstallUpdate(context: Context) : InstallUpdate
     = InstallUpdate(context)
 
     @Singleton
@@ -523,19 +763,42 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideLaunchDownload(
-        createDownloadRequest: CreateDownloadRequest,
-        configureDownloadRequest: ConfigureDownloadRequest
-    ) : LaunchDownload
-    = LaunchDownload(createDownloadRequest,configureDownloadRequest)
+    fun provideLaunchServer() : LaunchServer
+    = LaunchServer()
 
     @Singleton
     @Provides
-    fun provideLaunchManualDownload(
+    fun provideLaunchToPlayerActivity(
+        preferenceUseCase: PreferenceUseCase
+    ) : LaunchToPlayerActivity
+    = LaunchToPlayerActivity(preferenceUseCase)
+
+    @Singleton
+    @Provides
+    fun provideLaunchVideo(
+        getPlayerType: GetPlayerType,
+        launchToPlayerActivity: LaunchToPlayerActivity
+    ) : LaunchVideo
+    = LaunchVideo(
+        getPlayerType,
+        launchToPlayerActivity
+    )
+
+    @Singleton
+    @Provides
+    fun provideCreateDownload(
+        createDownloadRequest: CreateDownloadRequest,
+        configureDownloadRequest: ConfigureDownloadRequest
+    ) : CreateDownload
+    = CreateDownload(createDownloadRequest,configureDownloadRequest)
+
+    @Singleton
+    @Provides
+    fun provideCreateManualDownload(
         downloadEngine: DownloadEngine,
-        launchDownload: LaunchDownload
-    ) : LaunchManualDownload
-    = LaunchManualDownload(downloadEngine, launchDownload)
+        createDownload: CreateDownload
+    ) : CreateManualDownload
+    = CreateManualDownload(downloadEngine, createDownload)
 
     @Singleton
     @Provides
@@ -549,8 +812,8 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideLaunchUpdate(launchDownload: LaunchDownload,installUpdate: InstallUpdate) : LaunchUpdate
-    = LaunchUpdate(launchDownload, installUpdate)
+    fun provideLaunchUpdate(createDownload: CreateDownload, installUpdate: InstallUpdate) : LaunchUpdate
+    = LaunchUpdate(createDownload, installUpdate)
 
     @Singleton
     @Provides
@@ -567,6 +830,37 @@ object DreamerModule {
         updateObject: UpdateObject,
         deleteObject: DeleteObject
     ) : ObjectUseCase = ObjectUseCase(insertObject, updateObject, deleteObject)
+
+    @Singleton
+    @Provides
+    fun providePreferenceUseCase(
+        appBuildPreferences: AppBuildPreferences,
+        actionStore: ActionStore,
+        preferencesSettings: Preferences,
+        adPreferences: AdPreferences,
+        filesPreferences: FilesPreferences,
+        playerPreferences: PlayerPreferences
+    ) : PreferenceUseCase =
+        PreferenceUseCase(
+            appBuildPreferences = appBuildPreferences,
+            actionStore = actionStore,
+            preferences = preferencesSettings,
+            adPreferences = adPreferences,
+            filesPreferences = filesPreferences,
+            playerPreferences = playerPreferences
+        )
+
+    @Singleton
+    @Provides
+    fun providePlayerPreferences(
+        store : DataStore<PlayerPreference>
+    ) : PlayerPreferences
+    = PlayerPreferences(store)
+
+    @Singleton
+    @Provides
+    fun providePreferences(context: Context) : Preferences =
+        Preferences(context = context)
 
     @Singleton
     @Provides
@@ -592,13 +886,29 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideRemoveDownload(downloadManager: android.app.DownloadManager) : RemoveDownload
-    = RemoveDownload(downloadManager)
+    fun provideRemoveDownload(
+        downloadManager: DownloadManager,
+        removeEnqueueDownload: RemoveEnqueueDownload) : RemoveDownload
+    = RemoveDownload(downloadManager,removeEnqueueDownload)
 
     @Singleton
     @Provides
-    fun provideServerEngine(@ApplicationContext context: Context,getServerResultToArray: GetServerResultToArray) : ServerEngine
-    = ServerEngine(context,getServerResultToArray)
+    fun provideRemoveEnqueueDownload(
+        downloadStore: DownloadStore
+    ) : RemoveEnqueueDownload
+    = RemoveEnqueueDownload(downloadStore)
+
+    @Singleton
+    @Provides
+    fun provideSetDirectoryState(
+        preferenceUseCase: PreferenceUseCase
+    ) : SetDirectoryState
+    = SetDirectoryState(preferenceUseCase)
+
+    @Singleton
+    @Provides
+    fun provideServerEngine(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : ServerEngine
+    = ServerEngine(context,getServerResultToArray,serverScript)
 
     @Singleton
     @Provides
@@ -607,30 +917,32 @@ object DreamerModule {
 
     @Singleton
     @Provides
-    fun provideServerUseCase(getServer: GetServer, getServers: GetServers, getEmbedServers: GetEmbedServers ,getEmbedServersMutable: GetEmbedServersMutable, getSortedServers: GetSortedServers, getServerScript: GetServerScript) : ServerUseCase
-    = ServerUseCase(getServer, getServers, getEmbedServers,getEmbedServersMutable, getSortedServers,getServerScript)
+    fun provideServerUseCase(getServer: GetServer, getServers: GetServers, getEmbedServers: GetEmbedServers, getEmbedServersMutable: GetEmbedServersMutable, getSortedServers: GetSortedServers, serverScript: ServerScript) : ServerUseCase
+    = ServerUseCase(getServer, getServers, getEmbedServers,getEmbedServersMutable, getSortedServers,serverScript)
 
     @Singleton
     @Provides
     fun provideStartDownload(
-        @ApplicationContext context: Context,
+        context: Context,
         filterDownloads: FilterDownloads,
         isInDownloadProgress: IsInDownloadProgress,
         addDownload: AddDownload,
         removeDownload: RemoveDownload,
-        getDownloads: GetDownloads
+        getDownloads: GetDownloads,
+        filesPreferences: FilesPreferences
     ) : StartDownload
-    = StartDownload(context, filterDownloads, isInDownloadProgress ,addDownload, removeDownload, getDownloads)
+    = StartDownload(context, filterDownloads, isInDownloadProgress ,addDownload, removeDownload, getDownloads, filesPreferences)
 
     @Singleton
     @Provides
     fun provideStartManualDownload(
-        @ApplicationContext context: Context,
+        context: Context,
+        launchServer: LaunchServer,
         getDownloads: GetDownloads,
         isInDownloadProgress: IsInDownloadProgress,
         removeDownload: RemoveDownload
     ) : StartManualDownload
-    = StartManualDownload(context, isInDownloadProgress ,getDownloads, removeDownload)
+    = StartManualDownload(context, isInDownloadProgress , launchServer ,getDownloads, removeDownload)
 
     @Singleton
     @Provides
