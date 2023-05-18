@@ -1,5 +1,6 @@
-package com.ead.project.dreamer.ui.download.adapter
+package com.ead.project.dreamer.presentation.download.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
@@ -12,24 +13,25 @@ import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
 import com.ead.commons.lib.views.setVisibilityReverse
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.commons.Tools.Companion.round
+import com.ead.project.dreamer.app.data.util.Apk
+import com.ead.project.dreamer.app.data.util.system.round
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.models.DownloadItem
-import com.ead.project.dreamer.data.utils.DirectoryManager
-import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
+import com.ead.project.dreamer.data.models.Download
+import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutDownloadBinding
 import com.ead.project.dreamer.domain.ChapterUseCase
+import com.ead.project.dreamer.domain.servers.HandleChapter
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
-class DownloadRecyclerViewAdapter (
+class DownloadRecyclerViewAdapter(
     private val context: Context,
-    private val chapterUseCase: ChapterUseCase
-    ) : RecyclerView.Adapter<DownloadRecyclerViewAdapter.ViewHolder>() {
+    private val chapterUseCase: ChapterUseCase,
+    private val handleChapter: HandleChapter
+) : RecyclerView.Adapter<DownloadRecyclerViewAdapter.ViewHolder>() {
 
     private val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<DownloadItem>(){}
+    private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Download>(){}
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
     private val activity : Activity = context as Activity
 
@@ -43,7 +45,11 @@ class DownloadRecyclerViewAdapter (
         )
     }
 
-    fun submitList (list: List<DownloadItem>) { differ.submitList(list) }
+    @SuppressLint("NotifyDataSetChanged")
+    fun submitList (list: List<Download>) {
+        differ.submitList(list)
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chapterDownload = differ.currentList[position]
@@ -54,41 +60,41 @@ class DownloadRecyclerViewAdapter (
 
     inner class ViewHolder(val binding: LayoutDownloadBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo(downloadItem: DownloadItem) {
-            binding.txvTitle.text = downloadItem.title
-            binding.txvLetter.text = downloadItem.title[0].uppercase()
+        fun bindTo(download: Download) {
+            binding.txvTitle.text = download.title
+            binding.txvLetter.text = download.title[0].uppercase()
             binding.txvChapterNumber.text =
-                if (downloadItem.number != -1) context.getString(R.string.chapter_number_short,downloadItem.number.toString()) else context.getString(R.string.update)
-            val percent = ((downloadItem.current * 100f) / downloadItem.total).round(2).toString()
+                if (download.number != -1) context.getString(R.string.chapter_number_short,download.number.toString()) else context.getString(R.string.update)
+            val percent = ((download.current * 100f) / download.total).round(2).toString()
             binding.txvState.text = context.getString(R.string.current_percent,percent)
             binding.root.addSelectableItemEffect()
             binding.imvCancel.addSelectableItemEffect()
 
-            when(downloadItem.state) {
+            when(download.state) {
                 DownloadManager.STATUS_SUCCESSFUL -> binding.txvState.setTextColor(context.getColor(R.color.green))
                 DownloadManager.STATUS_FAILED -> binding.txvState.setTextColor(context.getColor(R.color.red))
-                else -> binding.txvState.setTextColor(context.getColor(R.color.blue_light))
+                else -> binding.txvState.setTextColor(context.getColor(R.color.orange_peel_dark))
             }
 
-            binding.imvCancel.setVisibility(downloadItem.isInProgress())
-            binding.progressBar.setVisibilityReverse(downloadItem.isInProgress())
-            binding.imvCancel.setOnClickListener { downloadManager.remove(downloadItem.id) }
+            binding.imvCancel.setVisibility(download.isInProgress())
+            binding.progressBar.setVisibilityReverse(download.isInProgress())
+            binding.imvCancel.setOnClickListener { downloadManager.remove(download.id) }
 
             binding.root.setOnClickListener {
-                if (downloadItem.state == DownloadManager.STATUS_SUCCESSFUL) {
-                    when(downloadItem.type) {
-                        DownloadItem.DOWNLOAD_TYPE_CHAPTER -> {
+                if (download.state == DownloadManager.STATUS_SUCCESSFUL) {
+                    when(download.type) {
+                        Download.DOWNLOAD_TYPE_CHAPTER -> {
                             runBlocking {
                                 val chapter : Chapter? =
-                                    chapterUseCase.getChapter.fromTitleAndNumber(downloadItem.title,downloadItem.number)
+                                    chapterUseCase.getChapter.fromTitleAndNumber(download.title,download.number)
 
-                                if (chapter != null) Chapter.manageVideo(context,chapter)
+                                if (chapter != null) handleChapter(context,chapter)
                                 else activity.showShortToast(context.getString(R.string.error_chapter_not_founded))
                             }
                         }
-                        DownloadItem.DOWNLOAD_TYPE_UPDATE -> {
-                            val downloadFile : File = DirectoryManager.getVersionFile(downloadItem.title)
-                            if (downloadFile.exists()) Tools.installApk(context,downloadFile)
+                        Download.DOWNLOAD_TYPE_UPDATE -> {
+                            val downloadFile : File = download.toApkFile()
+                            if (downloadFile.exists()) Apk.install(context,downloadFile)
                             else activity.showShortToast(context.getString(R.string.error_file_not_founded))
                         }
                     }
