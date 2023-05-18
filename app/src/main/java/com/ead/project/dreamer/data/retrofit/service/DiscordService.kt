@@ -1,9 +1,9 @@
 package com.ead.project.dreamer.data.retrofit.service
 
-import com.ead.project.dreamer.data.models.discord.AccessToken
-import com.ead.project.dreamer.data.models.discord.Discord
+import com.ead.project.dreamer.app.data.discord.DiscordEAD
+import com.ead.project.dreamer.data.models.discord.DiscordToken
+import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.data.models.discord.GuildMember
-import com.ead.project.dreamer.data.models.discord.User
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -11,18 +11,18 @@ import retrofit2.http.*
 interface DiscordService {
 
     @POST("oauth2/token")
-    fun getAccessToken() : Call<AccessToken?>
+    fun getAccessToken() : Call<DiscordToken?>
 
     @GET("users/@me")
-    fun getCurrentUser() : Call<User?>
+    fun getCurrentUser() : Call<DiscordUser?>
 
-    @Headers("Authorization: Bot ${Discord.BOT_TOKEN}")
-    @GET("guilds/${Discord.SERVER_ID}/members/{id}")
+    @Headers("Authorization: Bot ${DiscordEAD.BOT_TOKEN}")
+    @GET("guilds/${DiscordEAD.SERVER_ID}/members/{id}")
     fun getGuildMember(
         @Path("id") userId:String
     ) : Call<GuildMember?>
 
-    @PUT("guilds/${Discord.SERVER_ID}/members/{id}")
+    @PUT("guilds/${DiscordEAD.SERVER_ID}/members/{id}")
     fun getUserIntoGuild(
         @Path("id") userId:String
     ) : Call<GuildMember?>
