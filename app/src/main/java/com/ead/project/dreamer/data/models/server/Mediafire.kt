@@ -1,9 +1,8 @@
 package com.ead.project.dreamer.data.models.server
 
-import android.util.Log
 import android.webkit.WebView
-import com.ead.project.dreamer.app.DreamerApp
-import com.ead.project.dreamer.data.commons.Tools.Companion.delete
+import com.ead.project.dreamer.app.App
+import com.ead.project.dreamer.app.data.util.system.delete
 import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
@@ -20,20 +19,20 @@ class Mediafire(embeddedUrl:String) : Server(embeddedUrl) {
 
     private fun initWeb() {
         runUI {
-            webView = DreamerWebView(DreamerApp.Instance)
+            webView = DreamerWebView(App.Instance)
             webView?.webViewClient = object : ServerWebClient(webView) {
                 override fun onPageLoaded(view: WebView?, url: String?) {
                     super.onPageLoaded(view, url)
-                    view?.let {
-                        view.evaluateJavascript(loadedScript()) { data ->
+                    view?.apply {
+                        evaluateJavascript(loadedScript()) { data ->
                             if (data == "null") return@evaluateJavascript
 
                             var tempUrl = data.delete("\"")
                             if (tempUrl.contains("http://"))
                                 tempUrl = tempUrl.replace("http","https")
 
+
                             if (!tempUrl.startsWith("https://www.mediafire.com")) {
-                                Log.d("testing", "onPageLoaded: $tempUrl")
                                 this@Mediafire.url = tempUrl
                                 webView?.isLoading = false
                             }
