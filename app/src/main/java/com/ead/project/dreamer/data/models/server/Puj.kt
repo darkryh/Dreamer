@@ -22,8 +22,8 @@ class Puj (embeddedUrl: String) : Server(embeddedUrl) {
                 response.body?.string().toString(),
                 "file: '(.+)'")
             addVideo(VideoModel("Default",url))
-            if (connectionIsNotAvailable()) removeVideos()
-            else breakOperation()
+            if (isConnectionNotValidated) removeVideos()
+            else endProcessing()
         } catch (e: Exception) { e.printStackTrace() }
     }
 }
