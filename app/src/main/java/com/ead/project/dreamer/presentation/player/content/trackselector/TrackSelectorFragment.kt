@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.player.content.trackselector
+package com.ead.project.dreamer.presentation.player.content.trackselector
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.ead.commons.lib.views.addSelectableItemEffect
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
+import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.data.models.VideoModel
-import com.ead.project.dreamer.data.utils.ThreadUtil
+import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.databinding.BottomModalTrackSelectorBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -22,15 +21,17 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class TrackSelectorFragment : BottomSheetDialogFragment() {
 
-    private var _binding : BottomModalTrackSelectorBinding?= null
-    private val binding get() = _binding!!
-    lateinit var videoModelList: List<VideoModel>
+    /*var videoRendererIndex = 0
+private var trackGroups: TrackGroupArray? = null*/
+
+    lateinit var playlist: List<VideoModel>
     lateinit var player : ExoPlayer
     lateinit var playerView : StyledPlayerView
 
-    /*var videoRendererIndex = 0
-    private var trackGroups: TrackGroupArray? = null*/
     lateinit var trackSelector : DefaultTrackSelector
+
+    private var _binding : BottomModalTrackSelectorBinding?= null
+    private val binding get() = _binding!!
 
     override fun onStart() {
         super.onStart()
@@ -90,23 +91,25 @@ class TrackSelectorFragment : BottomSheetDialogFragment() {
     }*/
 
     private fun settingViews() {
-        for (pos in videoModelList.indices) {
-            val textVideoModel = TextView(requireContext())
-            textVideoModel.text = videoModelList[pos].quality
-            textVideoModel.textSize = 15f
-            textVideoModel.setPadding(120,40,120,40)
-            textVideoModel.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 1f
-            )
-            textVideoModel.addSelectableItemEffect()
-            textVideoModel.setOnClickListener {
-                ThreadUtil.runInMs({
-                    player.seekTo(pos,player.currentPosition)
-                    dismiss()
-                },Constants.MS_CLICK_EFFECT_MEDIUM)
+        for (pos in playlist.indices) {
+            val textQualityVideoModel = TextView(requireContext())
+            textQualityVideoModel.apply {
+                text = playlist[pos].quality
+                textSize = 15f
+                setPadding(120,40,120,40)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                )
+                addSelectableItemEffect()
+                setOnClickListener {
+                    Thread.runInMs({
+                        player.seekTo(pos,player.currentPosition)
+                        dismiss()
+                    },175L)
+                }
             }
-            binding.linearLayoutQuality.addView(textVideoModel)
+            binding.linearLayoutQuality.addView(textQualityVideoModel)
         }
     }
 
