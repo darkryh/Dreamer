@@ -1,15 +1,20 @@
 package com.ead.project.dreamer.data.retrofit.service
 
-import com.ead.project.dreamer.app.model.AppStatus
+import com.ead.project.dreamer.app.model.AppBuild
 import com.ead.project.dreamer.app.model.Publicity
-import com.ead.project.dreamer.app.model.scrapping.*
+import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
+import com.ead.project.dreamer.app.model.scraper.AnimeProfileScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterHomeScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemWebScrap
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface AppService {
+interface ApplicationService {
 
     @GET("app_status.json")
-    fun getAppStatus() : Call<AppStatus>
+    fun getAppStatus() : Call<AppBuild>
 
     @GET("Ads/publicity.json")
     fun getPublicity() : Call<List<Publicity>>
