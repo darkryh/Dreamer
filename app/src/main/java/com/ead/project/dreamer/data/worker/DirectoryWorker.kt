@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.home.HomePreferences
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.domain.DirectoryUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
@@ -29,14 +29,14 @@ class DirectoryWorker @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val directory = directoryUseCase.getDirectoryList()
-                val sectionPos = inputData.getInt(Constants.DIRECTORY_KEY, -1)
+                val workerPosition = inputData.getInt(Worker.DIRECTORY_KEY, -1)
 
-                if (directory.size <= Constants.HOME_ITEMS_LIMIT) {
-                    val directoryData = async { webProvider.requestingData(sectionPos) }
+                if (directory.size <= HomePreferences.HOME_ITEM_LIMIT) {
+                    val directoryData = async { webProvider.requestingData(workerPosition) }
                     directoryData.await().apply {
                         if (isEmpty()) Result.failure()
                         objectUseCase.insertObject(this)
-                        final(sectionPos)
+                        updateDirectoryCompleted(workerPosition)
                         Result.success()
                     }
                 }
@@ -48,5 +48,9 @@ class DirectoryWorker @AssistedInject constructor(
         }
     }
 
-    private fun final(pos: Int) { if (pos == 1) DataStore.writeBooleanAsync(Constants.FINAL_DIRECTORY,true) }
+    private suspend fun updateDirectoryCompleted(workerPosition: Int) {
+        if (workerPosition == 1) {
+            directoryUseCase.setDirectoryState(true)
+        }
+    }
 }
