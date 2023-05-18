@@ -6,7 +6,7 @@ import android.util.Log
 import java.lang.Exception
 import kotlin.concurrent.thread
 
-object ThreadUtil {
+object Thread {
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -18,7 +18,7 @@ object ThreadUtil {
         }
     }
 
-    fun execute(task: () -> Unit) {
+    fun launch(task: () -> Unit) {
         try {
             thread { task() }
         } catch (ex : Exception) {
