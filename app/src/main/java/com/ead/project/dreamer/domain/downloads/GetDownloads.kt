@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.domain.downloads
 
-import com.ead.project.dreamer.data.database.model.Chapter
 import javax.inject.Inject
 
 class GetDownloads @Inject constructor() {
@@ -11,8 +10,8 @@ class GetDownloads @Inject constructor() {
         update()
         return list
     }
-
-    fun update() { list = Chapter.getDownloadList() }
+    //todo storedownloads
+    fun update() { list = emptyList<Pair<Long,Int>>().toMutableList()  }
 
     fun toIdList() : List<Int> = invoke().map { it.second }
 }
