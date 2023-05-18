@@ -32,7 +32,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_top_rounded_15dp"
+                android:background="@color/backgroundImageSmooth"
                 android:contentDescription="@string/chapter_profile" />
 
         </RelativeLayout>
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/background_blue_rounded_20dp"
+            android:background="@drawable/background_orange_rounded_20dp"
             android:paddingHorizontal="7dp"
             android:text="@string/type"
             android:textSize="12sp"

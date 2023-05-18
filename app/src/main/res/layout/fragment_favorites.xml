@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/blue_light"
+        android:backgroundTint="@color/orange_peel"
         android:clickable="true"
         android:contentDescription="@string/sort"
         android:focusable="true"

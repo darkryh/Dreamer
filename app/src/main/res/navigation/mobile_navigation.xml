@@ -6,25 +6,31 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.ead.project.dreamer.ui.home.HomeFragment"
+        android:name="com.ead.project.dreamer.presentation.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home"/>
 
     <fragment
         android:id="@+id/navigation_inbox"
-        android:name="com.ead.project.dreamer.ui.inbox.InboxFragment"
+        android:name="com.ead.project.dreamer.presentation.inbox.InboxFragment"
         android:label="@string/title_favorites"
         tools:layout="@layout/fragment_inbox"/>
 
     <fragment
+        android:id="@+id/navigation_directory"
+        android:name="com.ead.project.dreamer.presentation.directory.DirectoryFragment"
+        android:label="@string/directory"
+        tools:layout="@layout/fragment_directory"/>
+
+    <fragment
         android:id="@+id/navigation_news"
-        android:name="com.ead.project.dreamer.ui.news.NewsFragment"
+        android:name="com.ead.project.dreamer.presentation.news.NewsFragment"
         android:label="Bandeja"
         tools:layout="@layout/fragment_news"/>
 
     <fragment
         android:id="@+id/navigation_records"
-        android:name="com.ead.project.dreamer.ui.record.RecordFragment"
+        android:name="com.ead.project.dreamer.presentation.record.RecordFragment"
         android:label="@string/title_records"
         tools:layout="@layout/fragment_records"/>
 

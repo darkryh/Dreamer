@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.chapter.settings.ChapterSettingsFragment">
+    tools:context=".presentation.chapter.settings.ChapterSettingsFragment">
 
     <TextView
         android:id="@+id/txvChapterOption"
@@ -53,7 +53,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
-            android:src="@drawable/ic_download_24"
+            android:src="@drawable/ic_download_32"
             android:contentDescription="@string/imv_download" />
 
         <TextView
@@ -78,7 +78,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
-            android:src="@drawable/ic_assignment_24"
+            android:src="@drawable/ic_ready_24"
             android:contentDescription="@string/imv_download" />
 
         <TextView
@@ -130,7 +130,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="12dp"
             android:layout_marginHorizontal="8dp"
-            android:src="@drawable/ic_favorite_24"
+            android:src="@drawable/ic_favorite_bookmark"
             android:contentDescription="@string/imv_favorites" />
 
         <TextView

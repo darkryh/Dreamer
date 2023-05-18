@@ -9,14 +9,14 @@
         tools:ignore="TextContrastCheck">
 
         <SwitchPreference
-            android:icon="@drawable/ic_tips_and_updates_24"
+            android:icon="@drawable/ic_official_notificator_24"
             android:summaryOn="Deseo recibir notificaciones de actualizaciones, promociones, etc."
             app:key="Dreamer_Topic"
             app:summaryOff="No deseo recibir notificaciones de actualizaciones, promociones, etc."
             app:title="Notificador Oficial" />
 
         <androidx.preference.ListPreference
-            android:icon="@drawable/ic_notifications_24"
+            android:icon="@drawable/ic_notificator_24"
             app:key="PREFERENCE_NOTIFICATIONS"
             android:defaultValue="2"
             android:entries="@array/notifications_entries"

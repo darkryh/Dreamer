@@ -16,7 +16,7 @@
         android:background="@drawable/background_circular"
         android:backgroundTint="@color/backgroundSmooth"
         android:padding="4dp"
-        android:src="@drawable/ic_person_outline_24"
+        android:src="@drawable/ic_user"
         android:contentDescription="@string/profile_logo" />
 
     <LinearLayout

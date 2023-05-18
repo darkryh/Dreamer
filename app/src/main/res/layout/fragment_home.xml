@@ -5,7 +5,7 @@
     android:name="com.ead.project.dreamer.ui.home.HomeFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".presentation.home.HomeFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
@@ -23,42 +23,27 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmerClassic"
-                    android:visibility="visible"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <include
+                    android:id="@+id/popular_section"
+                    layout="@layout/layout_section"/>
+                <include
+                    android:id="@+id/recent_section"
+                    layout="@layout/layout_section"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-                        <include layout="@layout/layout_chapter_home_shimmer"/>
-
-                    </LinearLayout>
-
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvReleases"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/parent"
-                    tools:listitem="@layout/layout_chapter_home" />
+                    android:layout_marginVertical="16dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:textColor="?attr/colorSecondaryVariant"
+                        android:text="Cargar Comentarios.."/>
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -67,27 +52,44 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:backgroundTint="@color/blackSurface"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorSurface"
         android:fitsSystemWindows="false">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcvLiveRecommendations"
-                android:layout_marginTop="0dp"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/colorSurface"
-                tools:listitem="@layout/layout_profile_recommendations"/>
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_recommendations"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:background="?attr/colorSurface"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginBottom="8dp"
+                    tools:listitem="@layout/layout_profile_recommendations"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvLiveIndex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorSurface"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginBottom="8dp"
+                    tools:listitem="@layout/layout_circle_index"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

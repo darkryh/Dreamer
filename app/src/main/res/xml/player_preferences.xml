@@ -9,14 +9,14 @@
         tools:ignore="TextContrastCheck">
 
         <SwitchPreference
-            android:icon="@drawable/ic_video_player_type_24"
+            android:icon="@drawable/ic_external_player_24"
             android:summaryOn="Usando reproductor externo."
             app:key="PREFERENCE_EXTERNAL_PLAYER"
             app:summaryOff="Usando reproductor interno (Recomendado)."
             app:title="Modo Externo" />
 
         <SwitchPreference
-            android:icon="@drawable/ic_settings_input_svideo_24"
+            android:icon="@drawable/ic_automatic_24"
             android:summaryOn="Reproduciendo videos automaticamente."
             app:key="PREFERENCE_RANK_AUTOMATIC_PLAYER"
             app:summaryOff="Reproduciendo videos manualmente."

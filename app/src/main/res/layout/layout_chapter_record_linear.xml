@@ -56,7 +56,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/gradient_transparent_top_rounded_left_15dp"
+                android:background="@color/backgroundImageSmooth"
                 android:contentDescription="@string/cover_image" />
 
         </RelativeLayout>
@@ -72,7 +72,7 @@
             android:gravity="center|start"
             android:maxLines="2"
             android:text="@string/title"
-            android:textColor="@color/blue_light"
+            android:textColor="@color/orange_peel"
             android:textSize="13sp"
             app:layout_constraintEnd_toStartOf="@+id/imvDownload"
             app:layout_constraintStart_toEndOf="@+id/relativeChapterProfile"

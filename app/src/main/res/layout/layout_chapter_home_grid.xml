@@ -3,12 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="6dp"
+    android:layout_marginStart="12dp"
     android:layout_marginTop="8dp"
     android:backgroundTint="?attr/colorSurface"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
-    android:orientation="horizontal">
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,18 +15,18 @@
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="115dp"
-            android:layout_height="180dp"
+            android:layout_width="110dp"
+            android:layout_height="150dp"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCoverBase"
+                android:id="@+id/imvCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
-                android:scaleType="fitCenter"
+                android:scaleType="centerInside"
                 app:srcCompat="@drawable/logo_app" />
 
             <ImageView
@@ -36,6 +35,38 @@
                 android:background="@color/backgroundImageSmooth"
                 android:contentDescription="@string/cover_image"
                 android:visibility="visible" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+                android:background="@drawable/background_smooth_rounded_bottom_8dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imvPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:layout_weight="1"
+                    app:tint="@color/orange_peel_dark"
+                    app:srcCompat="@drawable/ic_play_circle_outline_24"
+                    android:contentDescription="@string/play"/>
+
+                <ImageView
+                    android:id="@+id/imvDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="16dp"
+                    android:layout_weight="1"
+                    app:tint="@color/orange_peel_dark"
+                    app:srcCompat="@drawable/ic_download_32"
+                    android:contentDescription="@string/play"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
 
         <TextView
@@ -53,32 +84,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
-
-        <TextView
-            android:id="@+id/txvRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/rating"
-            android:textSize="11sp"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/txvState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/state"
-            android:textColor="@color/white"
-            android:textSize="11sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
-            app:layout_constraintStart_toStartOf="@+id/relativeLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

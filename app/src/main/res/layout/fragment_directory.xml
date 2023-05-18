@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".presentation.directory.DirectoryFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rcvGenres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="16dp"
+        android:paddingBottom="8dp">
+
+        <include
+            android:id="@+id/genre1"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/genre2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/genre2"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/genre3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/genre1"
+            app:layout_constraintTop_toTopOf="@+id/genre1" />
+
+        <include
+            android:id="@+id/genre3"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/genre2"
+            app:layout_constraintTop_toTopOf="@+id/genre2" />
+
+        <include
+            android:id="@+id/genre4"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/genre2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/genre5" />
+
+        <include
+            android:id="@+id/genre5"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/genre3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/genre1"
+            app:layout_constraintTop_toTopOf="@+id/genre6" />
+
+        <include
+            android:id="@+id/genre6"
+            layout="@layout/layout_genre_directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/genre2"
+            app:layout_constraintTop_toBottomOf="@+id/genre3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/popular_section"
+        layout="@layout/layout_section"/>
+
+    <include
+        android:id="@+id/last_series_section"
+        layout="@layout/layout_section"/>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

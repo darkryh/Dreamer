@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".presentation.profile_chapters.ProfileChaptersFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/currentChapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@drawable/background_rounded_20dp"
+        android:backgroundTint="?attr/colorSecondaryVariant"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp"
+        android:gravity="center_vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/lnCurrentChapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_play_circle_outline_24"
+                android:contentDescription="@string/play" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="32dp">
+
+                <EditText
+                    android:id="@+id/edtChapter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:lines="1"
+                    android:visibility="gone"
+                    android:inputType="number"
+                    android:hint="@string/chapter_number_hint"
+                    android:autofillHints="phone"/>
+
+                <TextView
+                    android:id="@+id/txvCurrentChapter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Seguir viendo capítulo 1"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/background_circular"
+                android:backgroundTint="?attr/colorSecondaryVariant"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/imvSearch"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_search_24"
+                    app:tint="?attr/colorPrimaryVariant"
+                    android:contentDescription="@string/search" />
+
+                <ImageView
+                    android:id="@+id/imvClose"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_close_24"
+                    android:contentDescription="@string/close"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_chapters"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:listitem="@layout/layout_chapter"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="8dp"
-    app:strokeColor="@color/blue_light"
+    app:strokeColor="@color/orange_peel_dark"
     android:layout_marginVertical="2dp"
     app:cardElevation="0dp">
 

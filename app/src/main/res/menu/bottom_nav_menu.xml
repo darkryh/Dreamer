@@ -9,16 +9,21 @@
     <item
         android:id="@+id/navigation_inbox"
         android:icon="@drawable/ic_bookmarks_24"
-        android:title="Bandeja" />
+        android:title="Bandeja"/>
 
     <item
         android:id="@+id/navigation_news"
-        android:icon="@drawable/ic_newspaper_24"
+        android:icon="@drawable/ic_newspaper"
         android:title="Noticias" />
 
     <item
+        android:id="@+id/navigation_directory"
+        android:icon="@drawable/ic_categories_24"
+        android:title="Directorio"/>
+
+    <item
         android:id="@+id/navigation_records"
-        android:icon="@drawable/ic_format_list_numbered"
+        android:icon="@drawable/ic_history_24"
         android:title="@string/title_records" />
 
 </menu>

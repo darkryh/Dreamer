@@ -22,7 +22,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvSuggestions"
+                    android:id="@+id/recycler_view_suggestions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layoutAnimation="@anim/layout_animation"
@@ -72,12 +72,12 @@
                     android:textColor="?attr/colorPrimaryVariant"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/rcvMostViewedSeries"
-                    app:layout_constraintStart_toEndOf="@+id/rcvMostViewedSeries"
+                    app:layout_constraintEnd_toStartOf="@+id/recycler_view_most_viewed_series"
+                    app:layout_constraintStart_toEndOf="@+id/recycler_view_most_viewed_series"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcvMostViewedSeries"
+                    android:id="@+id/recycler_view_most_viewed_series"
                     android:layout_width="match_parent"
                     android:layout_height="235dp"
                     android:paddingVertical="4dp"

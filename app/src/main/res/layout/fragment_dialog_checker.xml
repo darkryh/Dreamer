@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.chapter.checker.ChapterCheckerFragment">
+    tools:context=".presentation.chapter.checker.ChapterCheckerFragment">
 
     <ImageView
         android:id="@+id/imvCoverChecker"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:indeterminate="true"
-        android:indeterminateTint="@color/blue_light"
+        android:indeterminateTint="@color/orange_peel_dark"
         android:background="@drawable/background_horizonal_border_down"/>
 
     <TextView

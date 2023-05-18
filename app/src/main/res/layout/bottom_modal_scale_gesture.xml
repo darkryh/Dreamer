@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.player.content.scalegesture.ScaleGestureFragment"
+    tools:context=".presentation.player.content.scalegesture.ScaleGestureFragment"
     tools:ignore="UseCompoundDrawables,UselessParent">
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:textStyle="bold"/>
 
         <LinearLayout
-            android:id="@+id/lnStretch"
+            android:id="@+id/buttonStretch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/lnZoom"
+            android:id="@+id/buttonZoom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -71,7 +71,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/lnFixedWidth"
+            android:id="@+id/buttonFixedWidth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"

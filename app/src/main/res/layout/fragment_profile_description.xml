@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.profile_description.ProfileDescriptionFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/layout_genre" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="4dp"
+            android:paddingHorizontal="8dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:backgroundTint="?attr/colorSecondaryVariant"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@id/txvState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizado"
+                    android:textSize="14sp"
+                    android:layout_margin="8dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:layout_marginHorizontal="8dp"
+                android:backgroundTint="?attr/colorSecondaryVariant"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@id/txvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="03 de Abril de 1998"
+                    android:textSize="14sp"
+                    android:layout_margin="8dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/currentChapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:layout_marginHorizontal="8dp"
+            android:padding="8dp"
+            android:background="@drawable/background_rounded_20dp"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            app:cardCornerRadius="20dp"
+            android:gravity="center_vertical"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:id="@+id/txvDescriptionContent"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:padding="8dp"
+                android:background="@drawable/background_horizontal_border"
+                android:text="@string/lorem"
+                android:textAlignment="textStart"
+                android:textSize="14sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="4dp"
+            app:cardCornerRadius="20dp"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@id/txvRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.8"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginHorizontal="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_marginTop="2dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:rating="3"
+                    android:isIndicator="true"
+                    android:contentDescription="@string/rating"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>

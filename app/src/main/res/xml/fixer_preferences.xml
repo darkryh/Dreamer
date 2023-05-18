@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.ead.project.dreamer.ui.settings.layouts.DiagnosticViewPreference
+    <com.ead.project.dreamer.presentation.settings.layouts.DiagnosticViewPreference
         app:key="PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW"
         app:layout="@layout/layout_diagnostic_view_preference"/>
 
