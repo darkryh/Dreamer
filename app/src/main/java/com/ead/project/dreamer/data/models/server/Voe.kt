@@ -22,8 +22,8 @@ class Voe(embeddedUrl:String) : Server(embeddedUrl) {
             "\"hls\": \"(.*?)\"")?.replace(",","")
 
         if (url != null) addVideo(VideoModel("Default",url))
-        if(connectionIsNotAvailable()) removeVideos()
-        else breakOperation()
+        if(isConnectionNotValidated) removeVideos()
+        else endProcessing()
     }
 
 }
