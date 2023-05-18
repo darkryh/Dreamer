@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.util.Log
-import com.ead.project.dreamer.data.commons.Tools
-import com.ead.project.dreamer.data.utils.DirectoryManager
+import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
+import com.ead.project.dreamer.app.data.util.Apk
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -16,6 +16,7 @@ import javax.inject.Inject
 class InstallerReceiver : BroadcastReceiver() {
 
     @Inject lateinit var downloadManager : DownloadManager
+    @Inject lateinit var appBuildPreferences: AppBuildPreferences
 
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
@@ -31,7 +32,7 @@ class InstallerReceiver : BroadcastReceiver() {
             val reason = cursor.getInt(columnReason)
             when (status) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
-                    Tools.installApk(context,DirectoryManager.getUpdateFile())
+                    Apk.install(context,appBuildPreferences.getLastVersionFile())
                     context.unregisterReceiver(this)
                 }
                 DownloadManager.STATUS_PAUSED -> {}
