@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.player
+package com.ead.project.dreamer.presentation.player
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -9,10 +9,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.hideSystemUI
-import com.ead.project.dreamer.data.commons.Tools.Companion.clearData
-import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
+import com.ead.project.dreamer.app.data.util.TimeUtil
+import com.ead.project.dreamer.app.data.util.system.clearData
+import com.ead.project.dreamer.app.data.util.system.hideSystemUI
+import com.ead.project.dreamer.app.data.util.system.onDestroy
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.network.AdBlocker
@@ -26,44 +26,63 @@ import java.util.*
 @AndroidEntryPoint
 class PlayerWebActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerWebBinding
-    private val playerViewModel : PlayerViewModel by viewModels()
+    private val viewModel : PlayerViewModel by viewModels()
+
     lateinit var chapter: Chapter
-    lateinit var playList : List<VideoModel>
+    lateinit var playlist : List<VideoModel>
+
     private var orientation : Int = 0
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private val binding: ActivityPlayerWebBinding by lazy {
+        ActivityPlayerWebBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerWebBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
-        AdBlocker.init(this)
+
+        initAdBlocker()
         initVariables()
+        configWebView()
+        loadChapter()
+
+        hideSystemUI()
+    }
+    private fun initVariables() {
+        intent.extras?.let {
+            chapter = it.parcelable(Chapter.REQUESTED)?:return@let
+            playlist = it.parcelableArrayList(Chapter.PLAY_VIDEO_LIST)?:return@let
+        }
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        orientation = resources.configuration.orientation
+    }
+
+    private fun initAdBlocker() {
+        AdBlocker.init(this)
+    }
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun configWebView() {
         val settings = binding.webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = false
         settings.userAgentString = DreamerRequest.userAgent()
         settings.cacheMode = WebSettings.LOAD_DEFAULT
         binding.webView.webViewClient = DreamerBlockClient()
-        binding.webView.loadUrl(playList.last().directLink)
     }
 
-    private fun initVariables() {
-        intent.extras?.let {
-            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
-            playList = it.parcelableArrayList(Constants.PLAY_VIDEO_LIST)!!
-        }
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        orientation = resources.configuration.orientation
+    private fun loadChapter() {
+        binding.webView.loadUrl(playlist.last().directLink)
     }
 
     private fun updateChapter() {
-        chapter.currentSeen = 1
-        chapter.totalToSeen = 1
-        chapter.lastSeen = Calendar.getInstance().time
-        Constants.quantityAdPlus()
-        playerViewModel.updateChapter(chapter)
+        chapter = chapter.copy(
+            currentProgress = 1,
+            totalProgress = 1,
+            lastDateSeen = TimeUtil.getNow()
+        )
+        viewModel.addViewedTime()
+        viewModel.updateChapter(chapter)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
