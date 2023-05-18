@@ -8,6 +8,7 @@ import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.app.data.player.casting.CastManager
+import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.configurations.ConfigureChapters
@@ -30,10 +31,20 @@ class AnimeProfileViewModel @Inject constructor(
     private val downloadUseCase: DownloadUseCase,
     val handleChapter: HandleChapter,
     val adManager : AdManager,
-    val castManager: CastManager
+    val castManager: CastManager,
+    preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
 
+    private val playerPreferences = preferenceUseCase.playerPreferences
+    val playerPreference = playerPreferences.preference
+
     fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
+
+    fun resetRequestingProfile() {
+        viewModelScope.launch {
+            playerPreferences.setRequestingProfile(Requester.Deactivate)
+        }
+    }
 
     fun configureProfileData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureProfile(id,reference) }

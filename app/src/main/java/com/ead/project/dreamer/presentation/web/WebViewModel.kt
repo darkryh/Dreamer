@@ -1,8 +1,8 @@
-package com.ead.project.dreamer.ui.web
+package com.ead.project.dreamer.presentation.web
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ead.project.dreamer.data.models.discord.AccessToken
+import com.ead.project.dreamer.data.models.discord.DiscordToken
 import com.ead.project.dreamer.domain.DiscordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,5 +12,5 @@ class WebViewModel @Inject constructor(
     private val discordUseCase: DiscordUseCase
 ) : ViewModel() {
 
-    fun getToken() : MutableLiveData<AccessToken?> = discordUseCase.getDiscordUserToken.livedata()
+    fun getToken() : MutableLiveData<DiscordToken?> = discordUseCase.getDiscordUserToken.livedata()
 }

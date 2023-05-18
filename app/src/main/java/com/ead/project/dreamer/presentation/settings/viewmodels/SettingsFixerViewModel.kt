@@ -1,19 +1,19 @@
-package com.ead.project.dreamer.ui.settings.viewmodels
+package com.ead.project.dreamer.presentation.settings.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools
+import androidx.work.ExistingWorkPolicy
+import com.ead.project.dreamer.app.data.util.HttpUtil
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.ChapterUseCase
 import com.ead.project.dreamer.domain.HomeUseCase
-import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import com.ead.project.dreamer.domain.ProfileUseCase
 import com.ead.project.dreamer.domain.ServerUseCase
+import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ class SettingsFixerViewModel @Inject constructor(
     fun synchronizeScrapper() {
         launchOneTimeRequest(
             LaunchOneTimeRequest.ScrapperWorkerCode,
-            Constants.SYNC_SCRAPPER,
+            Worker.SYNC_SCRAPPER,
             ExistingWorkPolicy.REPLACE,
         )
     }
@@ -60,5 +60,5 @@ class SettingsFixerViewModel @Inject constructor(
     fun getEmbedServers(timeoutTask : () -> Unit, chapter: Chapter) : LiveData<List<String>> =
         serverUseCase.getEmbedServersMutable(timeoutTask,chapter)
 
-    private fun getConnection(url : String) : Int = Tools.isConnectionAvailableInt(url)
+    private fun getConnection(url : String) : Int = HttpUtil.isConnectionAvailableInt(url)
 }
