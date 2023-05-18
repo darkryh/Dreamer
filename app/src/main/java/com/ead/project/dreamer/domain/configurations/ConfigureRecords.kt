@@ -1,10 +1,9 @@
 package com.ead.project.dreamer.domain.configurations
 
+import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.model.Chapter
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class ConfigureRecords @Inject constructor(
     private val repository: AnimeRepository
@@ -13,8 +12,8 @@ class ConfigureRecords @Inject constructor(
         val nexToChapterList: MutableList<Chapter> = ArrayList()
         var isUpgradeable = false
         for (chapter in chapterList) {
-            if (chapter.alreadySeen) {
-                chapter.alreadySeen = false
+            if (chapter.isContentConsumed) {
+                //todo chapter.alreadySeen = false
                 isUpgradeable = true
                 val nextChapter = repository
                     .getChapterFromTitleAndNumber(
@@ -23,9 +22,12 @@ class ConfigureRecords @Inject constructor(
                     )
 
                 if (nextChapter != null) {
-                    nextChapter.currentSeen = 1
-                    nextChapter.lastSeen = Calendar.getInstance().time
-                    nexToChapterList.add(nextChapter)
+                    nexToChapterList.add(
+                        nextChapter.copy(
+                            currentProgress = 1,
+                            lastDateSeen = TimeUtil.getNow()
+                        )
+                    )
                 }
             }
         }
@@ -36,7 +38,7 @@ class ConfigureRecords @Inject constructor(
     }
 
     fun checkIfUpgradeExist(chapterList: List<Chapter>): Boolean {
-        for (chapter in chapterList) if (chapter.alreadySeen) return true
+        for (chapter in chapterList) if (chapter.isContentConsumed) return true
         return false
     }
 }
