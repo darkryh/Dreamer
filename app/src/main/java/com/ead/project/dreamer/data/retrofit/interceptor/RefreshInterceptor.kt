@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.data.retrofit.interceptor
 
-import com.ead.project.dreamer.data.models.discord.Discord
-import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.app.data.discord.Discord
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -9,8 +8,9 @@ import okhttp3.Response
 class RefreshInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
-            val refreshToken = DataStore.readString(Discord.REFRESH_TOKEN)
             var request = chain.request()
+            val refreshToken = Discord.getDiscordToken()?.refresh_token?: return chain.proceed(request)
+
             val requestBuilder = request.newBuilder()
             val formBody = FormBody.Builder()
                 .add("client_id", Discord.CLIENT_ID)
