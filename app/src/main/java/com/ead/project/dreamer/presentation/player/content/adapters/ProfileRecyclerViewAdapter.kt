@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.player.content.adapters
+package com.ead.project.dreamer.presentation.player.content.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -14,20 +14,21 @@ import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.justifyInterWord
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.util.system.toPixels
+import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.database.model.AnimeProfile
-import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
+import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdUnifiedAnimeProfileBinding
 import com.ead.project.dreamer.databinding.LayoutAnimeProfileBinding
-import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
+import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 import com.google.android.gms.ads.nativead.NativeAd
-import java.lang.StringBuilder
 
-class ProfileRecyclerViewAdapter (
+class ProfileRecyclerViewAdapter(
     private val context: Context,
     private var isFromContent: Boolean = false,
-    private var isFavoriteSegment : Boolean = false
+    private var isFavoriteSegment : Boolean = false,
+    preferenceUseCase: PreferenceUseCase
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -35,8 +36,8 @@ class ProfileRecyclerViewAdapter (
         const val NOT_AD = 0
     }
 
+    private val playerPreferences = preferenceUseCase.playerPreferences
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Any>(){}
-
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -93,7 +94,7 @@ class ProfileRecyclerViewAdapter (
             binding.imvCoverBase.load(animeProfile.profilePhoto){
                 crossfade(true)
                 crossfade(500)
-                transformations(RoundedCornersTransformation(35f))
+                transformations(RoundedCornersTransformation(15f.toPixels()))
                 if (isFavoriteSegment) {
                     memoryCachePolicy(CachePolicy.ENABLED)
                     diskCachePolicy(CachePolicy.ENABLED)
@@ -104,25 +105,22 @@ class ProfileRecyclerViewAdapter (
                 .getString(R.string.ratingLayout,animeProfile.rating.toString())
 
             binding.root.setOnClickListener {
-                if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_PROFILE_SUGGESTION)) {
-                    DataStore
-                        .writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_PROFILE_SUGGESTION,true)
-
-                    if (!isFromContent) {
-                        it.context.startActivity(
-                            Intent(context, AnimeProfileActivity::class.java).apply {
-                                putExtra(Constants.PREFERENCE_ID_BASE, animeProfile.id)
-                                putExtra(Constants.PREFERENCE_LINK, animeProfile.reference)
-                            })
-                    }
-                    else {
-                        DataStore.apply {
-                            writeBoolean(Constants.PROFILE_SENDER_VIDEO_PLAYER,true)
-                            writeInt(Constants.VALUE_VIDEO_PLAYER_ID_PROFILE,animeProfile.id)
-                            writeString(Constants.VALUE_VIDEO_PLAYER_LINK,animeProfile.reference)
-                        }
-                        (context as AppCompatActivity).onBack()
-                    }
+                if (!isFromContent) {
+                    it.context.startActivity(
+                        Intent(context, AnimeProfileActivity::class.java).apply {
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
+                        })
+                }
+                else {
+                    playerPreferences.setRequestingProfile(
+                        Requester(
+                            isRequesting = true,
+                            profileId = animeProfile.id,
+                            profileReference = animeProfile.reference?:return@setOnClickListener
+                        )
+                    )
+                    (context as AppCompatActivity).onBack()
                 }
             }
 
