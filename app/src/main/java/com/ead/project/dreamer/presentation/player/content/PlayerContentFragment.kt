@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.player.content
+package com.ead.project.dreamer.presentation.player.content
 
 import android.content.Context
 import android.graphics.Color
@@ -13,32 +13,28 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.models.discord.User
-import com.ead.project.dreamer.data.utils.AdManager
+import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.FragmentPlayerContentBinding
-import com.ead.project.dreamer.ui.player.content.adapters.ProfileRecyclerViewAdapter
-import com.ead.project.dreamer.ui.player.PlayerViewModel
+import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
+import com.ead.project.dreamer.presentation.player.PlayerViewModel
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlayerContentFragment : Fragment() {
 
-    private val playerViewModel : PlayerViewModel by viewModels()
+    private val viewModel : PlayerViewModel by viewModels()
     private lateinit var chapter : Chapter
     private lateinit var adapter : ProfileRecyclerViewAdapter
-    private var objetList : MutableList<Any> = ArrayList()
-    private var countSuggestion = 0
 
-    private var adManager : AdManager?= null
+    private var countSuggestion = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            chapter = it.parcelable(Constants.REQUESTED_CHAPTER)!!
+            chapter = it.parcelable(Chapter.REQUESTED)?:return@let
         }
     }
 
@@ -50,17 +46,12 @@ class PlayerContentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlayerContentBinding.inflate(layoutInflater,container,false)
-        settingLayouts()
-        settingRcvViews()
+        initLayouts()
+        initRecyclerViews()
         return binding.root
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        adManager?.onViewStateRestored()
-    }
-
-    private fun settingLayouts() {
+    private fun initLayouts() {
         binding.ChapterProfile.load(chapter.cover){
             transformations(CircleCropTransformation())
         }
@@ -68,43 +59,44 @@ class PlayerContentFragment : Fragment() {
         binding.txvCurrentChapter.text = getString(R.string.chapter_number,chapter.number.toString())
     }
 
-    private fun settingRcvViews() {
+    private fun initRecyclerViews() {
         val surfaceColor = MaterialColors.getColor(requireContext(), R.attr.colorSurface, Color.GRAY)
         binding.appBarLayout.setBackgroundColor(surfaceColor)
         binding.rcvSuggestions.apply {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this@PlayerContentFragment.adapter =
-                ProfileRecyclerViewAdapter(activity as Context,true)
-            adManager =  AdManager(
-                context =  requireContext(),
-                adId =  getString(R.string.ad_unit_id_native_player),
-                anyList = objetList,
-                adapter = this@PlayerContentFragment.adapter,
-                quantityAds = 3)
+                ProfileRecyclerViewAdapter(activity as Context,
+                    isFromContent = true,
+                    isFavoriteSegment = false,
+                    preferenceUseCase = viewModel.preferenceUseCase
+                )
             adapter = this@PlayerContentFragment.adapter
-            adManager?.setUp(User.isNotVip())
+            viewModel.adManager.setUp(
+                returnCase = DiscordUser.isVip(),
+                adId = getString(R.string.ad_unit_id_native_player),
+                adapter,
+                quantityAds = 3
+            )
             settingProfile()
         }
     }
 
     private fun settingProfile() {
-        playerViewModel.getProfileData(chapter.idProfile).observe(viewLifecycleOwner) {
+        viewModel.getProfileData(chapter.idProfile).observe(viewLifecycleOwner) {
             if (it != null) settingSuggestions(it)
         }
     }
 
     private fun settingSuggestions(animeProfile: AnimeProfile) {
-        playerViewModel.getProfilesListFrom(animeProfile)
+        viewModel.getProfilesListFrom(animeProfile)
             .observe(viewLifecycleOwner) {
                 if (++countSuggestion == 1) {
-                    Constants.setQuantityAdsPlayer(it.size)
-                        adManager?.setAnyList(it)
-
-                    adManager?.submitList(it)
+                    viewModel.adManager.setItems(it)
+                    viewModel.adManager.submitList(it)
                 }
             }
-        adManager?.getAds()?.observe(viewLifecycleOwner) { adManager?.submitList(it) }
+        viewModel.adManager.getItems().observe(viewLifecycleOwner) { viewModel.adManager.submitList(it) }
     }
 
     override fun onDestroyView() {
@@ -113,8 +105,7 @@ class PlayerContentFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        adManager?.onDestroy()
-        adManager = null
+        viewModel.adManager.onDestroy()
         super.onDestroy()
     }
 }
