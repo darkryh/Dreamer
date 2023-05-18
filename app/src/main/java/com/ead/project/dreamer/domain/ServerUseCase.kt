@@ -9,5 +9,5 @@ class ServerUseCase @Inject constructor(
     val getEmbedServers: GetEmbedServers,
     val getEmbedServersMutable: GetEmbedServersMutable,
     val getSortedServers: GetSortedServers,
-    val getServerScript: GetServerScript
+    val serverScript: ServerScript
 )
