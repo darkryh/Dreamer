@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.settings.options
+package com.ead.project.dreamer.presentation.settings.options
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
@@ -6,10 +6,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.ui.settings.layouts.DiagnosticViewPreference
-import com.ead.project.dreamer.ui.settings.viewmodels.SettingsFixerViewModel
+import com.ead.project.dreamer.presentation.settings.layouts.DiagnosticViewPreference
+import com.ead.project.dreamer.presentation.settings.viewmodels.SettingsFixerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -25,20 +26,20 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
         initLayouts()
     }
     private fun initLayouts() {
-        preferenceFixer = findPreference(Constants.PREFERENCE_CLICK_FIXER)!!
-        dvpPreference = findPreference(Constants.PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW)!!
+        preferenceFixer = findPreference(PREFERENCE_CLICK_FIXER)?:return
+        dvpPreference = findPreference(PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW)?:return
         preferenceFixer.isEnabled = false
         dvpPreference.setOnTestClickListener {
             dvpPreference.clearStringBuilder()
             it.isEnabled = false
             connecting(
-                Constants.API_APP,
+                AppInfo.API_APP,
                 getString(R.string.status_try_reconnecting, "la API."),
                 getString(R.string.status_api,"exitosa"),
                 getString(R.string.status_api,"fallida"))
 
             connecting(
-                Constants.PROVIDER_URL,
+                MonosChinos.URL,
                 getString(R.string.status_try_reconnecting, "el Proveedor."),
                 getString(R.string.status_provider,"exitosa"),
                 getString(R.string.status_provider,"fallida"))
@@ -49,8 +50,8 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
             }
             else dvpPreference.addLog(getString(R.string.status_database_items_correct))
 
-            settingsFixerViewModel.getEmbedServers({},testChapter).observeOnce(this) {
-                if (it.contains(getString(R.string.null_word))) {
+            settingsFixerViewModel.getEmbedServers({},testChapter).observeOnce(this) { list ->
+                if (list.contains(getString(R.string.null_word))) {
                     dvpPreference.addLog(getString(R.string.status_server_script_incorrect))
                     preferenceFixer.isEnabled = true
                 }
@@ -62,7 +63,7 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            Constants.PREFERENCE_CLICK_FIXER -> settingsFixerViewModel.synchronizeScrapper()
+            PREFERENCE_CLICK_FIXER -> settingsFixerViewModel.synchronizeScrapper()
         }
         return false
     }
@@ -81,4 +82,9 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
     }
 
     private val testChapter : Chapter = Chapter(0, 0, "null", "null", -1, "https://monoschinos2.com/ver/cowboy-bebop-latino-episodio-1")
+
+    companion object {
+        const val PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW = "PREFERENCE_CUSTOMIZED_DIAGNOSTIC_VIEW"
+        const val PREFERENCE_CLICK_FIXER = "PREFERENCE_CLICK_FIXER"
+    }
 }
