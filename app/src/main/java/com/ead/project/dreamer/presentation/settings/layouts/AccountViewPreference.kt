@@ -7,8 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.discord.Discord
 
 
 class AccountViewPreference(context: Context, attrs: AttributeSet?) :
@@ -26,7 +30,8 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
     val rank get() = _rank!!
 
     private var accountClickListener: View.OnClickListener? = null
-    //private val discordUser = DiscordUser.get()
+
+    private val discordUser = Discord.getUser()
 
     init { widgetLayoutResource = R.layout.layout_account_view_preference }
 
@@ -44,7 +49,7 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
     }
 
     private fun bindUser() {
-        /*discordUser?.let {
+        discordUser?.let {
             if (it.avatar != null)
                 profile.load(
                     Discord.CDN_ENDPOINT + "/avatars/${it.id}/${it.avatar}") {
@@ -53,7 +58,7 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
             userName.text = it.username
             rank.text = it.rank
             state.setResourceImageAndColor(R.drawable.ic_check_24,R.color.green)
-        }*/
+        }
     }
 
     @JvmName("setAccountClickListener")
