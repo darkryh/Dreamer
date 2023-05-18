@@ -1,8 +1,9 @@
-package com.ead.project.dreamer.ui.suggestions
+package com.ead.project.dreamer.presentation.suggestions
 
 import androidx.lifecycle.*
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.Categorizer
+import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SuggestionsViewModel @Inject constructor(
-    private val profileUseCase: ProfileUseCase
+    private val profileUseCase: ProfileUseCase,
+    val preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
 
     private val recommendationList : MutableLiveData<List<AnimeProfile>> = MutableLiveData()
