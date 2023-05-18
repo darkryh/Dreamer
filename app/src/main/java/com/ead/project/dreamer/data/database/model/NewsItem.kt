@@ -3,7 +3,7 @@ package com.ead.project.dreamer.data.database.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ead.project.dreamer.data.utils.DiffUtilEquality
+import com.ead.project.dreamer.data.utils.ui.mechanism.EqualsDiffUtil
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -17,25 +17,11 @@ data class NewsItem (
     val type : String,
     val date : String,
     val reference: String
-)    : Parcelable, DiffUtilEquality {
+) : Parcelable, EqualsDiffUtil {
 
     companion object {
-        fun fake() : NewsItem = NewsItem(
-            0,
-            "null",
-            "null",
-            "null",
-            "null",
-            "null")
+        const val REQUESTED_NEWS = "REQUESTED_NEWS"
     }
-
-
-    override fun equalsHeader(other: Any?): Boolean {
-        if (other == null || javaClass != other.javaClass) return false
-        val newsItem: NewsItem = other as NewsItem
-        return title == newsItem.title
-    }
-
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
         val newsItem: NewsItem = other as NewsItem
@@ -46,6 +32,12 @@ data class NewsItem (
 
     override fun hashCode(): Int {
         return Objects.hash(title,type,date)
+    }
+
+    override fun equalsHeader(other: Any?): Boolean {
+        if (other == null || javaClass != other.javaClass) return false
+        val newsItem: NewsItem = other as NewsItem
+        return title == newsItem.title
     }
 
     override fun equalsContent(other: Any?): Boolean {
