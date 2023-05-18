@@ -1,6 +1,5 @@
 package com.ead.project.dreamer.domain.servers
 
-import com.ead.project.dreamer.data.commons.Constants
 import javax.inject.Inject
 
 class GetServerResultToArray @Inject constructor() {
@@ -9,5 +8,5 @@ class GetServerResultToArray @Inject constructor() {
         string
             .removePrefix("[\"")
             .removeSuffix("\"]")
-            .split("${Constants.QUOTATION},${Constants.QUOTATION}")
+            .split("\",\"")
 }
