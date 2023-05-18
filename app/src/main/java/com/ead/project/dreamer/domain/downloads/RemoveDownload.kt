@@ -1,16 +1,15 @@
 package com.ead.project.dreamer.domain.downloads
 
-import com.ead.project.dreamer.data.database.model.Chapter
 import javax.inject.Inject
+import android.app.DownloadManager
 
 class RemoveDownload @Inject constructor(
-    private val downloadManager: android.app.DownloadManager
+    private val downloadManager: DownloadManager,
+    private val removeEnqueueDownload: RemoveEnqueueDownload
 ) {
 
-    operator fun invoke(data : Pair<Long,Int>?) {
-        data?.let {
-            downloadManager.remove(it.first)
-            Chapter.removeFromDownloadList(it)
-        }
+    operator fun invoke(downloadId: Long) {
+        downloadManager.remove(downloadId)
+        removeEnqueueDownload(downloadId)
     }
 }
