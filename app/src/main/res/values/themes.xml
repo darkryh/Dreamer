@@ -10,17 +10,27 @@
         <item name="colorSecondaryVariant">@color/whiteSecondary</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/blackSecondary</item>
-        <item name="android:colorControlActivated">@color/blue_light</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorControlActivated">@color/orange_peel</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
         <!-- <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item> -->
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.Dreamer.Translucent" parent="Theme.Dreamer.NoActionBar">
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="Theme.Dreamer.NoActionBar" parent="Theme.Dreamer">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="bottomNavigationStyle">@style/BottomNavigationViewStyle</item>
         <item name="castMiniControllerStyle">@style/CustomCastMiniController</item>
         <item name="castExpandedControllerStyle">@style/CustomCastExpandedController</item>
     </style>
@@ -30,9 +40,9 @@
         <item name="castTitleTextAppearance">@style/TextAppearance.AppCompat.Subhead</item>
         <item name="castSubtitleTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="castBackground">?attr/colorSurface</item>
-        <item name="castProgressBarColor">@color/blue_light</item>
+        <item name="castProgressBarColor">@color/orange_peel</item>
         <item name="castButtonColor">?attr/colorPrimaryVariant</item>
-        <item name="castMiniControllerLoadingIndicatorColor">@color/blue_light</item>
+        <item name="castMiniControllerLoadingIndicatorColor">@color/orange_peel</item>
         <item name="castPlayButtonDrawable">@drawable/cast_ic_mini_controller_play</item>
         <item name="castPauseButtonDrawable">@drawable/cast_ic_mini_controller_pause</item>
         <item name="castStopButtonDrawable">@drawable/cast_ic_mini_controller_stop</item>
@@ -49,7 +59,8 @@
 
 
     <style name="CustomCastExpandedController" parent="CastExpandedController">
-        <item name="castSeekBarProgressAndThumbColor">@color/blue_light</item>
+        <item name="android:colorAccent">@color/orange_peel</item>
+        <item name="castSeekBarProgressAndThumbColor">@color/orange_peel</item>
         <item name="castButtonColor">@color/white</item>
         <item name="castControlButtons">@array/cast_expanded_controller_control_buttons</item>
         <item name="castPlayButtonDrawable">@drawable/cast_ic_expanded_controller_play</item>
@@ -102,4 +113,14 @@
         <item name="android:background">@drawable/theme_rounded_dialog</item>
     </style>
 
+    <style name="tabStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?attr/colorSecondaryVariant</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="itemTextColor">@color/bottom_nav_icon_color</item>
+        <item name="itemIconTint">@color/bottom_nav_icon_color</item>
+    </style>
 </resources>
