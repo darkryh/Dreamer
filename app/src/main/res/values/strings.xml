@@ -12,6 +12,7 @@
     <string name="chapter">chapter</string>
     <string name="type">type</string>
     <string name="search_in_directory">Buscar en Directorio…</string>
+    <string name="directory">Directorio</string>
     <string name="state_of_the_app">state of the app</string>
     <string name="chapterLogo">chapterLogo</string>
     <string name="serversList">Lista de Servidores :</string>
@@ -39,6 +40,7 @@
     <string name="wordDecorate">· %1$s</string>
     <string name="ratingLayout">✪ %1$s</string>
     <string name="chapter_number">Capítulo número %1$s</string>
+    <string name="chapter_number_hint">Capítulo a buscar</string>
     <string name="chapter_number_short">Cap. %1$s</string>
 
     <string name="imageview_to_checker">imageview to checker</string>
@@ -47,6 +49,7 @@
     <string name="recommendations_user">Recomendaciones habilitadas al iniciar sesión.</string>
     <string name="suggestions">Sugerencias</string>
     <string name="relaunch_play">Relanzar Video.</string>
+    <string name="casting_available">¡Casting Disponible!</string>
 
     <string name="ad_attribution">Ad</string>
     <string name="accept">Aceptar</string>
@@ -118,6 +121,20 @@
     <string name="sign_in_twitter">Iniciar con Twitter</string>
     <string name="cover_notification">cover_notification</string>
     <string name="update">Actualización</string>
+    <string name="play_chapter">Reproducir</string>
+    <string name="download_chapter">Descargar</string>
+    <string name="add_favorite_chapter">Añadir a Favoritos</string>
+    <string name="remove_favorite_chapter">Remover de Favoritos</string>
+    <string name="new_episodes_available">Nuevos episodios disponibles</string>
+    <string name="marketing">marketing</string>
+    <string name="channel_new_episodes">channel new episodes</string>
+    <string name="channel_recommendations">channel recommendations</string>
+    <string name="channel_watch_list">channel_watch_list</string>
+    <string name="channel_marketing">channel marketing</string>
+    <string name="channel_new_episodes_description">channel to get the new episodes</string>
+    <string name="channel_recommendations_description">channel to get recommendations from series</string>
+    <string name="channel_watch_list_description">channel to get notifications from your watch list</string>
+    <string name="channel_marketing_description">channel to get advertising from the developer</string>
 
     <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=]]></string>
     <string name="complete_percent">100%</string>
@@ -268,7 +285,7 @@
     <string name="warning_error_installing">Error en instalación,favor de instalar manualmente mediante la apk en descargas.</string>
     <string name="error_chapter_not_founded">Error capítulo no encontrado.</string>
     <string name="error_file_not_founded">Error archivo no encontrado.</string>
-    <string name="version_description">Versión : %1$s %2$s</string>
+    <string name="version_description">Versión : %1$s %2$s . code : %3$s</string>
     <string name="status_api">¡Conexión %1$s con la API!</string>
     <string name="status_provider">¡Conexión %1$s con el Proveedor!</string>
     <string name="status_try_reconnecting">Intentando conectar con %1$s.</string>
@@ -290,4 +307,15 @@
     <string name="diagnostic">diagnostic</string>
     <string name="automatic_diagnostic">Diagnostico Automatico</string>
     <string name="launch_test">Iniciar Test</string>
+    <string name="index_circle">index_circle</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search">buscar</string>
+    <string name="account">account</string>
+    <string name="username">username</string>
+    <string name="rank">rank</string>
+    <string name="settings">settings</string>
+    <string name="last_series_section_title">Ultimos Animes Añadidos</string>
+    <string name="popular_section_title">Animes Populares</string>
+    <string name="recent_section_title">Animes Recientes</string>
 </resources>
