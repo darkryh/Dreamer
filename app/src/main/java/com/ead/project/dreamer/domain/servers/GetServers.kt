@@ -15,8 +15,8 @@ class GetServers @Inject constructor(
         servers.clear()
         for (url in serverUrls) {
             servers.add(getServer(url))
-            if (Server.isOperationBreak()) {
-                Server.endOperation()
+            if (Server.isProcessEnded()) {
+                Server.endAutomaticResolver()
                 break
             }
         }
