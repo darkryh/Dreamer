@@ -33,7 +33,7 @@ class Videobin (embeddedUrl:String) : Server(embeddedUrl) {
                     if (!src.endsWith(".m3u8")) list.add(src)
             }
             for (i in list.indices) addVideo(VideoModel(quality(list.size, i),list[i]))
-            breakOperation()
+            endProcessing()
         }
         catch (e : Exception) { e.printStackTrace() }
     }
