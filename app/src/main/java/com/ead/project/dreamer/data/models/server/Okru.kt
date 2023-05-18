@@ -55,7 +55,7 @@ class Okru(embeddedUrl:String) : Server(embeddedUrl) {
                 }
                 addVideo(video)
             }
-            breakOperation()
+            endProcessing()
         } catch (e : Exception) {
             e.printStackTrace()
         }
