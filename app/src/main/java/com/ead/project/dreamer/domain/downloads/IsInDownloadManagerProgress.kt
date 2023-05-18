@@ -1,7 +1,8 @@
 package com.ead.project.dreamer.domain.downloads
 
 import android.database.Cursor
-import com.ead.project.dreamer.data.commons.Tools.Companion.downloadItem
+import com.ead.project.dreamer.app.data.util.system.downloadItem
+
 import com.ead.project.dreamer.data.database.model.Chapter
 import javax.inject.Inject
 
