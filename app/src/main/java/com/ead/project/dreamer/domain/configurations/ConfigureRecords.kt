@@ -10,10 +10,12 @@ class ConfigureRecords @Inject constructor(
 ) {
 
     private val chaptersToUpdate: MutableList<Chapter> = ArrayList()
+    private var isUpgradeable = false
 
     suspend operator fun invoke(chapterList: List<Chapter>) {
         chaptersToUpdate.clear()
-        var isUpgradeable = false
+        isUpgradeable = false
+
         for (chapter in chapterList) {
             if (chapter.isContentConsumed) {
 
@@ -41,8 +43,8 @@ class ConfigureRecords @Inject constructor(
                 }
             }
         }
+
         if (isUpgradeable) {
-            chaptersToUpdate.addAll(chapterList)
             repository.updateChapterList(chaptersToUpdate.reversed())
         }
     }
