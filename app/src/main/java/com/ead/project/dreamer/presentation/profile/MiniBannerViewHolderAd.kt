@@ -1,10 +1,10 @@
-package com.ead.project.dreamer.ui.profile
+package com.ead.project.dreamer.presentation.profile
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ead.commons.lib.views.setVisibility
-import com.ead.project.dreamer.data.commons.Tools.Companion.isNotNullOrNotEmpty
+import com.ead.project.dreamer.app.data.util.system.isNotNullOrNotEmpty
 import com.ead.project.dreamer.databinding.AdUnifiedMiniBannerBinding
 
 import com.google.android.gms.ads.nativead.NativeAd
