@@ -39,7 +39,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/exo_duration"
                 app:layout_constraintStart_toEndOf="@+id/exo_position"
-                app:played_color="@color/blue_light"
+                app:played_color="@color/orange_peel"
                 app:unplayed_color="@color/whiteSecondary"
                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -161,7 +161,7 @@
             android:layout_height="40dp"
             android:contentDescription="@string/close"
             android:paddingHorizontal="8dp"
-            android:src="@drawable/ic_expand_more_24"
+            android:src="@drawable/ic_down_back_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/white"/>
@@ -231,7 +231,7 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@string/title_settings"
-                app:srcCompat="@drawable/ic_center_focus_24"
+                app:srcCompat="@drawable/ic_gesture_24"
                 app:tint="@color/white"/>
         </LinearLayout>
 
