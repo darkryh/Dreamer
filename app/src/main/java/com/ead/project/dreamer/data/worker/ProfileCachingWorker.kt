@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.DirectoryUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
@@ -27,7 +27,7 @@ class ProfileCachingWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val array = inputData.getStringArray(Constants.ANIME_PROFILE_KEY)!!
+                val array = inputData.getStringArray(Worker.ANIME_PROFILE_KEY)!!
                 val id = array[0].toInt()
                 val reference = array[1]
 

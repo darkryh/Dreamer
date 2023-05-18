@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.home.adapters
+package com.ead.project.dreamer.presentation.home.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -9,17 +9,17 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.ead.commons.lib.views.justifyInterWord
+import coil.transform.RoundedCornersTransformation
+import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.app.model.Publicity
-import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
-import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
+import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdAppProfileBinding
 import com.ead.project.dreamer.databinding.LayoutProfileRecommendationsBinding
-import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
+import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 
 
-class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
+class ProfileBannerRecyclerViewAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -77,49 +77,23 @@ class ProfileBannerRecyclerViewAdapter  (private val context: Context) :
     inner class ViewHolder(val binding: LayoutProfileRecommendationsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private val stringBuilder = StringBuilder()
-
         fun bindTo(animeProfile: AnimeProfile) {
             settingImage(animeProfile)
-            settingContent(animeProfile)
-            settingGenres(animeProfile)
             functionality(animeProfile)
         }
 
         private fun settingImage(animeProfile: AnimeProfile) {
-            binding.imvCoverProfile.load(animeProfile.coverPhoto)
-            binding.imvProfile.load(animeProfile.profilePhoto)  {
-                transformations(CircleCropTransformation())
+            binding.imvCoverProfile.load(animeProfile.coverPhoto) {
+                transformations(RoundedCornersTransformation(20f.toPixels()))
             }
-        }
-
-        private fun settingContent(animeProfile: AnimeProfile) {
-            binding.txvTitle.text = animeProfile.title
-            binding.txvDescription.text = animeProfile.description
-            binding.txvDescription.justifyInterWord()
-
-            when(animeProfile.description.length) {
-                in 0..250-> {
-                    binding.txvDescription.maxLines = 4
-                }
-            }
-
-        }
-
-        private fun settingGenres(animeProfile: AnimeProfile) {
-            for (genre in animeProfile.genres) {
-                stringBuilder.append(" · $genre  ")
-            }
-            binding.txvGenres.text = stringBuilder.toString()
-            stringBuilder.clear()
         }
 
         private fun functionality(animeProfile: AnimeProfile) {
             binding.root.setOnClickListener {
                 it.context.startActivity(
                     Intent(context, AnimeProfileActivity::class.java).apply {
-                        putExtra(Constants.PREFERENCE_ID_BASE, animeProfile.id)
-                        putExtra(Constants.PREFERENCE_LINK, animeProfile.reference)
+                        putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                        putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
                     }
                 )
             }
