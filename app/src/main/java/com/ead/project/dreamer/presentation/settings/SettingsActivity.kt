@@ -1,22 +1,26 @@
-package com.ead.project.dreamer.ui.settings
+package com.ead.project.dreamer.presentation.settings
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.views.getMutated
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.databinding.ActivitySettingsBinding
+import com.ead.project.dreamer.presentation.settings.viewmodels.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySettingsBinding
+    private val viewModel : SettingsViewModel by viewModels()
+
+    private val binding : ActivitySettingsBinding by lazy {
+        ActivitySettingsBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setNavigationOnClickListener { onBack() }
@@ -34,8 +38,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun settingThemeLayouts() {
-        val data = DataStore
-            .readBoolean(Constants.PREFERENCE_THEME_MODE)
+        val data = viewModel.isDarkThemeMode()
 
         if (data)
             binding.toolbar.navigationIcon =
@@ -46,8 +49,4 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        Constants.setConfigurationActivityClicked(false)
-    }
 }
