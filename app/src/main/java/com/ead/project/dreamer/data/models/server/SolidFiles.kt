@@ -23,7 +23,7 @@ class SolidFiles(embeddedUrl:String) : Server(embeddedUrl) {
 
             if (url != null) {
                 addDefaultVideo()
-                breakOperation()
+                endProcessing()
             }
         } catch (e :Exception) { e.printStackTrace() }
     }
