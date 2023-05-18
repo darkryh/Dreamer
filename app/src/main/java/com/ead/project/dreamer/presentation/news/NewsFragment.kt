@@ -1,40 +1,32 @@
-package com.ead.project.dreamer.ui.news
+package com.ead.project.dreamer.presentation.news
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.models.discord.User
-import com.ead.project.dreamer.data.utils.AdManager
+import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.FragmentNewsBinding
-import com.ead.project.dreamer.ui.news.adapters.NewsItemRecyclerViewAdapter
+import com.ead.project.dreamer.presentation.news.adapters.NewsItemRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.ArrayList
 
 
 @AndroidEntryPoint
 class NewsFragment : Fragment() {
 
-    private lateinit var newsViewModel: NewsViewModel
+    private lateinit var viewModel: NewsViewModel
+
     private lateinit var adapter: NewsItemRecyclerViewAdapter
     private var _binding : FragmentNewsBinding?= null
     private val binding get() = _binding!!
-    private var objetList : MutableList<Any> = ArrayList()
 
-    private var adManager : AdManager?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        newsViewModel = ViewModelProvider(this)[NewsViewModel::class.java]
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        adManager?.onViewStateRestored()
+        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -47,19 +39,17 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        newsViewModel.synchronizeNews()
         setupLayouts()
         binding.rcvNews.apply {
             layoutManager = LinearLayoutManager(context)
             this@NewsFragment.adapter = NewsItemRecyclerViewAdapter(requireContext())
-            adManager = AdManager(
-                context =  requireContext(),
-                adId =  getString(R.string.ad_unit_id_native_news),
-                anyList = objetList,
-                adapter = this@NewsFragment.adapter,
-                quantityAds = 3)
             adapter = this@NewsFragment.adapter
-            adManager?.setUp(User.isNotVip())
+            viewModel.adManager.setUp(
+                returnCase = DiscordUser.isVip(),
+                adId = getString(R.string.ad_unit_id_native_news),
+                adapter = adapter,
+                3
+            )
             setupNews()
         }
     }
@@ -69,19 +59,19 @@ class NewsFragment : Fragment() {
             setColorSchemeColors(resources.getColor(R.color.blackPrimary,requireContext().theme))
             setOnRefreshListener {
                 isRefreshing = true
-                newsViewModel.synchronizeNews()
+                viewModel.synchronizeNews()
             }
         }
     }
 
     private fun setupNews() {
-        newsViewModel.getNewsItems().observe(viewLifecycleOwner) {
-            adManager?.setAnyList(it)
-            adManager?.submitList(it)
+        viewModel.getNewsItems().observe(viewLifecycleOwner) {
+            viewModel.adManager.setItems(it)
+            viewModel.adManager.submitList(it)
             binding.swipeRefresh.isRefreshing = false
         }
-        adManager?.getAds()?.observe(viewLifecycleOwner) {
-            adManager?.submitList(it)
+        viewModel.adManager.getItems().observe(viewLifecycleOwner) {
+            viewModel.adManager.submitList(it)
             binding.swipeRefresh.isRefreshing = false
         }
     }
@@ -92,8 +82,7 @@ class NewsFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        adManager?.onDestroy()
-        adManager = null
+        viewModel.adManager.onDestroy()
         super.onDestroy()
     }
 }
