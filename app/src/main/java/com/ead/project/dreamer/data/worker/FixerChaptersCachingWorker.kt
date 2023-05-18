@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.app.model.scrapping.ChapterScrap
-import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.ChapterUseCase
 import com.ead.project.dreamer.domain.DirectoryUseCase
@@ -13,7 +11,6 @@ import com.ead.project.dreamer.domain.ObjectUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
@@ -30,7 +27,7 @@ class FixerChaptersCachingWorker@AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val chapterScrap = chapterUseCase.getChapterScrap.fromApi()
+                /*val chapterScrap = chapterUseCase.getChapterScrap.fromApi()
                 if (ChapterScrap.get() == chapterScrap) return@withContext Result.success()
 
                 ChapterScrap.set(chapterScrap)
@@ -49,7 +46,7 @@ class FixerChaptersCachingWorker@AssistedInject constructor(
                     deleteData.await().apply {
                         requestedProfileChapters.await().apply { objectUseCase.insertObject(this) }
                     }
-                }
+                }*/
                 Result.success()
             }
             catch (ex : IOException) {

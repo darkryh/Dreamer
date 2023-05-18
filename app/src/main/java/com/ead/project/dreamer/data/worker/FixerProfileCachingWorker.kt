@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.app.model.scrapping.AnimeProfileScrap
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.DirectoryUseCase
@@ -13,7 +12,6 @@ import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
@@ -30,7 +28,7 @@ class FixerProfileCachingWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                val animeProfileScrap = profileUseCase.getProfileScrap.fromApi()
+                /*val animeProfileScrap = profileUseCase.getProfileScrap.fromApi()
                 if (AnimeProfileScrap.get() == animeProfileScrap) return@withContext Result.success()
 
                 AnimeProfileScrap.set(animeProfileScrap)
@@ -43,8 +41,8 @@ class FixerProfileCachingWorker @AssistedInject constructor(
                         this.reference = animeBase.reference
                         objectUseCase.updateObject(this)
                     }
-                }
-                Constants.setProfileFixer(true)
+                }*/
+                /*Constants.setProfileFixer(true)*/
                 return@withContext Result.success()
             }
             catch (ex : IOException) {
