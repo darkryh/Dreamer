@@ -4,11 +4,12 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.preference.Settings
+import com.ead.project.dreamer.app.repository.Repository
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.domain.DirectoryUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -24,8 +25,11 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
     private val directoryUseCase: DirectoryUseCase,
     private val objectUseCase: ObjectUseCase,
     private val profileUseCase: ProfileUseCase,
-    private val webProvider: WebProvider
+    private val webProvider: WebProvider,
+    preferenceUseCase: PreferenceUseCase
 ) : CoroutineWorker(context,workerParameters) {
+
+    private val preferences = preferenceUseCase.preferences
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
@@ -34,7 +38,7 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                 val repositoryProfile = profileUseCase.getProfileList()
 
                 if (repositoryData.size != repositoryProfile.size) {
-                    val currentPos = DataStore.readInt(Constants.PROFILE_REPOSITORY)
+                    val currentPos = preferences.getInt(Repository.PROFILES)
                     for (pos in currentPos until repositoryData.size) {
                         val animeBase = repositoryData[pos]
                         val profile = async {
@@ -46,10 +50,10 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                         profile.await().apply {
                             reference = repositoryData[pos].reference
                             objectUseCase.insertObject(this)
-                            DataStore.writeIntAsync(Constants.PROFILE_REPOSITORY,pos)
+                            preferences.set(Repository.PROFILES,pos)
                         }
                     }
-                    DataStore.writeBooleanAsync(Constants.PREFERENCE_DIRECTORY_PROFILE,true)
+                    preferences.set(Settings.SYNC_DIRECTORY_PROFILE,true)
                 }
                 Result.success()
             }
