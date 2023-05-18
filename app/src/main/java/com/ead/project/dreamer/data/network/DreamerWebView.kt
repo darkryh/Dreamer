@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.webkit.WebView
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DataStore
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 
 
@@ -28,11 +26,6 @@ class DreamerWebView @JvmOverloads constructor(
     companion object {
         const val BLANK_BROWSER = "about:blank"
         const val TIMEOUT_MS = 10000L
-
-        fun getServerScript() = DataStore.readString(Constants.PREFERENCE_SERVER_SCRIPT)
-
-        fun setServerScript(value : String) = DataStore.writeString(Constants.PREFERENCE_SERVER_SCRIPT,value)
-
     }
 
 }
