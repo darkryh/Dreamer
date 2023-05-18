@@ -9,6 +9,7 @@ import javax.inject.Inject
 class GetEmbedServersMutable @Inject constructor(
     private val context: Context,
     private val getServerResultToArray: GetServerResultToArray,
+    private val serverScript: ServerScript
 ) {
     private lateinit var embedServers : MutableLiveData<List<String>>
 
@@ -18,7 +19,7 @@ class GetEmbedServersMutable @Inject constructor(
         return embedServers
     }
 
-    private val serverEngine = object  : ServerEngine(context,getServerResultToArray) {
+    private val serverEngine = object  : ServerEngine(context,getServerResultToArray,serverScript) {
         override fun getServerList(it: String): List<String> {
             val result = super.getServerList(it)
             embedServers.postValue(result)

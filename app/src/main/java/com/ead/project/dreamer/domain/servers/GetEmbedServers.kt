@@ -7,6 +7,7 @@ import javax.inject.Inject
 class GetEmbedServers @Inject constructor(
     private val context: Context,
     private val getServerResultToArray: GetServerResultToArray,
+    private val serverScript: ServerScript,
 ) {
 
     private lateinit var chapter: Chapter
@@ -16,7 +17,7 @@ class GetEmbedServers @Inject constructor(
         serverEngine(timeoutTask, chapter)
     }
 
-    private val serverEngine = object  : ServerEngine(context,getServerResultToArray) {
+    private val serverEngine = object  : ServerEngine(context,getServerResultToArray,serverScript) {
         override fun getServerList(it: String): List<String> {
             val result = super.getServerList(it)
             return result
