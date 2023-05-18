@@ -1,12 +1,17 @@
 package com.ead.project.dreamer.data
 
-import com.ead.project.dreamer.app.model.scrapping.*
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.getCatch
+import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.util.system.getCatch
+import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
+import com.ead.project.dreamer.app.model.scraper.AnimeProfileScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterHomeScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemWebScrap
 import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.retrofit.interceptor.*
-import com.ead.project.dreamer.data.retrofit.service.AppService
+import com.ead.project.dreamer.data.retrofit.service.ApplicationService
 import com.ead.project.dreamer.data.retrofit.service.DiscordService
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
@@ -134,6 +139,8 @@ class AnimeRepository @Inject constructor(
 
     fun getFlowChaptersFromProfile(id :Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfile(id)
 
+    fun getFlowChaptersFromNumber(id : Int,number: Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromNumber(id,number)
+
     fun getFlowChaptersFromProfileAsc(id :Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfileAsc(id)
 
     fun getFlowChaptersRecord() : Flow<List<Chapter>> = chapterDao.getFlowDataRecords()
@@ -162,7 +169,7 @@ class AnimeRepository @Inject constructor(
         retrofit.create(DiscordService::class.java)
 
     fun getAppRetrofit() : Retrofit =
-        retrofit.newBuilder().baseUrl(Constants.API_APP).build()
+        retrofit.newBuilder().baseUrl(AppInfo.API_APP).build()
 
     fun getDiscordUserTokenRetrofit() : Retrofit = retrofit.newBuilder()
         .client(OkHttpClient.Builder().addInterceptor(AccessInterceptor()).build()).build()
@@ -184,8 +191,8 @@ class AnimeRepository @Inject constructor(
     //APP API
 
 
-    fun getAppService(retrofit: Retrofit) : AppService =
-        retrofit.create(AppService::class.java)
+    fun getAppService(retrofit: Retrofit) : ApplicationService =
+        retrofit.create(ApplicationService::class.java)
 
     fun getAnimeBaseScrap() : AnimeBaseScrap {
         val appService = getAppService(getAppRetrofit())
