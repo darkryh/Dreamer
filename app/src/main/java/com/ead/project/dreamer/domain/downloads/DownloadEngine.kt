@@ -5,18 +5,19 @@ import android.content.Context
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.webkit.WebView
+import com.ead.project.dreamer.app.data.util.system.load
+import com.ead.project.dreamer.app.data.util.system.onDestroy
 import com.ead.project.dreamer.data.AnimeRepository
-import com.ead.project.dreamer.data.commons.Tools.Companion.load
-import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.network.DreamerClient
 import com.ead.project.dreamer.data.network.DreamerWebView
-import com.ead.project.dreamer.data.utils.ThreadUtil
-import com.ead.project.dreamer.data.utils.receiver.ChaptersReceiver
+import com.ead.project.dreamer.data.utils.Thread
+import com.ead.project.dreamer.app.data.downloads.DownloadsReceiver
 import com.ead.project.dreamer.domain.servers.GetServerResultToArray
 import com.ead.project.dreamer.domain.servers.GetServers
 import com.ead.project.dreamer.domain.servers.GetSortedServers
+import com.ead.project.dreamer.domain.servers.ServerScript
 import kotlinx.coroutines.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -29,7 +30,8 @@ class DownloadEngine @Inject constructor(
     private val getServerResultToArray: GetServerResultToArray,
     private val getSortedServers: GetSortedServers,
     private val getServers: GetServers,
-    private val launchDownload: LaunchDownload,
+    private val createDownload: CreateDownload,
+    private val serverScript: ServerScript
 ) {
     private var webView : DreamerWebView?= null
     private var chapter : Chapter?= null
@@ -41,8 +43,10 @@ class DownloadEngine @Inject constructor(
     operator fun invoke() {
         this.chapter = tempDownloads.getChapter()
         settingBroadcast()
-        if (chapter != null) loadChapter()
-        else onCompleted()
+        runOnUI {
+            if (chapter != null) loadChapter()
+            else onCompleted()
+        }
     }
 
     fun isNotWorking() = webView == null
@@ -51,12 +55,12 @@ class DownloadEngine @Inject constructor(
 
     private fun getWebView() : DreamerWebView = webView?:DreamerWebView(context).also {
         webView = it
-        runOnUI { settingWebView()  }
+        settingWebView()
     }
 
     fun settingBroadcast() {
         if (broadcastReceiver == null) {
-            broadcastReceiver = ChaptersReceiver()
+            broadcastReceiver = DownloadsReceiver()
             registerReceiver()
         }
     }
@@ -65,9 +69,9 @@ class DownloadEngine @Inject constructor(
         webView?.webViewClient = object : DreamerClient() {
             override fun onTimeout(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onTimeout(view, url, favicon)
-                chapter?.let {
-                    it.downloadState = Chapter.DOWNLOAD_STATUS_FAILED
-                    executor.execute { repository.updateChapterNormal(it) }
+                executor.execute {
+                    repository.updateChapterNormal(chapter?.copy(
+                    state = Chapter.STATUS_FAILED)?:return@execute)
                 }
                 invoke()
             }
@@ -75,7 +79,7 @@ class DownloadEngine @Inject constructor(
             override fun onPageLoaded(view: WebView?, url: String?) {
                 super.onPageLoaded(view, url)
                 try {
-                    webView?.evaluateJavascript(DreamerWebView.getServerScript()) {
+                    webView?.evaluateJavascript(serverScript()) {
                         getServers(getSortedServers(getServerResultToArray(it),true))
                     }
                 } catch (e : Exception) { e.printStackTrace() }
@@ -109,7 +113,7 @@ class DownloadEngine @Inject constructor(
 
     private fun launchDownload(url : String) =
         runOnUI {
-            launchDownload(chapter,url)
+            createDownload(chapter,url)
             invoke()
         }
 
@@ -130,5 +134,5 @@ class DownloadEngine @Inject constructor(
         webView = null
     }
 
-    private fun runOnUI(task: () -> Unit) = ThreadUtil.onUi { task() }
+    private fun runOnUI(task: () -> Unit) = Thread.onUi { task() }
 }
