@@ -1,24 +1,38 @@
 package com.ead.project.dreamer.data.network
 
-import com.ead.project.dreamer.app.model.scrapping.*
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.commons.Tools.Companion.getCatch
-import com.ead.project.dreamer.data.commons.Tools.Companion.toFloatCatch
-import com.ead.project.dreamer.data.commons.Tools.Companion.toIntCatch
-import com.ead.project.dreamer.data.database.model.*
+import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
+import com.ead.project.dreamer.app.data.news.SomosKudasai
+import com.ead.project.dreamer.app.data.util.system.getCatch
+import com.ead.project.dreamer.app.data.util.system.toFloatCatch
+import com.ead.project.dreamer.app.data.util.system.toIntCatch
+import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
+import com.ead.project.dreamer.app.model.scraper.AnimeProfileScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterHomeScrap
+import com.ead.project.dreamer.app.model.scraper.ChapterScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemScrap
+import com.ead.project.dreamer.app.model.scraper.NewsItemWebScrap
+import com.ead.project.dreamer.data.database.model.AnimeBase
+import com.ead.project.dreamer.data.database.model.AnimeProfile
+import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.database.model.ChapterHome
+import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.Image
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.models.Title
 import com.ead.project.dreamer.data.models.Video
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
-import com.ead.project.dreamer.domain.apis.app.*
+import com.ead.project.dreamer.domain.apis.app.GetChapterScrap
+import com.ead.project.dreamer.domain.apis.app.GetDirectoryScrap
+import com.ead.project.dreamer.domain.apis.app.GetHomeScrap
+import com.ead.project.dreamer.domain.apis.app.GetNewsItemScrap
+import com.ead.project.dreamer.domain.apis.app.GetNewsItemWebScrap
+import com.ead.project.dreamer.domain.apis.app.GetProfileScrap
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class WebProvider @Inject constructor(
     getHomeScrap: GetHomeScrap,
@@ -44,7 +58,7 @@ class WebProvider @Inject constructor(
         val auxChapterList = mutableListOf<ChapterHome>()
 
         try {
-            val doc = Jsoup.connect(Constants.PROVIDER_URL).get()
+            val doc = Jsoup.connect(MonosChinos.URL).get()
 
             val rawChapterList = doc.select(chapterHomeScrap.classList)
             var index = rawChapterList.size + 1
@@ -77,7 +91,7 @@ class WebProvider @Inject constructor(
 
     fun requestingData (sectionPos : Int) : List<AnimeBase> {
 
-        val document = Jsoup.connect(Constants.PROVIDER_URL + Constants.LIST)
+        val document = Jsoup.connect(MonosChinos.URL + MonosChinos.LIST)
             .userAgent(DreamerRequest.userAgent()).get()
 
         val auxChapterList = mutableListOf<AnimeBase>()
@@ -85,14 +99,15 @@ class WebProvider @Inject constructor(
 
         val section = getSections(sectionPos,directorySize)
 
-        val elementsTesting = Jsoup.connect(Constants.PROVIDER_URL + Constants.PAGE + 1)
+        val elementsTesting = Jsoup.connect(MonosChinos.URL + MonosChinos.PAGE + 1)
             .userAgent(DreamerRequest.userAgent()).get().getElementsByClass(animeBaseScrap.classList)
         val attrImage = getAttrImage(elementsTesting,animeBaseScrap.imageContainer)
         val animeBaseTest = getAnimeBaseTest(elementsTesting,attrImage)
+
         if (animeBaseTest.isWorking())
             for (page in section.first until section.second + 1) {
 
-                val url = Constants.PROVIDER_URL + Constants.PAGE + page.toString()
+                val url = MonosChinos.URL + MonosChinos.PAGE + page.toString()
 
                 val docPages = Jsoup.connect(url).userAgent(DreamerRequest.userAgent()).get()
                 val seriesData = docPages.getElementsByClass(animeBaseScrap.classList)
@@ -117,6 +132,7 @@ class WebProvider @Inject constructor(
                     )
                 }
             }
+
         return auxChapterList
     }
 
@@ -186,7 +202,7 @@ class WebProvider @Inject constructor(
     fun getNews(firstNewItem : NewsItem) : List<NewsItem> {
         val auxNewsList = mutableListOf<NewsItem>()
         try {
-            val doc = Jsoup.connect(Constants.PROVIDER_NEWS_URL).get()
+            val doc = Jsoup.connect(SomosKudasai.URL).get()
 
             val rawNewsItemList = doc.select(newsItemScrap.classList)
             var index = rawNewsItemList.size + 1
@@ -302,8 +318,8 @@ class WebProvider @Inject constructor(
     }
 
     private fun getAttrImage(classList : Elements, query : String) : String {
-        val src = classList.first()?.select(query)?.attr("data-src")
-        return if(isImageSrcWorking(src)) "data-src" else "src"
+        val src = classList.first()?.select(query)?.attr("src")
+        return if(isImageSrcWorking(src)) "src" else "data-src"
     }
 
     private fun getAttrImage(element: Element , query : String) : String {
@@ -311,6 +327,8 @@ class WebProvider @Inject constructor(
         return if(isImageSrcWorking(src)) "src" else "data-src"
     }
 
-    private fun isImageSrcWorking(src : String?) : Boolean = src != null && src != Constants.CAP_BLANK_MC2
+    private fun isImageSrcWorking(src : String?) : Boolean = src != null
+            && src != MonosChinos.CAP_BLANK_MC2
+            && src != MonosChinos.CAP_BLANK_ANIME_MC2
             && src.isNotEmpty()
 }
