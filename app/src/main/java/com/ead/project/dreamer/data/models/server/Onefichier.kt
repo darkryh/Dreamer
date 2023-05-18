@@ -2,12 +2,19 @@ package com.ead.project.dreamer.data.models.server
 
 import com.ead.project.dreamer.data.models.Player
 import com.ead.project.dreamer.data.models.Server
-import okhttp3.Interceptor
+import com.ead.project.dreamer.data.models.server_properties.ONE_FICHIER_API_TOKEN
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 
 class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
+
+    companion object {
+        const val apiDownloadRequest = "https://api.1fichier.com/v1/download/get_token.cgi"
+    }
 
     override fun onPreExtract() {
         player = Player.Onefichier
@@ -15,29 +22,41 @@ class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
 
     override fun onExtract() {
         try {
-            url = fixUrl(url)
-            val request: Request = Request.Builder()
-                .url(url)
-                .header("Cookie", "SID=")
-                .header("Authorization", "Basic ${getToken()}")
+            val request = Request.Builder()
+                .url(apiDownloadRequest)
+                .header("Authorization", "Bearer ${getApiToken()}")
+                .header("Content-Type", "application/json")
+                .post(getRequestBody())
                 .build()
 
-            val client: OkHttpClient.Builder = OkHttpClient.Builder()
-                .addNetworkInterceptor(Interceptor { chain: Interceptor.Chain ->
-                    val networkRequest = chain.request()
-                    val response = chain.proceed(networkRequest)
-                    val redirect = response.header("Location")
-                    if (redirect != null) url = redirect
-                    response
-                })
-            val response: Response = client.build().newCall(request).execute()
-            if (response.isSuccessful) addDefaultVideo()
-            breakOperation()
+            val client = OkHttpClient()
+            val response = client.newCall(request).execute()
+
+            if (response.isSuccessful) {
+                val responseBody = response.body?.string()?:return
+
+                val source = JSONObject(responseBody)
+                val status = source.getString("status")
+                if (status != "OK") return
+                url = source.getString("url")
+                addDefaultVideo()
+                endProcessing()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun fixUrl(url: String): String = "$url?=&auth=1"
-    private fun getToken() = ONE_FICHIER_TOKEN
+
+    private fun getApiToken() = ONE_FICHIER_API_TOKEN
+
+    private fun getRequestBody() : RequestBody {
+        val jsonRequest = "{" +
+                "\"url\":\"${url}\"," +
+                "\"pretty\":1" +
+                "}"
+        return jsonRequest.toRequestBody(
+            "application/json".toMediaTypeOrNull()
+        )
+    }
 }
