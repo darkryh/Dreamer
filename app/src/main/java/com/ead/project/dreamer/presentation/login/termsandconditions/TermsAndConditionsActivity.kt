@@ -1,13 +1,12 @@
-package com.ead.project.dreamer.ui.login.termsandconditions
+package com.ead.project.dreamer.presentation.login.termsandconditions
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DataStore
+import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.databinding.ActivityTermsAndConditionsBinding
-import com.ead.project.dreamer.ui.main.MainActivity
+import com.ead.project.dreamer.presentation.main.MainActivity
 
 
 class TermsAndConditionsActivity : AppCompatActivity() {
@@ -20,7 +19,7 @@ class TermsAndConditionsActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
         binding.buttonAccept.setOnClickListener {
-            DataStore.writeBooleanAsync(Constants.PREFERENCE_TERMS_AND_CONDITIONS,true)
+            //DataStore.writeBooleanAsync(Constants.PREFERENCE_TERMS_AND_CONDITIONS,true)
             startActivity(Intent(this,MainActivity::class.java))
             finish()
         }
@@ -30,7 +29,7 @@ class TermsAndConditionsActivity : AppCompatActivity() {
         binding.txvEmailProtected.setOnClickListener {
             emailProtected = !emailProtected
             if (!emailProtected)
-                binding.txvEmailProtected.text = Constants.CONTACT_EMAIL
+                binding.txvEmailProtected.text = AppInfo.CONTACT_DEVELOPER_EMAIL
             else
                 binding.txvEmailProtected.text = getString(R.string.email_protected)
         }
