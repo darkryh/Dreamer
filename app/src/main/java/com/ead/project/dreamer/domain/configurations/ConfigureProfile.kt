@@ -1,8 +1,9 @@
 package com.ead.project.dreamer.domain.configurations
 
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.AnimeRepository
-import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import javax.inject.Inject
 
@@ -24,12 +25,12 @@ class ConfigureProfile @Inject constructor(
         val array = arrayOf(id.toString(), reference)
 
         val data: Data = Data.Builder()
-            .putStringArray(Constants.ANIME_PROFILE_KEY, array)
+            .putStringArray(Worker.ANIME_PROFILE_KEY, array)
             .build()
 
         launchOneTimeRequest(
             LaunchOneTimeRequest.ProfileCachingWorkerCode,
-            Constants.SYNC_PROFILE_CHECKER,
+            Worker.SYNC_PROFILE_CHECKER,
             ExistingWorkPolicy.KEEP,
             data
         )
