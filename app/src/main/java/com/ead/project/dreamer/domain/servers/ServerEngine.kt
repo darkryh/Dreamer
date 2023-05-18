@@ -3,8 +3,8 @@ package com.ead.project.dreamer.domain.servers
 import android.content.Context
 import android.graphics.Bitmap
 import android.webkit.WebView
-import com.ead.project.dreamer.data.commons.Tools.Companion.load
-import com.ead.project.dreamer.data.commons.Tools.Companion.onDestroy
+import com.ead.project.dreamer.app.data.util.system.load
+import com.ead.project.dreamer.app.data.util.system.onDestroy
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.DreamerClient
 import com.ead.project.dreamer.data.network.DreamerWebView
@@ -12,7 +12,8 @@ import javax.inject.Inject
 
 open class ServerEngine @Inject constructor(
     private val context: Context,
-    private val getServerResultToArray: GetServerResultToArray
+    private val getServerResultToArray: GetServerResultToArray,
+    private val serverScript: ServerScript
 ) {
 
     private var webView : DreamerWebView?=null
@@ -40,7 +41,7 @@ open class ServerEngine @Inject constructor(
             override fun onPageLoaded(view: WebView?, url: String?) {
                 super.onPageLoaded(view, url)
                 safeRun {
-                    getWebView().evaluateJavascript(DreamerWebView.getServerScript()) { getServerList(it) }
+                    getWebView().evaluateJavascript(serverScript()) { getServerList(it) }
                 }
             }
         }
