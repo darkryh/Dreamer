@@ -1,9 +1,8 @@
-package com.ead.project.dreamer.ui.news
+package com.ead.project.dreamer.presentation.news
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -12,20 +11,22 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.MediaController
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.lifecycle.activity.onBack
-import com.ead.commons.lib.lifecycle.activity.showLongToast
 import com.ead.commons.lib.views.justifyInterWord
 import com.ead.commons.lib.views.margin
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.Image
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.models.Title
 import com.ead.project.dreamer.data.models.Video
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.databinding.ActivityNewsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,55 +34,69 @@ import dagger.hilt.android.AndroidEntryPoint
 class NewsActivity : AppCompatActivity() {
 
 
-    private lateinit var binding : ActivityNewsBinding
     private var reference : String = "null"
-    private val newsViewModel : NewsViewModel by viewModels()
+    private val viewModel : NewsViewModel by viewModels()
+
+    private val binding : ActivityNewsBinding by lazy {
+        ActivityNewsBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityNewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initVariables()
         settingLayouts()
-        if (reference != "null") setupWebPage()
+        if (reference != "null") {
+            setupWebPage()
+        }
         else {
-            showLongToast(getString(R.string.error_web_page_null))
+            toast(getString(R.string.error_web_page_null),Toast.LENGTH_SHORT)
             finish()
         }
     }
 
     private fun initVariables() {
         intent.extras?.let {
-            reference = it.getString(Constants.REQUESTED_NEWS,"null")
+            reference = it.getString(NewsItem.REQUESTED_NEWS)?:return@let
         }
     }
 
     private fun settingLayouts() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { onBack() }
+        binding.apply {
+
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            toolbar.setNavigationOnClickListener { onBack() }
+
+        }
     }
 
     private fun setupWebPage() {
-        newsViewModel.getWebPageData(reference).observe(this) {
+        viewModel.getWebPageData(reference).observe(this) {
+
             if (it !=null) {
                 bindHeader(it)
                 bindBody(it)
                 bindFooter(it)
                 binding.imvCover.requestFocus()
             }
+
         }
     }
 
     private fun bindHeader(newsItemWeb: NewsItemWeb) {
-        binding.imvCover.load(newsItemWeb.cover)
-        binding.txvTitle.text = newsItemWeb.title
-        binding.txvType.text = getString(R.string.topic_news,newsItemWeb.type)
-        binding.txvAuthor.text = newsItemWeb.author
-        binding.txvDate.text = newsItemWeb.date
+        binding.apply {
+
+            imvCover.load(newsItemWeb.cover)
+            txvTitle.text = newsItemWeb.title
+            txvType.text = getString(R.string.topic_news,newsItemWeb.type)
+            txvAuthor.text = newsItemWeb.author
+            txvDate.text = newsItemWeb.date
+
+        }
     }
-    @SuppressLint("SetJavaScriptEnabled")
+
     private fun bindBody(newsItemWeb: NewsItemWeb) {
         for (item in newsItemWeb.bodyList) {
             var view = View(this)
@@ -126,17 +141,18 @@ class NewsActivity : AppCompatActivity() {
                 }
                 is Video -> {
                     if (item.isEmbedded) {
-                            view = WebView(this).apply {
-                                layoutParams = LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT, 1f
-                                )
-                                layoutParams.height =
-                                    resources.getDimensionPixelSize(R.dimen.dimen_300dp)
-                                settings.javaScriptEnabled = true
-                                loadUrl(item.source)
-                            }
+                        @SuppressLint("SetJavaScriptEnabled")
+                        view = WebView(this).apply {
+                            layoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                            )
+                            layoutParams.height =
+                                resources.getDimensionPixelSize(R.dimen.dimen_300dp)
+                            settings.javaScriptEnabled = true
+                            loadUrl(item.source)
                         }
+                    }
                     else {
                         view = VideoView(this).apply {
                             layoutParams = LinearLayout.LayoutParams(
@@ -177,10 +193,14 @@ class NewsActivity : AppCompatActivity() {
         }
     }
     private fun bindFooter(newsItemWeb: NewsItemWeb) {
-        binding.imvCoverAuthor.load(newsItemWeb.photoAuthor){
-            transformations(CircleCropTransformation())
+        binding.apply {
+
+            imvCoverAuthor.load(newsItemWeb.photoAuthor){
+                transformations(CircleCropTransformation())
+            }
+            txvAuthorFooter.text = newsItemWeb.author
+            txvAuthorWords.text = newsItemWeb.authorWords
+
         }
-        binding.txvAuthorFooter.text = newsItemWeb.author
-        binding.txvAuthorWords.text = newsItemWeb.authorWords
     }
 }
