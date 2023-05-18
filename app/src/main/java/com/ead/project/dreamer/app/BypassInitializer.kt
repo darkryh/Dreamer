@@ -8,7 +8,7 @@ import com.ead.project.dreamer.data.network.DreamerWebView
 import com.ead.project.dreamer.data.network.DreamerWebView.Companion.BLANK_BROWSER
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 
-class ProviderVerifier(context : Context) {
+class BypassInitializer(context : Context) {
 
     private var webView : DreamerWebView?=null
 
@@ -28,8 +28,7 @@ class ProviderVerifier(context : Context) {
 
             override fun onPageLoaded(view: WebView?, url: String?) {
                 super.onPageLoaded(view, url)
-                try { webView?.destroy() }
-                catch (e : InterruptedException) { e.printStackTrace() }
+                webView?.destroy()
             }
         }
     }
