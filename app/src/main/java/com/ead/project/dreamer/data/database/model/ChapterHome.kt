@@ -2,13 +2,8 @@ package com.ead.project.dreamer.data.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ead.project.dreamer.data.commons.Constants
-import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.DiffUtilEquality
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.ead.project.dreamer.data.utils.ui.mechanism.EqualsDiffUtil
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Entity(tableName = "anime_chapter_home_table")
 data class ChapterHome (
@@ -19,21 +14,9 @@ data class ChapterHome (
     val chapterNumber : Int,
     val type : String,
     val reference : String
-) : DiffUtilEquality  {
+) : EqualsDiffUtil {
 
     companion object {
-
-        fun getPreviousList() : List<String> = try {
-            Gson().fromJson(DataStore.readString(Constants.CURRENT_NOTICED_CHAPTERS_HOME),
-                object : TypeToken<ArrayList<String?>?>() {}.type)
-        } catch (e : Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-
-        fun setPreviousList(list: List<String>) = DataStore
-            .writeStringAsync(Constants.CURRENT_NOTICED_CHAPTERS_HOME,Gson().toJson(list))
-
         fun fake() : ChapterHome = ChapterHome(
             0,
             "null",
@@ -46,8 +29,6 @@ data class ChapterHome (
 
     fun isWorking() = title.isNotEmpty() && chapterCover.isNotEmpty()
             && chapterNumber != -1 && type.isNotEmpty() && reference.isNotEmpty()
-
-    fun isNotWorking () = !isWorking()
 
     override fun equals(other: Any?): Boolean {
         if (other == null || javaClass != other.javaClass) return false
