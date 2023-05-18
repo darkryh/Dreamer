@@ -29,5 +29,5 @@ abstract class AppBarStateChangeListener : OnOffsetChangedListener {
         }
     }
 
-    abstract fun onStateChanged(appBarLayout: AppBarLayout?, state: State?)
+    abstract fun onStateChanged(appBarLayout: AppBarLayout, state: State)
 }
