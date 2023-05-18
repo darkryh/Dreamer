@@ -1,11 +1,10 @@
 package com.ead.project.dreamer.data.models;
 
 import androidx.annotation.Nullable;
-import com.ead.project.dreamer.data.commons.Constants;
-import com.ead.project.dreamer.data.commons.Tools;
+
+import com.ead.project.dreamer.app.data.util.HttpUtil;
 import com.ead.project.dreamer.data.network.DreamerWebView;
-import com.ead.project.dreamer.data.utils.DataStore;
-import com.ead.project.dreamer.data.utils.ThreadUtil;
+import com.ead.project.dreamer.data.utils.Thread;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,8 +20,6 @@ public class Server {
     public Boolean isDirect;
     protected final Boolean isDownloading;
     public String url;
-    @Nullable
-    protected String reference;
     public final String DEFAULT = "Default";
     @Nullable
     protected DreamerWebView webView;
@@ -32,13 +29,13 @@ public class Server {
         this.url = embeddedUrl;
         videoList = new ArrayList<>();
         isDirect = true;
-        isDownloading = Constants.Companion.getDownloadMode();
+        isDownloading = getIsDownloading();
         onPreExtract();
         onExtract();
         OnExtractEnded();
     }
 
-    protected int CONNECTION_STABLE = 5000;
+    protected int CONNECTION_STABLE = 6000;
 
     protected int CONNECTION_MIDDLE_STABLE = 80000;
 
@@ -59,17 +56,14 @@ public class Server {
     protected void addVideo(VideoModel video) { this.videoList.add(video); }
 
     public Boolean isConnectionValidated() {
-        try { return Tools.Companion
-                    .isConnectionAvailable(this.getVideoList().get(getVideoList().size()-1).getDirectLink());
-        } catch (Exception e) { return false; }
+        if (videoList.isEmpty()) return false;
+        return HttpUtil.INSTANCE
+                .connectionAvailable(getVideoList().get(getVideoList().size()-1).getDirectLink());
     }
 
-    protected Boolean connectionAvailable() {
-        if (!videoList.isEmpty()) return Tools.Companion.isConnectionAvailable(videoList.get(videoList.size() - 1).getDirectLink());
-        return false;
-    }
+    protected Boolean isConnectionNotValidated() { return !isConnectionValidated(); }
 
-    protected void runUI(Function0<Unit> unit) {ThreadUtil.INSTANCE.onUi(unit);}
+    protected void runUI(Function0<Unit> unit) { Thread.INSTANCE.onUi(unit); }
 
     protected void handleDownload(int timeLimit) { if(awaitInTimePattern(timeLimit)) addDefaultVideo();}
 
@@ -79,18 +73,28 @@ public class Server {
     }
 
     private void awaitUntilInstance() {
+        int timeToInstance = 250;
         while (webView == null) {
-            try {Thread.sleep(250);} catch (InterruptedException e) {e.printStackTrace();}
+            try {
+                java.lang.Thread.sleep(timeToInstance);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private Boolean awaitUntilLoadingTime(int timeLimit) {
         int count = 0;
+        int interval = 250;
         while (true) {
             assert webView != null;
             if (!webView.isLoading() || count > timeLimit) break;
-            try {Thread.sleep(250); count += 250;} catch (InterruptedException e) {e.printStackTrace();}}
-
+            try {
+                java.lang.Thread.sleep(interval); count += interval;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return  count < timeLimit;
     }
 
@@ -106,29 +110,49 @@ public class Server {
 
     protected void releaseWebView() {
         if (webView != null) {
+            webView.setWebViewClient(null);
             webView.destroy();
             webView = null;
         }
     }
 
-    protected Boolean connectionIsNotAvailable() { return !connectionAvailable(); }
-
-    public void breakOperation() {
-        if (DataStore.Companion.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER,false) && !videoList.isEmpty())
-            DataStore.Companion.writeBoolean(Constants.BREAK_SERVER_OPERATION,true);
+    private Boolean getIsDownloading() {
+        return com.ead.project.dreamer.app.data.server.
+                Server.INSTANCE.isDownloading();
     }
 
-    public static Boolean isOperationBreak() {
-        return DataStore.Companion.readBoolean(Constants.PREFERENCE_RANK_AUTOMATIC_PLAYER,false) &&
-                DataStore.Companion.readBoolean(Constants.BREAK_SERVER_OPERATION,false);
+    public void endProcessing() {
+        if (isAutomaticResolverActivated() && !videoList.isEmpty()) {
+            setProcessed(true);
+        }
     }
 
-    public static void endOperation() { DataStore.Companion.writeBooleanAsync(Constants.BREAK_SERVER_OPERATION,false); }
+    public static Boolean isProcessEnded() {
+        return isAutomaticResolverActivated() && isProcessed();
+    }
+
+    public static void endAutomaticResolver() {
+        setProcessed(false);
+    }
+
+    private static Boolean isAutomaticResolverActivated() {
+        return com.ead.project.dreamer.app.data.server.
+                Server.INSTANCE.isAutomaticResolverActivated();
+    }
+
+    private static Boolean isProcessed() {
+        return com.ead.project.dreamer.app.data.server.
+                Server.INSTANCE.isProcessed();
+    }
+
+    private static void setProcessed(Boolean value) {
+        com.ead.project.dreamer.app.data.server.Server.INSTANCE.setProcessed(value);
+    }
 
     private List<Player> validatedServer () {
         return Arrays.asList(Player.Okru,Player.Onefichier,Player.Videobin,
                 Player.SolidFiles,Player.Mp4Upload,Player.Uqload);
     }
 
-    public Boolean isValidated () {return !this.videoList.isEmpty() && validatedServer().contains(this.player);}
+    public Boolean isValidated () {return !videoList.isEmpty() && validatedServer().contains(this.player);}
 }
