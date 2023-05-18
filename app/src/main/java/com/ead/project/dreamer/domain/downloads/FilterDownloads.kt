@@ -16,7 +16,7 @@ class FilterDownloads @Inject constructor(
     }
 
     private fun List<Chapter>.filtered() : List<Chapter> =
-        filter { it.downloadState == Chapter.DOWNLOAD_STATUS_INITIALIZED
-                || it.downloadState == Chapter.DOWNLOAD_STATUS_FAILED }
+        filter { it.state == Chapter.STATUS_STREAMING
+                || it.state == Chapter.STATUS_FAILED }
 
 }
