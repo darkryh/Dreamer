@@ -43,7 +43,7 @@ class NewsWorker @AssistedInject constructor(
             val newsItemsList = newsUseCase.getNews()
 
             val isDataEmpty = newsItemsList.isEmpty()
-            val newsItem = if (isDataEmpty) NewsItem.fake()
+            val newsItem = if (isDataEmpty) getFakeNews()
             else newsItemsList.last()
 
             val newsData = async { webProvider.getNews(newsItem) }
@@ -53,5 +53,16 @@ class NewsWorker @AssistedInject constructor(
                 Result.success()
             }
         }
+    }
+
+    private fun getFakeNews() : NewsItem {
+        return NewsItem(
+            id = 0,
+            title = "null",
+            cover = "null",
+            type = "null",
+            date = "null",
+            reference ="null"
+        )
     }
 }
