@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.ui.suggestions.adapters
+package com.ead.project.dreamer.presentation.suggestions.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -11,14 +11,13 @@ import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.data.database.model.AnimeProfile
-import com.ead.project.dreamer.data.utils.DataStore
-import com.ead.project.dreamer.data.utils.DreamerAsyncDiffUtil
+import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutAnimeProfileMiniBinding
-import com.ead.project.dreamer.ui.profile.AnimeProfileActivity
+import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 
-class ProfileMiniRecyclerViewAdapter (private val context: Context) :
+class ProfileMiniRecyclerViewAdapter(private val context: Context) :
     RecyclerView.Adapter<ProfileMiniRecyclerViewAdapter.ViewHolder>() {
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<AnimeProfile>(){}
@@ -47,33 +46,29 @@ class ProfileMiniRecyclerViewAdapter (private val context: Context) :
     inner class ViewHolder(val binding: LayoutAnimeProfileMiniBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo (animeProfile: AnimeProfile) {
-            binding.txvTitle.text = animeProfile.title
-            binding.txvState.text = animeProfile.state
-            binding.root.addSelectableItemEffect()
-            binding.imvCoverBase.load(animeProfile.profilePhoto){
-                crossfade(true)
-                crossfade(500)
-                transformations(RoundedCornersTransformation(11f,11f,11f,11f))
-                memoryCachePolicy(CachePolicy.ENABLED)
-                diskCachePolicy(CachePolicy.ENABLED)
-            }
+            binding.apply {
+                txvTitle.text = animeProfile.title
+                txvState.text = animeProfile.state
+                root.addSelectableItemEffect()
+                imvCoverBase.load(animeProfile.profilePhoto){
+                    crossfade(true)
+                    crossfade(500)
+                    transformations(RoundedCornersTransformation(8f.toPixels(),8f.toPixels(),0f,0f))
+                    memoryCachePolicy(CachePolicy.ENABLED)
+                    diskCachePolicy(CachePolicy.ENABLED)
+                }
 
-            binding.txvRating.text = context
-                .getString(R.string.ratingLayout,animeProfile.rating.toString())
+                txvRating.text = context
+                    .getString(R.string.ratingLayout,animeProfile.rating.toString())
 
-            binding.root.setOnClickListener {
-                if (!DataStore.readBoolean(Constants.WORK_PREFERENCE_CLICKED_PROFILE_SUGGESTION)) {
-                    DataStore
-                        .writeBooleanAsync(Constants.WORK_PREFERENCE_CLICKED_PROFILE_SUGGESTION,true)
-
-                    it.context.startActivity(
+                root.setOnClickListener {
+                    context.startActivity(
                         Intent(context, AnimeProfileActivity::class.java).apply {
-                            putExtra(Constants.PREFERENCE_ID_BASE, animeProfile.id)
-                            putExtra(Constants.PREFERENCE_LINK, animeProfile.reference)
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
                         })
                 }
             }
-
         }
 
     }
