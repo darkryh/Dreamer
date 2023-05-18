@@ -6,7 +6,7 @@ import android.content.Intent
 import android.text.format.DateUtils
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.system.extensions.toast
-import com.ead.project.dreamer.ui.player.cast.ExpandedControlsActivity
+import com.ead.project.dreamer.presentation.player.cast.ExpandedControlsActivity
 import com.google.android.gms.cast.CredentialsData
 import com.google.android.gms.cast.LaunchOptions
 import com.google.android.gms.cast.framework.CastOptions
