@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.data.commons.Constants
+import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.ChapterUseCase
@@ -29,7 +29,7 @@ class ChaptersCachingWorker @AssistedInject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val array = inputData
-                    .getStringArray(Constants.CHAPTER_PROFILE_KEY)!!
+                    .getStringArray(Worker.CHAPTER_PROFILE_KEY)!!
                 val id = array[0].toInt()
                 val size = array[1].toInt()
                 val reference = array[2]
@@ -58,6 +58,15 @@ class ChaptersCachingWorker @AssistedInject constructor(
 
     private suspend fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
         if (size <= 0) chapterUseCase.getChapter.fromId(chapterId).apply { if (this != null) return this }
-        return Chapter.fake()
+        return fakeChapter
     }
+
+    private val fakeChapter : Chapter = Chapter(
+        id = 0,
+        idProfile = 0,
+        title = "null",
+        cover = "null",
+        number = -1,
+        reference = "null"
+    )
 }
