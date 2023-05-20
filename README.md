@@ -1,3 +1,2 @@
 # Dreamer
- App para ver anime en Android, pensado como una alternativa a AnimeFLV. 
- Utilizando los datos de la página de MonosChinos2.
+Dreamer: Immerse yourself in a captivating anime experience with this Android Studio project. Leveraging Firebase, Retrofit, Dagger Hilt, Work Manager, ExoPlayer, DataStore, Jsoup, Room, Google Cast Framework, Ktor Server, Coil, and the power of Kotlin, indulge in a mesmerizing collection of your beloved animes. Unleash your imagination and embark on a journey through the animated realms!
