@@ -13,7 +13,10 @@ class UpdateObject @Inject constructor(
 
     suspend operator fun <T : Any> invoke(mObject : T) {
         when(mObject) {
-            is Chapter -> repository.updateChapter(mObject)
+            is Chapter -> {
+                repository.updateChapter(mObject)
+                updateAnimeProfile(mObject)
+            }
             is AnimeProfile -> repository.updateAnimeProfile(mObject)
             is List<*> -> manageGenericList(mObject)
         }
@@ -31,4 +34,12 @@ class UpdateObject @Inject constructor(
                     repository.updateNewsItemList(objectList.filterIsInstance(NewsItem::class.java))
             }
     }
+
+    private suspend fun updateAnimeProfile(chapter: Chapter) {
+        val animeProfile = repository.getAnimeProfile(chapter.idProfile)?:return
+        repository.updateAnimeProfile(animeProfile.copy(
+            lastChapterSeen = chapter
+        ))
+    }
+
 }
