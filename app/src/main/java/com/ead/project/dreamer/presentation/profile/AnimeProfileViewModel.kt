@@ -52,6 +52,8 @@ class AnimeProfileViewModel @Inject constructor(
     fun configureChaptersData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureChapters(id,reference) }
 
+    fun getFirstChapterFromProfile(id: Int) : LiveData<Chapter?> = chapterUseCase.getChapter.firstChapterLiveData(id)
+
     fun getChaptersFromProfile(id : Int) : LiveData<List<Chapter>> = chapterUseCase.getChapters.livedata(id)
 
     fun getChaptersFromNumber(id: Int,number : Int) : LiveData<List<Chapter>> = chapterUseCase.getChapters.fromNumber(id,number)
