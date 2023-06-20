@@ -173,8 +173,9 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
 
     private fun likeProfile (animeProfile: AnimeProfile) {
         binding.imvLikeProfile.setOnClickListener {
-            animeProfile.isFavorite = !animeProfile.isFavorite
-            viewModel.updateAnimeProfile(animeProfile)
+            viewModel.updateAnimeProfile(animeProfile.copy(
+                isFavorite = !animeProfile.isFavorite
+            ))
         }
     }
 
