@@ -16,15 +16,16 @@ data class AnimeProfile (
     val title : String,
     val titleAlternate : String ="null",
     val rating : Float,
-    var state : String,
+    val state : String,
     val description : String,
     val date : String,
     val genres : List<String>,
     val rawGenres : String,
-    var size : Int = 0,
-    var lastChapterId : Int = 0,
-    var reference : String? = null,
-    var isFavorite : Boolean = false
+    val size : Int = 0,
+    val lastChapterId : Int = 0,
+    val lastChapterSeen : Chapter?= null,
+    val reference : String? = null,
+    val isFavorite : Boolean = false
 ) : Parcelable, EqualsDiffUtil {
 
     companion object {
