@@ -27,7 +27,7 @@ class GetDiscordMember @Inject constructor(
                 catch ( e : Exception) { e.printStackTrace() }
             }
             override fun onFailure(call: Call<GuildMember?>, t: Throwable) {
-                Log.e("error", "onFailure: ${t.cause?.message.toString()}", )
+                Log.e("error", "onFailure: ${t.cause?.message.toString()}")
             }
         })
         return guildMember?:MutableLiveData<GuildMember?>().also { guildMember = it }
