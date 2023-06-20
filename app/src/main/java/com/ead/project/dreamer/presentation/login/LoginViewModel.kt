@@ -15,10 +15,13 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val discordUseCase: DiscordUseCase,
+    private val monosChinosUseCase: MonosChinosUseCase,
     preferenceUseCase: PreferenceUseCase
 ) : ViewModel() {
 
     private val appBuildPreferences : AppBuildPreferences = preferenceUseCase.appBuildPreferences
+
+    fun getAuthMe(username : String,password : String) = monosChinosUseCase.login.liveData(username, password)
 
     fun getApplicationState() : Flow<AppBuild> = appBuildPreferences.appBuild
 
