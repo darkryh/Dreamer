@@ -10,6 +10,9 @@ class GetChapter @Inject constructor(
     private val repository: AnimeRepository
 ) {
 
+    fun firstChapterLiveData(id: Int) : LiveData<Chapter?> =
+        repository.getFlowFirstChapterFromProfileId(id).asLiveData()
+
     suspend fun fromId(id : Int) : Chapter? =
         repository.getChapterFromId(id)
 
