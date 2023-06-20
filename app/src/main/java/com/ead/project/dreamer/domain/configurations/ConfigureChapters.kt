@@ -14,11 +14,13 @@ class ConfigureChapters @Inject constructor(
 
     suspend operator fun invoke(id : Int,reference: String,byPassFinalState : Boolean = false) {
         val dataList : List<Int> = repository.getPreparationProfile(id)
-        val animeProfile : AnimeProfile = repository.getAnimeProfile(id)?:return
+        var animeProfile : AnimeProfile = repository.getAnimeProfile(id)?:return
         if (dataList.size >= 2) {
-            animeProfile.size = dataList[0]
-            animeProfile.lastChapterId = dataList[1]
-            animeProfile.reference = reference
+            animeProfile = animeProfile.copy(
+                size = dataList[0],
+                lastChapterId = dataList[1],
+                reference = reference
+            )
         }
         if (cachingChaptersTrigger(animeProfile,byPassFinalState)) cachingChapters(
             animeProfile.id,

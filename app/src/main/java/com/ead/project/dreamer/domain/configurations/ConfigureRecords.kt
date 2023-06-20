@@ -10,10 +10,12 @@ class ConfigureRecords @Inject constructor(
 ) {
 
     private val chaptersToUpdate: MutableList<Chapter> = ArrayList()
+    private val chaptersConsumed: MutableList<Chapter> = ArrayList()
     private var isUpgradeable = false
 
     suspend operator fun invoke(chapterList: List<Chapter>) {
         chaptersToUpdate.clear()
+        chaptersConsumed.clear()
         isUpgradeable = false
 
         for (chapter in chapterList) {
@@ -26,13 +28,13 @@ class ConfigureRecords @Inject constructor(
                         chapter.number + 1
                     )
 
-                if (nextChapter != null) {
-
-                    chaptersToUpdate.add(
-                        chapter.copy(
-                            isContentConsumed = false
-                        )
+                chaptersConsumed.add(
+                    chapter.copy(
+                        isContentConsumed = false
                     )
+                )
+
+                if (nextChapter != null) {
 
                     chaptersToUpdate.add(
                         nextChapter.copy(
@@ -45,6 +47,7 @@ class ConfigureRecords @Inject constructor(
         }
 
         if (isUpgradeable) {
+            repository.updateChapterList(chaptersConsumed.reversed())
             repository.updateChapterList(chaptersToUpdate.reversed())
         }
     }
