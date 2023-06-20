@@ -195,8 +195,10 @@ class AnimeProfileActivity : AppCompatActivity() {
             viewModel.playerPreference.collectLatest { playerPreferences ->
 
                 if (playerPreferences.requester.isRequesting) {
+
                     viewModel.resetRequestingProfile()
                     launchActivity(this@AnimeProfileActivity,playerPreferences.requester)
+
                 }
 
             }
