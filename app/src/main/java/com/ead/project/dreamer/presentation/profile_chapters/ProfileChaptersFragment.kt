@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
+import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.inputMethodManager
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.databinding.FragmentProfileChaptersBinding
@@ -27,8 +28,10 @@ class ProfileChaptersFragment : Fragment() {
 
     private lateinit var adapter : ChapterRecyclerViewAdapter
     private var backUpChapters : List<Chapter> = listOf()
+    private var currentChapter : Chapter?= null
 
     private val inputMethodManager : InputMethodManager by lazy { requireContext().inputMethodManager }
+
     var profileId : Int = -1
 
     private var _binding : FragmentProfileChaptersBinding?= null
@@ -46,8 +49,6 @@ class ProfileChaptersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
 
-            currentChapter.addSelectableItemEffect()
-            lnCurrentChapter.addSelectableItemEffect()
             recyclerViewChapters.apply {
 
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
@@ -56,8 +57,17 @@ class ProfileChaptersFragment : Fragment() {
                 setupChapters()
 
             }
+        }
 
-            currentChapter.setOnClickListener {}
+        setupLayouts()
+        setupChapterLastSeen()
+    }
+
+    private fun setupLayouts() {
+        binding.apply {
+
+            currentChapter.addSelectableItemEffect()
+            lnCurrentChapter.addSelectableItemEffect()
 
             imvSearch.setOnClickListener {
 
@@ -69,6 +79,7 @@ class ProfileChaptersFragment : Fragment() {
                 inputMethodManager.showSoftInput(edtChapter, InputMethodManager.SHOW_IMPLICIT)
 
             }
+
             imvClose.setOnClickListener {
 
                 it.setVisibility(false)
@@ -82,15 +93,39 @@ class ProfileChaptersFragment : Fragment() {
         }
     }
 
-    private fun setupChapters() {
-        viewModel.getChaptersFromProfile(profileId).observe(viewLifecycleOwner) {
+    private fun setupChapterLastSeen() {
+        viewModel.getAnimeProfile(profileId).observe(viewLifecycleOwner) { animeProfile ->
 
-            backUpChapters = it
-            adapter.submitList(it)
+            val chapterSeen = animeProfile?.lastChapterSeen
 
+            if (currentChapter != null && currentChapter == chapterSeen) return@observe
+
+            currentChapter = chapterSeen
+
+            if (chapterSeen != null) {
+
+                bindingChapter(chapterSeen)
+
+            }
+            else {
+
+                viewModel.getFirstChapterFromProfile(profileId).observeOnce(viewLifecycleOwner) { chapter ->
+
+                    bindingChapter(chapter?:return@observeOnce)
+
+                }
+            }
         }
-
+    }
+    private fun setupChapters() {
         binding.apply {
+            viewModel.getChaptersFromProfile(profileId).observe(viewLifecycleOwner) { chapters ->
+
+                backUpChapters = chapters
+                adapter.submitList(chapters)
+
+            }
+
             edtChapter.addTextChangedListener { _ ->
 
                 if (backUpChapters.isEmpty()) {
@@ -109,6 +144,20 @@ class ProfileChaptersFragment : Fragment() {
                 }
 
             }
+        }
+    }
+
+    private fun bindingChapter(chapter: Chapter) {
+        binding.apply {
+
+            txvCurrentChapter.text = getString(R.string.continue_watching_chapter_number, chapter.number.toString())
+
+            currentChapter.setOnClickListener {
+
+                viewModel.handleChapter(requireActivity(),chapter)
+
+            }
+
         }
     }
 

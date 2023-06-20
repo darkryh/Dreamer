@@ -34,8 +34,9 @@ class ProfileCachingWorker @AssistedInject constructor(
                 val requestedProfile = async { webProvider.getAnimeProfile(id,reference) }
                 val animeBase = directoryUseCase.getDirectory.byId(id)
                 requestedProfile.await().apply {
-                    this.reference = animeBase.reference
-                    objectUseCase.insertObject(this)
+                    objectUseCase.insertObject(copy(
+                        reference = animeBase.reference
+                    ))
                     Result.success()
                 }
                 Result.failure()

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -12,9 +13,11 @@ import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.discord.Discord
+import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
 import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
 import com.ead.project.dreamer.data.models.discord.DiscordUser
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.databinding.ActivityLoginBinding
 import com.ead.project.dreamer.presentation.main.MainActivity
 import com.ead.project.dreamer.presentation.web.WebActivity
@@ -39,9 +42,9 @@ class LoginActivity : AppCompatActivity() {
 
         initLayouts()
         observeApplicationState()
+        observerAuthentication()
         observeDiscordState()
     }
-
 
     private fun initLayouts() {
         binding.apply {
@@ -88,6 +91,44 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+            }
+        }
+    }
+
+    private fun observerAuthentication() {
+        binding.apply {
+
+            buttonLogin.setOnClickListener {
+
+                if (editTextEmail.text.isBlank() || editTextPassword.text.isBlank()) {
+
+                    this@LoginActivity.toast("Completar los datos.")
+                    return@setOnClickListener
+
+                }
+
+                val username = editTextEmail.text.toString()
+                val password = editTextPassword.text.toString()
+
+                Log.d("testing", "observerAuthentication: $username - $password")
+
+                viewModel.getAuthMe(username, password).observe(this@LoginActivity) { loginResponse ->
+
+                    if (loginResponse != null) {
+                        toast("login response")
+                        Log.d("testing", "observerAuthentication: $loginResponse")
+                    }
+                    else {
+                        toast("response null")
+                    }
+                }
+
+            }
+
+            buttonRegister.setOnClickListener {
+
+                launchActivity(intent =  Intent(Intent.ACTION_VIEW, Uri.parse(MonosChinos.REGISTER)))
 
             }
         }
