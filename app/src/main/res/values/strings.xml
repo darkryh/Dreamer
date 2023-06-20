@@ -40,6 +40,7 @@
     <string name="wordDecorate">· %1$s</string>
     <string name="ratingLayout">✪ %1$s</string>
     <string name="chapter_number">Capítulo número %1$s</string>
+    <string name="continue_watching_chapter_number">Seguir viendo desde capítulo número %1$s</string>
     <string name="chapter_number_hint">Capítulo a buscar</string>
     <string name="chapter_number_short">Cap. %1$s</string>
 
@@ -318,4 +319,7 @@
     <string name="last_series_section_title">Ultimos Animes Añadidos</string>
     <string name="popular_section_title">Animes Populares</string>
     <string name="recent_section_title">Animes Recientes</string>
+    <string name="email">email</string>
+    <string name="password">contraseña</string>
+    <string name="register">Registrarse</string>
 </resources>
