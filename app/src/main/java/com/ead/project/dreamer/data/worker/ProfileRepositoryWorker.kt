@@ -48,8 +48,9 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                             )
                         }
                         profile.await().apply {
-                            reference = repositoryData[pos].reference
-                            objectUseCase.insertObject(this)
+                            objectUseCase.insertObject(copy(
+                                reference = repositoryData[pos].reference
+                            ))
                             preferences.set(Repository.PROFILES,pos)
                         }
                     }
