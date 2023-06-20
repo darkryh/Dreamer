@@ -2,6 +2,10 @@ package com.ead.project.dreamer.app.data.monos_chinos
 
 object MonosChinos {
 
+    const val API = "http://localhost:8000/"
+
+    const val REGISTER = "https://monoschinos2.com/register"
+
     const val URL = "https://monoschinos2.com/"
     const val LIST = "animes/"
     const val PAGE = "animes?p="
