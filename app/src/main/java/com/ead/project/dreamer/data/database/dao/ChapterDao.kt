@@ -25,6 +25,10 @@ interface ChapterDao {
     @Query("select * from anime_chapter_table  where id =:id")
     suspend fun getChapterFromId(id : Int) : Chapter?
 
+    @Query("select * from anime_chapter_table  where idProfile =:id and number = 1")
+    fun getFlowFirstChapterFromProfileId(id : Int) : Flow<Chapter?>
+
+
     @Query("select * from anime_chapter_table  where idProfile =:id and currentProgress > 0")
     suspend fun getChaptersRecordsFromId(id : Int) : List<Chapter>
 
