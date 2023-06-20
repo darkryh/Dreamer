@@ -28,8 +28,9 @@ class ChapterSettingsViewModel @Inject constructor(
         viewModelScope.launch (Dispatchers.IO) {
             val animeProfile = profileUseCase.getProfile(id)
             animeProfile?.let {
-                it.isFavorite = !it.isFavorite
-                objectUseCase.updateObject(it)
+                objectUseCase.updateObject(it.copy(
+                    isFavorite = !it.isFavorite
+                ))
             }
         }
 
