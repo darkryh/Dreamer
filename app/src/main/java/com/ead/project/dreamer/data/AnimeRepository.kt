@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.data
 
 import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
 import com.ead.project.dreamer.app.data.util.system.getCatch
 import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
 import com.ead.project.dreamer.app.model.scraper.AnimeProfileScrap
@@ -13,6 +14,7 @@ import com.ead.project.dreamer.data.database.model.*
 import com.ead.project.dreamer.data.retrofit.interceptor.*
 import com.ead.project.dreamer.data.retrofit.service.ApplicationService
 import com.ead.project.dreamer.data.retrofit.service.DiscordService
+import com.ead.project.dreamer.data.retrofit.service.MonosChinosService
 import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -127,6 +129,8 @@ class AnimeRepository @Inject constructor(
 
     suspend fun getChapterFromId(id : Int) : Chapter? = chapterDao.getChapterFromId(id)
 
+    fun getFlowFirstChapterFromProfileId(id: Int) : Flow<Chapter?> = chapterDao.getFlowFirstChapterFromProfileId(id)
+
     suspend fun getChaptersRecordsFromId(id : Int) : List<Chapter> = chapterDao.getChaptersRecordsFromId(id)
 
     suspend fun getChaptersToFix() : List<Chapter> = chapterDao.getChaptersToFix()
@@ -163,13 +167,9 @@ class AnimeRepository @Inject constructor(
 
 
     //DISCORD API
-
-
+    
     fun getDiscordService(retrofit: Retrofit) : DiscordService =
         retrofit.create(DiscordService::class.java)
-
-    fun getAppRetrofit() : Retrofit =
-        retrofit.newBuilder().baseUrl(AppInfo.API_APP).build()
 
     fun getDiscordUserTokenRetrofit() : Retrofit = retrofit.newBuilder()
         .client(OkHttpClient.Builder().addInterceptor(AccessInterceptor()).build()).build()
@@ -190,6 +190,9 @@ class AnimeRepository @Inject constructor(
 
     //APP API
 
+    fun getAppRetrofit() : Retrofit =
+        retrofit.newBuilder().baseUrl(AppInfo.API_APP)
+            .build()
 
     fun getAppService(retrofit: Retrofit) : ApplicationService =
         retrofit.create(ApplicationService::class.java)
@@ -235,4 +238,14 @@ class AnimeRepository @Inject constructor(
         val response : Call<String> = appService.getServerScriptScrap()
         return response.execute().body()!!
     }
+
+    // MONOS-CHINOS API
+
+    private fun getMonosChinosRetrofit() : Retrofit =
+        retrofit.newBuilder().baseUrl(MonosChinos.API)
+            .build()
+
+    fun getMonosChinosService() : MonosChinosService =
+        getMonosChinosRetrofit().create(MonosChinosService::class.java)
+
 }
