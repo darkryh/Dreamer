@@ -48,6 +48,7 @@ import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.apis.app.*
 import com.ead.project.dreamer.domain.apis.discord.*
+import com.ead.project.dreamer.domain.apis.monos_chinos.Login
 import com.ead.project.dreamer.domain.configurations.*
 import com.ead.project.dreamer.domain.databasequeries.*
 import com.ead.project.dreamer.domain.directory.GetDirectoryState
@@ -814,6 +815,18 @@ object AppModule {
     @Provides
     fun provideLaunchUpdate(createDownload: CreateDownload, installUpdate: InstallUpdate) : LaunchUpdate
     = LaunchUpdate(createDownload, installUpdate)
+
+    @Singleton
+    @Provides
+    fun provideMonosChinosLogin(repository: AnimeRepository) : Login
+    = Login(repository)
+
+    @Singleton
+    @Provides
+    fun provideMonosChinosUseCase(
+        login: Login
+    ) : MonosChinosUseCase
+    = MonosChinosUseCase(login)
 
     @Singleton
     @Provides
