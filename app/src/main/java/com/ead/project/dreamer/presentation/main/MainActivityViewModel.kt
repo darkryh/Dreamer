@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.BypassInitializer
-import com.ead.project.dreamer.app.data.preference.Settings
+import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.domain.ApplicationUseCase
+import com.ead.project.dreamer.domain.DirectoryUseCase
 import com.ead.project.dreamer.domain.DiscordUseCase
 import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
@@ -31,6 +31,7 @@ class MainActivityViewModel @Inject constructor(
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
     private val applicationUseCase: ApplicationUseCase,
     private val installWorkers: InstallWorkers,
+    private val directoryUseCase: DirectoryUseCase,
     private val discordUseCase: DiscordUseCase,
     private val objectUseCase: ObjectUseCase,
     private val client: FirebaseClient,
@@ -84,7 +85,7 @@ class MainActivityViewModel @Inject constructor(
 
     fun getStatusApp() = applicationUseCase.getAppStatusVersion.livedata()
 
-    fun getDirectoryState() : Flow<Boolean> = preferences.getBooleanFlow(Settings.SYNC_DIRECTORY_PROFILE)
+    fun getDirectoryState() : Flow<Boolean> = directoryUseCase.getDirectoryState()
 
     fun resetRequestingProfile() {
         viewModelScope.launch {
