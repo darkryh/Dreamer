@@ -44,8 +44,9 @@ class UpdateReleasesWorker @AssistedInject constructor(
                             )
                         }
                         profileInProgress.await().apply {
-                            reference = profile.reference
-                            objectUseCase.updateObject(this)
+                            objectUseCase.updateObject(copy(
+                                reference = profile.reference
+                            ))
                         }
                     }
                 }
