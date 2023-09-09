@@ -18,7 +18,7 @@ class SuggestionsViewModel @Inject constructor(
 
     private val recommendationList : MutableLiveData<List<AnimeProfile>> = MutableLiveData()
 
-    fun getMostViewedSeries() : LiveData<List<AnimeProfile>> = profileUseCase.getMostViewedProfiles.livedata()
+    fun getMostViewedSeries() : LiveData<List<AnimeProfile>> = profileUseCase.getMostViewedProfiles.previewLivedData()
 
     fun getRecommendations() : MutableLiveData<List<AnimeProfile>> {
         viewModelScope.launch (Dispatchers.IO) {

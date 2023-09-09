@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.ead.project.dreamer.app.data.server.Server
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.DownloadUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
+import com.ead.project.dreamer.domain.RecordsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

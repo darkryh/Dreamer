@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.domain.RecordsUseCase
-import com.ead.project.dreamer.domain.downloads.LaunchDownload
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +16,11 @@ import javax.inject.Inject
 class RecordViewModel @Inject constructor(
     private val recordsUseCase: RecordsUseCase,
     val adManager: AdManager,
-    val handleChapter: HandleChapter,
-    val launchDownload: LaunchDownload
+    val handleChapter: HandleChapter
 ): ViewModel() {
-
     fun getLiveDataRecords() : LiveData<List<Chapter>> = recordsUseCase.getRecords.livedata()
 
-    fun updateContinuation(chapterList: List<Chapter>) =
+    fun configureRecords(chapterList: List<Chapter>) =
         viewModelScope.launch (Dispatchers.IO) { recordsUseCase.configureRecords(chapterList) }
 
-    fun checkIfUpgradeExist(chapterList: List<Chapter>) : Boolean =
-        recordsUseCase.configureRecords.checkIfUpgradeExist(chapterList)
 }
