@@ -1,7 +1,6 @@
 package com.ead.project.dreamer.app.data.preference
 
 import androidx.datastore.core.DataStore
-import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.files.Files
 import com.ead.project.dreamer.app.model.AppBuild
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,8 @@ class AppBuildPreferences @Inject constructor(
     fun isDarkTheme() : Boolean = runBlocking { store.data.first().isDarkTheme }
 
     fun getLastVersionFile() : File = runBlocking {
-        File(Files.DirectoryDownloadsFile,"${store.data.first().lastVersion}.apk")
+        val update = store.data.first().update
+        File(Files.DirectoryDownloadsFile, Files.mainFile.name + "/" + Files.updatesFile.name + "/" + update.title + "_" + update.version + ".apk")
     }
 
     fun setDarkMode(value : Boolean) {
@@ -44,11 +44,11 @@ class AppBuildPreferences @Inject constructor(
         }
     }
 
-    fun update(build: AppBuild) {
+    fun updateVersion(version : Double) {
         scope.launch {
-            store.updateData {
-                build.copy(
-                    currentVersionDeprecated = AppInfo.versionValue < build.minVersion
+            store.updateData { appBuild ->
+                appBuild.copy(
+                    update = appBuild.update.copy(version = version)
                 )
             }
         }
