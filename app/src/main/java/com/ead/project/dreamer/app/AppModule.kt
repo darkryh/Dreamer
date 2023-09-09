@@ -24,9 +24,11 @@ import com.ead.project.dreamer.app.data.home.HOME_PREFERENCES
 import com.ead.project.dreamer.app.data.home.HomeNotifier
 import com.ead.project.dreamer.app.data.home.HomePreferences
 import com.ead.project.dreamer.app.data.home.HomeSerializer
+import com.ead.project.dreamer.app.data.notifications.NotificationManager
 import com.ead.project.dreamer.app.data.player.PLAYER_PREFERENCE
 import com.ead.project.dreamer.app.data.player.PlayerPreferenceSerializer
 import com.ead.project.dreamer.app.data.player.PlayerPreferences
+import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.preference.APP_BUILD
 import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
 import com.ead.project.dreamer.app.data.preference.AppBuildSerializer
@@ -36,15 +38,13 @@ import com.ead.project.dreamer.app.model.AppBuild
 import com.ead.project.dreamer.app.model.FilePreference
 import com.ead.project.dreamer.app.model.HomePreference
 import com.ead.project.dreamer.app.model.PlayerPreference
+import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.AnimeDatabase
 import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.models.DownloadList
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.data.utils.AdManager
-import com.ead.project.dreamer.app.data.notifications.NotificationManager
-import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.apis.app.*
 import com.ead.project.dreamer.domain.apis.discord.*
@@ -54,11 +54,20 @@ import com.ead.project.dreamer.domain.databasequeries.*
 import com.ead.project.dreamer.domain.directory.GetDirectoryState
 import com.ead.project.dreamer.domain.directory.SetDirectoryState
 import com.ead.project.dreamer.domain.downloads.*
+import com.ead.project.dreamer.domain.downloads.states.DownloadedState
+import com.ead.project.dreamer.domain.downloads.states.FailedState
+import com.ead.project.dreamer.domain.downloads.states.PausedState
+import com.ead.project.dreamer.domain.downloads.states.PendingState
+import com.ead.project.dreamer.domain.downloads.states.RunningState
+import com.ead.project.dreamer.domain.downloads.states.StreamingState
 import com.ead.project.dreamer.domain.operations.DeleteObject
 import com.ead.project.dreamer.domain.operations.InsertObject
 import com.ead.project.dreamer.domain.operations.UpdateObject
 import com.ead.project.dreamer.domain.servers.*
+import com.ead.project.dreamer.domain.update.IsAlreadyDownloaded
+import com.ead.project.dreamer.domain.update.GetUpdate
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -68,8 +77,11 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -83,9 +95,17 @@ object AppModule {
 
     @Singleton
     @Provides
-    @Suppress("DEPRECATION")
     fun provideCastContext(context: Context) : CastContext {
-        return CastContext.getSharedInstance(context)
+        val executor = Executors.newSingleThreadExecutor()
+        val castContextTask: Task<CastContext> = CastContext.getSharedInstance(context, executor)
+
+        return try {
+            runBlocking {
+                castContextTask.await()
+            }
+        } catch (e : Exception) {
+            throw IllegalStateException("error couldn't get CastContext")
+        }
     }
 
     @Singleton
@@ -122,6 +142,10 @@ object AppModule {
         .baseUrl(Discord.ENDPOINT)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
+
+    @Singleton
+    @Provides
+    fun provideAppReceiver() : AppReceiver = AppReceiver()
 
     @Singleton
     @Provides
@@ -194,9 +218,10 @@ object AppModule {
     @Provides
     fun provideDownloadStore(
         store: DataStore<DownloadList>,
-        downloadManager: DownloadManager
+        downloadManager: DownloadManager,
+        getChapter: GetChapter
     ) : DownloadStore
-    = DownloadStore(store,downloadManager)
+    = DownloadStore(store,downloadManager,getChapter)
 
     @Singleton
     @Provides
@@ -305,8 +330,15 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAddDownload(getTempDownloads: GetTempDownloads, downloadEngine: DownloadEngine) : AddDownload
-    = AddDownload(getTempDownloads,downloadEngine)
+    fun provideAddDownload(
+        streamingState: StreamingState,
+        runningState: RunningState,
+        pendingState: PendingState,
+        pausedState: PausedState,
+        failedState: FailedState,
+        downloadedState: DownloadedState
+    ) : AddDownload
+    = AddDownload(streamingState, runningState, pendingState, pausedState, failedState, downloadedState)
 
     @Singleton
     @Provides
@@ -329,8 +361,8 @@ object AppModule {
     @Provides
     fun provideCheckIfUpdateIsAlreadyDownloaded(
         preferenceUseCase: PreferenceUseCase
-    ) : CheckIfUpdateIsAlreadyDownloaded
-    = CheckIfUpdateIsAlreadyDownloaded(preferenceUseCase)
+    ) : IsAlreadyDownloaded
+    = IsAlreadyDownloaded(preferenceUseCase)
 
     @Singleton
     @Provides
@@ -341,11 +373,12 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideConfigureDownloadRequest(
+    fun provideConfigureDownload(
+        context: Context,
         gson: Gson,
         preferenceUseCase: PreferenceUseCase
-    ) : ConfigureDownloadRequest
-    = ConfigureDownloadRequest(gson, preferenceUseCase)
+    ) : ConfigureDownload
+    = ConfigureDownload(context, gson, preferenceUseCase)
 
     @Singleton
     @Provides
@@ -364,11 +397,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCreateDownloadRequest(
+    fun provideGenerateDownload(
         downloadManager: DownloadManager,
-        enqueueDownload: EnqueueDownload
-    ) : CreateDownloadRequest
-    = CreateDownloadRequest(downloadManager,enqueueDownload)
+        downloadStore: DownloadStore
+    ) : GenerateDownload
+    = GenerateDownload(downloadManager,downloadStore)
 
     @Singleton
     @Provides
@@ -402,43 +435,60 @@ object AppModule {
     fun provideDownloadEngine(
         context: Context,
         repository: AnimeRepository,
-        tempDownloads: GetTempDownloads,
+        getChapter: GetChapter,
         getServerResultToArray: GetServerResultToArray,
         getSortedServers: GetSortedServers,
         getServers: GetServers,
-        createDownload: CreateDownload,
-        serverScript: ServerScript
+        enqueueDownload: EnqueueDownload,
+        downloadStore: DownloadStore,
+        serverScript: ServerScript,
+        //downloadWebView: DownloadWebView,
+        appReceiver: AppReceiver
     ) : DownloadEngine
-    = DownloadEngine(context, repository, tempDownloads, getServerResultToArray, getSortedServers, getServers, createDownload,serverScript)
+    = DownloadEngine(context, repository, getChapter ,getServerResultToArray, getSortedServers, getServers, enqueueDownload, serverScript, downloadStore,/*downloadWebView,*/ appReceiver)
+
+/*    @Singleton
+    @Provides
+    @MainThread
+    fun provideDownloadWebView(context: Context) : DownloadWebView = DownloadWebView(context)*/
+
 
     @Singleton
     @Provides
     fun provideDownloadUseCase(
-        startDownload: StartDownload,
-        startManualDownload: StartManualDownload,
-        createManualDownload: CreateManualDownload,
-        launchUpdate: LaunchUpdate,
-        filterDownloads: FilterDownloads,
-        isDownloaded: IsDownloaded,
-        checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
-        removeDownload: RemoveDownload
+        addDownload: AddDownload,
+        removeDownload: RemoveDownload,
+        isInParallelLimit: IsInParallelDownloadLimit
     ) : DownloadUseCase
-    = DownloadUseCase(startDownload, startManualDownload, createManualDownload, launchUpdate , filterDownloads, isDownloaded ,checkIfUpdateIsAlreadyDownloaded, removeDownload)
+    = DownloadUseCase(addDownload,removeDownload,isInParallelLimit)
 
     @Singleton
     @Provides
-    fun provideEnqueueDownload(
-        downloadStore: DownloadStore
-    ) : EnqueueDownload
-    = EnqueueDownload(downloadStore)
+    fun provideStreamingState(
+        downloadStore: DownloadStore,
+        launchDownload: LaunchDownload,
+        enqueueDownload: EnqueueDownload
+    ) : StreamingState = StreamingState(downloadStore, launchDownload, enqueueDownload)
 
     @Singleton
     @Provides
-    fun provideFilterDownloads(
-        getDownloads: GetDownloads,
-        isInDownloadProgress: IsInDownloadProgress
-    ) : FilterDownloads
-    = FilterDownloads(getDownloads,isInDownloadProgress)
+    fun provideRunningState() : RunningState = RunningState()
+
+    @Singleton
+    @Provides
+    fun providePendingState() : PendingState = PendingState()
+
+    @Singleton
+    @Provides
+    fun providePausedState() : PausedState = PausedState()
+
+    @Singleton
+    @Provides
+    fun provideFailedState(removeDownload: RemoveDownload, launchDownload: LaunchDownload, enqueueDownload: EnqueueDownload) : FailedState = FailedState(removeDownload, launchDownload, enqueueDownload)
+
+    @Singleton
+    @Provides
+    fun provideDownloadedState(filesPreferences: FilesPreferences, launchDownload: LaunchDownload, enqueueDownload: EnqueueDownload) : DownloadedState = DownloadedState(filesPreferences, launchDownload, enqueueDownload)
 
     @Singleton
     @Provides
@@ -479,11 +529,6 @@ object AppModule {
     @Provides
     fun provideGetChaptersToFix(repository: AnimeRepository) : GetChaptersToFix
     = GetChaptersToFix(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetCursorFromDownloads(downloadManager: DownloadManager) : GetCursorFromDownloads
-    = GetCursorFromDownloads(downloadManager)
 
     @Singleton
     @Provides
@@ -542,19 +587,16 @@ object AppModule {
     fun provideGetDiscordUserToken(repository: AnimeRepository) : GetDiscordUserToken
     = GetDiscordUserToken(repository)
 
-    @Singleton
-    @Provides
-    fun provideGetDownload() : GetDownloads = GetDownloads()
 
     @Singleton
     @Provides
     fun provideGetEmbedServer(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServers
-    = GetEmbedServers(context, getServerResultToArray,serverScript)
+    = GetEmbedServers(context,getServerResultToArray,serverScript)
 
     @Singleton
     @Provides
     fun provideGetEmbedServerMutable(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServersMutable
-    = GetEmbedServersMutable(context, getServerResultToArray,serverScript)
+    = GetEmbedServersMutable(context,getServerResultToArray,serverScript)
 
     @Singleton
     @Provides
@@ -705,19 +747,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetTempDownloads() : GetTempDownloads = GetTempDownloads()
-
-    @Singleton
-    @Provides
     fun provideGson() : Gson = Gson()
 
     @Singleton
     @Provides
     fun provideHandleChapter(
-        launchServer: LaunchServer,
         launchVideo: LaunchVideo
     ) : HandleChapter
-    = HandleChapter(launchServer, launchVideo)
+    = HandleChapter(launchVideo)
 
     @Singleton
     @Provides
@@ -736,36 +773,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideInstallUpdate(context: Context) : InstallUpdate
-    = InstallUpdate(context)
-
-    @Singleton
-    @Provides
-    fun provideIsDownloaded(isInDownloadManagerProgress: IsInDownloadManagerProgress) : IsDownloaded
-    = IsDownloaded(isInDownloadManagerProgress)
-
-    @Singleton
-    @Provides
     fun provideInstallWorkers(workManager: WorkManager,constraints: Constraints) : InstallWorkers
     = InstallWorkers(workManager,constraints)
 
     @Singleton
     @Provides
-    fun provideIsInDownloadManagerProgress(getCursorFromDownloads: GetCursorFromDownloads) : IsInDownloadManagerProgress
-    = IsInDownloadManagerProgress(getCursorFromDownloads)
-
-    @Singleton
-    @Provides
-    fun provideIsInDownloadProgress(
-        getDownloads: GetDownloads,
-        getTempDownloads: GetTempDownloads,
-        isInDownloadManagerProgress: IsInDownloadManagerProgress
-    ) : IsInDownloadProgress = IsInDownloadProgress(getDownloads, getTempDownloads, isInDownloadManagerProgress)
-
-    @Singleton
-    @Provides
-    fun provideLaunchServer() : LaunchServer
-    = LaunchServer()
+    fun provideIsInParallelDownloadLimit(downloadStore: DownloadStore) : IsInParallelDownloadLimit
+    = IsInParallelDownloadLimit(downloadStore)
 
     @Singleton
     @Provides
@@ -787,19 +801,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideCreateDownload(
-        createDownloadRequest: CreateDownloadRequest,
-        configureDownloadRequest: ConfigureDownloadRequest
-    ) : CreateDownload
-    = CreateDownload(createDownloadRequest,configureDownloadRequest)
-
-    @Singleton
-    @Provides
-    fun provideCreateManualDownload(
-        downloadEngine: DownloadEngine,
-        createDownload: CreateDownload
-    ) : CreateManualDownload
-    = CreateManualDownload(downloadEngine, createDownload)
+    fun provideEnqueueDownload(
+        generateDownload: GenerateDownload,
+        configureDownload: ConfigureDownload,
+        appReceiver: AppReceiver,
+        context: Context
+    ) : EnqueueDownload
+    = EnqueueDownload(generateDownload, configureDownload, appReceiver, context)
 
     @Singleton
     @Provides
@@ -813,8 +821,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideLaunchUpdate(createDownload: CreateDownload, installUpdate: InstallUpdate) : LaunchUpdate
-    = LaunchUpdate(createDownload, installUpdate)
+    fun provideGetUpdate(downloadStore: DownloadStore) : GetUpdate
+    = GetUpdate(downloadStore)
 
     @Singleton
     @Provides
@@ -851,6 +859,7 @@ object AppModule {
         actionStore: ActionStore,
         preferencesSettings: Preferences,
         adPreferences: AdPreferences,
+        homePreferences: HomePreferences,
         filesPreferences: FilesPreferences,
         playerPreferences: PlayerPreferences
     ) : PreferenceUseCase =
@@ -859,6 +868,7 @@ object AppModule {
             actionStore = actionStore,
             preferences = preferencesSettings,
             adPreferences = adPreferences,
+            homePreferences = homePreferences,
             filesPreferences = filesPreferences,
             playerPreferences = playerPreferences
         )
@@ -895,21 +905,14 @@ object AppModule {
     fun provideRecordsUseCase(
         getRecords: GetRecords,
         configureRecords: ConfigureRecords
-    ) : RecordsUseCase = RecordsUseCase(getRecords, configureRecords)
+    ) : RecordsUseCase = RecordsUseCase(getRecords,configureRecords)
 
     @Singleton
     @Provides
     fun provideRemoveDownload(
         downloadManager: DownloadManager,
-        removeEnqueueDownload: RemoveEnqueueDownload) : RemoveDownload
-    = RemoveDownload(downloadManager,removeEnqueueDownload)
-
-    @Singleton
-    @Provides
-    fun provideRemoveEnqueueDownload(
-        downloadStore: DownloadStore
-    ) : RemoveEnqueueDownload
-    = RemoveEnqueueDownload(downloadStore)
+        downloadStore: DownloadStore ) : RemoveDownload
+    = RemoveDownload(downloadManager,downloadStore)
 
     @Singleton
     @Provides
@@ -920,7 +923,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideServerEngine(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : ServerEngine
+    fun provideServerEngine(context : Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : ServerEngine
     = ServerEngine(context,getServerResultToArray,serverScript)
 
     @Singleton
@@ -935,30 +938,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideStartDownload(
-        context: Context,
-        filterDownloads: FilterDownloads,
-        isInDownloadProgress: IsInDownloadProgress,
-        addDownload: AddDownload,
-        removeDownload: RemoveDownload,
-        getDownloads: GetDownloads,
-        filesPreferences: FilesPreferences
-    ) : StartDownload
-    = StartDownload(context, filterDownloads, isInDownloadProgress ,addDownload, removeDownload, getDownloads, filesPreferences)
-
-    @Singleton
-    @Provides
-    fun provideStartManualDownload(
-        context: Context,
-        launchServer: LaunchServer,
-        getDownloads: GetDownloads,
-        isInDownloadProgress: IsInDownloadProgress,
-        removeDownload: RemoveDownload
-    ) : StartManualDownload
-    = StartManualDownload(context, isInDownloadProgress , launchServer ,getDownloads, removeDownload)
-
-    @Singleton
-    @Provides
     fun provideUpdateObject(repository: AnimeRepository) : UpdateObject
     = UpdateObject(repository)
+
+    @Singleton
+    @Provides
+    fun provideUpdateUseCase(getUpdate: GetUpdate, isAlreadyDownloaded: IsAlreadyDownloaded) : UpdateUseCase
+    = UpdateUseCase(getUpdate, isAlreadyDownloaded)
 }
