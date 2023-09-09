@@ -22,6 +22,13 @@
             app:summaryOff="Reproduciendo videos manualmente."
             app:title="Modo Automático" />
 
+        <Preference
+            android:icon="@drawable/ic_sort_24"
+            app:key="PREFERENCE_RANK_AUTOMATIC_PLAYER_ORDER"
+            app:title="Configurar modo automatico."
+            app:summary="Configuración de orden de servidores."/>
+
+
         <SwitchPreference
             android:icon="@drawable/ic_picture_in_picture_24"
             android:summaryOn="Ventana flotante activada."
