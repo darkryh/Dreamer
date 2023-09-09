@@ -11,13 +11,6 @@ class Converters {
 
     private val gson : Gson = Gson()
     @TypeConverter
-    fun listStringToJson(value: List<String>): String = gson.toJson(value)
-
-    @TypeConverter
-    fun jsonStringToList(listOfString: String?): MutableList<String?>? = gson
-        .fromJson(listOfString, object : TypeToken<List<String?>?>() {}.type)
-
-    @TypeConverter
     fun fromTimestamp(value: Long?): Date? = value?.let { Date(it) }
 
     @TypeConverter
@@ -28,4 +21,11 @@ class Converters {
 
     @TypeConverter
     fun jsonStringToChapter(value: String?): Chapter? = gson.deserialize(value)
+
+    @TypeConverter
+    fun stringListToJson(value: List<String>): String = gson.toJson(value)
+
+    @TypeConverter
+    fun jsonToStringList(listOfString: String?): List<String> = gson
+        .fromJson(listOfString, object : TypeToken<List<String>>() {}.type)
 }
