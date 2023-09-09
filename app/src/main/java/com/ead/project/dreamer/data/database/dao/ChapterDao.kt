@@ -12,10 +12,6 @@ interface ChapterDao {
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun update(chapter: Chapter)
-
-    @Update(onConflict = OnConflictStrategy.IGNORE)
-    fun updateNormal(chapter: Chapter)
-
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateChapters(chapters: List<Chapter>)
 
