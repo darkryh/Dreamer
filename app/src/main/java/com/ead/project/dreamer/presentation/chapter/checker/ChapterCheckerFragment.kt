@@ -2,6 +2,7 @@ package com.ead.project.dreamer.presentation.chapter.checker
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +19,11 @@ import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
+import com.ead.project.dreamer.data.utils.Run
 import com.ead.project.dreamer.databinding.FragmentDialogCheckerBinding
 import com.ead.project.dreamer.domain.DownloadUseCase
-import com.ead.project.dreamer.presentation.menuserver.MenuServerFragment
+import com.ead.project.dreamer.presentation.server.menu.MenuServerFragment
+import com.ead.project.dreamer.presentation.player.PlayerActivity
 import com.ead.project.dreamer.presentation.settings.options.SettingsPlayerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,23 +33,27 @@ class ChapterCheckerFragment : DialogFragment() {
 
     @Inject lateinit var downloadUseCase : DownloadUseCase
     @Inject lateinit var appBuildPreferences: AppBuildPreferences
-    private lateinit var chapterCheckerViewModel : ChapterCheckerViewModel
-    private lateinit var playList : List<VideoModel>
+    private lateinit var viewModel : ChapterCheckerViewModel
+    private lateinit var videoList : List<VideoModel>
     private lateinit var chapter : Chapter
+    private var previousChapter: Chapter?= null
     private var isDirect = true
     private var isExternalPlayerMode = false
     private var isDownloadingMode = false
+    private var isFromContent = false
     private var count = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        chapterCheckerViewModel = ViewModelProvider(this)[ChapterCheckerViewModel::class.java]
+        viewModel = ViewModelProvider(this)[ChapterCheckerViewModel::class.java]
         arguments?.let {
-            playList = it.parcelableArrayList(Chapter.PLAY_VIDEO_LIST)?:return@let
-            chapter = it.parcelable(Chapter.REQUESTED)!!
+            videoList = it.parcelableArrayList(Chapter.PLAY_VIDEO_LIST)?:return@let
+            chapter = it.parcelable(Chapter.REQUESTED)?:return@let
+            previousChapter = it.parcelable(Chapter.PREVIOUS_CASTING_MEDIA)
             isDirect = it.getBoolean(Chapter.CONTENT_IS_DIRECT)
             isExternalPlayerMode = it.getBoolean(SettingsPlayerFragment.PREFERENCE_EXTERNAL_PLAYER)
             isDownloadingMode = it.getBoolean(MenuServerFragment.IS_DATA_FOR_DOWNLOADING_MODE)
+            isFromContent = it.getBoolean(PlayerActivity.IS_FROM_CONTENT_PLAYER)
         }
     }
 
@@ -74,7 +81,7 @@ class ChapterCheckerFragment : DialogFragment() {
     }
 
     private fun gettingData() {
-        chapterCheckerViewModel.getChapterData(chapter).observe(viewLifecycleOwner) { mChapter ->
+        viewModel.getChapterData(chapter).observe(viewLifecycleOwner) { mChapter ->
             if (mChapter != null) {
                 if (isDownloadingMode) prepareDownload(mChapter)
                 else preparingIntent(mChapter)
@@ -84,18 +91,18 @@ class ChapterCheckerFragment : DialogFragment() {
     }
 
     private fun gettingAnimeBase() {
-        chapterCheckerViewModel.getAnimeBase(chapter.title).observe(viewLifecycleOwner) { mAnimeBase ->
+        viewModel.getAnimeBase(chapter.title).observe(viewLifecycleOwner) { mAnimeBase ->
             if (mAnimeBase != null) gettingAnimeProfile(mAnimeBase)
         }
     }
 
     private fun gettingAnimeProfile(animeBase: AnimeBase) {
-        chapterCheckerViewModel.getAnimeProfile(animeBase.id)
+        viewModel.getAnimeProfile(animeBase.id)
             .observe(viewLifecycleOwner) { mAnimeProfile ->
                 if (mAnimeProfile != null) {
                     if (appBuildPreferences.isUnlockedVersion() || mAnimeProfile.checkPolicies()) {
                         if (++count == 1) {
-                            chapterCheckerViewModel
+                            viewModel
                                 .configureChaptersData(mAnimeProfile.id, animeBase.reference)
                         }
                     }
@@ -105,27 +112,25 @@ class ChapterCheckerFragment : DialogFragment() {
                     }
                 }
                 else
-                    chapterCheckerViewModel
+                    viewModel
                         .configureProfileData(null,animeBase.id, animeBase.reference)
             }
     }
 
-    private fun prepareDownload(chapter: Chapter) =
-        downloadUseCase.createManualDownload(chapter,playList.last().directLink)
+    private fun prepareDownload(chapter: Chapter) {
+        downloadUseCase.add(activity as Context,chapter,videoList.last().directLink)
+    }
 
     private fun preparingIntent(chapter: Chapter) {
-        /*if (Constants.isAdInterstitialTime(isDirect)) {
-            launchIntent(requireActivity(),chapter, InterstitialAdActivity::class.java,playList,isDirect)
-            Constants.resetCountedAds()
-        } else {
-            if (isDirect) {
-                if (!isExternalPlayerMode)
-                    launchIntent(requireActivity(),chapter,PlayerActivity::class.java, playList)
-                else
-                    launchIntent(requireActivity(),chapter,PlayerExternalActivity::class.java, playList)
+        Run.catching {
+
+            viewModel.launchVideo.with(activity as Context,chapter,previousChapter,videoList,isDirect)
+            if (isFromContent && viewModel.playerPreferences.isInExternalMode()) {
+                activity?.finish()
             }
-            else launchIntent(requireActivity(),chapter,PlayerWebActivity::class.java, playList)
-        }*/
+            dismiss()
+
+        }
     }
 
     override fun onDestroyView() {
