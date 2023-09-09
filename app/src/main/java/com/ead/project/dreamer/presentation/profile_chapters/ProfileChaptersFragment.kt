@@ -28,7 +28,6 @@ class ProfileChaptersFragment : Fragment() {
 
     private lateinit var adapter : ChapterRecyclerViewAdapter
     private var backUpChapters : List<Chapter> = listOf()
-    private var currentChapter : Chapter?= null
 
     private val inputMethodManager : InputMethodManager by lazy { requireContext().inputMethodManager }
 
@@ -60,7 +59,6 @@ class ProfileChaptersFragment : Fragment() {
         }
 
         setupLayouts()
-        setupChapterLastSeen()
     }
 
     private fun setupLayouts() {
@@ -93,30 +91,6 @@ class ProfileChaptersFragment : Fragment() {
         }
     }
 
-    private fun setupChapterLastSeen() {
-        viewModel.getAnimeProfile(profileId).observe(viewLifecycleOwner) { animeProfile ->
-
-            val chapterSeen = animeProfile?.lastChapterSeen
-
-            if (currentChapter != null && currentChapter == chapterSeen) return@observe
-
-            currentChapter = chapterSeen
-
-            if (chapterSeen != null) {
-
-                bindingChapter(chapterSeen)
-
-            }
-            else {
-
-                viewModel.getFirstChapterFromProfile(profileId).observeOnce(viewLifecycleOwner) { chapter ->
-
-                    bindingChapter(chapter?:return@observeOnce)
-
-                }
-            }
-        }
-    }
     private fun setupChapters() {
         binding.apply {
             viewModel.getChaptersFromProfile(profileId).observe(viewLifecycleOwner) { chapters ->
@@ -124,6 +98,11 @@ class ProfileChaptersFragment : Fragment() {
                 backUpChapters = chapters
                 adapter.submitList(chapters)
 
+                val observableChapter = if (chapters.any { it.totalProgress > 0 }) chapters.maxByOrNull { it.lastDateSeen }
+                else chapters.minByOrNull { it.number }
+
+
+                bindingChapter(observableChapter?:return@observe)
             }
 
             edtChapter.addTextChangedListener { _ ->
