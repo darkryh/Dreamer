@@ -22,10 +22,7 @@ data class Download(
     }
 
     fun toApkFile() : File {
-        return File(
-            Files.DirectoryDownloadsFile,
-            "$title.apk"
-        )
+        return File(Files.DirectoryDownloadsFile, "${Files.mainFile.name}/${Files.updatesFile.name}/$title.apk")
     }
 
     fun isInProgress() =  state != DownloadManager.STATUS_FAILED &&
