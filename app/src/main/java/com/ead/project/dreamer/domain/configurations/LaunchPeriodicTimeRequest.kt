@@ -22,6 +22,7 @@ class LaunchPeriodicTimeRequest @Inject constructor(
         const val ProfileRepositoryWorkerCode = -8
         const val ScrapperWorkerCode = -9
         const val UpdateReleasesWorkerCode = -10
+        const val DownloadWorker = -11
     }
 
     operator fun invoke(
@@ -54,6 +55,7 @@ class LaunchPeriodicTimeRequest @Inject constructor(
             ProfileRepositoryWorkerCode -> PeriodicWorkRequestBuilder<ProfileRepositoryWorker>(interval, timeUnit)
             ScrapperWorkerCode -> PeriodicWorkRequestBuilder<ScrapperWorker>(interval, timeUnit)
             UpdateReleasesWorkerCode -> PeriodicWorkRequestBuilder<UpdateReleasesWorker>(interval, timeUnit)
+            DownloadWorker -> PeriodicWorkRequestBuilder<DownloadWorker>(interval,timeUnit)
             else -> PeriodicWorkRequestBuilder<DirectoryWorker>(interval, timeUnit)
         }
     }

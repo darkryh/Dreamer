@@ -21,6 +21,7 @@ class LaunchOneTimeRequest @Inject constructor(
         const val ProfileRepositoryWorkerCode = 8
         const val ScrapperWorkerCode = 9
         const val UpdateReleasesWorkerCode = 10
+        const val DownloadWorker = 11
     }
 
     operator fun invoke(
@@ -51,6 +52,7 @@ class LaunchOneTimeRequest @Inject constructor(
             ProfileRepositoryWorkerCode -> OneTimeWorkRequestBuilder<ProfileRepositoryWorker>()
             ScrapperWorkerCode -> OneTimeWorkRequestBuilder<ScrapperWorker>()
             UpdateReleasesWorkerCode -> OneTimeWorkRequestBuilder<UpdateReleasesWorker>()
+            DownloadWorker -> OneTimeWorkRequestBuilder<DownloadWorker>()
             else -> OneTimeWorkRequestBuilder<DirectoryWorker>()
         }
     }
