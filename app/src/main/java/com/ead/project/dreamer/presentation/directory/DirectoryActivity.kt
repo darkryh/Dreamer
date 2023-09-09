@@ -10,10 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.metrics.getAvailableWidthReference
-import com.ead.commons.lib.views.getMutated
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.databinding.ActivityDirectoryBinding
 import com.ead.project.dreamer.presentation.directory.adapter.AnimeBaseRecyclerViewAdapter
@@ -54,31 +53,18 @@ class DirectoryActivity : AppCompatActivity() {
         binding.apply {
             editextSearch.requestFocus()
 
-            supportActionBar?.hide()
-            setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            handleNotActionBar(toolbar,viewModel.appBuildPreferences.isDarkTheme())
 
-            toolbar.setNavigationOnClickListener { onBack() }
-
-            recyclerView.adapter?.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            recyclerView.foregroundGravity = Gravity.CENTER_HORIZONTAL
-
-            if (viewModel.appBuildPreferences.isDarkTheme()) {
-                toolbar.navigationIcon =
-                    toolbar.navigationIcon?.getMutated(this@DirectoryActivity,R.color.white)
+            recyclerView.apply {
+                adapter?.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                foregroundGravity = Gravity.CENTER_HORIZONTAL
+                layoutManager = layoutManagerAvailable()
             }
-            else {
-                toolbar.navigationIcon =
-                    toolbar.navigationIcon?.getMutated(this@DirectoryActivity,R.color.blackPrimary)
-            }
-
-            recyclerView.layoutManager = getLayoutManager()
         }
     }
 
-    private fun getLayoutManager() : RecyclerView.LayoutManager =
+    private fun layoutManagerAvailable() : RecyclerView.LayoutManager =
         when(getAvailableWidthReference(380)) {
             0 -> {
                 isSmallDevice = true
