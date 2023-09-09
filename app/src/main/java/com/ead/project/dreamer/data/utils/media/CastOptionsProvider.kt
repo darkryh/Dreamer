@@ -2,16 +2,13 @@ package com.ead.project.dreamer.data.utils.media
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.text.format.DateUtils
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.presentation.player.cast.ExpandedControlsActivity
 import com.google.android.gms.cast.CredentialsData
 import com.google.android.gms.cast.LaunchOptions
 import com.google.android.gms.cast.framework.CastOptions
 import com.google.android.gms.cast.framework.OptionsProvider
-import com.google.android.gms.cast.framework.Session
 import com.google.android.gms.cast.framework.SessionProvider
 import com.google.android.gms.cast.framework.media.CastMediaOptions
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
@@ -46,7 +43,7 @@ class CastOptionsProvider : OptionsProvider {
         val mediaOptions = CastMediaOptions.Builder()
             .setNotificationOptions(notificationOptions)
             .setExpandedControllerActivityClassName(ExpandedControlsActivity::class.java.name)
-            //.setMediaIntentReceiverClassName(DreamerMediaIntentReceiver::class.java.name)
+            .setMediaSessionEnabled(true)
             .build()
 
         val credentialsData = CredentialsData.Builder()
@@ -67,27 +64,5 @@ class CastOptionsProvider : OptionsProvider {
 
     override fun getAdditionalSessionProviders(context: Context): List<SessionProvider>? {
         return null
-    }
-}
-
-internal class CastMediaIntentReceiver : MediaIntentReceiver() {
-
-    private var context: Context?= null
-
-    override fun onReceive(context: Context, intent: Intent) {
-        this.context = context
-        super.onReceive(context, intent)
-    }
-
-    override fun onReceiveActionTogglePlayback(currentSession: Session) {
-        context?.toast("onReceiveActionTogglePlayback")
-    }
-
-    override fun onReceiveActionMediaButton(currentSession: Session, intent: Intent) {
-        context?.toast("onReceiveActionMediaButton")
-    }
-
-    override fun onReceiveOtherAction(context: Context?, action: String, intent: Intent) {
-        context?.toast("onReceiveOtherAction")
     }
 }
