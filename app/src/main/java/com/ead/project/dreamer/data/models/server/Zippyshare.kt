@@ -4,7 +4,7 @@ import com.ead.project.dreamer.data.models.Player
 import com.ead.project.dreamer.data.models.Server
 
 
-class Zippyshare (embeddedUrl: String) : Server(embeddedUrl) {
+class Zippyshare(embeddedUrl: String) : Server(embeddedUrl) {
 
     override fun onPreExtract() {
         player = Player.Zippyshare
