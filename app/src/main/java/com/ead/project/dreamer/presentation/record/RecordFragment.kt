@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ead.commons.lib.metrics.getAvailableWidthReference
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.FragmentRecordsBinding
@@ -69,7 +70,7 @@ class RecordFragment : Fragment() {
         binding.list.apply {
 
             layoutManager = getLayoutManagerMode()
-            this@RecordFragment.adapter = ChapterRecordRecyclerViewAdapter(activity as Context, isSmallDevice, viewModel.handleChapter, viewModel.launchDownload)
+            this@RecordFragment.adapter = ChapterRecordRecyclerViewAdapter(activity as Context, isSmallDevice, viewModel.handleChapter)
             adapter = this@RecordFragment.adapter
             setupRecords()
 
@@ -89,17 +90,15 @@ class RecordFragment : Fragment() {
     private fun setupRecords() {
         viewModel.getLiveDataRecords().observe(viewLifecycleOwner) {
 
-            if (it.isNotEmpty()) {
-                adapter.submitList(it)
-            }
-            else {
-                binding.txvIsEmpty.visibility = View.VISIBLE
-                binding.list.visibility = View.GONE
-            }
-            if (viewModel.checkIfUpgradeExist(it)) {
-                viewModel.updateContinuation(it)
-            }
+            val isDataEmpty = it.isEmpty()
 
+            binding.txvIsEmpty.setVisibility(isDataEmpty)
+            binding.list.setVisibility(!isDataEmpty)
+
+            if (isDataEmpty) return@observe
+
+            adapter.submitList(it)
+            viewModel.configureRecords(it)
         }
     }
 
