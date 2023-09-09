@@ -5,6 +5,7 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.preferences.protobuf.InvalidProtocolBufferException
 import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.model.AppBuild
+import com.ead.project.dreamer.data.models.Update
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +25,7 @@ object AppBuildSerializer : Serializer<AppBuild> {
         get() =
             AppBuild(
                 minVersion = version,
-                lastVersion = version,
+                update = Update(AppInfo.name, version),
                 resumedVersionNotes = null,
                 versionNotes = null,
                 downloadReference = "https://dreamer-ead.net/resources/downloads/DreamerRelease1.40.apk",
