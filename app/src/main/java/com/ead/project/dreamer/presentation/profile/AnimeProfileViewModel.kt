@@ -8,12 +8,14 @@ import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.app.data.player.casting.CastManager
+import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.configurations.ConfigureChapters
 import com.ead.project.dreamer.domain.configurations.ConfigureProfile
 import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
+import com.ead.project.dreamer.domain.databasequeries.GetChapter
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +30,9 @@ class AnimeProfileViewModel @Inject constructor(
     private val configureChapters: ConfigureChapters,
     private val configureProfile: ConfigureProfile,
     private val launchOneTimeRequest: LaunchOneTimeRequest,
-    private val downloadUseCase: DownloadUseCase,
     val handleChapter: HandleChapter,
-    val adManager : AdManager,
+    val getChapter: GetChapter,
+    val adManager: AdManager,
     val castManager: CastManager,
     preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
@@ -66,6 +68,21 @@ class AnimeProfileViewModel @Inject constructor(
 
     fun updateAnimeProfile(animeProfile: AnimeProfile) =
         viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(animeProfile) }
+
+    fun updateChapterIfIsConsumed(chapter: Chapter) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!chapter.isContentConsumed) return@launch
+
+            val nextChapter = getChapter.fromTitleAndNumber(chapter.title, chapter.number + 1)?:return@launch
+
+            objectUseCase.updateObject(
+                nextChapter.copy(
+                    currentProgress = 1,
+                    lastDateSeen = TimeUtil.getNow()
+                )
+            )
+        }
+    }
 
     fun downloadAllChapters(id: Int) =
         viewModelScope.launch (Dispatchers.IO) { /*downloadUseCase.startDownload(chapterUseCase.getChaptersToDownload(id))*/ }
