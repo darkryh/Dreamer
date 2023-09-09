@@ -78,8 +78,13 @@ class ProfileBannerRecyclerViewAdapter(private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(animeProfile: AnimeProfile) {
+            settingContent(animeProfile)
             settingImage(animeProfile)
             functionality(animeProfile)
+        }
+
+        private fun settingContent(animeProfile: AnimeProfile) {
+            binding.txvTitle.text = animeProfile.title
         }
 
         private fun settingImage(animeProfile: AnimeProfile) {
