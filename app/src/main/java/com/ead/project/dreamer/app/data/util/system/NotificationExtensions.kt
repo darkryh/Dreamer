@@ -22,6 +22,6 @@ fun NotificationCompat.Builder.loadImage(imageUrl: String) = runBlocking {
         setStyle(
             NotificationCompat.BigPictureStyle()
                 .bigPicture(bitmap)
-                .bigLargeIcon(null))
+                .bigLargeIcon(bitmap))
     }
 }
