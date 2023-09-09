@@ -62,24 +62,5 @@ class NotificationManager @Inject constructor(private val context: Context) {
 
         private const val GROUP_SUMMARY_MARKETING = "GROUP_SUMMARY_MARKETING"
         private const val MARKETING_ID = 1500
-
-        private const val CHANNEL_SETTINGS_ID = 1500
-
-        fun showSettingNotification(notifier : NotificationManager, context: Context) {
-            /*val notification = notifier.create(
-                title = context.getString(R.string.first_time_notification_title),
-                content = context.getString(R.string.first_time_notification_description),
-                idDrawable = R.drawable.ic_launcher_foreground,
-                channelKey = HomeWorker.CHANNEL_APP_KEY_SERIES,
-                imageUrl = AppInfo.LOGO_URL
-            ).apply {
-                setOnlyAlertOnce(true)
-                addAction(0,"Todos",notifier.getPendingIntent(context, NotificationReceiver.PREFERENCE_ACTIVATION_ALL))
-                addAction(0,"Solo favoritos",notifier.getPendingIntent(context, NotificationReceiver.PREFERENCE_ACTIVATION_FAVORITES))
-                addAction(0,"Ninguno",notifier.getPendingIntent(context, NotificationReceiver.PREFERENCE_DEACTIVATION))
-            }
-            notifier.notify(CHANNEL_SETTINGS_ID,notification.build())*/
-            //Constants.disableFirstTimeShowingNotifications()
-        }
     }
 }
