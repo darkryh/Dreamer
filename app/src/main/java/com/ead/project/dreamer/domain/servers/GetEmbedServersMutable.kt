@@ -26,6 +26,4 @@ class GetEmbedServersMutable @Inject constructor(
             return result
         }
     }
-
-    fun onDestroy() = serverEngine.onDestroy()
 }

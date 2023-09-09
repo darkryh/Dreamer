@@ -24,5 +24,4 @@ class GetEmbedServers @Inject constructor(
         }
     }
 
-    fun onDestroy() = serverEngine.onDestroy()
 }
