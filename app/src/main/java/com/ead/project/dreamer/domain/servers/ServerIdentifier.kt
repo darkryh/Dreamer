@@ -18,12 +18,16 @@ class ServerIdentifier @Inject constructor() {
         if (url.contains(Server.URL_BAYFILES)) return Server.BAYFILES
         if (url.contains(Server.URL_ZIPPYSHARE)) return Server.ZIPPYSHARE
         if (url.contains(Server.URL_MEDIAFIRE)) return Server.MEDIAFIRE
+        if (url.contains(Server.URL_PIXELDRAIN)) return Server.PIXELDRAIN
         if (url.contains(Server.URL_FIRELOAD)) return Server.FIRELOAD
         if (url.contains(Server.URL_STREAMTAPE)) return Server.STREAMTAPE
         if (url.contains(Server.URL_VOE)) return Server.VOE
         if (url.contains(Server.URL_PUJ)) return Server.PUJ
         if (url.contains(Server.URL_VIDEOBIN)) return Server.VIDEOBIN
         if (url.contains(Server.URL_MP4UPLOAD)) return Server.MP4UPLOAD
+        if (url.contains(Server.URL_FILEMOON)) return Server.FILEMOON
+        if (url.contains(Server.URL_STREAMWISH_DOMAINS)) return Server.STREAMWISH
+        if (url.contains(Server.URL_MIXDROP)) return Server.MIXDROP
         if (url.contains(Server.URL_UQLOAD)) return Server.UQLOAD
         if (url.contains(Server.URL_MEGA)) return Server.MEGA
         if (url.contains(Server.URL_UPTOBOX)) return Server.UPTOBOX
