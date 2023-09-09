@@ -103,6 +103,7 @@ class ProfileChaptersFragment : Fragment() {
 
 
                 bindingChapter(observableChapter?:return@observe)
+                viewModel.updateChapterIfIsConsumed(observableChapter)
             }
 
             edtChapter.addTextChangedListener { _ ->
