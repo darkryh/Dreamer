@@ -45,8 +45,7 @@ class DirectoryFragment : Fragment() {
                     layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
                     this@DirectoryFragment.adapterHome = ChapterHomeRecyclerViewAdapter(
                         activity as Context,
-                        viewModel.handleChapter,
-                        viewModel.launchDownload
+                        viewModel.handleChapter
                     )
                     adapter = this@DirectoryFragment.adapterHome
                 }
