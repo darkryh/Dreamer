@@ -16,11 +16,12 @@ class LaunchToPlayerActivity @Inject constructor(
 
     private val filesPreferences = preferenceUseCase.filesPreferences
 
-    operator fun invoke(context: Context, chapter : Chapter, typeClass: Class<*>?, isDirect: Boolean = true) {
+    operator fun invoke(context: Context, chapter : Chapter,previousChapter: Chapter?, typeClass: Class<*>?, isDirect: Boolean = true) {
         (context as Activity).launchActivity(
             intent = Intent(context,typeClass).apply {
                 putExtra(Chapter.REQUESTED, chapter)
                 putExtra(Chapter.CONTENT_IS_DIRECT,isDirect)
+                putExtra(Chapter.PREVIOUS_CASTING_MEDIA,previousChapter)
                 putParcelableArrayListExtra(
                     Chapter.PLAY_VIDEO_LIST,
                     toVideoModelArray(chapter) as java.util.ArrayList<out Parcelable>)
@@ -28,11 +29,12 @@ class LaunchToPlayerActivity @Inject constructor(
         )
     }
 
-    fun with(context: Context, chapter : Chapter,videoList: List<VideoModel>, typeClass: Class<*>?, isDirect: Boolean = true) {
+    fun with(context: Context, chapter : Chapter,previousChapter: Chapter?,videoList: List<VideoModel>, typeClass: Class<*>?, isDirect: Boolean = true) {
         (context as Activity).launchActivity(
             intent = Intent(context,typeClass).apply {
                 putExtra(Chapter.REQUESTED, chapter)
                 putExtra(Chapter.CONTENT_IS_DIRECT,isDirect)
+                putExtra(Chapter.PREVIOUS_CASTING_MEDIA,previousChapter)
                 putParcelableArrayListExtra(
                     Chapter.PLAY_VIDEO_LIST,
                     videoList as java.util.ArrayList<out Parcelable>)
