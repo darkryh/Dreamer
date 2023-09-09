@@ -1,15 +1,12 @@
 package com.ead.project.dreamer.domain
 
-import com.ead.project.dreamer.domain.downloads.*
+import com.ead.project.dreamer.domain.downloads.AddDownload
+import com.ead.project.dreamer.domain.downloads.IsInParallelDownloadLimit
+import com.ead.project.dreamer.domain.downloads.RemoveDownload
 import javax.inject.Inject
 
 class DownloadUseCase @Inject constructor(
-    val startDownload: StartDownload,
-    val startManualDownload: StartManualDownload,
-    val createManualDownload: CreateManualDownload,
-    val launchUpdate: LaunchUpdate,
-    val filterDownloads: FilterDownloads,
-    val isDownloaded: IsDownloaded,
-    val checkIfUpdateIsAlreadyDownloaded: CheckIfUpdateIsAlreadyDownloaded,
-    val removeDownload: RemoveDownload
+    val add: AddDownload,
+    val remove: RemoveDownload,
+    val isInParallelLimit : IsInParallelDownloadLimit
 )
