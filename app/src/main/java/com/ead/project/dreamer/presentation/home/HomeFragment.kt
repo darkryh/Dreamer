@@ -1,9 +1,7 @@
 package com.ead.project.dreamer.presentation.home
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.utils.ui.AppBarStateChangeListener
 import com.ead.project.dreamer.data.utils.ui.ScrollTimer
 import com.ead.project.dreamer.databinding.FragmentHomeBinding
 import com.ead.project.dreamer.presentation.home.adapters.ChapterHomeRecyclerViewAdapter
 import com.ead.project.dreamer.presentation.home.adapters.ProfileBannerRecyclerViewAdapter
-import com.google.android.material.appbar.AppBarLayout
+import com.ead.project.dreamer.presentation.more_query.QueryActivity
+import com.ead.project.dreamer.presentation.news.adapters.NewsItemRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import java.util.Timer
 
 
 @AndroidEntryPoint
@@ -29,6 +26,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var adapterHome : ChapterHomeRecyclerViewAdapter
     private lateinit var adapterProfile : ProfileBannerRecyclerViewAdapter
+    private lateinit var adapterNews : NewsItemRecyclerViewAdapter
 
     private var objectProfileList : MutableList<Any> = ArrayList()
 
@@ -40,8 +38,6 @@ class HomeFragment : Fragment() {
     private var _binding : FragmentHomeBinding?=null
     private val binding get() = _binding!!
     private var count = -1
-
-    private var countHome = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,16 +88,6 @@ class HomeFragment : Fragment() {
                     refreshData()
                 }
             }
-
-            appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
-                override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
-                    when(state) {
-                        State.EXPANDED -> recyclerViewRecommendations.visibility = View.VISIBLE
-                        State.COLLAPSED -> recyclerViewRecommendations.visibility = View.GONE
-                        State.IDLE -> Log.d(TAG, "Home App Bar Idle")
-                    }
-                }
-            })
         }
     }
 
@@ -126,8 +112,7 @@ class HomeFragment : Fragment() {
                     layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                     this@HomeFragment.adapterHome = ChapterHomeRecyclerViewAdapter(
                         activity as Context,
-                        viewModel.handleChapter,
-                        viewModel.launchDownload
+                        viewModel.handleChapter
                     )
                     adapter = this@HomeFragment.adapterHome
                 }
@@ -140,31 +125,34 @@ class HomeFragment : Fragment() {
                     adapter = this@HomeFragment.adapterHome
                     setupHomeList()
                 }
+                more.setOnClickListener { goToRecentSection() }
+            }
+
+            rcvNews.apply {
+                layoutManager = LinearLayoutManager(context)
+                this@HomeFragment.adapterNews = NewsItemRecyclerViewAdapter(requireContext())
+                adapter = this@HomeFragment.adapterNews
+                setupNews()
             }
         }
     }
 
     private fun setupHomeList () {
         viewModel.getChaptersHome().observe(viewLifecycleOwner) {
-            setupMessageError(it)
             adapterHome.submitList(it)
             binding.swipeRefresh.isRefreshing = false
         }
     }
 
-    private fun setupMessageError(chapterHomeList : List<ChapterHome>) {
-        /*if (chapterHomeList.isNotEmpty()) if (++countHome == 1 && chapterHomeList.first().isNotWorking())
-            DreamerLayout.showSnackbar(
-                view = binding.root,
-                text = getString(R.string.warning_manual_fixer),
-                color = R.color.red, length = Snackbar.ANIMATION_MODE_SLIDE,
-                size = R.dimen.snackbar_text_size_mini
-            )*/
+    private fun setupNews() {
+        viewModel.getLimitedNews().observe(viewLifecycleOwner) {
+            adapterNews.submitList(it)
+        }
     }
 
     private fun setupRecommendations() {
         viewModel.getRecommendations().observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.appBarLayout.layoutParams.height = 0
+            if (it.isEmpty()) binding.recommendationsSection.layoutParams.height = 0
             else {
                 if (++count == 1) {
                     objectProfileList = it.toMutableList()
@@ -189,6 +177,14 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun goToRecentSection() {
+        QueryActivity.launchActivity(
+            requireActivity(),
+            QueryActivity.QUERY_OPTION_CHAPTER_HOME,
+            getString(R.string.recent_section_title)
+        )
     }
 
 }
