@@ -68,11 +68,11 @@ class AnimeProfileViewModel @Inject constructor(
         viewModelScope.launch (Dispatchers.IO) { objectUseCase.updateObject(animeProfile) }
 
     fun downloadAllChapters(id: Int) =
-        viewModelScope.launch (Dispatchers.IO) { downloadUseCase.startDownload(chapterUseCase.getChaptersToDownload(id)) }
+        viewModelScope.launch (Dispatchers.IO) { /*downloadUseCase.startDownload(chapterUseCase.getChaptersToDownload(id))*/ }
 
-    fun downloadFromChapters(chapters: List<Chapter>) { downloadUseCase.startDownload(chapters) }
+    fun downloadFromChapters(chapters: List<Chapter>) { /*downloadUseCase.startDownload(chapters)*/ }
 
-    fun downloadFromChapter(chapter: Chapter) { downloadUseCase.startDownload(chapter) }
+    fun downloadFromChapter(chapter: Chapter) { /*downloadUseCase.startDownload(chapter)*/ }
 
     fun repairingProfiles() {
         launchOneTimeRequest(
