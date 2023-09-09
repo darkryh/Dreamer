@@ -37,11 +37,13 @@ data class Chapter (
         const val STATUS_RUNNING = 3
         const val STATUS_PENDING = 4
         const val STATUS_FAILED = -1
+        const val STATUS_ERROR = -444
 
         const val PLAY_VIDEO_LIST = "PLAY_VIDEO_LIST"
 
         const val REQUESTED = "REQUESTED_CHAPTER"
         const val CONTENT_IS_DIRECT = "CHAPTER_CONTENT_IS_DIRECT"
+        const val PREVIOUS_CASTING_MEDIA = "PREVIOUS_CASTING_MEDIA"
     }
 
     @IgnoredOnParcel
