@@ -17,14 +17,13 @@ import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterRecordGridBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordLinearBinding
-import com.ead.project.dreamer.domain.downloads.LaunchDownload
 import com.ead.project.dreamer.domain.servers.HandleChapter
+import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
 
 class ChapterRecordRecyclerViewAdapter (
     private val context: Context,
     private val isLinear : Boolean = false,
-    private val handleChapter: HandleChapter,
-    private val launchDownload: LaunchDownload
+    private val handleChapter: HandleChapter
 ) : RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
@@ -89,7 +88,7 @@ class ChapterRecordRecyclerViewAdapter (
 
             binding.root.setOnClickListener { handleChapter(context, chapter) }
             binding.root.setOnLongClickListener {
-                launchDownload(context, chapter, false)
+                ChapterSettingsFragment.launch(context,chapter,true)
                 return@setOnLongClickListener true
             }
         }
@@ -119,7 +118,7 @@ class ChapterRecordRecyclerViewAdapter (
 
             binding.root.setOnClickListener { handleChapter(context,chapter) }
             binding.root.setOnLongClickListener {
-                launchDownload(context, chapter,false)
+                ChapterSettingsFragment.launch(context,chapter,true)
                 return@setOnLongClickListener true
             }
         }
