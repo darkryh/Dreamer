@@ -3,26 +3,30 @@ package com.ead.project.dreamer.domain.servers
 import android.content.Context
 import android.graphics.Bitmap
 import android.webkit.WebView
+import com.ead.project.dreamer.app.data.server.util.ServerWebView
 import com.ead.project.dreamer.app.data.util.system.load
-import com.ead.project.dreamer.app.data.util.system.onDestroy
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.DreamerClient
-import com.ead.project.dreamer.data.network.DreamerWebView
+import com.ead.project.dreamer.data.utils.Run
+import com.ead.project.dreamer.data.utils.Thread
 import javax.inject.Inject
 
 open class ServerEngine @Inject constructor(
     private val context: Context,
     private val getServerResultToArray: GetServerResultToArray,
-    private val serverScript: ServerScript
-) {
+    private val serverScript: ServerScript,
 
-    private var webView : DreamerWebView?=null
+) {
+    private lateinit var webView: ServerWebView
+
     private lateinit var chapter: Chapter
     private lateinit var timeoutTask: () -> Unit
 
-    private fun getWebView() : DreamerWebView = webView?: DreamerWebView(context).also {
-        webView = it
-        settingWebViewScrap { timeoutTask() }
+    init {
+        Thread.onUi {
+            webView = ServerWebView(context)
+            settingWebViewScrap { timeoutTask() }
+        }
     }
 
     operator fun invoke(timeoutTask : () -> Unit,chapter: Chapter) {
@@ -32,30 +36,25 @@ open class ServerEngine @Inject constructor(
     }
 
     private fun settingWebViewScrap(timeoutTask : () -> Unit) {
-        getWebView().webViewClient = object : DreamerClient() {
+        webView.webViewClient = object : DreamerClient() {
             override fun onTimeout(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onTimeout(view, url, favicon)
-                safeRun { timeoutTask() }
+                Run.catching {
+                    timeoutTask()
+                }
             }
 
             override fun onPageLoaded(view: WebView?, url: String?) {
                 super.onPageLoaded(view, url)
-                safeRun {
-                    getWebView().evaluateJavascript(serverScript()) { getServerList(it) }
+                Run.catching {
+                    webView.evaluateJavascript(serverScript()) { getServerList(it) }
                 }
             }
         }
     }
 
-    private fun loadWebView() = getWebView().load(chapter.reference)
+    private fun loadWebView() = webView.load(chapter.reference)
 
     open fun getServerList(it : String) : List<String> = getServerResultToArray(it)
-
-    fun onDestroy() {
-        webView?.onDestroy()
-        webView = null
-    }
-
-    private fun safeRun(task: () -> Unit) { try { task() } catch (e: Exception) { e.printStackTrace() } }
 
 }
