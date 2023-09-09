@@ -1,9 +1,9 @@
-package com.ead.project.dreamer.domain.downloads
+package com.ead.project.dreamer.domain.update
 
 import com.ead.project.dreamer.domain.PreferenceUseCase
 import javax.inject.Inject
 
-class CheckIfUpdateIsAlreadyDownloaded @Inject constructor(
+class IsAlreadyDownloaded @Inject constructor(
     preferenceUseCase: PreferenceUseCase
 ) {
 
