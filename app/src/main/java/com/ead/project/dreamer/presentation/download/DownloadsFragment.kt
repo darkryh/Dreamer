@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.data.models.Download
 import com.ead.project.dreamer.databinding.FragmentDownloadsBinding
 import com.ead.project.dreamer.presentation.download.adapter.DownloadRecyclerViewAdapter
@@ -42,7 +43,7 @@ class DownloadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.root.apply {
+        binding.rcvDownloads.apply {
             layoutManager = LinearLayoutManager(context)
             this@DownloadsFragment.adapter = DownloadRecyclerViewAdapter(
                 activity as Context,
@@ -57,9 +58,12 @@ class DownloadsFragment : Fragment() {
     private fun getDownloads() {
         lifecycleScope.launch {
             viewModel.downloadStore.downloads.collectLatest {
+                binding.txvIsEmpty.setVisibility(it.isEmpty())
+                if (it.isEmpty()) return@collectLatest
+
                 adapter.submitList(
                     it.sortedBy {
-                        download: Download -> download.title
+                            download: Download -> download.title
                     }
                 )
             }
