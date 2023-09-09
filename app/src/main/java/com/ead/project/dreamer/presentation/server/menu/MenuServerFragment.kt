@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.presentation.menuserver
+package com.ead.project.dreamer.presentation.server.menu
 
 import android.content.Context
 import android.os.Bundle
@@ -40,6 +40,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     private val menuServerManager by lazy { MenuServerManager(requireContext()) }
 
     private lateinit var chapter: Chapter
+    private var previousChapter : Chapter?= null
     private var embeddedUrlServers : MutableList<String> = mutableListOf()
 
     private var isFromContent = false
@@ -55,6 +56,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
             chapter = it.parcelable(Chapter.REQUESTED)?:return@let
             isFromContent = it.getBoolean(PlayerActivity.IS_FROM_CONTENT_PLAYER)
             isDownloadingMode = it.getBoolean(IS_DATA_FOR_DOWNLOADING_MODE)
+            previousChapter = viewModel.getIfChapterIsCasting()
         }
     }
 
@@ -78,7 +80,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (UrlUtil.isValid(chapter.reference)) {
             viewModel.setDownloadMode(isDownloadingMode)
-            fetchingPreferences()
             initLayouts()
             initServers()
         }
@@ -134,10 +135,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         dismiss()
     }
 
-    private fun fetchingPreferences() {
-        viewModel.fetchingCastingPreferences()
-    }
-
     private fun spacingBetweenServer() {
         menuServerManager.verticalSpaceBetweenServer =
             if (embeddedUrlServers.size <= 8) { resources.getDimensionPixelSize(R.dimen.dimen_15dp) }
@@ -170,10 +167,20 @@ class MenuServerFragment : BottomSheetDialogFragment() {
                 for (server in serverList) {
                     if (server.isValidated) {
 
+                        if (chapter.id == 0) {
+                            prepareChecker(server)
+                            break
+                        }
+
                         preparingIntent(server.videoList,server.isDirect)
                         break
 
                     } else if (server.isConnectionValidated) {
+
+                        if (chapter.id == 0) {
+                            prepareChecker(server)
+                            break
+                        }
 
                         preparingIntent(server.videoList, server.isDirect)
                         break
@@ -183,6 +190,13 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
                 dismiss()
             }
+        }
+    }
+
+    private fun prepareChecker(server: Server) {
+        if (chapter.id == 0) {
+            launchChapterChecker(server.videoList,server.isDirect)
+            dismiss()
         }
     }
 
@@ -204,15 +218,23 @@ class MenuServerFragment : BottomSheetDialogFragment() {
             viewModel.getServer(embeddedUrlServers[index]).observeOnce(this) { server ->
                 if (server.videoList.isNotEmpty()) {
 
+                    if (chapter.id == 0) {
+
+                        launchChapterChecker(server.videoList,server.isDirect)
+                        dismiss()
+                        return@observeOnce
+
+                    }
+
+
                     if (isDownloadingMode) {
-                        if (chapter.id != 0) {
-                            prepareDownload(server)
-                        }
-                        else {
-                            launchChapterChecker(server.videoList,true)
-                        }
+
+                        prepareDownload(server)
+
                     } else {
+
                         preparingIntent(server.videoList,server.isDirect)
+
                     }
                     dismiss()
 
@@ -232,13 +254,13 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     }
 
     private fun prepareDownload(server: Server) {
-        viewModel.downloadUseCase.createManualDownload(chapter,server.videoList.last().directLink)
+        viewModel.downloadUseCase.add(activity as Context,chapter,server.videoList.last().directLink)
     }
 
     private fun preparingIntent(videoList: List<VideoModel>, isDirect : Boolean) {
         Run.catching {
 
-            viewModel.launchVideo.with(activity as Context,chapter,videoList,isDirect)
+            viewModel.launchVideo.with(activity as Context,chapter, previousChapter ,videoList,isDirect)
             if (isFromContent && viewModel.playerPreferences.isInExternalMode()) {
                 activity?.finish()
             }
@@ -263,10 +285,12 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         val data = Bundle()
         data.apply {
             putParcelable(Chapter.REQUESTED, chapter)
+            putParcelable(Chapter.PREVIOUS_CASTING_MEDIA,previousChapter)
             putParcelableArrayList(Chapter.PLAY_VIDEO_LIST, playList as ArrayList<out Parcelable>)
             putBoolean(Chapter.CONTENT_IS_DIRECT,isDirect)
             putBoolean(SettingsPlayerFragment.PREFERENCE_EXTERNAL_PLAYER,isExternalPlayer)
             putBoolean(IS_DATA_FOR_DOWNLOADING_MODE,isDownloadingMode)
+            putBoolean(PlayerActivity.IS_FROM_CONTENT_PLAYER,isFromContent)
         }
         arguments = data
         show(fragmentManager, ChapterCheckerFragment.FRAGMENT)
@@ -274,12 +298,23 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.onDestroy()
         _binding = null
     }
 
     companion object {
-        const val FRAGMENT = "MENU_PLAYER_FRAGMENT"
+        private const val FRAGMENT = "MENU_PLAYER_FRAGMENT"
         const val IS_DATA_FOR_DOWNLOADING_MODE = "IS_DATA_FOR_DOWNLOADING_MODE"
+
+        fun launch(context: Context, chapter: Chapter,isDownloadMode : Boolean) {
+            val fragmentManager = (context as FragmentActivity).supportFragmentManager
+            val chapterMenu = MenuServerFragment()
+            chapterMenu.apply {
+                arguments = Bundle().apply {
+                    putParcelable(Chapter.REQUESTED, chapter)
+                    putBoolean(IS_DATA_FOR_DOWNLOADING_MODE,isDownloadMode)
+                }
+                show(fragmentManager, FRAGMENT)
+            }
+        }
     }
 }
