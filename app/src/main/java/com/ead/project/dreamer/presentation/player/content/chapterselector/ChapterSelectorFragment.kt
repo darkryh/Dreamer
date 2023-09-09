@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
@@ -15,7 +16,6 @@ import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.databinding.BottomModalChapterSelectorBinding
 import com.ead.project.dreamer.presentation.player.PlayerViewModel
 import com.ead.project.dreamer.presentation.profile.adapters.ChapterRecyclerViewAdapter
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +24,7 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
 
     private val viewModel : PlayerViewModel by viewModels()
 
-    var playerView : StyledPlayerView?= null
+    var playerView : PlayerView?= null
     lateinit var chapter : Chapter
     private lateinit var adapterChapters : ChapterRecyclerViewAdapter
 
