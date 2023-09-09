@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.notifications.NotificationChannels
+import com.ead.project.dreamer.app.data.notifications.NotificationHandler
 import com.ead.project.dreamer.app.data.util.system.getColorCompact
 import com.ead.project.dreamer.app.data.util.system.loadImage
 import com.ead.project.dreamer.app.data.util.system.notificationBuilder
 import com.ead.project.dreamer.app.data.util.system.notify
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.utils.receiver.NotificationReceiver
+import com.ead.project.dreamer.presentation.main.MainActivity
 import javax.inject.Inject
 
 class HomeNotifier @Inject constructor(
@@ -45,7 +46,7 @@ class HomeNotifier @Inject constructor(
     fun onChapterRelease(chapter : ChapterHome,notificationIndex : Int) {
         with(chapterNotificationBuilder) {
             clearActions()
-            addAction(
+            /*addAction(
                 R.drawable.ic_play,
                 context.getString(R.string.play_chapter),
                 NotificationReceiver.playChapterPendingBroadcast(context)
@@ -70,10 +71,11 @@ class HomeNotifier @Inject constructor(
                     NotificationReceiver.addToFavoriteSeries(context)
                 )
 
-            }
+            }*/
 
             setContentTitle(chapter.title)
             setContentText(context.getString(R.string.chapter_number,chapter.chapterNumber.toString()))
+            setContentIntent(NotificationHandler.getToMainPendingIntent(context,MainActivity.CHAPTER_HOME_TARGET))
             loadImage(chapter.chapterCover)
 
             show(notificationIndex)
