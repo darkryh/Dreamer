@@ -17,6 +17,7 @@ import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterBinding
 import com.ead.project.dreamer.domain.servers.HandleChapter
+import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
 
 class ChapterRecyclerViewAdapter(
     private val context: Context,
@@ -103,9 +104,10 @@ class ChapterRecyclerViewAdapter(
                 else configureEditMode(chapter)
             }
             binding.root.setOnLongClickListener {
-                isEditMode = true
-                showAnimation(editModeView)
-                configureEditMode(chapter)
+                //isEditMode = true
+                //showAnimation(editModeView)
+                //configureEditMode(chapter)
+                ChapterSettingsFragment.launch(context,chapter,true)
                 return@setOnLongClickListener true
             }
         }
