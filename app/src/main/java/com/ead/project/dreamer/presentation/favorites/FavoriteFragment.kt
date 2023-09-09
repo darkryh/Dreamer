@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.databinding.FragmentFavoritesBinding
 import com.ead.project.dreamer.presentation.directory.filter.FilterFragment
 import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
@@ -78,13 +79,9 @@ class FavoriteFragment : Fragment() {
         viewModel.getLikedDirectory().observe(viewLifecycleOwner) {
 
             if (++countProfile == 1) {
-                if (it.isNotEmpty()) {
-                    binding.txvIsEmpty.visibility = View.GONE
-                    adapter.submitList(it)
-                }
-                else {
-                    binding.txvIsEmpty.visibility = View.VISIBLE
-                }
+                binding.txvIsEmpty.setVisibility(it.isEmpty())
+                if (it.isEmpty()) return@observe
+                adapter.submitList(it)
             }
         }
     }
