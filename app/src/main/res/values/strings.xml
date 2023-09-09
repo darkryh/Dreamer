@@ -16,6 +16,7 @@
     <string name="state_of_the_app">state of the app</string>
     <string name="chapterLogo">chapterLogo</string>
     <string name="serversList">Lista de Servidores :</string>
+    <string name="server_icon">server icono</string>
     <string name="welcome_player">%1$s - Capítulo número %2$d</string>
     <string name="choose_quality">Escoger calidad de Video :</string>
     <string name="full_screen">full screen</string>
@@ -39,10 +40,15 @@
     <string name="title_seeing">Estas viendo %1$s.</string>
     <string name="wordDecorate">· %1$s</string>
     <string name="ratingLayout">✪ %1$s</string>
+    <string name="title_home_chapter">%1$s - %2$d</string>
     <string name="chapter_number">Capítulo número %1$s</string>
     <string name="continue_watching_chapter_number">Seguir viendo desde capítulo número %1$s</string>
+    <string name="cant_install_update_warning">No hay permiso de instalación, se recomienda habilitar en las propiedades del la app manualmente.</string>
+    <string name="couldnt_open_package_installer">Error abriendo configuración de PackageInstaller</string>
     <string name="chapter_number_hint">Capítulo a buscar</string>
     <string name="chapter_number_short">Cap. %1$s</string>
+    <string name="title_and_number_short">%1$s Cap. %2$s</string>
+    <string name="title_and_version">%1$s.%2$s</string>
 
     <string name="imageview_to_checker">imageview to checker</string>
     <string name="loading">cargando..</string>
@@ -136,6 +142,7 @@
     <string name="channel_recommendations_description">channel to get recommendations from series</string>
     <string name="channel_watch_list_description">channel to get notifications from your watch list</string>
     <string name="channel_marketing_description">channel to get advertising from the developer</string>
+    <string name="servers_orders">Orden de Servidores</string>
 
     <string name="ad_tag_url"><![CDATA[https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=]]></string>
     <string name="complete_percent">100%</string>
@@ -247,7 +254,8 @@
     <string name="coverBackground">coverBackground</string>
     <string name="imv_download">imv_download</string>
     <string name="download">Descarga</string>
-    <string name="to_download">Descargar</string>
+    <string name="to_download_and_install">Descargar e Instalar</string>
+    <string name="skip">Omitir</string>
     <string name="automatic_download">Descarga Automatica</string>
     <string name="title_new_version_download">¡Nueva versión %1$s disponible!</string>
     <string name="apk_title_new_version_download">Dreamer %1$s</string>
@@ -275,6 +283,7 @@
     <string name="error_web_page_null">Error página null</string>
     <string name="all_is_working">¡Todo esta en funcionamiento!</string>
     <string name="favorites_warning">Esta sección es para tus animes favoritos, añade los que más te gusten.</string>
+    <string name="downloads_warning">Esta sección es para tus descargas.</string>
     <string name="records_warning">Empieza a ver tus animes, y se mostraran aqui.</string>
     <string name="session">sesión</string>
     <string name="confirm">confirmar</string>
@@ -322,4 +331,20 @@
     <string name="email">email</string>
     <string name="password">contraseña</string>
     <string name="register">Registrarse</string>
+    <string name="best_of_the_season">Lo Mejor de la Temporada.</string>
+    <string name="could_be_interesting">Te podría interesar.</string>
+    <string name="second_title">second title</string>
+    <string name="in_broadcast">En Emisión</string>
+    <string name="details">Detalles</string>
+    <string name="chapters_profile">Capítulos</string>
+    <string name="show_more">mostar más.</string>
+    <string name="what_you_have_seen_the_most">Lo que más has visto.</string>
+    <string name="recommendations_for_you">Recomendaciones para ti.</string>
+    <string name="advice_most_viewed">Empieza a ver tus animes, y se mostraran los que más viste.</string>
+    <string name="server">server</string>
+    <string name="apply">aplicar</string>
+    <string name="what_is_this_up">¿Que es esto? ▲</string>
+    <string name="what_is_this_down">¿Que es esto? ▼</string>
+    <string name="new_version">¡Nueva Versión %1$s!</string>
+    <string name="to_download">descargar</string>
 </resources>
