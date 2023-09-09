@@ -1,37 +1,30 @@
 package com.ead.project.dreamer.data.models.server
 
 import android.util.Log
+import com.ead.project.dreamer.data.models.EmbedServer
 import com.ead.project.dreamer.data.models.Player
-import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.utils.PatternManager
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.MalformedURLException
 import java.net.URL
 import java.security.SecureRandom
 
 
-class DoodStream(embeddedUrl:String) : Server(embeddedUrl) {
+class DoodStream(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.DoodStream) {
 
-    var urlt: String? = null
-    var token: String? = null
-    var isLong = false
+    private var urlTemp: String? = null
+    private var token: String? = null
+    private var host : String? = null
 
-    override fun onPreExtract() {
-        super.onPreExtract()
-        player = Player.DoodStream
-    }
-
+    @Suppress("UNREACHABLE_CODE")
     override fun onExtract() {
+        return
+
         try {
-            return //TODO
-            if(url.contains("LONG")){
-                isLong = true;
-                url = url.replace("LONG", "");
-            } else {
-                isLong = false;
-                url = url.replace("/d/", "/e/");
-            }
+
+            val previousHost = URL(url).host
+
             var request: Request =  Request.Builder().url(url).build()
 
             var response = OkHttpClient()
@@ -40,23 +33,25 @@ class DoodStream(embeddedUrl:String) : Server(embeddedUrl) {
 
             var responseBody = response.body?.string().toString()
 
-            val urlFix = PatternManager.singleMatch(
+
+            host = response.request.url.host
+            url = url.replace(previousHost,host?:return)
+
+            val keysCode = PatternManager.singleMatch(
                 responseBody,
                 "dsplayer\\.hotkeys[^']+'([^']+).+?function"
             ).toString()
 
-            urlt = "https://" + getHost(url) + urlFix
-            Log.d("testing", "onExtract: $urlt")
+            urlTemp = "https://$host$keysCode"
 
             token = PatternManager.singleMatch(
                 responseBody,
                 "makePlay.+?return[^?]+([^\"]+)"
             ).toString()
 
-            Log.d("testing", "onExtract: $token")
 
-            request  =  Request.Builder()
-                .url(urlt!!)
+            request = Request.Builder()
+                .url(urlTemp?:return)
                 .header("Referer",url)
                 .build()
 
@@ -66,23 +61,52 @@ class DoodStream(embeddedUrl:String) : Server(embeddedUrl) {
 
             responseBody = response.body?.string().toString()
 
-            val test: String = responseBody + randomStr(10) + token + System.currentTimeMillis() / 1000L
+            url = responseBody + randomStr() + token + System.currentTimeMillis() / 1000L
 
-            Log.d("testing", "onExtract: $test")
-        } catch (e : Exception) { e.printStackTrace() }
+            Log.d("testing", "onExtract: $url")
+
+            request = Request.Builder()
+                .url(url)
+                .build()
+
+
+
+            val client: OkHttpClient.Builder = OkHttpClient.Builder()
+                .addNetworkInterceptor(Interceptor { chain: Interceptor.Chain ->
+
+                    val networkRequest = chain.request()
+                    response = chain.proceed(networkRequest)
+                    val redirect = response.header("Location")
+
+                    if (redirect != null) url = redirect
+                    response
+                })
+
+            response = client.build().newCall(request).execute()
+
+            if (response.code in 301..309) addDefaultVideo()
+
+            Log.d("testing", "onExtract: ${response.code}")
+
+        } catch (e : Exception) {
+            Log.d("testing", "onExtract: ${e.message}") }
     }
 
-    @Throws(MalformedURLException::class)
-    private fun getHost(uri: String): String? {
-        val url = URL(uri)
-        return url.host
+    override fun checkIfVideoIsAvailable(): Boolean {
+        return !super.checkIfVideoIsAvailable()
     }
 
-    private fun randomStr(len: Int): String {
-        val AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+
+    private fun randomStr(): String {
+        val length = 10
+
+        val abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         val rnd = SecureRandom()
-        val sb = StringBuilder(len)
-        for (i in 0 until len) sb.append(AB[rnd.nextInt(AB.length)])
-        return sb.toString()
+        val stringBuilder = StringBuilder(length)
+
+        for (i in 0 until length)
+            stringBuilder.append(abc[rnd.nextInt(abc.length)])
+
+        return stringBuilder.toString()
     }
 }
