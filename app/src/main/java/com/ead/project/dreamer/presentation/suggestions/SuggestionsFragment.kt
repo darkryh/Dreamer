@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.databinding.FragmentSuggestionsBinding
+import com.ead.project.dreamer.presentation.more_query.QueryActivity
 import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
 import com.ead.project.dreamer.presentation.suggestions.adapters.ProfileMiniRecyclerViewAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,8 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class SuggestionsFragment : Fragment() {
 
     private lateinit var viewModel: SuggestionsViewModel
-    lateinit var viewPager2: ViewPager2
-
     private lateinit var mostViewedAdapter : ProfileMiniRecyclerViewAdapter
     private lateinit var suggestionsAdapter: ProfileRecyclerViewAdapter
 
@@ -43,6 +41,8 @@ class SuggestionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
+
+            txvMostViewedShowMore.setOnClickListener { goToMostViewedSeries() }
 
             recyclerViewMostViewedSeries.apply {
                 layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -72,11 +72,13 @@ class SuggestionsFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     mostViewedAdapter.submitList(it)
                     txvMostViewed.visibility = View.VISIBLE
+                    txvMostViewedShowMore.visibility = View.VISIBLE
                     recyclerViewMostViewedSeries.visibility = View.VISIBLE
                     txvIsEmpty.visibility = View.GONE
                 }
                 else {
                     txvMostViewed.visibility = View.GONE
+                    txvMostViewedShowMore.visibility = View.GONE
                     recyclerViewMostViewedSeries.visibility = View.GONE
                     txvIsEmpty.visibility = View.VISIBLE
                     txvSuggestions.text = getString(R.string.recommendations)
@@ -90,6 +92,14 @@ class SuggestionsFragment : Fragment() {
         viewModel.getRecommendations().observe(viewLifecycleOwner) {
             suggestionsAdapter.submitList(it)
         }
+    }
+
+    private fun goToMostViewedSeries() {
+        QueryActivity.launchActivity(
+            requireActivity(),
+            QueryActivity.QUERY_OPTION_PROFILE,
+            getString(R.string.what_you_have_seen_the_most)
+        )
     }
 
     override fun onDestroyView() {
