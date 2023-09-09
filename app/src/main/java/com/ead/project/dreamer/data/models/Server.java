@@ -18,7 +18,7 @@ public class Server {
     private final List<VideoModel> videoList;
     public Player player;
     public Boolean isDirect;
-    protected final Boolean isDownloading;
+    protected Boolean isDownloading;
     public String url;
     public final String DEFAULT = "Default";
     @Nullable
