@@ -3,6 +3,7 @@ package com.ead.project.dreamer.app.data.files
 import androidx.datastore.core.DataStore
 import com.ead.project.dreamer.app.model.FilePreference
 import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.models.Update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -20,6 +21,7 @@ class FilesPreferences @Inject constructor(
 
     val preference get() = store.data
     val series : File = Files.seriesFile
+    val updates : File = Files.updatesFile
 
     private fun getFilePreference() : FilePreference = runBlocking { store.data.first() }
 
@@ -50,12 +52,23 @@ class FilesPreferences @Inject constructor(
     }
 
     fun getChapterFile(chapter: Chapter) : File {
-        return File(getChapterRoute(chapter))
+        return Files.getFile(chapter)
     }
 
     fun getChapterRoute(chapter: Chapter) : String {
-        return series.absolutePath + "/" + chapter.title + "/" + chapter.title +
-                " Capítulo ${chapter.number}" +".mp4"
+        return Files.getChapterRoute(chapter)
+    }
+
+    fun getChapterSubPath(chapter: Chapter) : String {
+        return Files.getChapterSubPath(chapter)
+    }
+
+    fun getUpdateRoute(update: Update) : String {
+        return Files.getUpdateRoute(update)
+    }
+
+    fun getUpdateSubPath(update: Update) : String {
+        return Files.getUpdateSubPath(update)
     }
 
     private fun disableTimeChecker() {
