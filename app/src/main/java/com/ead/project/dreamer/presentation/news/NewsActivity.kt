@@ -17,10 +17,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.views.justifyInterWord
 import com.ead.commons.lib.views.margin
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.Image
 import com.ead.project.dreamer.data.models.NewsItemWeb
@@ -63,12 +63,7 @@ class NewsActivity : AppCompatActivity() {
 
     private fun settingLayouts() {
         binding.apply {
-
-            setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbar.setNavigationOnClickListener { onBack() }
-
+            handleNotActionBar(toolbar)
         }
     }
 
