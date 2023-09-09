@@ -171,7 +171,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         }
     }
 
-    private fun likeProfile (animeProfile: AnimeProfile) {
+    private fun likeProfile(animeProfile: AnimeProfile) {
         binding.imvLikeProfile.setOnClickListener {
             viewModel.updateAnimeProfile(animeProfile.copy(
                 isFavorite = !animeProfile.isFavorite
@@ -179,7 +179,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         }
     }
 
-    private fun updateLike (animeProfile: AnimeProfile) {
+    private fun updateLike(animeProfile: AnimeProfile) {
         if (animeProfile.isFavorite)
             binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
          else
@@ -187,7 +187,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     }
 
     override fun onPause() {
-        viewModel.castManager.updatedChapter()
+        viewModel.castManager.onMediaStatus()
         super.onPause()
     }
 
