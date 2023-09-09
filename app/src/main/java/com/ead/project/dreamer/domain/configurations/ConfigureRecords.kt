@@ -3,17 +3,25 @@ package com.ead.project.dreamer.domain.configurations
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.database.model.Chapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConfigureRecords @Inject constructor(
     private val repository: AnimeRepository
 ) {
 
+    private val scope : CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     private val chaptersToUpdate: MutableList<Chapter> = ArrayList()
     private val chaptersConsumed: MutableList<Chapter> = ArrayList()
     private var isUpgradeable = false
 
     suspend operator fun invoke(chapterList: List<Chapter>) {
+        if (!checkIfUpgradeExist(chapterList)) return
+
         chaptersToUpdate.clear()
         chaptersConsumed.clear()
         isUpgradeable = false
@@ -47,13 +55,16 @@ class ConfigureRecords @Inject constructor(
         }
 
         if (isUpgradeable) {
-            repository.updateChapterList(chaptersConsumed.reversed())
-            repository.updateChapterList(chaptersToUpdate.reversed())
+            scope.launch {
+                val consumedChapters =  async { repository.updateChapterList(chaptersConsumed.reversed()) }
+                consumedChapters.await().apply {
+                    repository.updateChapterList(chaptersToUpdate.reversed())
+                }
+            }
         }
     }
 
-    fun checkIfUpgradeExist(chapterList: List<Chapter>): Boolean {
-        for (chapter in chapterList) if (chapter.isContentConsumed) return true
-        return false
+    private fun checkIfUpgradeExist(chapterList: List<Chapter>): Boolean {
+        return chapterList.any { it.isContentConsumed }
     }
 }
