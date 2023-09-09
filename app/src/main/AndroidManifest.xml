@@ -4,26 +4,40 @@
     tools:ignore="LockedOrientationActivity">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission  android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
         android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dreamer"
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true">
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".presentation.update.UpdateActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Dreamer.NoActionBar"/>
+        <activity
+            android:name=".presentation.server.order.ServerOrderActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Dreamer.NoActionBar" />
+        <activity
+            android:name=".presentation.more_query.QueryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Dreamer.NoActionBar" />
         <activity
             android:name=".presentation.news.NewsActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
@@ -36,21 +50,21 @@
         <activity
             android:name=".presentation.web.WebActivity"
             android:exported="false"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance" />
         <activity
             android:name=".presentation.settings.SettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Dreamer.NoActionBar" />
         <activity
             android:name=".presentation.login.termsandconditions.TermsAndConditionsActivity"
             android:exported="false"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
         <activity
             android:name=".presentation.ads.InterstitialAdActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".presentation.player.PlayerExternalActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
@@ -59,8 +73,8 @@
         <activity
             android:name=".presentation.profile.AnimeProfileActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Dreamer.Translucent" />
         <activity
             android:name=".presentation.directory.DirectoryActivity"
@@ -84,6 +98,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ead.project.dreamer.presentation.main.MainActivity" />
@@ -96,6 +111,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -115,11 +131,10 @@
 
         <receiver android:name=".data.utils.receiver.InstallerReceiver" />
         <receiver android:name=".data.utils.receiver.NotificationReceiver" />
-        <receiver android:name=".data.utils.media.CastMediaIntentReceiver" />
         <receiver
-            android:name=".app.data.downloads.DownloadsReceiver"
+            android:name=".app.AppReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
@@ -142,7 +157,6 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -153,4 +167,5 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
     </application>
+
 </manifest>
