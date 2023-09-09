@@ -7,9 +7,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
+import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.model.PlayerPreference
 import com.ead.project.dreamer.app.model.ServerPreference
+import com.ead.project.dreamer.presentation.server.order.ServerOrderActivity
 import com.ead.project.dreamer.presentation.settings.viewmodels.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -19,6 +20,8 @@ import kotlinx.coroutines.launch
 class SettingsPlayerFragment : PreferenceFragmentCompat() {
 
     private val viewModel : SettingsViewModel by viewModels()
+
+    private lateinit var pAutomaticPlayerModeOrder : Preference
 
     private lateinit var swAutomaticPlayerMode : SwitchPreference
     private lateinit var swPictureInPictureMode : SwitchPreference
@@ -31,17 +34,13 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
     }
 
     private fun initLayouts() {
+        pAutomaticPlayerModeOrder = findPreference(PREFERENCE_RANK_AUTOMATIC_PLAYER_ORDER)?:return
         swAutomaticPlayerMode = findPreference(PREFERENCE_RANK_AUTOMATIC_PLAYER)?:return
         swPictureInPictureMode = findPreference(PREFERENCE_PIP_MODE_PLAYER)?:return
         swExternalPlayerMode = findPreference(PREFERENCE_EXTERNAL_PLAYER)?:return
     }
 
     private fun configLayouts() {
-        lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                swAutomaticPlayerMode.isEnabled =  user != null
-            }
-        }
         lifecycleScope.launch {
             viewModel.playerPreferencesFlow.collectLatest { playerPreference: PlayerPreference ->
                 swExternalPlayerMode.isChecked = playerPreference.isInExternalMode
@@ -51,12 +50,17 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
         lifecycleScope.launch {
             viewModel.serverPreferenceFlow.collectLatest { serverPreference: ServerPreference ->
                 swAutomaticPlayerMode.isChecked = serverPreference.isAutomatic
+                pAutomaticPlayerModeOrder.isEnabled = serverPreference.isAutomatic
             }
         }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         return when(preference.key) {
+            PREFERENCE_RANK_AUTOMATIC_PLAYER_ORDER -> {
+                requireActivity().launchActivity(ServerOrderActivity::class.java)
+                return true
+            }
             PREFERENCE_RANK_AUTOMATIC_PLAYER -> {
                 viewModel.updateAutomaticPlayerMode()
             }
@@ -73,6 +77,7 @@ class SettingsPlayerFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
+        const val PREFERENCE_RANK_AUTOMATIC_PLAYER_ORDER = "PREFERENCE_RANK_AUTOMATIC_PLAYER_ORDER"
         const val PREFERENCE_RANK_AUTOMATIC_PLAYER = "PREFERENCE_RANK_AUTOMATIC_PLAYER"
         const val PREFERENCE_EXTERNAL_PLAYER = "PREFERENCE_EXTERNAL_PLAYER"
         const val PREFERENCE_PIP_MODE_PLAYER = "PREFERENCE_PIP_MODE_PLAYER"
