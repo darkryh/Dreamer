@@ -1,13 +1,15 @@
-package com.ead.project.dreamer.presentation.menuserver
+package com.ead.project.dreamer.presentation.server.menu
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.app.data.player.casting.CastManager
-import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.DownloadUseCase
+import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.domain.ServerUseCase
 import com.ead.project.dreamer.domain.servers.LaunchVideo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +29,11 @@ class MenuServerViewModel @Inject constructor (
 
     private var servers : MutableLiveData<List<Server>> = MutableLiveData()
 
-    fun fetchingCastingPreferences() {
+    fun getIfChapterIsCasting() : Chapter? {
         if (castManager.isConnectedToChromeCast) {
-            castManager.updatedChapter()
+            return castManager.getUpdatedChapter()
         }
+        return null
     }
 
     fun setDownloadMode(value : Boolean) {
@@ -58,5 +61,4 @@ class MenuServerViewModel @Inject constructor (
     fun getSortedServer(embedList: List<String>, isDownload : Boolean) =
         serverUseCase.getSortedServers(embedList,isDownload)
 
-    fun onDestroy() { serverUseCase.getEmbedServersMutable.onDestroy() }
 }
