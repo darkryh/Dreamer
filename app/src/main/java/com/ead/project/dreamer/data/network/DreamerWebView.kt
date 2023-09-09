@@ -18,7 +18,7 @@ class DreamerWebView @JvmOverloads constructor(
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.userAgentString = DreamerRequest.userAgent()
-        webViewClient = DreamerBlockClient()
+        webViewClient = AdBlockClient()
     }
 
     var isLoading = true
