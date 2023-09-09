@@ -1,7 +1,7 @@
 package com.ead.project.dreamer.presentation.main
 
 import android.Manifest
-import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +24,6 @@ import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.network.Network
 import com.ead.project.dreamer.app.data.network.NetworkType
-import com.ead.project.dreamer.app.data.server.Server
 import com.ead.project.dreamer.app.data.util.DirectoryUtil
 import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
@@ -34,7 +33,7 @@ import com.ead.project.dreamer.presentation.directory.DirectoryActivity
 import com.ead.project.dreamer.presentation.login.LoginActivity
 import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 import com.ead.project.dreamer.presentation.settings.SettingsActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ead.project.dreamer.presentation.update.UpdateActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
@@ -49,13 +48,12 @@ class MainActivity : AppCompatActivity() {
     private var isPostNotificationPermissionGranted = false
     private var isWriteExternalPermissionGranted = false
 
-    private val binding: ActivityMainBinding by lazy {
-        ActivityMainBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_Dreamer)
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.hide()
@@ -157,6 +155,7 @@ class MainActivity : AppCompatActivity() {
                 else {
                     DirectoryUtil.showCompletedState(this@MainActivity,binding.coordinator)
                 }
+
             }
         }
     }
@@ -190,20 +189,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
             }
-            else {
-
-                Server.setAutomaticResolver(false)
-
-            }
-
         }
     }
 
     private fun observeApplicationState() {
         viewModel.getStatusApp().observeOnce(this) { appBuild ->
 
-            val updateAvailable = currentVersion < appBuild.lastVersion
+            val updateAvailable = currentVersion < appBuild.update.version
             if (updateAvailable) {
+                updateVersionBuild(appBuild)
                 checkUpdate(appBuild)
             }
             if (currentVersion < appBuild.minVersion && !updateAvailable) {
@@ -213,23 +207,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkUpdate(appBuild: AppBuild) {
-        val updateApk = getString(R.string.apk_title_new_version_download, appBuild.lastVersion.toString())
-        //viewModel.setPreference(Constants.VERSION_UPDATE,updateApk)
-        if (!viewModel.downloadUseCase.checkIfUpdateIsAlreadyDownloaded()) {
-            showUpdateMessage(appBuild,updateApk)
-        }
+    private fun updateVersionBuild(appBuild: AppBuild) {
+        viewModel.updateVersion(appBuild.update.version)
     }
 
-    private fun showUpdateMessage(appBuild: AppBuild, title : String) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.title_new_version_download,appBuild.lastVersion.toString()))
-            .setMessage(appBuild.resumedVersionNotes?:getString(R.string.content_new_version_download))
-            .setPositiveButton(getString(R.string.to_download)) { _: DialogInterface?, _: Int ->
-                viewModel.downloadUseCase.launchUpdate(title, appBuild.downloadReference)
-            }
-            .setNegativeButton(R.string.cancel,null)
-            .show()
+    private fun checkUpdate(appBuild: AppBuild) {
+        if (!viewModel.updateUseCase.isAlreadyDownloaded()) {
+            launchUpdate(appBuild)
+        }
     }
 
     private fun observeNotificationSubscription() {
@@ -245,6 +230,14 @@ class MainActivity : AppCompatActivity() {
     private fun goToDirectory() { launchActivity(DirectoryActivity::class.java) }
 
     private fun goToSettings() { launchActivity(SettingsActivity::class.java) }
+
+    private fun launchUpdate(appBuild: AppBuild) {
+        launchActivity(
+            intent = Intent(this,UpdateActivity::class.java).apply {
+                putExtra(UpdateActivity.UPDATE,appBuild)
+            }
+        )
+    }
 
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
 
@@ -273,6 +266,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        const val CHAPTER_HOME_TARGET = "CHAPTER_HOME_TARGET"
+    }
 
     /* para mostrar notificación de configuración
 
