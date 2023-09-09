@@ -1,17 +1,18 @@
 package com.ead.project.dreamer.data.utils.ui
 
 import android.view.ScaleGestureDetector
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.domain.PreferenceUseCase
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class PlayerOnScaleGestureListener(
-    private val player: StyledPlayerView,
+    private val player: PlayerView,
     preferenceUseCase: PreferenceUseCase
 ) : ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
