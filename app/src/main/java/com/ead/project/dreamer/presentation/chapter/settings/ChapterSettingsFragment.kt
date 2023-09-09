@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.views.addSelectableItemEffect
@@ -12,6 +13,7 @@ import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.databinding.FragmentChapterSettingsBinding
+import com.ead.project.dreamer.presentation.server.menu.MenuServerFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -71,10 +73,10 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
     private fun initLayouts() {
         viewModel.setDownloadMode(true)
         binding.apply {
-            lnDownload.addSelectableItemEffect()
+            //lnDownload.addSelectableItemEffect()
             lnManualDownload.addSelectableItemEffect()
             lnFavorite.addSelectableItemEffect()
-            lnDownload.setVisibility(isChapter)
+            //lnDownload.setVisibility(isChapter)
             lnChapterMode.setVisibility(isChapter)
             lnFavorite.setVisibility(isChapter)
             lnRecordDelete.setVisibility(isRecords)
@@ -111,14 +113,14 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
 
     private fun settingAutomaticDownload() {
         binding.lnDownload.setOnClickListener {
-            viewModel.downloadUseCase.startDownload(chapter)
+            viewModel.downloadUseCase.add(activity as Context,chapter)
             dismiss()
         }
     }
 
     private fun settingManualDownload() {
         binding.lnManualDownload.setOnClickListener {
-            viewModel.downloadUseCase.startManualDownload(chapter, activity as Context)
+            MenuServerFragment.launch(activity as Context,chapter,true)
             dismiss()
         }
     }
@@ -145,7 +147,19 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val FRAGMENT = "MENU_CHAPTER_SETTINGS"
+        private const val FRAGMENT = "MENU_CHAPTER_SETTINGS"
         const val IS_INSTANCE_A_CHAPTER = "MENU_CHAPTER_IS_INSTANCE_A_CHAPTER"
+
+        fun launch(context: Context, chapter: Chapter,isChapter : Boolean) {
+            val fragmentManager = (context as FragmentActivity).supportFragmentManager
+            val chapterSettings = ChapterSettingsFragment()
+            chapterSettings.apply {
+                arguments = Bundle().apply {
+                    putParcelable(Chapter.REQUESTED, chapter)
+                    putBoolean(IS_INSTANCE_A_CHAPTER,isChapter)
+                }
+                show(fragmentManager, FRAGMENT)
+            }
+        }
     }
 }
