@@ -11,23 +11,22 @@ import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
+import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.isNotNullOrNotEmpty
 import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.database.model.ChapterHome
-import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdUnifiedChapterHomeBinding
 import com.ead.project.dreamer.databinding.LayoutChapterHomeGridBinding
-import com.ead.project.dreamer.domain.downloads.LaunchDownload
 import com.ead.project.dreamer.domain.servers.HandleChapter
+import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
 import com.google.android.gms.ads.nativead.NativeAd
 
 
 class ChapterHomeRecyclerViewAdapter(
     private val context: Context,
     private val handleChapter: HandleChapter,
-    private val launchDownload: LaunchDownload,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -91,17 +90,16 @@ class ChapterHomeRecyclerViewAdapter(
         }
 
         private fun settingsLayouts(chapter: ChapterHome) {
-            binding.txvTitle.text = chapter.title
+            binding.txvTitle.text = context.getString(R.string.title_home_chapter,chapter.title,chapter.chapterNumber)
+            binding.txvType.text = chapter.type
             binding.root.addSelectableItemEffect()
-            binding.imvPlay.addSelectableItemEffect()
-            binding.imvDownload.addSelectableItemEffect()
         }
 
         private fun settingImages(chapter: ChapterHome) {
             binding.imvCover.load(chapter.chapterCover){
                 crossfade(true)
                 crossfade(500)
-                transformations(RoundedCornersTransformation(8f.toPixels()))
+                transformations(RoundedCornersTransformation(12f.toPixels()))
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
             }
@@ -112,10 +110,8 @@ class ChapterHomeRecyclerViewAdapter(
                 chapter.chapterCover, chapter.chapterNumber,chapter.reference)
 
             binding.root.setOnClickListener { handleChapter(context,chapterSender) }
-            binding.imvPlay.setOnClickListener { context.toast("playing") }
-            binding.imvDownload.setOnClickListener { context.toast("downloading") }
             binding.root.setOnLongClickListener {
-                launchDownload(context, chapterSender,false)
+                ChapterSettingsFragment.launch(context,chapterSender,true)
                 return@setOnLongClickListener true
             }
         }
