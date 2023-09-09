@@ -11,7 +11,9 @@ import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.HomeUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.ProfileUseCase
+import com.ead.project.dreamer.presentation.settings.options.SettingsNotificationsFragment
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -28,11 +30,13 @@ class HomeWorker @AssistedInject constructor(
     private val objectUseCase: ObjectUseCase,
     private val profileUseCase: ProfileUseCase,
     private val webProvider: WebProvider,
-    private val homePreferences: HomePreferences,
-    private val notifier: HomeNotifier
+    private val notifier: HomeNotifier,
+    preferenceUseCase: PreferenceUseCase,
 ) : CoroutineWorker(context,workerParameters) {
 
     private val notificationList : MutableList<ChapterHome> = ArrayList()
+    private val homePreferences = preferenceUseCase.homePreferences
+    private val preferences = preferenceUseCase.preferences
 
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
@@ -74,7 +78,9 @@ class HomeWorker @AssistedInject constructor(
     private suspend fun notificationOperator(scope: CoroutineScope) {
         scope.apply {
             val notificationBaseIndex = homePreferences.getNotificationsIndex()
-            val notificationLevel = NotificationManager.ALL // todo store to handle
+
+            val notificationLevel = preferences.getInt(SettingsNotificationsFragment.PREFERENCE_NOTIFICATIONS,
+                NotificationManager.ALL)
 
             if (notificationLevel > NotificationManager.NONE) {
 
