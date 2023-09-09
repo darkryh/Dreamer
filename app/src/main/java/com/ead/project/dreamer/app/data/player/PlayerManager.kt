@@ -2,9 +2,37 @@ package com.ead.project.dreamer.app.data.player
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.media.session.MediaSessionCompat
+import android.os.Bundle
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.media3.cast.CastPlayer
+import androidx.media3.cast.SessionAvailabilityListener
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.dash.DashMediaSource
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.ima.ImaAdsLoader
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.exoplayer.source.ads.AdsLoader
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.session.MediaSession
+import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
+import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
@@ -23,45 +51,27 @@ import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.presentation.player.PlayerActivity
 import com.ead.project.dreamer.presentation.player.PlayerViewModel
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MediaMetadata
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ext.cast.CastPlayer
-import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.exoplayer2.ext.ima.ImaAdsLoader
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.source.ads.AdsLoader
-import com.google.android.exoplayer2.source.dash.DashMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
-import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.StyledPlayerView
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.exoplayer2.util.Util
 import com.google.android.gms.cast.framework.CastContext
+import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.ListenableFuture
 
 
-class PlayerManager(
+@UnstableApi class PlayerManager(
     private val context: Context,
     private val castContext: CastContext,
     private val viewModel: PlayerViewModel,
     private var chapter: Chapter,
     private var videoList : List<VideoModel>,
-    val styledPlayerView: StyledPlayerView,
+    val playerView: PlayerView,
     val castManager : CastManager,
-    var isNewIntent : Boolean = false,
+    private var isNewIntent : Boolean = false,
     preferenceUseCase: PreferenceUseCase
-) : Player.Listener, SessionAvailabilityListener {
+) : Player.Listener, SessionAvailabilityListener , MediaSession.Callback {
+
+    companion object {
+        private const val REWIND_SESSION = "REWIND_SESSION"
+        private const val FORWARD_SESSION = "FORWARD_SESSION"
+    }
 
     private val playerActivity = context as PlayerActivity
 
@@ -74,13 +84,12 @@ class PlayerManager(
     var castPlayer : CastPlayer?= null
 
     private var adsLoader: ImaAdsLoader? = null
-    private val isServerStarted get() = LocalServer.isStarted()
 
     var isInPipMode : Boolean = false
     var isPIPModeEnabled : Boolean = playerPreferences.isInPictureInPictureMode()
 
     private var mediaRouteButton: MediaRouteButton? = null
-    private var mediaSession : MediaSessionCompat? = null
+    private var mediaSession : MediaSession? = null
     private var playWhenReady = true
     private var currentWindow = 0
     var playbackPosition = chapter.currentProgress.secondsToLong()
@@ -97,7 +106,6 @@ class PlayerManager(
     }
 
     fun initPlayer() {
-        //playerPreferences.setCastingChapter(chapter)
         adsLoader = ImaAdsLoader.Builder(context).build()
         exoPlayer = ExoPlayer.Builder(context).build()
 
@@ -148,7 +156,7 @@ class PlayerManager(
             val mediaSourceFactory: MediaSource.Factory =
                 if (adPreferences.shouldShowAdPlayer()) {
                     val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(context)
-                    DefaultMediaSourceFactory(dataSourceFactory).setLocalAdInsertionComponents(adsProvider,styledPlayerView)
+                    DefaultMediaSourceFactory(dataSourceFactory).setLocalAdInsertionComponents(adsProvider,playerView)
                 }
                 else  {
                     val dataSourceFactory : DataSource.Factory  =
@@ -184,7 +192,7 @@ class PlayerManager(
                 .setAudioAttributes(audioAttributes,true)
                 .build()
                 .also {
-                    styledPlayerView.player = it
+                    playerView.player = it
                     it.setMediaItems(mediaItems().asReversed())
                     it.playWhenReady = playWhenReady
                     it.seekTo(currentWindow, playbackPosition)
@@ -194,11 +202,11 @@ class PlayerManager(
 
             adsLoader?.setPlayer(currentPlayer)
 
-            mediaSession = MediaSessionCompat(context, playerActivity.packageName)
-            val mediaSessionConnector = MediaSessionConnector(mediaSession!!)
-            mediaSessionConnector.setPlayer(currentPlayer)
-            mediaSession?.isActive = true
-
+            /*mediaSession = MediaSession.Builder(context,player?:return).let {
+                it.setId()
+                it.setCallback(this)
+                it.build()
+            }*/
         }
 
         if (currentPlayer == castPlayer) {
@@ -299,7 +307,7 @@ class PlayerManager(
         if ((Util.SDK_INT < 24 || exoPlayer == null && !isInPipMode && videoList.isNotEmpty())) {
             initPlayer()
         }
-        styledPlayerView.useController = true
+        playerView.useController = true
 
     }
 
@@ -346,16 +354,13 @@ class PlayerManager(
         }
 
         mediaSession?.apply {
-
-            isActive = false
             release()
-
         }
 
         exoPlayer?.release()
         exoPlayer = null
 
-        styledPlayerView.player = null
+        playerView.player = null
 
         castPlayer?.setSessionAvailabilityListener(null)
         castPlayer = null
@@ -445,6 +450,46 @@ class PlayerManager(
         playOnPlayer(exoPlayer)
     }
 
+    override fun onConnect(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo
+    ): MediaSession.ConnectionResult {
+        val connectionResult = super.onConnect(session, controller)
+        val sessionCommands =
+            connectionResult.availableSessionCommands
+                .buildUpon()
+                // Add custom commands
+                .add(SessionCommand(REWIND_SESSION, Bundle()))
+                .add(SessionCommand(FORWARD_SESSION, Bundle()))
+                .build()
+        return MediaSession.ConnectionResult.accept(
+            sessionCommands, connectionResult.availablePlayerCommands)
+    }
+
+    override fun onCustomCommand(
+        session: MediaSession,
+        controller: MediaSession.ControllerInfo,
+        customCommand: SessionCommand,
+        args: Bundle
+    ): ListenableFuture<SessionResult> {
+
+        when(customCommand.customAction) {
+            REWIND_SESSION -> {
+                session.player.seekBack()
+                return Futures.immediateFuture(
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                )
+            }
+            FORWARD_SESSION -> {
+                session.player.seekForward()
+                return Futures.immediateFuture(
+                    SessionResult(SessionResult.RESULT_SUCCESS)
+                )
+            }
+        }
+        return super.onCustomCommand(session, controller, customCommand, args)
+    }
+
     private fun playerOnPlayerInCastMode() {
 
         if (isLocalVideo()) {
@@ -458,7 +503,7 @@ class PlayerManager(
 
     private fun startInCastLocalMode() {
 
-        if (isServerStarted) {
+        if (LocalServer.isStarted()) {
 
             LocalServer.add(chapter)
             playOnPlayer(castPlayer)
