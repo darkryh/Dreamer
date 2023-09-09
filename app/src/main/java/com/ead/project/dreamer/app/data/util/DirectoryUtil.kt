@@ -73,20 +73,23 @@ object DirectoryUtil {
                     rootView = rootView,
                     text = context.getString(R.string.requesting_data_adv1),
                     color = R.color.red,
-                    duration = Snackbar.LENGTH_INDEFINITE
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    isLoading = true
                 )
                 2 -> context.showSnackBar(
                     rootView = rootView,
                     text = context.getString(R.string.requesting_data_adv2),
                     color = R.color.red,
-                    duration = Snackbar.LENGTH_INDEFINITE
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    isLoading = true
                 )
                 3 -> {
                     context.showSnackBar(
                         rootView = rootView,
                         text = context.getString(R.string.requesting_data_adv3),
                         color = R.color.red,
-                        duration = Snackbar.LENGTH_INDEFINITE
+                        duration = Snackbar.LENGTH_INDEFINITE,
+                        isLoading = true
                     )
                     warningCounter = 0
                 }
