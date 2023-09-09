@@ -19,4 +19,8 @@ class GetHomeList @Inject constructor(
     fun livedata() : LiveData<List<ChapterHome>> =
         if (appBuildPreferences.isUnlockedVersion()) { repository.getFlowChapterHome() }
         else { repository.getFlowChapterHomeCensured() }.asLiveData()
+
+    fun previewLivedata() : LiveData<List<ChapterHome>> =
+        if (appBuildPreferences.isUnlockedVersion()) { repository.getFlowPreviewChapterHome() }
+        else { repository.getFlowPreviewChapterHomeCensured() }.asLiveData()
 }

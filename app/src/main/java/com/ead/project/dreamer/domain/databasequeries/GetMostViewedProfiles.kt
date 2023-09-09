@@ -13,4 +13,6 @@ class GetMostViewedProfiles @Inject constructor(
     suspend operator fun invoke () : List<AnimeProfile> = repository.getMostViewedSeries()
 
     fun livedata() : LiveData<List<AnimeProfile>> = repository.getFlowMostViewedSeries().asLiveData()
+
+    fun previewLivedData() : LiveData<List<AnimeProfile>> = repository.getFlowMostViewedSeriesPreview().asLiveData()
 }
