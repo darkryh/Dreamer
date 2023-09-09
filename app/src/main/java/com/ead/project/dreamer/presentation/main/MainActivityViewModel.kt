@@ -17,6 +17,7 @@ import com.ead.project.dreamer.domain.DiscordUseCase
 import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
 import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.domain.UpdateUseCase
 import com.ead.project.dreamer.domain.configurations.InstallWorkers
 import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,7 @@ class MainActivityViewModel @Inject constructor(
     private val objectUseCase: ObjectUseCase,
     private val client: FirebaseClient,
     val downloadUseCase: DownloadUseCase,
+    val updateUseCase: UpdateUseCase,
     val castManager: CastManager,
     preferenceUseCase: PreferenceUseCase,
     context: Context
@@ -44,6 +46,7 @@ class MainActivityViewModel @Inject constructor(
     private val preferences = preferenceUseCase.preferences
     private val playerPreferences = preferenceUseCase.playerPreferences
     private val filesPreferences = preferenceUseCase.filesPreferences
+    private val appBuildPreferences = preferenceUseCase.appBuildPreferences
 
     private val bypassInitializer by lazy { BypassInitializer(context) }
 
@@ -91,6 +94,10 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             playerPreferences.setRequestingProfile(Requester.Deactivate)
         }
+    }
+
+    fun updateVersion(version : Double) {
+        appBuildPreferences.updateVersion(version)
     }
 
     private fun fetchingPreferences() {
