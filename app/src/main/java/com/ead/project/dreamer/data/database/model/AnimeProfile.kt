@@ -23,7 +23,6 @@ data class AnimeProfile (
     val rawGenres : String,
     val size : Int = 0,
     val lastChapterId : Int = 0,
-    val lastChapterSeen : Chapter?= null,
     val reference : String? = null,
     val isFavorite : Boolean = false
 ) : Parcelable, EqualsDiffUtil {
@@ -63,10 +62,10 @@ data class AnimeProfile (
     }
 
     fun checkPolicies() = (TYPE_BOYS_LOVE !in this.rawGenres
-                && (TYPE_ECCHI !in this.rawGenres && isNotBlacklisted()))
+                && (TYPE_ECCHI !in this.rawGenres && isBlacklisted()))
                 || isWhiteListedTitle()
 
-    private fun isNotBlacklisted() = "DxD" !in this.title && "Zero no Tsukaima" !in this.title
+    private fun isBlacklisted() = "DxD" !in this.title && "Zero no Tsukaima" !in this.title
             && "Trinity Seven" !in this.title && "Bannou Bunka Neko-Musume" !in this.title
             && "Eromanga-sensei" !in this.title && "Isekai Maou to Shoukan Shoujo no Dorei Majutsu" !in this.title
             && "Monster Musume no Iru Nichijou" !in this.title && "IS: Infinite Stratos" !in this.title
