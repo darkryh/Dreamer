@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import com.ead.project.dreamer.app.App
+import com.ead.project.dreamer.app.model.AutomaticServerPreference
 import com.ead.project.dreamer.app.model.ServerPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +23,18 @@ object Server {
     private val scope : CoroutineScope = CoroutineScope(Dispatchers.IO +  SupervisorJob())
 
     private const val SERVER_PREFERENCES = "SERVER_PREFERENCES"
+    private const val AUTOMATIC_SERVER_PREFERENCES = "AUTOMATIC_SERVER_PREFERENCES"
 
     private val store : DataStore<ServerPreference> = DataStoreFactory.create(
         serializer = ServerSerializer,
         produceFile = { context.dataStoreFile(SERVER_PREFERENCES) },
         corruptionHandler = null,
+    )
+
+    private val automaticStore : DataStore<AutomaticServerPreference> = DataStoreFactory.create(
+        serializer = AutomaticServerSerializer,
+        produceFile = { context.dataStoreFile(AUTOMATIC_SERVER_PREFERENCES) },
+        corruptionHandler = null
     )
 
     val serverPreferenceFlow get() = store.data
@@ -33,16 +44,6 @@ object Server {
     fun isProcessed() : Boolean = runBlocking { store.data.first().isProcessed }
 
     fun isDownloading() : Boolean = runBlocking { store.data.first().isDownloading }
-
-    fun setAutomaticResolver(value: Boolean) {
-        scope.launch {
-            store.updateData { serverPreference: ServerPreference ->
-                serverPreference.copy(
-                    isAutomatic = value
-                )
-            }
-        }
-    }
 
     fun updateAutomaticResolver() {
         scope.launch {
@@ -69,6 +70,57 @@ object Server {
             store.updateData { serverPreference: ServerPreference ->
                 serverPreference.copy(
                     isDownloading = value
+                )
+            }
+        }
+    }
+
+    fun getSortedInternalServersLiveData() : LiveData<List<String>> =
+        automaticStore.data.asLiveData().map { it.internalServerList }
+
+    fun getSortedExternalServersLiveData() : LiveData<List<String>> =
+        automaticStore.data.asLiveData().map { it.externalServerList }
+
+    fun getSortedDownloadServersLiveData() : LiveData<List<String>> =
+        automaticStore.data.asLiveData().map { it.downloadServerList }
+
+    fun getSortedInternalServers() : List<String> = runBlocking {
+        automaticStore.data.first().internalServerList
+    }
+
+    fun getSortedExternalServers() : List<String> = runBlocking {
+        automaticStore.data.first().externalServerList
+    }
+
+    fun getSortedDownloadServers() : List<String> = runBlocking {
+        automaticStore.data.first().downloadServerList
+    }
+
+    fun setSortedInternalServers(servers : List<String>) {
+        scope.launch {
+            automaticStore.updateData { automaticServerPreference: AutomaticServerPreference ->
+                automaticServerPreference.copy(
+                    internalServerList = servers
+                )
+            }
+        }
+    }
+
+    fun setSortedExternalServers(servers : List<String>) {
+        scope.launch {
+            automaticStore.updateData { automaticServerPreference: AutomaticServerPreference ->
+                automaticServerPreference.copy(
+                    externalServerList = servers
+                )
+            }
+        }
+    }
+
+    fun setSortedDownloadServers(servers : List<String>) {
+        scope.launch {
+            automaticStore.updateData { automaticServerPreference: AutomaticServerPreference ->
+                automaticServerPreference.copy(
+                    downloadServerList = servers
                 )
             }
         }
@@ -102,6 +154,10 @@ object Server {
     const val GOOGLE_DRIVE = "Google Drive"
     const val MEDIAFIRE = "Mediafire"
     const val VIDLOX = "Vidlox"
+    const val STREAMWISH = "StreamWish"
+    const val FILEMOON = "FileMoon"
+    const val MIXDROP = "MixDrop"
+    const val PIXELDRAIN = "PixelDrain"
 
 
     const val URL_FEMBED = "fembed.com"
@@ -127,10 +183,17 @@ object Server {
     const val URL_GOOGLE_DRIVE = "drive.google.com"
     const val URL_MEDIAFIRE = "mediafire.com"
     const val URL_VIDLOX = "vidlox.me"
+    const val URL_FILEMOON = "filemoon.sx"
+    const val URL_MIXDROP = "mixdrop.co"
+    const val URL_PIXELDRAIN = "pixeldrain.com"
 
     val URL_STREAMSB_DOMAINS = listOf(
         "sblanh.com", "lvturbo.com" ,"sbface.com","sbbrisk.com",
         "sbchill.com","sblongvu.com", "sbanh.com", "playersb.com",
         "embedsb.com","sbspeed.com","tubesb.com","sbrity.com"
+    )
+
+    val URL_STREAMWISH_DOMAINS = listOf(
+        "streamwish.to", "embedwish.com"
     )
 }
