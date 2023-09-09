@@ -1,4 +1,4 @@
-package com.ead.project.dreamer.presentation.menuserver
+package com.ead.project.dreamer.presentation.server.menu
 
 import android.content.Context
 import android.view.Gravity
