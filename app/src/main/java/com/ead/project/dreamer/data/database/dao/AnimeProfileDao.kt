@@ -63,6 +63,7 @@ interface AnimeProfileDao {
             "where isFavorite = 1 order by title asc")
     fun getLikeFlowDataList() : Flow<List<AnimeProfile>>
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.titleAlternate," +
             "p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size," +
             "p.lastChapterId,p.reference,p.isFavorite " +
@@ -72,6 +73,18 @@ interface AnimeProfileDao {
             "INNER join anime_profile_table as p on c.idProfile = p.id")
     fun getFlowMostViewedSeries(): Flow<List<AnimeProfile>>
 
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
+    @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.titleAlternate," +
+            "p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size," +
+            "p.lastChapterId,p.reference,p.isFavorite " +
+            "from (select * from anime_chapter_table " +
+            "where currentProgress >= totalProgress*0.75 and totalProgress != 0 " +
+            "GROUP BY idProfile ORDER BY count(idProfile) desc) as c " +
+            "INNER join anime_profile_table as p on c.idProfile = p.id limit 8")
+    fun getFlowMostViewedSeriesPreview(): Flow<List<AnimeProfile>>
+
+
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("select p.id, p.coverPhoto,p.profilePhoto,p.title,p.titleAlternate" +
             ",p.rating,p.state,p.description,p.date,p.genres,p.rawGenres,p.size" +
             ",p.lastChapterId,p.reference,p.isFavorite " +
