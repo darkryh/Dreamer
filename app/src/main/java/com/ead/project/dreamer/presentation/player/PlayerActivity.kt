@@ -18,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
 import coil.load
 import com.ead.commons.lib.lifecycle.activity.onBack
@@ -37,23 +40,22 @@ import com.ead.project.dreamer.presentation.player.content.PlayerContentFragment
 import com.ead.project.dreamer.presentation.player.content.chapterselector.ChapterSelectorFragment
 import com.ead.project.dreamer.presentation.player.content.scalegesture.ScaleGestureFragment
 import com.ead.project.dreamer.presentation.player.content.trackselector.TrackSelectorFragment
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import dagger.hilt.android.AndroidEntryPoint
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @AndroidEntryPoint
 class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
     private val viewModel : PlayerViewModel by viewModels()
     private val playerManager: PlayerManager by lazy {
         PlayerManager(this, viewModel.castContext, viewModel, chapter,
-            playList, styledPlayerView, viewModel.castManager, false,
+            playList, playerView, viewModel.castManager, false,
             viewModel.preferenceUseCase
         )
     }
 
     lateinit var chapter: Chapter
+    private var previousChapter : Chapter?=null
     var playList : List<VideoModel> = emptyList()
 
     private var orientation : Int = 0
@@ -65,7 +67,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private val fillMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
     private val fitMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
-    private val styledPlayerView : StyledPlayerView by lazy { findViewById(R.id.styledPlayerView) }
+    private val playerView : PlayerView by lazy { findViewById(R.id.styledPlayerView) }
     private val controller : AspectRatioFrameLayout by lazy { findViewById(R.id.dream_controller) }
     private val aspectFrameRatio : AspectRatioFrameLayout by lazy { findViewById(R.id.aspectRatio) }
 
@@ -129,19 +131,21 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         playerManager.setMediaRouteButton(mediaRouteButton)
         playerManager.initPlayer()
         setOrientationMode(orientation)
+        viewModel.updateChapter(previousChapter?:return)
     }
 
     private fun initVariables() {
         intent.extras?.let {
             chapter = it.parcelable(Chapter.REQUESTED)?:return@let
             playList = it.parcelableArrayList(Chapter.PLAY_VIDEO_LIST)?:return@let
+            previousChapter = it.parcelable(Chapter.PREVIOUS_CASTING_MEDIA)
         }
 
         orientation = resources.configuration.orientation
     }
 
     private fun initPlayerGesture() {
-        playerOnScaleGestureListener = PlayerOnScaleGestureListener(styledPlayerView,viewModel.preferenceUseCase)
+        playerOnScaleGestureListener = PlayerOnScaleGestureListener(playerView,viewModel.preferenceUseCase)
         scaleGestureDetector = ScaleGestureDetector(this, playerOnScaleGestureListener?:return)
     }
 
@@ -176,7 +180,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
         buttonClose.setOnClickListener {
 
-            playerManager.styledPlayerView.hideController()
+            playerManager.playerView.hideController()
             onBack()
 
         }
@@ -193,7 +197,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
                 trackSelectorFragment.player = playerManager.currentPlayer as ExoPlayer
                 trackSelectorFragment.playlist = playList.asReversed()
                 trackSelectorFragment.trackSelector = playerManager.trackSelector
-                trackSelectorFragment.playerView = playerManager.styledPlayerView
+                trackSelectorFragment.playerView = playerManager.playerView
                 trackSelectorFragment.show(fragmentManager, null)
             }
             else {
@@ -207,7 +211,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
             if (playerManager.isNotCasting()) {
                 val fragmentManager: FragmentManager = supportFragmentManager
                 val scaleGestureFragment = ScaleGestureFragment()
-                scaleGestureFragment.playerView = playerManager.styledPlayerView
+                scaleGestureFragment.playerView = playerManager.playerView
                 scaleGestureFragment.show(fragmentManager, null)
             }
             else {
@@ -221,7 +225,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
             val fragmentManager: FragmentManager = supportFragmentManager
             val chapterSelectorFragment = ChapterSelectorFragment()
             chapterSelectorFragment.isHorizontal = orientation == Configuration.ORIENTATION_LANDSCAPE
-            chapterSelectorFragment.playerView = playerManager.styledPlayerView
+            chapterSelectorFragment.playerView = playerManager.playerView
             chapterSelectorFragment.chapter = chapter
             chapterSelectorFragment.show(fragmentManager, null)
 
@@ -275,7 +279,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         aspectFrameRatio.setAspectRatio(aspectRatio)
         textTitle.visibility = View.GONE
         aspectFrameRatio.resizeMode = fixedWidthMode
-        styledPlayerView.resizeMode = fixedWidthMode
+        playerView.resizeMode = fixedWidthMode
         controller.resizeMode = fixedWidthMode
     }
 
@@ -289,7 +293,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         }
         aspectFrameRatio.resizeMode = fillMode
         controller.resizeMode = fillMode
-        styledPlayerView.resizeMode = fitMode
+        playerView.resizeMode = fitMode
     }
 
     //PIP-MODE
@@ -350,7 +354,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
             playerManager.playbackPosition = playerManager.exoPlayer?.currentPosition?:return
 
-            styledPlayerView.useController = false
+            playerView.useController = false
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -394,7 +398,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
     private fun initCastSettings() {
         playerManager.castManager.initFactory(this,mediaRouteButton)
-        playerManager.castManager.updatedChapter()
+        playerManager.castManager.onMediaStatus()
     }
 
     fun setMetaData() {
@@ -406,11 +410,11 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
         if (playerManager.castPlayer?.isCastSessionAvailable == false) {
 
-            styledPlayerView.player = playerManager.exoPlayer
+            playerView.player = playerManager.exoPlayer
             playerCover.visibility = View.GONE
             containerPlayerOperations.visibility = View.VISIBLE
-            styledPlayerView.controllerShowTimeoutMs = 3500
-            styledPlayerView.controllerHideOnTouch = true
+            playerView.controllerShowTimeoutMs = 3500
+            playerView.controllerHideOnTouch = true
             bottomControlsPlayer.visibility = View.VISIBLE
             playerManager.exoPlayer?.play()
             playerManager.hideCastingMessage(textCasting)
@@ -418,12 +422,12 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         }
         else {
 
-            styledPlayerView.player = playerManager.castPlayer
+            playerView.player = playerManager.castPlayer
             containerPlayerOperations.visibility = View.GONE
             playerCover.visibility = View.VISIBLE
-            styledPlayerView.showController()
-            styledPlayerView.controllerShowTimeoutMs = 0
-            styledPlayerView.controllerHideOnTouch = false
+            playerView.showController()
+            playerView.controllerShowTimeoutMs = 0
+            playerView.controllerHideOnTouch = false
             bottomControlsPlayer.visibility = View.GONE
             textTitle.visibility = View.GONE
             playerManager.exoPlayer?.pause()
@@ -435,7 +439,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     override fun onLayoutChange(p0: View?, p1: Int, p2: Int, p3: Int,
                                 p4: Int, p5: Int, p6: Int, p7: Int, p8: Int) {
         val sourceRectHint = Rect()
-        styledPlayerView.getGlobalVisibleRect(sourceRectHint)
+        playerView.getGlobalVisibleRect(sourceRectHint)
     }
 
     companion object {
