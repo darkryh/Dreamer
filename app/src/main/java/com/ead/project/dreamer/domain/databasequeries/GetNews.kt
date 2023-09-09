@@ -18,4 +18,8 @@ class GetNews @Inject constructor(
     fun flow() : Flow<List<NewsItem>> =
         (if (appBuildPreferences.isLockedVersion()) { repository.getFlowNewsItemsCensured() }
         else { repository.getFlowNewsItems() })
+
+    fun flowLimited() : Flow<List<NewsItem>> =
+        (if (appBuildPreferences.isLockedVersion()) { repository.getFlowNewsItemsCensuredLimited() }
+        else { repository.getFlowNewsItemsLimited() })
 }
