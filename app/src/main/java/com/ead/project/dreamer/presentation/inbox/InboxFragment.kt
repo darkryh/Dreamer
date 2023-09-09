@@ -44,7 +44,7 @@ class InboxFragment : Fragment() {
 
     private fun setupViewPager() {
         binding.apply {
-            viewPager = InboxViewPagerAdapter(requireActivity(),viewPager2)
+            viewPager = InboxViewPagerAdapter(requireActivity())
             viewPager2.adapter = viewPager
             viewPager2.registerOnPageChangeCallback(object  : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
