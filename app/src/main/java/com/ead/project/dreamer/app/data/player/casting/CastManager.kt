@@ -59,7 +59,7 @@ class CastManager @Inject constructor(
     fun onResume() {
         castMediaSession.addCastStateListener(castStateListener)
         castMediaSession.addSessionManagerListener(sessionManagerListener)
-        updatedChapter()
+        onMediaStatus()
     }
 
 
@@ -76,14 +76,27 @@ class CastManager @Inject constructor(
 
     fun getChapter() = playerPreferences.getCastingChapter()
 
-    fun updatedChapter(isConsumed : Boolean = false) {
+    fun getUpdatedChapter() : Chapter? {
+        val chapter = getChapter() ?: return null
+
+        val totalProgress = castMediaSession.streamDurationProgress
+        val currentProgress = castMediaSession.stream
+
+        return chapter.copy(
+            currentProgress = currentProgress,
+            totalProgress = totalProgress,
+            isContentConsumed = chapter.isMediaWatched
+        )
+    }
+
+    fun onMediaStatus() {
         castMediaSession.onPerformAction {
 
+            val isConsumed = (castMediaSession.getRemoteClient()?.mediaStatus?: return@onPerformAction).playerState == MediaStatus.IDLE_REASON_FINISHED
             chapter = playerPreferences.getCastingChapter()
 
             val totalProgress : Int
             val currentProgress : Int
-            var isContentConsumed = false
 
             if (isConsumed) {
 
@@ -97,14 +110,15 @@ class CastManager @Inject constructor(
 
                 totalProgress = castMediaSession.streamDurationProgress
                 currentProgress = castMediaSession.stream
-
-                isContentConsumed = chapter?.isMediaWatched?:false
             }
 
             chapter = chapter?.copy(
                 totalProgress = totalProgress,
-                currentProgress = currentProgress,
-                isContentConsumed = isContentConsumed,
+                currentProgress = currentProgress
+            )
+
+            chapter = chapter?.copy(
+                isContentConsumed = chapter?.isMediaWatched?:false,
                 lastDateSeen = TimeUtil.getNow()
             )?.apply {
 
@@ -118,18 +132,10 @@ class CastManager @Inject constructor(
     private val castStateListener = CastStateListener { newState ->
 
         when (newState) {
-            CastState.NO_DEVICES_AVAILABLE -> {
-
-            }
-            CastState.NOT_CONNECTED -> {
-
-            }
-            CastState.CONNECTING -> {
-
-            }
-            CastState.CONNECTED -> {
-
-            }
+            CastState.NO_DEVICES_AVAILABLE -> {}
+            CastState.NOT_CONNECTED -> {}
+            CastState.CONNECTING -> {}
+            CastState.CONNECTED -> {}
         }
 
         if (newState != CastState.NO_DEVICES_AVAILABLE) {
@@ -151,9 +157,12 @@ class CastManager @Inject constructor(
 
     private val sessionManagerListener : SessionManagerListener<Session> = object : SessionManagerListener<Session>{
 
+        private var isMediaConsumed = false
+
         override fun onSessionStarted(session: Session, p1: String) {
 
             Log.d(TAG, "onSessionStarted: ")
+            isMediaConsumed = false
             castMediaSession.registerRemoteClient(remoteCallBack)
 
         }
@@ -174,6 +183,7 @@ class CastManager @Inject constructor(
 
             Log.d(TAG, "onSessionResumed: ")
             castMediaSession.registerRemoteClient(remoteCallBack)
+            onMediaStatus()
 
         }
 
@@ -199,14 +209,14 @@ class CastManager @Inject constructor(
         override fun onSessionEnding(session: Session) {
 
             Log.d(TAG, "onSessionEnding: ")
-            updatedChapter()
+            onMediaStatus()
 
         }
 
         override fun onSessionSuspended(session: Session, p1: Int) {
 
             Log.d(TAG, "onSessionSuspended: ")
-            updatedChapter()
+            onMediaStatus()
             castMediaSession.removeRemoteClient(remoteCallBack)
 
         }
@@ -228,12 +238,11 @@ class CastManager @Inject constructor(
         override fun onStatusUpdated() {
             super.onStatusUpdated()
 
-            when(castMediaSession.getRemoteClient()?.mediaStatus?.playerState) {
+            when(castMediaSession.getRemoteClient()?.idleReason) {
                 MediaStatus.IDLE_REASON_FINISHED -> {
-                    updatedChapter(true)
+                    onMediaStatus()
                 }
             }
-
         }
 
     }
