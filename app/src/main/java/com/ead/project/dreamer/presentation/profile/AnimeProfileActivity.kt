@@ -12,13 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.transform.RoundedCornersTransformation
-import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.lifecycle.activity.onBackHandle
 import com.ead.commons.lib.views.addSelectableItemEffect
-import com.ead.commons.lib.views.getMutated
+import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.commons.lib.views.setVisibility
 import com.ead.commons.lib.views.setVisibilityReverse
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
 import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.app.model.Requester
@@ -82,6 +82,8 @@ class AnimeProfileActivity : AppCompatActivity() {
                     configureChapters()
                     loadAnimeProfileHeader(animeProfile)
                 }
+                likeProfile(animeProfile)
+                updateLike(animeProfile)
             }
         }
     }
@@ -128,12 +130,7 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun initLayouts() {
         binding.apply {
-            setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbar.navigationIcon =
-                toolbar.navigationIcon?.getMutated(this@AnimeProfileActivity,R.color.white)
-            toolbar.setNavigationOnClickListener { onBack() }
+            handleNotActionBar(toolbar)
             imvDownloads.addSelectableItemEffect()
             imvDownloads.setOnClickListener {
                 MaterialAlertDialogBuilder(this@AnimeProfileActivity)
@@ -205,6 +202,20 @@ class AnimeProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun likeProfile(animeProfile: AnimeProfile) {
+        binding.imvLikeProfile.setOnClickListener {
+            viewModel.updateAnimeProfile(animeProfile.copy(
+                isFavorite = !animeProfile.isFavorite
+            ))
+        }
+    }
+
+    private fun updateLike(animeProfile: AnimeProfile) {
+        if (animeProfile.isFavorite)
+            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
+        else
+            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
+    }
 
     private fun onBackPressedMode() { finish() }
 
