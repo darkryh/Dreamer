@@ -8,7 +8,7 @@
     tools:context=".presentation.player.PlayerActivity"
     android:orientation="vertical">
 
-    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+    <androidx.media3.ui.AspectRatioFrameLayout
         android:id="@+id/aspectRatio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-            app:controller_layout_id="@layout/dreamer_player_controller"
+        <androidx.media3.ui.PlayerView
+            app:controller_layout_id="@layout/player_controller"
             android:id="@+id/styledPlayerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,7 +26,7 @@
             app:hide_on_touch="true"
             app:show_timeout="3500"
             app:surface_type="texture_view"/>
-    </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+    </androidx.media3.ui.AspectRatioFrameLayout>
 
     <LinearLayout
         android:id="@+id/content_reference"

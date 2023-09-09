@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
+    android:layout_width="130dp"
+    android:layout_height="220dp"
+    android:layout_marginHorizontal="6dp"
     android:layout_marginTop="8dp"
     android:backgroundTint="?attr/colorSurface"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,8 +15,8 @@
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
-            android:layout_width="110dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -34,56 +34,62 @@
                 android:layout_height="match_parent"
                 android:background="@color/backgroundImageSmooth"
                 android:contentDescription="@string/cover_image"
-                android:visibility="visible" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:visibility="gone"
-                android:background="@drawable/background_smooth_rounded_bottom_8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imvPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:padding="16dp"
-                    android:layout_weight="1"
-                    app:tint="@color/orange_peel_dark"
-                    app:srcCompat="@drawable/ic_play_circle_outline_24"
-                    android:contentDescription="@string/play"/>
-
-                <ImageView
-                    android:id="@+id/imvDownload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:padding="16dp"
-                    android:layout_weight="1"
-                    app:tint="@color/orange_peel_dark"
-                    app:srcCompat="@drawable/ic_download_32"
-                    android:contentDescription="@string/play"/>
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                android:visibility="visible"/>
         </RelativeLayout>
 
         <TextView
             android:id="@+id/txvTitle"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="start"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
             android:maxLines="2"
             android:text="@string/title"
             android:textSize="11sp"
-            android:textStyle="normal"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/txvChapterNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txvChapterNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="@string/chapter_number_short"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/txvType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txvType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:maxLines="2"
+            android:text="@string/type"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/orange_peel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

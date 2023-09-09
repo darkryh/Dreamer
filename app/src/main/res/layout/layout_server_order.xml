@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="?attr/colorSurface">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginHorizontal="8dp"
+        android:src="@drawable/ic_server_drag_drop"
+        app:tint="?attr/colorPrimaryVariant"
+        android:layout_gravity="center"
+        android:contentDescription="@string/server_icon"/>
+
+    <TextView
+        android:id="@+id/txvServer"
+        android:text="@string/server"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="8dp"
+        android:textSize="16sp"
+        android:textColor="?attr/colorPrimaryVariant"
+        android:gravity="center_vertical"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

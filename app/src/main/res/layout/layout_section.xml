@@ -27,10 +27,12 @@
         <TextView
             android:id="@+id/more"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            android:text="mostar más."
-            android:textSize="13sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            android:text="@string/show_more"
+            android:textSize="14sp"
             android:textColor="@color/orange_peel_dark"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 

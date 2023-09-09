@@ -55,11 +55,11 @@
             app:layout_constraintTop_toTopOf="@+id/imvRelativeCover" />
 
         <TextView
-            android:id="@+id/txvChapter"
+            android:id="@+id/txvChapterNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/chapter"
             android:textColor="@color/white"
             android:textSize="11sp"

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_width="wrap_content"
+    android:layout_width="250dp"
     android:layout_height="180dp"
     android:backgroundTint="?attr/colorSurface"
     android:layout_marginStart="16dp"
@@ -15,7 +16,7 @@
 
         <RelativeLayout
             android:id="@+id/relativeProfilePlayer"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -39,6 +40,24 @@
                 android:contentDescription="@string/cover_image" />
 
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/test_example"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:gravity="left"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/relativeProfilePlayer"
+            tools:ignore="RtlHardcoded" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

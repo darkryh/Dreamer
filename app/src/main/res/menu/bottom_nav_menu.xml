@@ -17,11 +17,6 @@
         android:title="Noticias" />
 
     <item
-        android:id="@+id/navigation_directory"
-        android:icon="@drawable/ic_categories_24"
-        android:title="Directorio"/>
-
-    <item
         android:id="@+id/navigation_records"
         android:icon="@drawable/ic_history_24"
         android:title="@string/title_records" />

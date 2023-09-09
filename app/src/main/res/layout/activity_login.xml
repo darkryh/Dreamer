@@ -58,7 +58,8 @@
         app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imvLogo_login" />
+        app:layout_constraintTop_toBottomOf="@+id/imvLogo_login"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -79,7 +80,8 @@
         app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
+        android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_login"
@@ -98,7 +100,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
-        tools:ignore="RtlHardcoded,TextContrastCheck" />
+        tools:ignore="RtlHardcoded,TextContrastCheck"
+        android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_register"
@@ -116,7 +119,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_login"
         app:layout_constraintTop_toTopOf="@+id/button_login"
-        tools:ignore="RtlHardcoded,TextContrastCheck" />
+        tools:ignore="RtlHardcoded,TextContrastCheck"
+        android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_login_discord"

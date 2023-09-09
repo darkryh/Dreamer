@@ -80,6 +80,20 @@
                         app:tint="@color/white"
                         app:srcCompat="@drawable/ic_circle_download_24"
                         tools:ignore="ImageContrastCheck"/>
+
+                    <ImageView
+                        android:id="@+id/imvLikeProfile"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="end|center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/cover_profile"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:tint="@color/white"
+                        app:srcCompat="@drawable/ic_favorite_border_24"
+                        tools:ignore="ImageContrastCheck"/>
                 </androidx.appcompat.widget.Toolbar>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +112,8 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        tools:srcCompat="@tools:sample/avatars"
+                        android:contentDescription="@string/profile_logo" />
 
                     <TextView
                         android:id="@+id/txvTitle"
@@ -124,7 +139,7 @@
                         android:layout_marginTop="8dp"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="second title"
+                        android:text="@string/second_title"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -140,7 +155,7 @@
                         android:layout_marginTop="8dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="En Emisión"
+                        android:text="@string/in_broadcast"
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -182,12 +197,12 @@
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Detalles"/>
+                        android:text="@string/details"/>
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Capítulos"/>
+                        android:text="@string/chapters_profile"/>
 
                 </com.google.android.material.tabs.TabLayout>
 

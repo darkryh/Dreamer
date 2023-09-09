@@ -26,6 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layoutAnimation="@anim/layout_animation"
+                    android:paddingHorizontal="8dp"
                     tools:listitem="@layout/layout_anime_profile"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
@@ -55,7 +56,7 @@
                     android:layout_height="235dp"
                     android:gravity="center"
                     android:paddingHorizontal="32dp"
-                    android:text="Empieza a ver tus animes, y se mostraran los que más viste."
+                    android:text="@string/advice_most_viewed"
                     android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/txvSuggestions"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -67,13 +68,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:text="Lo que más has visto."
+                    android:text="@string/what_you_have_seen_the_most"
                     android:layout_marginTop="8dp"
                     android:textColor="?attr/colorPrimaryVariant"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/recycler_view_most_viewed_series"
                     app:layout_constraintStart_toEndOf="@+id/recycler_view_most_viewed_series"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/txvMostViewedShowMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/show_more"
+                    android:textColor="@color/orange_peel_dark"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/txvMostViewed"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -94,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="16dp"
-                    android:text="Recomendaciones para ti."
+                    android:text="@string/recommendations_for_you"
                     android:textColor="?attr/colorPrimaryVariant"
                     android:textSize="18sp"
                     android:textStyle="bold"
