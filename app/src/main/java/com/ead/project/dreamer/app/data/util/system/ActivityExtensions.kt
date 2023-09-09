@@ -6,6 +6,11 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.ead.commons.lib.lifecycle.activity.onBack
+import com.ead.commons.lib.views.getMutated
+import com.ead.project.dreamer.R
 
 @Suppress("DEPRECATION")
 fun Activity.hideSystemUI() {
@@ -48,4 +53,31 @@ fun Activity.showSystemUI() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
     }
+}
+
+fun AppCompatActivity.handleNotActionBar(toolbar: Toolbar, isDarkTheme : Boolean) {
+    supportActionBar(toolbar)
+    if (isDarkTheme) {
+        toolbar.navigationIcon =
+            toolbar.navigationIcon?.getMutated(this, R.color.white)
+    }
+    else {
+        toolbar.navigationIcon =
+            toolbar.navigationIcon?.getMutated(this, R.color.blackPrimary)
+    }
+    toolbar.setNavigationOnClickListener { onBack() }
+}
+
+fun AppCompatActivity.handleNotActionBar(toolbar: Toolbar) {
+    supportActionBar(toolbar)
+    toolbar.navigationIcon =
+        toolbar.navigationIcon?.getMutated(this, R.color.white)
+    toolbar.setNavigationOnClickListener { onBack() }
+}
+
+private fun AppCompatActivity.supportActionBar(toolbar: Toolbar) {
+    supportActionBar?.hide()
+    setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayShowTitleEnabled(false)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
 }
