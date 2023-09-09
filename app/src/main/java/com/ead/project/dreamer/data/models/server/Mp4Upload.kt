@@ -1,21 +1,21 @@
 package com.ead.project.dreamer.data.models.server
 
 
+import com.ead.project.dreamer.data.models.EmbedServer
 import com.ead.project.dreamer.data.models.Player
-import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.data.models.VideoModel
 import org.jsoup.Jsoup
 
-class Mp4Upload (embeddedUrl:String) : Server(embeddedUrl) {
+class Mp4Upload(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Mp4Upload) {
 
-    override fun onExtract() {
-        if (isDownloading) return
-        player = Player.Mp4Upload
-        isDirect = false
-        if (!fileDeleted()) addVideo(VideoModel("Default",url))
+    override fun checkIfVideoIsAvailable(): Boolean {
+        return !(try {
+            Jsoup.connect(url).get()
+                .body()
+                .text() == "File was deleted"
+        }
+        catch (ex : Exception) {
+            true
+        })
     }
 
-    private fun fileDeleted(): Boolean =
-        try { Jsoup.connect(url).get().body().text() == "File was deleted" }
-        catch (ex : Exception) { true }
 }
