@@ -9,15 +9,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
+import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.data.util.system.clearData
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.app.data.util.system.onDestroy
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
+import com.ead.project.dreamer.data.network.AdBlockClient
 import com.ead.project.dreamer.data.network.AdBlocker
-import com.ead.project.dreamer.data.network.DreamerBlockClient
-import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.databinding.ActivityPlayerWebBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -28,8 +28,8 @@ class PlayerWebActivity : AppCompatActivity() {
 
     private val viewModel : PlayerViewModel by viewModels()
 
-    lateinit var chapter: Chapter
-    lateinit var playlist : List<VideoModel>
+    private lateinit var chapter: Chapter
+    private lateinit var playlist : List<VideoModel>
 
     private var orientation : Int = 0
 
@@ -64,11 +64,11 @@ class PlayerWebActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun configWebView() {
         val settings = binding.webView.settings
+        settings.userAgentString = AppInfo.userAgent
         settings.javaScriptEnabled = true
-        settings.domStorageEnabled = false
-        settings.userAgentString = DreamerRequest.userAgent()
+        settings.domStorageEnabled = true
         settings.cacheMode = WebSettings.LOAD_DEFAULT
-        binding.webView.webViewClient = DreamerBlockClient()
+        binding.webView.webViewClient = AdBlockClient()
     }
 
     private fun loadChapter() {
