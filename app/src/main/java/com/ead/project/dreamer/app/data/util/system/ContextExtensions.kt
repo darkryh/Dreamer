@@ -12,8 +12,11 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -91,7 +94,6 @@ fun Context.showSnackBar(
         val parentViewGroup = getParentViewGroup()
 
         parentViewGroup.apply {
-
             setPadding(64,0,64,0)
             val textViewContent = getTextViewContent()
             textViewContent.setTextSize(
@@ -100,10 +102,11 @@ fun Context.showSnackBar(
             )
 
             if (isLoading) {
-                val progressBar = ProgressBar(this@showSnackBar).apply {
-                    setDrawableColor(this.indeterminateDrawable,getColorCompact(R.color.orange_peel))
-                    layoutParams.height = 80
-                    centerGravity()
+                val progressBar = ProgressBar(this@showSnackBar).let {
+                    val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 80)
+                    layoutParams.gravity = Gravity.CENTER_VERTICAL
+                    it.layoutParams = layoutParams
+                    it
                 }
                 addView(progressBar)
             }
