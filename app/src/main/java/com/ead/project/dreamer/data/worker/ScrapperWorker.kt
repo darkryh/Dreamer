@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 @HiltWorker
-class ScrapperWorker  @AssistedInject constructor(
+class ScrapperWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val serverUseCase: ServerUseCase,
