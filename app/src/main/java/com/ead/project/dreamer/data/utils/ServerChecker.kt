@@ -19,12 +19,16 @@ class ServerChecker {
             if (url.contains(Server.URL_BAYFILES)) return Server.BAYFILES
             if (url.contains(Server.URL_ZIPPYSHARE)) return Server.ZIPPYSHARE
             if (url.contains(Server.URL_MEDIAFIRE)) return Server.MEDIAFIRE
+            if (url.contains(Server.URL_PIXELDRAIN)) return Server.PIXELDRAIN
             if (url.contains(Server.URL_FIRELOAD)) return Server.FIRELOAD
             if (url.contains(Server.URL_STREAMTAPE)) return Server.STREAMTAPE
             if (url.contains(Server.URL_VOE)) return Server.VOE
             if (url.contains(Server.URL_PUJ)) return Server.PUJ
             if (url.contains(Server.URL_VIDEOBIN)) return Server.VIDEOBIN
             if (url.contains(Server.URL_MP4UPLOAD)) return Server.MP4UPLOAD
+            if (url.contains(Server.URL_FILEMOON)) return Server.FILEMOON
+            if (url.contains(Server.URL_STREAMWISH_DOMAINS)) return Server.STREAMWISH
+            if (url.contains(Server.URL_MIXDROP)) return Server.MIXDROP
             if (url.contains(Server.URL_UQLOAD)) return Server.UQLOAD
             if (url.contains(Server.URL_MEGA)) return Server.MEGA
             if (url.contains(Server.URL_UPTOBOX)) return Server.UPTOBOX
@@ -40,15 +44,19 @@ class ServerChecker {
             Server.OKRU, Server.ONEFICHIER,
             Server.VIDEOBIN, Server.VOE,
             Server.MEDIAFIRE, Server.STREAMSB,
-            Server.SENDVID, Server.ZIPPYSHARE,
-            Server.BAYFILES
+            Server.SENDVID, Server.BAYFILES,
+            Server.PIXELDRAIN
         )
 
 
-        private fun webServers(): List<String> =listOf(
+        private fun webServers(): List<String> = listOf(
             Server.MP4UPLOAD,
             Server.MEGA,
-            Server.UQLOAD
+            Server.UQLOAD,
+            Server.FILEMOON,
+            Server.STREAMWISH,
+            Server.MIXDROP,
+            Server.YOUR_UPLOAD
         )
 
         fun isRecommended(server: String): Boolean = recommendedServers().contains(server)
