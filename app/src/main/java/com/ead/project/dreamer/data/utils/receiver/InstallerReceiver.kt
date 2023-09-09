@@ -8,7 +8,6 @@ import android.content.Intent
 import android.database.Cursor
 import android.util.Log
 import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
-import com.ead.project.dreamer.app.data.util.Apk
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,7 +31,7 @@ class InstallerReceiver : BroadcastReceiver() {
             val reason = cursor.getInt(columnReason)
             when (status) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
-                    Apk.install(context,appBuildPreferences.getLastVersionFile())
+                    //Apk.install(context,appBuildPreferences.getLastVersionFile())
                     context.unregisterReceiver(this)
                 }
                 DownloadManager.STATUS_PAUSED -> {}
