@@ -8,6 +8,7 @@ import com.ead.project.dreamer.data.utils.Thread
 
 open class DreamerClient : WebViewClient() {
 
+    var isLoading = false
     var timeout = true
     var timesLoaded = 0
     private fun run(task: () -> Unit) = Thread.runInMs(task, 10000)
@@ -18,6 +19,7 @@ open class DreamerClient : WebViewClient() {
         super.onPageStarted(view, url, favicon)
         onPageInit(view, url, favicon)
         timeout = true
+        isLoading = true
         run { if (timeout && url != HttpUtil.BLANK_BROWSER) onTimeout(view, url, favicon) }
     }
 
@@ -25,6 +27,7 @@ open class DreamerClient : WebViewClient() {
     override fun onPageFinished(view: WebView?, url: String?) {
         super.onPageFinished(view, url)
         timeout = false
+        isLoading = false
         timesLoaded++
         if (url != HttpUtil.BLANK_BROWSER) onPageLoaded(view, url)
     }
