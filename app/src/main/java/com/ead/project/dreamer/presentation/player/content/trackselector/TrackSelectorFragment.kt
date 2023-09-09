@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.PlayerView
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.databinding.BottomModalTrackSelectorBinding
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +26,7 @@ private var trackGroups: TrackGroupArray? = null*/
 
     lateinit var playlist: List<VideoModel>
     lateinit var player : ExoPlayer
-    lateinit var playerView : StyledPlayerView
+    lateinit var playerView : PlayerView
 
     lateinit var trackSelector : DefaultTrackSelector
 
