@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.app.data.util.system.setStateExpanded
@@ -13,21 +15,20 @@ import com.ead.project.dreamer.data.commons.Constants
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.databinding.BottomModalScaleGestureBinding
 import com.ead.project.dreamer.presentation.player.PlayerViewModel
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @AndroidEntryPoint
 class ScaleGestureFragment : BottomSheetDialogFragment() {
 
     private val viewModel : PlayerViewModel by viewModels()
 
     @Inject lateinit var scope: CoroutineScope
-    lateinit var playerView : StyledPlayerView
+    lateinit var playerView : PlayerView
 
     override fun onStart() {
         super.onStart()
