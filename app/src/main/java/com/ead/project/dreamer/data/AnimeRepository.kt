@@ -45,7 +45,11 @@ class AnimeRepository @Inject constructor(
 
     fun getFlowChapterHome() : Flow<List<ChapterHome>> = chapterHomeDao.getFlowDataList()
 
+    fun getFlowPreviewChapterHome() : Flow<List<ChapterHome>> = chapterHomeDao.getFlowPreviewDataList()
+
     fun getFlowChapterHomeCensured() : Flow<List<ChapterHome>> = chapterHomeDao.getFlowDataListCensured()
+
+    fun getFlowPreviewChapterHomeCensured() : Flow<List<ChapterHome>> = chapterHomeDao.getFlowPreviewDataListCensured()
 
 
     //ANIME_BASE
@@ -113,6 +117,8 @@ class AnimeRepository @Inject constructor(
 
     fun getFlowMostViewedSeries() : Flow<List<AnimeProfile>> = animeProfileDao.getFlowMostViewedSeries()
 
+    fun getFlowMostViewedSeriesPreview() : Flow<List<AnimeProfile>> = animeProfileDao.getFlowMostViewedSeriesPreview()
+
 
     //CHAPTERS
 
@@ -139,8 +145,6 @@ class AnimeRepository @Inject constructor(
 
     suspend fun getPreparationProfile(id : Int) : List<Int> = chapterDao.getPreparation(id)
 
-    fun updateChapterNormal(chapter: Chapter) = chapterDao.updateNormal(chapter)
-
     fun getFlowChaptersFromProfile(id :Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromProfile(id)
 
     fun getFlowChaptersFromNumber(id : Int,number: Int) : Flow<List<Chapter>> = chapterDao.getFlowChaptersFromNumber(id,number)
@@ -164,6 +168,10 @@ class AnimeRepository @Inject constructor(
     fun getFlowNewsItems() : Flow<List<NewsItem>> = newsItemDao.getFlowDataList()
 
     fun getFlowNewsItemsCensured() : Flow<List<NewsItem>> = newsItemDao.getFlowDataListCensured()
+
+    fun getFlowNewsItemsLimited() : Flow<List<NewsItem>> = newsItemDao.getFlowDataListLimited()
+
+    fun getFlowNewsItemsCensuredLimited() : Flow<List<NewsItem>> = newsItemDao.getFlowDataListCensuredLimited()
 
 
     //DISCORD API
