@@ -27,7 +27,8 @@ public class AdBlocker {
         executor.execute(() -> { //Background work here
             try {
                 loadFromAssets(context);
-            } catch (IOException e) { // noop
+            } catch (IOException e) {
+                /*noop*/
             }
         });
     }
