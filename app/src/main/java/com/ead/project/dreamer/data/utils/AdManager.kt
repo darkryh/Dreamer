@@ -117,17 +117,19 @@ class AdManager @Inject constructor(
     }
 
     private fun implementAds() {
-        scope.launch {
-            if (isItemsPrepared()) {
-                val offset: Int = (adapter?.itemCount?.div(ads.size) ?: -1) + 1
-                var index = 0
+        Run.catching {
+            scope.launch {
+                if (isItemsPrepared()) {
+                    val offset: Int = (adapter?.itemCount?.div(ads.size) ?: -1) + 1
+                    var index = 0
 
-                if (!items.any { nativeAdClass.isInstance(it) }) {
-                    for (ad in ads) {
-                        items.add(index, ad)
-                        index += offset
+                    if (!items.any { nativeAdClass.isInstance(it) }) {
+                        for (ad in ads) {
+                            items.add(index, ad)
+                            index += offset
+                        }
+                        mutableAdsFlow.emit(items)
                     }
-                    mutableAdsFlow.emit(items)
                 }
             }
         }
