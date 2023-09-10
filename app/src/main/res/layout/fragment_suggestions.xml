@@ -25,7 +25,6 @@
                     android:id="@+id/recycler_view_suggestions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layoutAnimation="@anim/layout_animation"
                     android:paddingHorizontal="8dp"
                     tools:listitem="@layout/layout_anime_profile"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
