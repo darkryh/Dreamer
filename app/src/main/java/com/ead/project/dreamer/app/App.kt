@@ -49,7 +49,6 @@ class App : Application(), Configuration.Provider {
 
     private fun initApplicationPreferences() {
 
-
         scope.launch {
 
             preferenceUseCase.appBuildPreferences.apply {
