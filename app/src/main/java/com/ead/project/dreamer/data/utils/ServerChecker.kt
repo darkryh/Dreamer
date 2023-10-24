@@ -42,10 +42,10 @@ class ServerChecker {
 
         private fun recommendedServers(): List<String> = listOf(
             Server.OKRU, Server.ONEFICHIER,
-            Server.VIDEOBIN, Server.VOE,
-            Server.MEDIAFIRE, Server.STREAMSB,
-            Server.SENDVID, Server.BAYFILES,
-            Server.PIXELDRAIN
+            Server.STREAMWISH, Server.VIDEOBIN,
+            Server.VOE, Server.MEDIAFIRE,
+            Server.STREAMSB, Server.SENDVID,
+            Server.BAYFILES, Server.PIXELDRAIN
         )
 
 
@@ -54,7 +54,6 @@ class ServerChecker {
             Server.MEGA,
             Server.UQLOAD,
             Server.FILEMOON,
-            Server.STREAMWISH,
             Server.MIXDROP,
             Server.YOUR_UPLOAD
         )
