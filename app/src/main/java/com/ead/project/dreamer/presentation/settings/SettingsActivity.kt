@@ -34,7 +34,7 @@ class SettingsActivity : AppCompatActivity() {
         val fragment = SettingsDashboardFragment()
         val transaction = supportFragmentManager
             .beginTransaction()
-        transaction.replace(R.id.Frame_Content_Settings,fragment).commit()
+        transaction.replace(R.id.frame_content_settings,fragment).commit()
     }
 
     private fun settingThemeLayouts() {

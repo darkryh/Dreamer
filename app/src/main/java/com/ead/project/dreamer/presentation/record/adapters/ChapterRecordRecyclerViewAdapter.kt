@@ -62,13 +62,13 @@ class ChapterRecordRecyclerViewAdapter (
         }
 
         private fun bindToLinear(binding: LayoutChapterRecordLinearBinding, chapter: Chapter) {
-            binding.txvTitle.text = chapter.title
-            binding.txvChapterRecord.text = chapter.number.toString()
-            binding.txvTitle.gravity = Gravity.CENTER_VERTICAL
-            binding.imvChapterProfile.alpha = 0.93f
+            binding.textTitle.text = chapter.title
+            binding.textChapterRecord.text = chapter.number.toString()
+            binding.textTitle.gravity = Gravity.CENTER_VERTICAL
+            binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imvChapterProfile.load(chapter.cover){
+            binding.imageChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -78,13 +78,13 @@ class ChapterRecordRecyclerViewAdapter (
                 diskCachePolicy(CachePolicy.ENABLED)
             }
             val percent = ((chapter.currentProgress * 100f) / chapter.totalProgress).round(2).toString()
-            binding.txvCurrentProgress.text = context.getString(R.string.current_progress,percent)
+            binding.textCurrentProgress.text = context.getString(R.string.current_progress,percent)
 
             if (chapter.totalProgress > 0) {
                 binding.progressBarSeen.max = chapter.totalProgress
             }
             binding.progressBarSeen.progress = chapter.currentProgress
-            binding.imvDownload.setVisibility(chapter.isDownloaded())
+            binding.imageDownload.setVisibility(chapter.isDownloaded())
 
             binding.root.setOnClickListener { handleChapter(context, chapter) }
             binding.root.setOnLongClickListener {
@@ -94,13 +94,13 @@ class ChapterRecordRecyclerViewAdapter (
         }
 
         private fun bindToGrid(binding: LayoutChapterRecordGridBinding, chapter: Chapter) {
-            binding.txvTitle.text = chapter.title
-            binding.txvChapterRecord.text = chapter.number.toString()
-            binding.txvTitle.gravity = Gravity.CENTER_VERTICAL
-            binding.imvChapterProfile.alpha = 0.93f
+            binding.textTitle.text = chapter.title
+            binding.textChapterRecord.text = chapter.number.toString()
+            binding.textTitle.gravity = Gravity.CENTER_VERTICAL
+            binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imvChapterProfile.load(chapter.cover){
+            binding.imageChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -114,7 +114,7 @@ class ChapterRecordRecyclerViewAdapter (
                 binding.progressBarSeen.max = chapter.totalProgress
             }
             binding.progressBarSeen.progress = chapter.currentProgress
-            binding.imvDownload.setVisibility(chapter.isDownloaded())
+            binding.imageDownload.setVisibility(chapter.isDownloaded())
 
             binding.root.setOnClickListener { handleChapter(context,chapter) }
             binding.root.setOnLongClickListener {

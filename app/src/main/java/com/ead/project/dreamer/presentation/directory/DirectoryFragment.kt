@@ -40,7 +40,7 @@ class DirectoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             binding.popularSection.apply {
-                title.text = requireContext().getText(R.string.popular_section_title)
+                textTitle.text = requireContext().getText(R.string.popular_section_title)
                 recyclerView.apply {
                     layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
                     this@DirectoryFragment.adapterHome = ChapterHomeRecyclerViewAdapter(
@@ -51,7 +51,7 @@ class DirectoryFragment : Fragment() {
                 }
             }
             binding.lastSeriesSection.apply {
-                title.text = requireContext().getText(R.string.last_series_section_title)
+                textTitle.text = requireContext().getText(R.string.last_series_section_title)
                 recyclerView.apply {
                     layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
                     adapter = this@DirectoryFragment.adapterHome

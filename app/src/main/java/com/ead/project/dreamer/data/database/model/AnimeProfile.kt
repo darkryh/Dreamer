@@ -61,7 +61,7 @@ data class AnimeProfile (
 
     }
 
-    fun checkPolicies() = (TYPE_BOYS_LOVE !in this.rawGenres
+    fun isAuthorizedData() = (TYPE_BOYS_LOVE !in this.rawGenres
                 && (TYPE_ECCHI !in this.rawGenres && isBlacklisted()))
                 || isWhiteListedTitle()
 

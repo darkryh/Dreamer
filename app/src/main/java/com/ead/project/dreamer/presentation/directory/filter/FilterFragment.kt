@@ -54,19 +54,19 @@ class FilterFragment : BottomSheetDialogFragment() {
         val statesAdapter  = ArrayAdapter(requireContext(),R.layout.drop_down_item,states)
         val typesAdapter  = ArrayAdapter(requireContext(),R.layout.drop_down_item,types)
         val genresAdapter  = ArrayAdapter(requireContext(),R.layout.drop_down_item,genres)
-        binding.actState.setAdapter(statesAdapter)
-        binding.actType.setAdapter(typesAdapter)
-        binding.actGenre.setAdapter(genresAdapter)
-        binding.btnFilter.setOnClickListener {
+        binding.autoCompleteState.setAdapter(statesAdapter)
+        binding.autoCompleteType.setAdapter(typesAdapter)
+        binding.autoCompleteGenre.setAdapter(genresAdapter)
+        binding.buttonFilter.setOnClickListener {
             filtering()
             dismiss()
         }
     }
 
     private fun selecting() {
-        binding.actState.setOnItemClickListener { _, view, _, _ -> state = (view as TextView).text as String? }
-        binding.actType.setOnItemClickListener { _, view, _, _ -> type = (view as TextView).text as String? }
-        binding.actGenre.setOnItemClickListener { _, view, _, _ -> genre = (view as TextView).text as String? }
+        binding.autoCompleteState.setOnItemClickListener { _, view, _, _ -> state = (view as TextView).text as String? }
+        binding.autoCompleteType.setOnItemClickListener { _, view, _, _ -> type = (view as TextView).text as String? }
+        binding.autoCompleteGenre.setOnItemClickListener { _, view, _, _ -> genre = (view as TextView).text as String? }
     }
 
     private fun filtering() {

@@ -64,7 +64,7 @@ class ChapterCheckerFragment : DialogFragment() {
         _binding = FragmentDialogCheckerBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(binding.root)
-        binding.imvCoverChecker.load(chapter.cover){
+        binding.imageCoverChecker.load(chapter.cover){
             transformations(RoundedCornersTransformation(8f))
         }
         return builder.create()
@@ -100,7 +100,7 @@ class ChapterCheckerFragment : DialogFragment() {
         viewModel.getAnimeProfile(animeBase.id)
             .observe(viewLifecycleOwner) { mAnimeProfile ->
                 if (mAnimeProfile != null) {
-                    if (appBuildPreferences.isUnlockedVersion() || mAnimeProfile.checkPolicies()) {
+                    if (appBuildPreferences.isUnlockedVersion() || mAnimeProfile.isAuthorizedData()) {
                         if (++count == 1) {
                             viewModel
                                 .configureChaptersData(mAnimeProfile.id, animeBase.reference)

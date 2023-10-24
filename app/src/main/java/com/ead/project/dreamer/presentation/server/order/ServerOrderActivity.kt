@@ -34,7 +34,7 @@ class ServerOrderActivity : AppCompatActivity() {
     private fun setupLayouts() {
         binding.apply {
 
-            title.text = getString(R.string.servers_orders)
+            textTitle.text = getString(R.string.servers_orders)
 
             supportActionBar?.hide()
 

@@ -79,7 +79,7 @@ class HomeWorker @AssistedInject constructor(
         scope.apply {
             val notificationBaseIndex = homePreferences.getNotificationsIndex()
 
-            val notificationLevel = preferences.getInt(SettingsNotificationsFragment.PREFERENCE_NOTIFICATIONS,
+            val notificationLevel = preferences.getInt(SettingsNotificationsFragment.PREFERENCE_NOTIFICATIONS_OPTION,
                 NotificationManager.ALL)
 
             if (notificationLevel > NotificationManager.NONE) {

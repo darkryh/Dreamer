@@ -92,7 +92,7 @@ class RecordFragment : Fragment() {
 
             val isDataEmpty = it.isEmpty()
 
-            binding.txvIsEmpty.setVisibility(isDataEmpty)
+            binding.textIsEmpty.setVisibility(isDataEmpty)
             binding.list.setVisibility(!isDataEmpty)
 
             if (isDataEmpty) return@observe

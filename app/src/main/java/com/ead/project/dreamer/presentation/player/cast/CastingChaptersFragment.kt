@@ -39,7 +39,7 @@ class CastingChaptersFragment : Fragment() {
     }
 
     private fun initLayouts() {
-        binding.rcvList.apply {
+        binding.recyclerViewList.apply {
             layoutManager = LinearLayoutManager(context)
             this@CastingChaptersFragment.adapter = ChapterRecyclerViewAdapter(activity as Context, handleChapter = viewModel.handleChapter)
             adapter = this@CastingChaptersFragment.adapter
@@ -50,7 +50,7 @@ class CastingChaptersFragment : Fragment() {
     private fun setupChapters() {
         viewModel.getChaptersFromProfile(chapter.idProfile).observe(viewLifecycleOwner) {
             adapter.submitList(it)
-            binding.rcvList.layoutManager?.scrollToPosition(chapter.number-1)
+            binding.recyclerViewList.layoutManager?.scrollToPosition(chapter.number-1)
         }
     }
 

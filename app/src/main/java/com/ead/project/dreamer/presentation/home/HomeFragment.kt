@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
             }
 
             popularSection.apply {
-                title.text = requireContext().getText(R.string.popular_section_title)
+                textTitle.text = requireContext().getText(R.string.popular_section_title)
                 recyclerView.apply {
                     layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                     this@HomeFragment.adapterHome = ChapterHomeRecyclerViewAdapter(
@@ -119,16 +119,16 @@ class HomeFragment : Fragment() {
             }
 
             recentSection.apply {
-                title.text = requireContext().getText(R.string.recent_section_title)
+                textTitle.text = requireContext().getText(R.string.recent_section_title)
                 recyclerView.apply {
                     layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                     adapter = this@HomeFragment.adapterHome
                     setupHomeList()
                 }
-                more.setOnClickListener { goToRecentSection() }
+                textMore.setOnClickListener { goToRecentSection() }
             }
 
-            rcvNews.apply {
+            recyclerViewNews.apply {
                 layoutManager = LinearLayoutManager(context)
                 this@HomeFragment.adapterNews = NewsItemRecyclerViewAdapter(requireContext())
                 adapter = this@HomeFragment.adapterNews

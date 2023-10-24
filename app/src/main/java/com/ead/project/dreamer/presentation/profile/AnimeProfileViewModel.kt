@@ -38,8 +38,8 @@ class AnimeProfileViewModel @Inject constructor(
 ): ViewModel() {
 
     private val playerPreferences = preferenceUseCase.playerPreferences
+    val appBuildPreferences = preferenceUseCase.appBuildPreferences
     val playerPreference = playerPreferences.preference
-
     fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
 
     fun resetRequestingProfile() {

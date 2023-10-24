@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.lifecycle.activity.onBackHandle
+import com.ead.commons.lib.lifecycle.activity.showLongToast
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.commons.lib.views.setVisibility
@@ -79,8 +80,15 @@ class AnimeProfileActivity : AppCompatActivity() {
         viewModel.getAnimeProfile(id).observe(this) { animeProfile ->
             if (animeProfile != null) {
                 if (++count == 1) {
-                    configureChapters()
-                    loadAnimeProfileHeader(animeProfile)
+                    if (viewModel.appBuildPreferences.isUnlockedVersion() || animeProfile.isAuthorizedData()) {
+                        configureChapters()
+                        loadAnimeProfileHeader(animeProfile)
+                    }
+                    else {
+                        showLongToast(getString(R.string.google_policies_message))
+                        finish()
+                        return@observe
+                    }
                 }
                 likeProfile(animeProfile)
                 updateLike(animeProfile)
@@ -116,14 +124,14 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun loadAnimeProfileHeader(animeProfile: AnimeProfile) {
         binding.apply {
-            binding.txvTitle.text = animeProfile.title
-            binding.txvAnimeState.text = animeProfile.state
-            binding.imvProfile.load(animeProfile.profilePhoto) {
+            binding.textTitle.text = animeProfile.title
+            binding.textAnimeState.text = animeProfile.state
+            binding.imageProfile.load(animeProfile.profilePhoto) {
                 transformations(RoundedCornersTransformation(12f.toPixels()))
             }
-            binding.imvCover.load(animeProfile.coverPhoto)
-            binding.txvSecondTitle.text = animeProfile.titleAlternate
-            binding.txvSecondTitle.setVisibility(animeProfile.titleAlternate != "null" && animeProfile.titleAlternate.isNotBlank())
+            binding.imageCover.load(animeProfile.coverPhoto)
+            binding.textSecondTitle.text = animeProfile.titleAlternate
+            binding.textSecondTitle.setVisibility(animeProfile.titleAlternate != "null" && animeProfile.titleAlternate.isNotBlank())
 
         }
     }
@@ -131,8 +139,8 @@ class AnimeProfileActivity : AppCompatActivity() {
     private fun initLayouts() {
         binding.apply {
             handleNotActionBar(toolbar)
-            imvDownloads.addSelectableItemEffect()
-            imvDownloads.setOnClickListener {
+            imageDownloads.addSelectableItemEffect()
+            imageDownloads.setOnClickListener {
                 MaterialAlertDialogBuilder(this@AnimeProfileActivity)
                     .setTitle(getString(R.string.to_download))
                     .setMessage(getString(R.string.message_to_download_all_series,animeProfile?.title.toString()))
@@ -203,7 +211,7 @@ class AnimeProfileActivity : AppCompatActivity() {
     }
 
     private fun likeProfile(animeProfile: AnimeProfile) {
-        binding.imvLikeProfile.setOnClickListener {
+        binding.imageLikeProfile.setOnClickListener {
             viewModel.updateAnimeProfile(animeProfile.copy(
                 isFavorite = !animeProfile.isFavorite
             ))
@@ -212,9 +220,9 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun updateLike(animeProfile: AnimeProfile) {
         if (animeProfile.isFavorite)
-            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
+            binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
         else
-            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
+            binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
     }
 
     private fun onBackPressedMode() { finish() }
@@ -226,7 +234,6 @@ class AnimeProfileActivity : AppCompatActivity() {
         fun launchActivity(context : Context,requester: Requester) {
             context.launchActivity(
                 intent = Intent(context,AnimeProfileActivity::class.java).apply {
-                    Log.d("testing", " before launchActivity: $requester")
                     addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     putExtra(PREFERENCE_ID_BASE,requester.profileId)
                     putExtra(PREFERENCE_LINK,requester.profileReference)

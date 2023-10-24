@@ -90,13 +90,13 @@ class ChapterHomeRecyclerViewAdapter(
         }
 
         private fun settingsLayouts(chapter: ChapterHome) {
-            binding.txvTitle.text = context.getString(R.string.title_home_chapter,chapter.title,chapter.chapterNumber)
-            binding.txvType.text = chapter.type
+            binding.textTitle.text = context.getString(R.string.title_home_chapter,chapter.title,chapter.chapterNumber)
+            binding.textType.text = chapter.type
             binding.root.addSelectableItemEffect()
         }
 
         private fun settingImages(chapter: ChapterHome) {
-            binding.imvCover.load(chapter.chapterCover){
+            binding.imageCover.load(chapter.chapterCover){
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(12f.toPixels()))

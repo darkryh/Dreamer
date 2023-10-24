@@ -45,7 +45,7 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
-        binding.rcvFavorites.apply {
+        binding.recyclerViewFavorites.apply {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
@@ -69,7 +69,7 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun prepareLayout(){
-        binding.favSorter.setOnClickListener {
+        binding.floatButtonSorter.setOnClickListener {
             launchFilter()
         }
     }
@@ -79,7 +79,7 @@ class FavoriteFragment : Fragment() {
         viewModel.getLikedDirectory().observe(viewLifecycleOwner) {
 
             if (++countProfile == 1) {
-                binding.txvIsEmpty.setVisibility(it.isEmpty())
+                binding.textIsEmpty.setVisibility(it.isEmpty())
                 if (it.isEmpty()) return@observe
                 adapter.submitList(it)
             }

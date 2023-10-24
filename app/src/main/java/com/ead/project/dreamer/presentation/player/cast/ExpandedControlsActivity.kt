@@ -93,7 +93,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
             })
             setupTabLayout()
             if (discordUser?.getAvatarUrl()!= null)
-                imvProfile.load(discordUser.getAvatarUrl()) { transformations(CircleCropTransformation()) }
+                imageProfile.load(discordUser.getAvatarUrl()) { transformations(CircleCropTransformation()) }
 
             imvShare.setOnClickListener {
                 shareIntent.type = "text/plain"
@@ -106,8 +106,8 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
                 startActivity(Intent.createChooser(shareIntent, "Escoge uno"))
             }
-            txvTitle.text = chapter?.title
-            txvChapterNumber.text = getString(R.string.chapter_number,chapter?.number.toString())
+            textTitle.text = chapter?.title
+            textChapterNumber.text = getString(R.string.chapter_number,chapter?.number.toString())
         }
     }
 
@@ -134,7 +134,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     private fun setCastingFunctionality() {
         binding.apply {
             uiMediaController.bindSeekBar(seekBar)
-            uiMediaController.bindTextViewToStreamPosition(txvCurrentProgress,true)
+            uiMediaController.bindTextViewToStreamPosition(textCurrentProgress,true)
             uiMediaController.bindTextViewToStreamDuration(txvTotalProgress)
             uiMediaController.bindImageViewToPlayPauseToggle(
                 btnPlay,
@@ -172,7 +172,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     }
 
     private fun likeProfile(animeProfile: AnimeProfile) {
-        binding.imvLikeProfile.setOnClickListener {
+        binding.imageLikeProfile.setOnClickListener {
             viewModel.updateAnimeProfile(animeProfile.copy(
                 isFavorite = !animeProfile.isFavorite
             ))
@@ -181,9 +181,9 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
 
     private fun updateLike(animeProfile: AnimeProfile) {
         if (animeProfile.isFavorite)
-            binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
+            binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
          else
-             binding.imvLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
+             binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
     }
 
     override fun onPause() {

@@ -61,24 +61,24 @@ class DownloadRecyclerViewAdapter(
     inner class ViewHolder(val binding: LayoutDownloadBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindTo(download: Download) {
-            binding.txvTitle.text = download.title
-            binding.txvLetter.text = download.title[0].uppercase()
-            binding.txvChapterNumber.text =
+            binding.textTitle.text = download.title
+            binding.textLetter.text = download.title[0].uppercase()
+            binding.textChapterNumber.text =
                 if (download.number != -1) context.getString(R.string.chapter_number_short,download.number.toString()) else context.getString(R.string.update)
             val percent = ((download.current * 100f) / download.total).round(2).toString()
-            binding.txvState.text = context.getString(R.string.current_percent,percent)
+            binding.textState.text = context.getString(R.string.current_percent,percent)
             binding.root.addSelectableItemEffect()
-            binding.imvCancel.addSelectableItemEffect()
+            binding.imageCancel.addSelectableItemEffect()
 
             when(download.state) {
-                DownloadManager.STATUS_SUCCESSFUL -> binding.txvState.setTextColor(context.getColor(R.color.green))
-                DownloadManager.STATUS_FAILED -> binding.txvState.setTextColor(context.getColor(R.color.red))
-                else -> binding.txvState.setTextColor(context.getColor(R.color.orange_peel_dark))
+                DownloadManager.STATUS_SUCCESSFUL -> binding.textState.setTextColor(context.getColor(R.color.green))
+                DownloadManager.STATUS_FAILED -> binding.textState.setTextColor(context.getColor(R.color.red))
+                else -> binding.textState.setTextColor(context.getColor(R.color.orange_peel_dark))
             }
 
-            binding.imvCancel.setVisibility(download.isInProgress())
+            binding.imageCancel.setVisibility(download.isInProgress())
             binding.progressBar.setVisibilityReverse(download.isInProgress())
-            binding.imvCancel.setOnClickListener { downloadManager.remove(download.id) }
+            binding.imageCancel.setOnClickListener { downloadManager.remove(download.id) }
 
             binding.root.setOnClickListener {
                 if (download.state == DownloadManager.STATUS_SUCCESSFUL) {

@@ -87,11 +87,11 @@ class ProfileRecyclerViewAdapter(
         private val stringBuilder = StringBuilder()
 
         fun bindTo (animeProfile: AnimeProfile) {
-            binding.txvTitle.text = animeProfile.title
-            binding.txvContent.text = animeProfile.description
-            binding.txvContent.justifyInterWord()
+            binding.textTitle.text = animeProfile.title
+            binding.textContent.text = animeProfile.description
+            binding.textContent.justifyInterWord()
             binding.root.addSelectableItemEffect()
-            binding.imvCoverBase.load(animeProfile.profilePhoto){
+            binding.imageCoverBase.load(animeProfile.profilePhoto){
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(15f.toPixels()))
@@ -101,7 +101,7 @@ class ProfileRecyclerViewAdapter(
                 }
             }
 
-            binding.txvRating.text = context
+            binding.textRating.text = context
                 .getString(R.string.ratingLayout,animeProfile.rating.toString())
 
             binding.root.setOnClickListener {
@@ -127,7 +127,7 @@ class ProfileRecyclerViewAdapter(
             for (genre in animeProfile.genres) {
                 stringBuilder.append("·$genre  ")
             }
-            binding.txvGenre.text = stringBuilder.toString()
+            binding.textGenre.text = stringBuilder.toString()
             stringBuilder.clear()
         }
     }

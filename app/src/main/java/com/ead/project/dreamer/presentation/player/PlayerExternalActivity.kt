@@ -67,10 +67,10 @@ class PlayerExternalActivity : AppCompatActivity() {
             val data = true
             //DataStore //.readBoolean(Constants.PREFERENCE_THEME_MODE)
             if (data) {
-                btnClose.setResourceColor(R.color.whitePrimary)
+                buttonClose.setResourceColor(R.color.whitePrimary)
             }
             else {
-                btnClose.setResourceColor(R.color.blackPrimary)
+                buttonClose.setResourceColor(R.color.blackPrimary)
             }
         }
     }
@@ -83,17 +83,17 @@ class PlayerExternalActivity : AppCompatActivity() {
                 alpha = 0.3f
             }
 
-            btnRelaunchExternal.setOnClickListener {
+            buttonRelaunchExternal.setOnClickListener {
                 launchExternalCast()
             }
 
-            lnPlaylistCast.setOnClickListener {
+            linearPlaylistCast.setOnClickListener {
                 val fragmentManager: FragmentManager = supportFragmentManager
                 val chapterSelectorFragment = ChapterSelectorFragment()
                 chapterSelectorFragment.show(fragmentManager, null)
             }
 
-            btnClose.setOnClickListener {
+            buttonClose.setOnClickListener {
                 onBack()
             }
         }
@@ -122,7 +122,7 @@ class PlayerExternalActivity : AppCompatActivity() {
 
         data.putParcelable(Chapter.REQUESTED,chapter)
         fragment.arguments = data
-        transaction.replace(R.id.Frame_Content,fragment).commit()
+        transaction.replace(R.id.frame_content,fragment).commit()
     }
 
     private fun launchExternalCast() {

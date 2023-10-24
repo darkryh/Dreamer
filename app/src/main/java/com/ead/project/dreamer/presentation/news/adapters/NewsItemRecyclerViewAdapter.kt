@@ -80,10 +80,10 @@ class NewsItemRecyclerViewAdapter(private val context: Context) :
         fun bindTo (newsItem: NewsItem) {
             binding.apply {
                 root.addSelectableItemEffect()
-                txvTitle.text = newsItem.title
-                txvDate.text = newsItem.date
-                txvType.text = newsItem.type
-                imvCover.load(newsItem.cover) {
+                textTitle.text = newsItem.title
+                textDate.text = newsItem.date
+                textType.text = newsItem.type
+                imageCover.load(newsItem.cover) {
                     transformations(RoundedCornersTransformation(55f))
                     memoryCachePolicy(CachePolicy.ENABLED)
                     diskCachePolicy(CachePolicy.ENABLED)

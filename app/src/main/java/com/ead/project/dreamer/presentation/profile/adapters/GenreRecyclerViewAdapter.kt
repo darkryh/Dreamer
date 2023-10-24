@@ -22,7 +22,7 @@ class GenreRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val genre = genreList[position]
         holder.binding.root.addSelectableItemEffect()
-        holder.binding.txvGenre.text = genre
+        holder.binding.textGenre.text = genre
     }
 
     override fun getItemCount(): Int = genreList.size

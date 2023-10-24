@@ -50,12 +50,12 @@ class ChapterCastingRecyclerViewAdapter (
         }
 
         private fun settingsLayouts(chapter: Chapter) {
-            binding.txvTitle.text = context
+            binding.textTitle.text = context
                 .getString(R.string.chapter_number,chapter.number.toString())
         }
 
         private fun settingImages(chapter: Chapter) {
-            binding.imvChapterProfile.load(chapter.cover){
+            binding.imageChapterProfile.load(chapter.cover){
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(0f,16f,0f,16f))
@@ -67,7 +67,7 @@ class ChapterCastingRecyclerViewAdapter (
                 binding.progressBarSeen.max = chapter.totalProgress
             }
             binding.progressBarSeen.progress = chapter.currentProgress
-            binding.imvDownload.setVisibility(chapter.isDownloaded())
+            binding.imageDownload.setVisibility(chapter.isDownloaded())
         }
 
         private fun settingFunctionality(chapter: Chapter) {

@@ -50,13 +50,13 @@ class AnimeBaseRecyclerViewAdapter(
 
         private fun bindToLinear(binding: LayoutAnimeBaseLinearBinding, animeBase: AnimeBase) {
             binding.apply {
-                txvTitleBase.text = animeBase.title
-                txvTypeBase.text = animeBase.type
-                txvYearBase.text = animeBase.year.toString()
-                txvTypeBase.visibility = View.VISIBLE
-                txvYearBase.visibility = View.VISIBLE
+                textTitleBase.text = animeBase.title
+                textTypeBase.text = animeBase.type
+                textYearBase.text = animeBase.year.toString()
+                textTypeBase.visibility = View.VISIBLE
+                textYearBase.visibility = View.VISIBLE
                 root.addSelectableItemEffect()
-                imvCoverBase.load(animeBase.cover) {
+                imageCoverBase.load(animeBase.cover) {
                     crossfade(true)
                     crossfade(500)
                     transformations(RoundedCornersTransformation(13f, 0f, 13f, 0f))
@@ -77,11 +77,11 @@ class AnimeBaseRecyclerViewAdapter(
 
         private fun bindToGrid(binding: LayoutAnimeBaseGridBinding, animeBase: AnimeBase) {
             binding.apply {
-                txvTitleBase.text = animeBase.title
-                txvTypeBase.text = animeBase.type
-                txvYearBase.text = animeBase.year.toString()
+                textTitleBase.text = animeBase.title
+                textTypeBase.text = animeBase.type
+                textYearBase.text = animeBase.year.toString()
                 root.addSelectableItemEffect()
-                imvCoverBase.load(animeBase.cover) {
+                imageCoverBase.load(animeBase.cover) {
                     crossfade(true)
                     crossfade(500)
                     transformations(RoundedCornersTransformation(5f.toPixels()))

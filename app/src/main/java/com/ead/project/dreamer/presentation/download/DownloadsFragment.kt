@@ -43,7 +43,7 @@ class DownloadsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rcvDownloads.apply {
+        binding.recyclerViewDownloads.apply {
             layoutManager = LinearLayoutManager(context)
             this@DownloadsFragment.adapter = DownloadRecyclerViewAdapter(
                 activity as Context,
@@ -58,7 +58,7 @@ class DownloadsFragment : Fragment() {
     private fun getDownloads() {
         lifecycleScope.launch {
             viewModel.downloadStore.downloads.collectLatest {
-                binding.txvIsEmpty.setVisibility(it.isEmpty())
+                binding.textIsEmpty.setVisibility(it.isEmpty())
                 if (it.isEmpty()) return@collectLatest
 
                 adapter.submitList(

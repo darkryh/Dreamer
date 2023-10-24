@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.util.Rational
 import android.view.MotionEvent
@@ -29,15 +28,14 @@ import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.player.PlayerManager
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
-import com.ead.project.dreamer.data.utils.Thread
-import com.ead.project.dreamer.app.data.player.PlayerManager
 import com.ead.project.dreamer.data.system.extensions.toast
+import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.data.utils.ui.PlayerOnScaleGestureListener
 import com.ead.project.dreamer.presentation.player.content.PlayerContentFragment
-import com.ead.project.dreamer.presentation.player.content.chapterselector.ChapterSelectorFragment
 import com.ead.project.dreamer.presentation.player.content.scalegesture.ScaleGestureFragment
 import com.ead.project.dreamer.presentation.player.content.trackselector.TrackSelectorFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,33 +65,34 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private val fillMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
     private val fitMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
-    private val playerView : PlayerView by lazy { findViewById(R.id.styledPlayerView) }
-    private val controller : AspectRatioFrameLayout by lazy { findViewById(R.id.dream_controller) }
-    private val aspectFrameRatio : AspectRatioFrameLayout by lazy { findViewById(R.id.aspectRatio) }
+    private val playerView : PlayerView by lazy { findViewById(R.id.styled_player_view) }
+    private val controller : AspectRatioFrameLayout by lazy { findViewById(R.id.dreamer_controller) }
+    private val aspectFrameRatio : AspectRatioFrameLayout by lazy { findViewById(R.id.aspect_ratio) }
 
     private val bottomControlsPlayer : ConstraintLayout by lazy { findViewById(R.id.bottom_controls) }
-    private val playerCover : RelativeLayout by lazy { findViewById(R.id.relativeCoverDreamer) }
-    private val contentPlayer  : FrameLayout by lazy { findViewById(R.id.Frame_Content) }
+    private val playerCover : RelativeLayout by lazy { findViewById(R.id.relative_cover_dreamer) }
+    private val contentPlayer  : FrameLayout by lazy { findViewById(R.id.frame_content) }
 
-    private val buttonChangeOrientationScreen : LinearLayout by lazy { findViewById(R.id.ln_fullscreen) }
-    private val buttonClose : ImageView by lazy { findViewById(R.id.bt_close_player) }
-    private val buttonSettings : LinearLayout by lazy { findViewById(R.id.lnSettings) }
-    private val buttonPlaylist : LinearLayout by lazy { findViewById(R.id.ln_play_list) }
-    private val buttonGesture : LinearLayout by lazy { findViewById(R.id.lnGesture) }
+    private val buttonChangeOrientationScreen : LinearLayout by lazy { findViewById(R.id.linear_fullscreen) }
+    private val buttonClose : ImageView by lazy { findViewById(R.id.button_close_player) }
+    private val buttonSettings : LinearLayout by lazy { findViewById(R.id.linear_settings) }
+    //private val buttonPlaylist : LinearLayout by lazy { findViewById(R.id.ln_play_list) }
+    private val buttonGesture : LinearLayout by lazy { findViewById(R.id.linear_gesture) }
 
-    private val imagePlayerOrientationScreen : ImageView by lazy { findViewById(R.id.bt_fullscreen) }
-    private val imageChapterCover : ImageView by lazy { findViewById(R.id.imvCoverDreamer) }
+    private val imagePlayerOrientationScreen : ImageView by lazy { findViewById(R.id.button_fullscreen) }
+    private val imageChapterCover : ImageView by lazy { findViewById(R.id.image_cover_dreamer) }
 
     private val containerContentPlayer : LinearLayout by lazy { findViewById(R.id.content_reference) }
-    private val containerPlayerOperations : LinearLayout by lazy { findViewById(R.id.lnOperator) }
+    private val containerPlayerOperations : LinearLayout by lazy { findViewById(R.id.linear_operator) }
 
-    private val textTitle : TextView by lazy { findViewById(R.id.txvChapterTitle) }
-    private val textCasting : TextView by lazy { findViewById(R.id.txvCasting) }
+    private val textTitle : TextView by lazy { findViewById(R.id.text_chapter_title) }
+    private val textChapterNumber : TextView by lazy { findViewById(R.id.text_chapter_number) }
+    private val textCasting : TextView by lazy { findViewById(R.id.text_casting) }
 
     private var scaleGestureDetector: ScaleGestureDetector? = null
     private var playerOnScaleGestureListener : PlayerOnScaleGestureListener?=null
 
-    private val mediaRouteButton: MediaRouteButton by lazy { findViewById(R.id.mrbInPlayer) }
+    private val mediaRouteButton: MediaRouteButton by lazy { findViewById(R.id.media_route_button_in_player) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +150,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
     private fun initLayouts() {
         imageChapterCover.load(chapter.cover)
-        buttonPlaylist.addSelectableItemEffect()
+        //buttonPlaylist.addSelectableItemEffect()
         buttonSettings.addSelectableItemEffect()
         imagePlayerOrientationScreen.addSelectableItemEffect()
         buttonGesture.addSelectableItemEffect()
@@ -162,8 +161,8 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         return super.dispatchTouchEvent(event)
     }
 
-    private fun devicesIsCompatibleWithPipMode() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    private fun devicesIsCompatibleWithPipMode() = packageManager
+        .hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
 
     private fun settingControllerViews() {
         buttonChangeOrientationScreen.setOnClickListener {
@@ -220,7 +219,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
         }
 
-        buttonPlaylist.setOnClickListener {
+        /*buttonPlaylist.setOnClickListener {
 
             val fragmentManager: FragmentManager = supportFragmentManager
             val chapterSelectorFragment = ChapterSelectorFragment()
@@ -229,7 +228,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
             chapterSelectorFragment.chapter = chapter
             chapterSelectorFragment.show(fragmentManager, null)
 
-        }
+        }*/
     }
 
     override fun onStart() {
@@ -316,23 +315,12 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private fun shouldGoPipMode() = devicesIsCompatibleWithPipMode() && playerManager.isPIPModeEnabled
             && playerManager.isNotCasting()
 
-    @Suppress("DEPRECATION")
-    @Deprecated("Deprecated in Java")
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            handlePipModeViews(isInPictureInPictureMode)
-            super.onPictureInPictureModeChanged(isInPictureInPictureMode)
-        }
-    }
-
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
         newConfig: Configuration
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            handlePipModeViews(isInPictureInPictureMode)
-            super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        }
+        handlePipModeViews(isInPictureInPictureMode)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
     private fun handlePipModeViews(isInPictureInPictureMode : Boolean) {
@@ -346,28 +334,18 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun enterPIPMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-            && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-            && playerManager.isPIPModeEnabled) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) &&
+            playerManager.isPIPModeEnabled) {
 
             playerManager.playbackPosition = playerManager.exoPlayer?.currentPosition?:return
 
             playerView.useController = false
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-                val params = PictureInPictureParams.Builder()
-                    .setSourceRectHint(Rect())
-                    .setAspectRatio(rationalAspectRatio)
-                this.enterPictureInPictureMode(params.build())
-
-            } else {
-
-                this.enterPictureInPictureMode()
-
-            }
+            val params = PictureInPictureParams.Builder()
+                .setSourceRectHint(Rect())
+                .setAspectRatio(rationalAspectRatio)
+            this.enterPictureInPictureMode(params.build())
 
             Thread.runInMs({checkPIPPermission()}, pipPermissionTimeout)
 
@@ -375,12 +353,8 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun checkPIPPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
-            playerManager.isPIPModeEnabled = isInPictureInPictureMode
-            if(!isInPictureInPictureMode) { onBack() }
-
-        }
+        playerManager.isPIPModeEnabled = isInPictureInPictureMode
+        if(!isInPictureInPictureMode) { onBack() }
     }
 
     private fun launchSuggestions() {
@@ -391,7 +365,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
             .beginTransaction()
         data.putParcelable(Chapter.REQUESTED,chapter)
         fragment.arguments = data
-        transaction.replace(R.id.Frame_Content,fragment).commit()
+        transaction.replace(R.id.frame_content,fragment).commit()
     }
 
     //Casting
@@ -402,7 +376,8 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     fun setMetaData() {
-        textTitle.text = getString(R.string.title_player,chapter.title,chapter.number)
+        textTitle.text = chapter.title
+        textChapterNumber.text = getString(R.string.chapter_number_short,chapter.number.toString())
     }
 
     fun preparingLayoutByMode() {

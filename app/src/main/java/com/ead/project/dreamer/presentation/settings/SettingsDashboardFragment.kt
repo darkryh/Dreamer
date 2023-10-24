@@ -49,9 +49,9 @@ class SettingsDashboardFragment : Fragment() {
             optionContentRating.addSelectableItemEffect()
             optionAboutUs.addSelectableItemEffect()
             if (discordUser != null){
-                txvUserName.text = discordUser.username
-                txvRank.text = discordUser.rank
-                imvAccount.load(discordUser.getAvatarUrl()?:return){
+                textUserName.text = discordUser.username
+                textRank.text = discordUser.rank
+                imageAccount.load(discordUser.getAvatarUrl()?:return){
                     transformations(CircleCropTransformation())
                 }
             }
@@ -61,7 +61,7 @@ class SettingsDashboardFragment : Fragment() {
     private fun settingFunctionality() {
         binding.apply {
             containerAccount.setOnClickListener { launchPreferencesCategory(SettingsAccountFragment()) }
-            imvAccount.setOnClickListener { launchPreferencesCategory(SettingsAccountFragment()) }
+            imageAccount.setOnClickListener { launchPreferencesCategory(SettingsAccountFragment()) }
             optionRanks.setOnClickListener {  }
             optionUser.setOnClickListener { launchPreferencesCategory(SettingsAccountFragment()) }
             optionDesign.setOnClickListener { launchPreferencesCategory(SettingsDesignFragment()) }
@@ -78,7 +78,7 @@ class SettingsDashboardFragment : Fragment() {
                 .beginTransaction()
                 .addToBackStack(null)
 
-            transaction.replace(R.id.Frame_Content_Settings, requestedFragment).commit()
+            transaction.replace(R.id.frame_content_settings, requestedFragment).commit()
         },160)
     }
 }

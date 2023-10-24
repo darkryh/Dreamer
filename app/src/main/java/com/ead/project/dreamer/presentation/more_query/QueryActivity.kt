@@ -46,13 +46,13 @@ class QueryActivity : AppCompatActivity() {
 
     private fun setupLayout() {
         binding.apply {
-            title.text = queryTitle
+            textTitle.text = queryTitle
             handleNotActionBar(toolbar,viewModel.appBuildPreferences.isDarkTheme())
         }
     }
 
     private fun setupRecyclerView() {
-        binding.rcvQuery.apply {
+        binding.recyclerViewQuery.apply {
             this@QueryActivity.adapter = getRequestedAdapter()
             layoutManager = LinearLayoutManager(context)
             adapter = this@QueryActivity.adapter

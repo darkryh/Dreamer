@@ -40,7 +40,7 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLayouts()
-        binding.rcvNews.apply {
+        binding.recyclerViewNews.apply {
             layoutManager = LinearLayoutManager(context)
             this@NewsFragment.adapter = NewsItemRecyclerViewAdapter(requireContext())
             adapter = this@NewsFragment.adapter

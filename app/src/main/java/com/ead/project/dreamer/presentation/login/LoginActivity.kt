@@ -54,9 +54,9 @@ class LoginActivity : AppCompatActivity() {
 
             when (nightModeFlags) {
                 Configuration.UI_MODE_NIGHT_YES ->
-                    imvLogoLogin.setResourceColor(R.color.whitePrimary)
+                    imageLogoLogin.setResourceColor(R.color.whitePrimary)
                 Configuration.UI_MODE_NIGHT_NO ->
-                    imvLogoLogin.setResourceColor(R.color.blackPrimary)
+                    imageLogoLogin.setResourceColor(R.color.blackPrimary)
             }
 
             buttonLoginDiscord.setOnClickListener {
@@ -79,9 +79,9 @@ class LoginActivity : AppCompatActivity() {
 
                 if (isVersionDeprecated) {
                     binding.apply {
-                        txvVersioning.text = getString(R.string.status_app, AppInfo.version,appBuild.minVersion.toString())
-                        txvVersioning.setVisibility(false)
-                        txvVersioning.setOnClickListener {
+                        textVersioning.text = getString(R.string.status_app, AppInfo.version,appBuild.minVersion.toString())
+                        textVersioning.setVisibility(false)
+                        textVersioning.setOnClickListener {
                             val redirectionIntent : Intent = if (AppInfo.isGoogleAppVersion)
                                 Intent(Intent.ACTION_VIEW, Uri.parse(AppInfo.PLAY_STORE_APP))
                             else

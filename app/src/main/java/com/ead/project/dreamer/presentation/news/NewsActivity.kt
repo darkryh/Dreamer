@@ -74,7 +74,7 @@ class NewsActivity : AppCompatActivity() {
                 bindHeader(it)
                 bindBody(it)
                 bindFooter(it)
-                binding.imvCover.requestFocus()
+                binding.imageCover.requestFocus()
             }
 
         }
@@ -83,11 +83,11 @@ class NewsActivity : AppCompatActivity() {
     private fun bindHeader(newsItemWeb: NewsItemWeb) {
         binding.apply {
 
-            imvCover.load(newsItemWeb.cover)
-            txvTitle.text = newsItemWeb.title
-            txvType.text = getString(R.string.topic_news,newsItemWeb.type)
-            txvAuthor.text = newsItemWeb.author
-            txvDate.text = newsItemWeb.date
+            imageCover.load(newsItemWeb.cover)
+            textTitle.text = newsItemWeb.title
+            textType.text = getString(R.string.topic_news,newsItemWeb.type)
+            textAuthor.text = newsItemWeb.author
+            textDate.text = newsItemWeb.date
 
         }
     }
@@ -190,11 +190,11 @@ class NewsActivity : AppCompatActivity() {
     private fun bindFooter(newsItemWeb: NewsItemWeb) {
         binding.apply {
 
-            imvCoverAuthor.load(newsItemWeb.photoAuthor){
+            imageCoverAuthor.load(newsItemWeb.photoAuthor){
                 transformations(CircleCropTransformation())
             }
-            txvAuthorFooter.text = newsItemWeb.author
-            txvAuthorWords.text = newsItemWeb.authorWords
+            textAuthorFooter.text = newsItemWeb.author
+            textAuthorWords.text = newsItemWeb.authorWords
 
         }
     }

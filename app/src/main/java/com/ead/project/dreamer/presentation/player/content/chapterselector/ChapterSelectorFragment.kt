@@ -52,12 +52,12 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupLayout() {
-        binding.txvChapterList.text = getString(R.string.title_series,chapter.title)
+        binding.textChapterList.text = getString(R.string.title_series,chapter.title)
     }
 
     private fun setupData() {
         chapter = viewModel.playerPreferences.getChapter()?:return
-        binding.rcvChapters.apply {
+        binding.recyclerViewChapters.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapterChapters = ChapterRecyclerViewAdapter(requireActivity() as Context, handleChapter = viewModel.handleChapter)
             adapter = adapterChapters
@@ -68,7 +68,7 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
     private fun setupRecords() {
         viewModel.getChaptersFromProfile(chapter.idProfile).observe(viewLifecycleOwner) {
             adapterChapters.submitList(it)
-            binding.rcvChapters.layoutManager?.scrollToPosition(chapter.number-1)
+            binding.recyclerViewChapters.layoutManager?.scrollToPosition(chapter.number-1)
         }
     }
 

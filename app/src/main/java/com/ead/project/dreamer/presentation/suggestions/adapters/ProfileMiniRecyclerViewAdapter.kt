@@ -47,10 +47,10 @@ class ProfileMiniRecyclerViewAdapter(private val context: Context) :
 
         fun bindTo (animeProfile: AnimeProfile) {
             binding.apply {
-                txvTitle.text = animeProfile.title
-                txvState.text = animeProfile.state
+                textTitle.text = animeProfile.title
+                textState.text = animeProfile.state
                 root.addSelectableItemEffect()
-                imvCoverBase.load(animeProfile.profilePhoto){
+                imageCoverBase.load(animeProfile.profilePhoto){
                     crossfade(true)
                     crossfade(500)
                     transformations(RoundedCornersTransformation(8f.toPixels(),8f.toPixels(),0f,0f))
@@ -58,7 +58,7 @@ class ProfileMiniRecyclerViewAdapter(private val context: Context) :
                     diskCachePolicy(CachePolicy.ENABLED)
                 }
 
-                txvRating.text = context
+                textRating.text = context
                     .getString(R.string.ratingLayout,animeProfile.rating.toString())
 
                 root.setOnClickListener {

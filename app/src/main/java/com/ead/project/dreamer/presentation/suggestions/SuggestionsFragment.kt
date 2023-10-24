@@ -42,7 +42,7 @@ class SuggestionsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
 
-            txvMostViewedShowMore.setOnClickListener { goToMostViewedSeries() }
+            textMostViewedShowMore.setOnClickListener { goToMostViewedSeries() }
 
             recyclerViewMostViewedSeries.apply {
                 layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -71,17 +71,17 @@ class SuggestionsFragment : Fragment() {
 
                 if (it.isNotEmpty()) {
                     mostViewedAdapter.submitList(it)
-                    txvMostViewed.visibility = View.VISIBLE
-                    txvMostViewedShowMore.visibility = View.VISIBLE
+                    textMostViewed.visibility = View.VISIBLE
+                    textMostViewedShowMore.visibility = View.VISIBLE
                     recyclerViewMostViewedSeries.visibility = View.VISIBLE
-                    txvIsEmpty.visibility = View.GONE
+                    textIsEmpty.visibility = View.GONE
                 }
                 else {
-                    txvMostViewed.visibility = View.GONE
-                    txvMostViewedShowMore.visibility = View.GONE
+                    textMostViewed.visibility = View.GONE
+                    textMostViewedShowMore.visibility = View.GONE
                     recyclerViewMostViewedSeries.visibility = View.GONE
-                    txvIsEmpty.visibility = View.VISIBLE
-                    txvSuggestions.text = getString(R.string.recommendations)
+                    textIsEmpty.visibility = View.VISIBLE
+                    textSuggestions.text = getString(R.string.recommendations)
                 }
 
             }

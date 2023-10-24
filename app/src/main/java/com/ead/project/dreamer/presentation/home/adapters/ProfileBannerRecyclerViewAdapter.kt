@@ -84,11 +84,11 @@ class ProfileBannerRecyclerViewAdapter(private val context: Context) :
         }
 
         private fun settingContent(animeProfile: AnimeProfile) {
-            binding.txvTitle.text = animeProfile.title
+            binding.textTitle.text = animeProfile.title
         }
 
         private fun settingImage(animeProfile: AnimeProfile) {
-            binding.imvCoverProfile.load(animeProfile.coverPhoto) {
+            binding.imageCoverProfile.load(animeProfile.coverPhoto) {
                 transformations(RoundedCornersTransformation(20f.toPixels()))
             }
         }
@@ -118,21 +118,21 @@ class ProfileBannerRecyclerViewAdapter(private val context: Context) :
         }
 
         private fun settingImages(publicity: Publicity) {
-            binding.imvCoverProfile.load(publicity.cover)
+            binding.imageCoverProfile.load(publicity.cover)
             if (publicity.icon != null) {
-                binding.imvIcon.load(publicity.icon) {
+                binding.imageIcon.load(publicity.icon) {
                     transformations(CircleCropTransformation())
                 }
             }
         }
 
         private fun settingContent(publicity: Publicity) {
-            binding.txvTitle.text = publicity.title
-            binding.txvDescription.text = publicity.content
+            binding.textTitle.text = publicity.title
+            binding.textDescription.text = publicity.content
 
             when(publicity.content.length) {
                 in 0..250-> {
-                    binding.txvDescription.maxLines = 4
+                    binding.textDescription.maxLines = 4
                 }
             }
         }
@@ -141,7 +141,7 @@ class ProfileBannerRecyclerViewAdapter(private val context: Context) :
             for (tag in publicity.tags) {
                 stringBuilder.append(" · $tag  ")
             }
-            binding.txvTags.text = stringBuilder.toString()
+            binding.textTags.text = stringBuilder.toString()
             stringBuilder.clear()
         }
 

@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         init()
 
         val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+            .findFragmentById(R.id.fragment_container_view) as NavHostFragment
         val navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding.navView.setupWithNavController(navController)
+        binding.bottomNavigationView.setupWithNavController(navController)
     }
 
     private fun init() {
@@ -95,10 +95,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initLayouts() {
         binding.apply {
-            edtMainSearch.setOnClickListener{ goToDirectory() }
-            imvSearch.setOnClickListener { goToDirectory() }
-            imvProfile.setResourceImageAndColor(R.drawable.ic_user,R.color.white)
-            imvProfile.setOnClickListener { goToSettings() }
+            editTextMainSearch.setOnClickListener{ goToDirectory() }
+            imageSearch.setOnClickListener { goToDirectory() }
+            imageProfile.setResourceImageAndColor(R.drawable.ic_user,R.color.white)
+            imageProfile.setOnClickListener { goToSettings() }
         }
     }
 
@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             if (discordUser != null) {
 
                 if (discordUser.getAvatarUrl() != null) {
-                    binding.imvProfile.load(discordUser.getAvatarUrl()) {
+                    binding.imageProfile.load(discordUser.getAvatarUrl()) {
                         transformations(CircleCropTransformation())
                     }
                 }

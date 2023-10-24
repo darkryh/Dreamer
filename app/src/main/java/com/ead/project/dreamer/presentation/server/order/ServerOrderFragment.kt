@@ -26,7 +26,7 @@ class ServerOrderFragment : Fragment() {
 
     private var isInfoExpanded = false
 
-    private val buttonApply : Button by lazy { requireActivity().findViewById(R.id.buttonApply) }
+    private val buttonApply : Button by lazy { requireActivity().findViewById(R.id.button_apply) }
 
     private val viewModel : ServerOrderViewModel by viewModels()
     private lateinit var adapter : ServerOrderRecyclerViewAdapter
@@ -58,8 +58,8 @@ class ServerOrderFragment : Fragment() {
 
     private fun setupLayouts() {
         binding.apply {
-            txvDescription.text = description
-            txvDescription.justifyInterWord()
+            textDescription.text = description
+            textDescription.justifyInterWord()
 
             recyclerView.apply {
                 this@ServerOrderFragment.adapter = ServerOrderRecyclerViewAdapter()
@@ -68,15 +68,15 @@ class ServerOrderFragment : Fragment() {
                 itemTouchHelper.attachToRecyclerView(this)
             }
 
-            txvInfo.setOnClickListener {
+            textInfo.setOnClickListener {
                 isInfoExpanded = !isInfoExpanded
                 (requireActivity() as ServerOrderActivity).isInfoExpanded = isInfoExpanded
-                binding.txvDescription.setVisibility(isInfoExpanded)
+                binding.textDescription.setVisibility(isInfoExpanded)
                 if (isInfoExpanded) {
-                    binding.txvInfo.text = getString(R.string.what_is_this_up)
+                    binding.textInfo.text = getString(R.string.what_is_this_up)
                 }
                 else {
-                    binding.txvInfo.text = getString(R.string.what_is_this_down)
+                    binding.textInfo.text = getString(R.string.what_is_this_down)
                 }
             }
         }
@@ -98,7 +98,7 @@ class ServerOrderFragment : Fragment() {
 
     private fun setupInfo() {
         isInfoExpanded = (requireActivity() as ServerOrderActivity).isInfoExpanded
-        binding.txvDescription.setVisibility(isInfoExpanded)
+        binding.textDescription.setVisibility(isInfoExpanded)
     }
 
     companion object {

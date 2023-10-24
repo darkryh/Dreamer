@@ -52,17 +52,17 @@ class PlayerContentFragment : Fragment() {
     }
 
     private fun initLayouts() {
-        binding.ChapterProfile.load(chapter.cover){
+        binding.imageChapterProfile.load(chapter.cover){
             transformations(CircleCropTransformation())
         }
-        binding.txvTitle.text = getString(R.string.title_seeing,chapter.title)
-        binding.txvCurrentChapter.text = getString(R.string.chapter_number,chapter.number.toString())
+        binding.textTitle.text = getString(R.string.title_seeing,chapter.title)
+        binding.textCurrentChapterNumber.text = getString(R.string.chapter_number,chapter.number.toString())
     }
 
     private fun initRecyclerViews() {
         val surfaceColor = MaterialColors.getColor(requireContext(), R.attr.colorSurface, Color.GRAY)
         binding.appBarLayout.setBackgroundColor(surfaceColor)
-        binding.rcvSuggestions.apply {
+        binding.recyclerViewSuggestions.apply {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this@PlayerContentFragment.adapter =

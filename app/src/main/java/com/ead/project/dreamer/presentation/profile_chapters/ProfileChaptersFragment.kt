@@ -65,26 +65,26 @@ class ProfileChaptersFragment : Fragment() {
         binding.apply {
 
             currentChapter.addSelectableItemEffect()
-            lnCurrentChapter.addSelectableItemEffect()
+            linearCurrentChapter.addSelectableItemEffect()
 
-            imvSearch.setOnClickListener {
+            imageSearch.setOnClickListener {
 
                 it.setVisibility(false)
-                txvCurrentChapter.setVisibility(false)
-                edtChapter.setVisibility(true)
-                imvClose.setVisibility(true)
-                edtChapter.requestFocus()
-                inputMethodManager.showSoftInput(edtChapter, InputMethodManager.SHOW_IMPLICIT)
+                textCurrentChapterNumber.setVisibility(false)
+                editTextChapter.setVisibility(true)
+                imageClose.setVisibility(true)
+                editTextChapter.requestFocus()
+                inputMethodManager.showSoftInput(editTextChapter, InputMethodManager.SHOW_IMPLICIT)
 
             }
 
-            imvClose.setOnClickListener {
+            imageClose.setOnClickListener {
 
                 it.setVisibility(false)
-                txvCurrentChapter.setVisibility(true)
-                edtChapter.setVisibility(false)
-                edtChapter.setText("")
-                imvSearch.setVisibility(true)
+                textCurrentChapterNumber.setVisibility(true)
+                editTextChapter.setVisibility(false)
+                editTextChapter.setText("")
+                imageSearch.setVisibility(true)
                 inputMethodManager.hideSoftInputFromWindow(root.windowToken,InputMethodManager.HIDE_IMPLICIT_ONLY)
 
             }
@@ -106,18 +106,18 @@ class ProfileChaptersFragment : Fragment() {
                 viewModel.updateChapterIfIsConsumed(observableChapter)
             }
 
-            edtChapter.addTextChangedListener { _ ->
+            editTextChapter.addTextChangedListener { _ ->
 
                 if (backUpChapters.isEmpty()) {
                     return@addTextChangedListener
                 }
 
-                if (edtChapter.text.isEmpty()) {
+                if (editTextChapter.text.isEmpty()) {
                     adapter.submitList(backUpChapters)
                 }
                 else {
                     viewModel
-                        .getChaptersFromNumber(profileId,getNumber(edtChapter.text.toString()))
+                        .getChaptersFromNumber(profileId,getNumber(editTextChapter.text.toString()))
                         .observeOnce(viewLifecycleOwner) {
                             adapter.submitList(it)
                         }
@@ -130,7 +130,7 @@ class ProfileChaptersFragment : Fragment() {
     private fun bindingChapter(chapter: Chapter) {
         binding.apply {
 
-            txvCurrentChapter.text = getString(R.string.continue_watching_chapter_number, chapter.number.toString())
+            textCurrentChapterNumber.text = getString(R.string.continue_watching_chapter_number, chapter.number.toString())
 
             currentChapter.setOnClickListener {
 

@@ -74,12 +74,12 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
         viewModel.setDownloadMode(true)
         binding.apply {
             //lnDownload.addSelectableItemEffect()
-            lnManualDownload.addSelectableItemEffect()
-            lnFavorite.addSelectableItemEffect()
+            linearManualDownload.addSelectableItemEffect()
+            linearFavorite.addSelectableItemEffect()
             //lnDownload.setVisibility(isChapter)
-            lnChapterMode.setVisibility(isChapter)
-            lnFavorite.setVisibility(isChapter)
-            lnRecordDelete.setVisibility(isRecords)
+            linearChapterMode.setVisibility(isChapter)
+            linearFavorite.setVisibility(isChapter)
+            linearRecordDelete.setVisibility(isRecords)
         }
         settingDownloadState()
         settingFavoriteLayout()
@@ -88,12 +88,12 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
     private fun settingDownloadState() {
         binding.apply {
             if (chapter.state == Chapter.STATUS_DOWNLOADED) {
-                imvChapterMode.setImageResource(R.drawable.ic_close_24)
-                txvChapterMode.text = getString(R.string.chapter_mode_to_dont_downloaded)
+                imageChapterMode.setImageResource(R.drawable.ic_close_24)
+                textChapterMode.text = getString(R.string.chapter_mode_to_dont_downloaded)
             }
             else {
-                imvChapterMode.setImageResource(R.drawable.ic_ready_24)
-                txvChapterMode.text = getString(R.string.chapter_mode_to_downloaded)
+                imageChapterMode.setImageResource(R.drawable.ic_ready_24)
+                textChapterMode.text = getString(R.string.chapter_mode_to_downloaded)
             }
         }
     }
@@ -101,46 +101,46 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
     private fun settingFavoriteLayout() {
         viewModel.getProfileIsFavorite(chapter.idProfile)?.let {
             if (it.isFavorite) {
-                binding.imvFavorites.setImageResource(R.drawable.ic_heart_broken_24)
-                binding.txvFavorites.text = getString(R.string.remove_from_favorites)
+                binding.imageFavorites.setImageResource(R.drawable.ic_heart_broken_24)
+                binding.textFavorites.text = getString(R.string.remove_from_favorites)
             }
             else {
-                binding.imvFavorites.setImageResource(R.drawable.ic_favorite_24)
-                binding.txvFavorites.text = getString(R.string.add_to_favorites)
+                binding.imageFavorites.setImageResource(R.drawable.ic_favorite_24)
+                binding.textFavorites.text = getString(R.string.add_to_favorites)
             }
         }
     }
 
     private fun settingAutomaticDownload() {
-        binding.lnDownload.setOnClickListener {
+        binding.linearDownload.setOnClickListener {
             viewModel.downloadUseCase.add(activity as Context,chapter)
             dismiss()
         }
     }
 
     private fun settingManualDownload() {
-        binding.lnManualDownload.setOnClickListener {
+        binding.linearManualDownload.setOnClickListener {
             MenuServerFragment.launch(activity as Context,chapter,true)
             dismiss()
         }
     }
 
     private fun settingRecordsDelete() {
-        binding.lnRecordDelete.setOnClickListener {
+        binding.linearRecordDelete.setOnClickListener {
             viewModel.deleteRecords(chapter.idProfile)
             dismiss()
         }
     }
 
     private fun settingFavorites() {
-        binding.lnFavorite.setOnClickListener {
+        binding.linearFavorite.setOnClickListener {
             viewModel.updateFavoriteProfile(chapter.idProfile)
             dismiss()
         }
     }
 
     private fun settingChapterMode() {
-        binding.lnChapterMode.setOnClickListener {
+        binding.linearChapterMode.setOnClickListener {
             viewModel.updateChapter(chapter.copy(state = downloadStatusReverse))
             dismiss()
         }

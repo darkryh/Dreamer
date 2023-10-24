@@ -46,18 +46,18 @@ class UpdateActivity : AppCompatActivity() {
 
     private fun setupLayouts() {
         binding.apply {
-            close.setOnClickListener { onBack() }
-            skipButton.setOnClickListener { onBack() }
-            resumedVersion.justifyInterWord()
+            imageClose.setOnClickListener { onBack() }
+            buttonSkip.setOnClickListener { onBack() }
+            textResumedVersion.justifyInterWord()
         }
     }
 
     private fun bindingUpdate() {
         binding.apply {
-            title.text = getString(R.string.new_version, appBuild.update.version.toString())
-            resumedVersion.text = appBuild.resumedVersionNotes ?:getString(R.string.content_new_version_download)
+            textTitle.text = getString(R.string.new_version, appBuild.update.version.toString())
+            textResumedVersion.text = appBuild.resumedVersionNotes ?:getString(R.string.content_new_version_download)
 
-            downloadAndInstallButton.setOnClickListener {
+            buttonDownloadAndInstall.setOnClickListener {
                 if (viewModel.updateUseCase.isAlreadyDownloaded()) {
                     installUpdate()
                 }
@@ -65,11 +65,11 @@ class UpdateActivity : AppCompatActivity() {
                     viewModel.updateUseCase.getUpdate(viewModel.downloadUpdate(appBuild)).observe(this@UpdateActivity) { download ->
                         if (download == null) return@observe
 
-                        downloadAndInstallButton.isEnabled = false
+                        buttonDownloadAndInstall.isEnabled = false
 
                         val percentProgress = ((download.current * 100f) / download.total).round(2)
                         val currentProgress = percentProgress.roundToInt()
-                        downloadProgress.progress = currentProgress
+                        linearProgressDownload.progress = currentProgress
                         textProgress.text = getString(R.string.current_percent,percentProgress.toString())
 
                         if (currentProgress < 100) return@observe

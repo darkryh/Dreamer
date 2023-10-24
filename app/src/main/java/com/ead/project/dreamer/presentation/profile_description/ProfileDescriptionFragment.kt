@@ -48,8 +48,8 @@ class ProfileDescriptionFragment : Fragment() {
             recyclerViewGenres.apply {
                 layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL,false)
             }
-            txvDescriptionContent.justifyInterWord()
-            txvDescriptionContent.addSelectableItemEffect()
+            textDescriptionContent.justifyInterWord()
+            textDescriptionContent.addSelectableItemEffect()
 
         }
 
@@ -68,21 +68,21 @@ class ProfileDescriptionFragment : Fragment() {
         binding.apply {
 
             recyclerViewGenres.adapter = GenreRecyclerViewAdapter(animeProfile.genres,requireContext())
-            txvState.text = animeProfile.state
-            txvDate.text = animeProfile.date
-            txvRating.text = animeProfile.rating.toString()
+            textState.text = animeProfile.state
+            textDate.text = animeProfile.date
+            textRating.text = animeProfile.rating.toString()
             ratingBar.rating = animeProfile.rating
 
             if (animeProfile.description.length > minLettersCharacter) {
                 descriptionOverloaded = true
                 wrappedDescription(animeProfile,false)
             } else {
-                txvDescriptionContent.text = animeProfile.description
+                textDescriptionContent.text = animeProfile.description
             }
 
-            txvDescriptionContent.setOnClickListener{
+            textDescriptionContent.setOnClickListener{
                 if (descriptionOverloaded) {
-                    val params = txvDescriptionContent.layoutParams as ViewGroup.LayoutParams
+                    val params = textDescriptionContent.layoutParams as ViewGroup.LayoutParams
                     if (wrappedDescription) {
                         wrappedDescription(animeProfile,false)
                         params.height = resources.getDimensionPixelSize(R.dimen.dimen_115dp)
@@ -91,7 +91,7 @@ class ProfileDescriptionFragment : Fragment() {
                         wrappedDescription(animeProfile,true)
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
                     }
-                    txvDescriptionContent.layoutParams = params
+                    textDescriptionContent.layoutParams = params
                     wrappedDescription = !wrappedDescription
                 }
             }
@@ -104,14 +104,14 @@ class ProfileDescriptionFragment : Fragment() {
         binding.apply {
 
             if(!wrapContent) {
-                txvDescriptionContent
+                textDescriptionContent
                     .text = HtmlCompat.fromHtml(
                     "$text<font color='Cyan'> <u>Mostrar más...</u></font>",
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
             }
             else {
-                txvDescriptionContent
+                textDescriptionContent
                     .text = HtmlCompat.fromHtml(
                     "${animeProfile.description}<font color='Red'> <u>Mostrar menos...</u></font>",
                     HtmlCompat.FROM_HTML_MODE_LEGACY)

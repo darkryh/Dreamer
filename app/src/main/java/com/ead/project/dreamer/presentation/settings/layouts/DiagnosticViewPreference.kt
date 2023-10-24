@@ -29,10 +29,10 @@ class DiagnosticViewPreference(context: Context, attrs: AttributeSet?) :
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        _icon = holder.findViewById(R.id.imvDiagnostic) as ImageView
-        _title = holder.findViewById(R.id.txvAutomaticDiagnostic) as TextView
-        _log = holder.findViewById(R.id.txvLogger) as TextView
-        _buttonTest = holder.findViewById(R.id.btnDiagnosticTest) as Button
+        _icon = holder.findViewById(R.id.image_diagnostic) as ImageView
+        _title = holder.findViewById(R.id.text_automatic_diagnostic) as TextView
+        _log = holder.findViewById(R.id.text_logger) as TextView
+        _buttonTest = holder.findViewById(R.id.button_diagnostic_test) as Button
         _buttonTest?.setOnClickListener(testClickListener)
     }
 

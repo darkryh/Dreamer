@@ -37,10 +37,10 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        _profile = holder.findViewById(R.id.imageAccount) as ImageView
-        _state = holder.findViewById(R.id.state_view) as ImageView
-        _userName = holder.findViewById(R.id.txvUserName) as TextView
-        _rank = holder.findViewById(R.id.txvRank) as TextView
+        _profile = holder.findViewById(R.id.image_account) as ImageView
+        _state = holder.findViewById(R.id.image_state) as ImageView
+        _userName = holder.findViewById(R.id.text_user_name) as TextView
+        _rank = holder.findViewById(R.id.text_rank) as TextView
         _profile?.setOnClickListener(accountClickListener)
         val root = _profile?.parent as View
         root.addSelectableItemEffect()

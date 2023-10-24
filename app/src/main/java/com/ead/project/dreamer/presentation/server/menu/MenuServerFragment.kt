@@ -91,11 +91,11 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun initLayouts() {
         menuServerManager.initialize(binding.serverContainer)
-        binding.lavLoadingServer.visibility = View.VISIBLE
-        binding.imvChapterMenu.load(chapter.cover){
+        binding.lottieLoadingServer.visibility = View.VISIBLE
+        binding.imageChapterMenu.load(chapter.cover){
             transformations(RoundedCornersTransformation(10f))
         }
-        binding.txvTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.number)
+        binding.textTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.number)
     }
 
     private fun isAutomaticResolverActivated() : Boolean {
@@ -271,7 +271,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun showServers() {
         menuServerManager.showServers()
-        binding.lavLoadingServer.visibility = View.GONE
+        binding.lottieLoadingServer.visibility = View.GONE
         isCancelable = true
     }
 

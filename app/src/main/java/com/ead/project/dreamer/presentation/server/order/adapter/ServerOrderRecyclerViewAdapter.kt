@@ -40,7 +40,7 @@ class ServerOrderRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         private fun settingsLayouts(title : String) {
-            binding.txvServer.text = title
+            binding.textServer.text = title
         }
     }
 }

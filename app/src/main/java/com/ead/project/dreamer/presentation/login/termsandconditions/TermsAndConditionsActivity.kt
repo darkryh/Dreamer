@@ -26,12 +26,12 @@ class TermsAndConditionsActivity : AppCompatActivity() {
         binding.buttonReject.setOnClickListener {
             finish()
         }
-        binding.txvEmailProtected.setOnClickListener {
+        binding.textEmailProtected.setOnClickListener {
             emailProtected = !emailProtected
             if (!emailProtected)
-                binding.txvEmailProtected.text = AppInfo.CONTACT_DEVELOPER_EMAIL
+                binding.textEmailProtected.text = AppInfo.CONTACT_DEVELOPER_EMAIL
             else
-                binding.txvEmailProtected.text = getString(R.string.email_protected)
+                binding.textEmailProtected.text = getString(R.string.email_protected)
         }
     }
 }

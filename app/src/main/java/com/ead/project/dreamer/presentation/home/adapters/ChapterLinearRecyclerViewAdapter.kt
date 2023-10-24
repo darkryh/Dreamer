@@ -57,14 +57,14 @@ class ChapterLinearRecyclerViewAdapter(
         }
 
         private fun settingsLayouts(chapter: ChapterHome) {
-            binding.txvTitle.text = chapter.title
-            binding.txvType.text = chapter.type
-            binding.txvChapterNumber.text = chapter.chapterNumber.toString()
+            binding.textTitle.text = chapter.title
+            binding.textType.text = chapter.type
+            binding.textChapterNumber.text = chapter.chapterNumber.toString()
             binding.root.addSelectableItemEffect()
         }
 
         private fun settingImages(chapter: ChapterHome) {
-            binding.imvCover.load(chapter.chapterCover){
+            binding.imageCover.load(chapter.chapterCover){
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(15f.toPixels()))

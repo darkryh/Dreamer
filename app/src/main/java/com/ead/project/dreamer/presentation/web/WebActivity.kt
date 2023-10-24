@@ -65,13 +65,13 @@ class WebActivity : AppCompatActivity() {
         binding.apply {
             supportActionBar?.hide()
 
-            webView.layoutParams.height = (getScreenSize().height - lnBar.height) -
+            webView.layoutParams.height = (getScreenSize().height - linearBar.height) -
                     getNavigationBarHeight(orientation)
 
             host = URI(url).host
-            txvUrl.text = host
+            textUrl.text = host
 
-            imvClose.setOnClickListener {
+            imageClose.setOnClickListener {
                 finish()
             }
         }
@@ -81,9 +81,9 @@ class WebActivity : AppCompatActivity() {
         binding.apply {
             if (webView != null) {
                 if (!webView.title?.contains("/")!!) {
-                    txvTitle.text = webView.title
+                    textTitle.text = webView.title
                 } else {
-                    txvTitle.text = host
+                    textTitle.text = host
                 }
             }
         }
