@@ -56,7 +56,7 @@ interface ChapterDao {
     @Query("select * from(select * from (" +
             "select * from anime_chapter_table " +
             "where currentProgress > 0 order by lastDateSeen desc) " +
-            "as X group by X.title) as T order by lastDateSeen desc"
+            "as X group by X.title) as T order by lastDateSeen desc limit 20"
     )
     fun getFlowDataRecords() : Flow<List<Chapter>>
 
