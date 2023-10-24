@@ -8,6 +8,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.notifications.NotificationManager.Companion.ALL
 import com.ead.project.dreamer.presentation.settings.viewmodels.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -40,17 +41,21 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
                 viewModel.subscribeToAppTopicIf(isSubscribed)
             }
         }
-        lpNotifications.value = viewModel.getIntKeyPreference(lpNotifications.key).toString()
+        lifecycleScope.launch {
+            viewModel.preferences.getIntFlow(PREFERENCE_NOTIFICATIONS_OPTION,ALL).collectLatest {
+                lpNotifications.setValueIndex(it)
+            }
+        }
     }
 
     private fun functionsLayout() {
-        lpNotifications.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { preference, newValue ->
-                lifecycleScope.launch {
-                    viewModel.preferences.set(preference.key,newValue.toString().toInt())
-                }
-                true
+        lpNotifications.setOnPreferenceChangeListener { _, newValue ->
+            lifecycleScope.launch {
+                val notificationOption = newValue.toString().toInt()
+                viewModel.preferences.set(PREFERENCE_NOTIFICATIONS_OPTION,notificationOption)
             }
+            true
+        }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -59,5 +64,6 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
 
     companion object {
         const val PREFERENCE_NOTIFICATIONS = "PREFERENCE_NOTIFICATIONS"
+        const val PREFERENCE_NOTIFICATIONS_OPTION = "PREFERENCE_NOTIFICATIONS_OPTION"
     }
 }
