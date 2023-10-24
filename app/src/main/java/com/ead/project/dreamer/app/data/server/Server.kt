@@ -194,6 +194,6 @@ object Server {
     )
 
     val URL_STREAMWISH_DOMAINS = listOf(
-        "streamwish.to", "embedwish.com"
+        "streamwish.to", "embedwish.com","sfastwish.com","wishfast.top"
     )
 }
