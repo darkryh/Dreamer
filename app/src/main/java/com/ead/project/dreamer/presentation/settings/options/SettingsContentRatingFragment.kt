@@ -32,23 +32,23 @@ class SettingsContentRatingFragment : PreferenceFragmentCompat() {
 
     private fun settingLayouts() {
         lifecycleScope.launch {
-            viewModel.preferences.getBooleanFlow(PREFERENCE_GOOGLE_POLICY).collectLatest { isGooglePolicyActivated ->
-                if (AppInfo.isGoogleAppVersion) {
-                    swPrivacyPolicy.isChecked = true
-                }
-                else {
-                    swPrivacyPolicy.isChecked = isGooglePolicyActivated
-                }
+            viewModel.isGoogleVersion.collectLatest { isGooglePolicyActivated  ->
+                swPrivacyPolicy.isChecked = isGooglePolicyActivated
             }
         }
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        return if (!AppInfo.isGoogleAppVersion) {
-            viewModel.getBooleanKeyPreference(preference.key)
-        }
-        else {
-            true
+        return when (val key = preference.key) {
+            PREFERENCE_GOOGLE_POLICY -> {
+                return if (AppInfo.isGoogleAppVersion) {
+                    viewModel.getBooleanKeyPreference(key)
+                }
+                else {
+                    viewModel.updateUnlockedMode()
+                }
+            }
+            else -> { true }
         }
     }
 
