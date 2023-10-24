@@ -81,3 +81,25 @@ private fun AppCompatActivity.supportActionBar(toolbar: Toolbar) {
     supportActionBar?.setDisplayShowTitleEnabled(false)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 }
+
+@Suppress("DEPRECATION")
+fun AppCompatActivity.openTransition(enterAnim : Int, exitAnim : Int) {
+    if (Build.VERSION.SDK_INT >= 34) {
+        overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_OPEN, enterAnim, exitAnim)
+    }
+    else {
+        overridePendingTransition(
+            R.anim.fade_in, R.anim.fade_out)
+    }
+}
+
+@Suppress("DEPRECATION")
+fun AppCompatActivity.closeTransition(enterAnim : Int, exitAnim : Int)  {
+    if (Build.VERSION.SDK_INT >= 34) {
+        overrideActivityTransition(AppCompatActivity.OVERRIDE_TRANSITION_CLOSE, enterAnim, exitAnim)
+    }
+    else {
+        overridePendingTransition(
+            R.anim.fade_in, R.anim.fade_out)
+    }
+}
