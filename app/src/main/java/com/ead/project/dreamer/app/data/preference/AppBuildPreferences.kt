@@ -23,6 +23,8 @@ class AppBuildPreferences @Inject constructor(
 
     val isDarkMode get() = appBuild.map { it.isDarkTheme }
 
+    val isGoogleVersion get() = appBuild.map { !it.isUnlockedVersion }
+
     fun isUnlockedVersion() : Boolean = runBlocking { store.data.first().isUnlockedVersion }
 
     fun isLockedVersion () : Boolean = !isUnlockedVersion()
