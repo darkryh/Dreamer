@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ead.commons.lib.metrics.getAvailableWidthReference
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
+import com.ead.project.dreamer.app.data.util.system.closeTransition
+import com.ead.project.dreamer.app.data.util.system.openTransition
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.databinding.ActivityDirectoryBinding
 import com.ead.project.dreamer.presentation.directory.adapter.AnimeBaseRecyclerViewAdapter
@@ -20,7 +22,6 @@ import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class DirectoryActivity : AppCompatActivity() {
@@ -36,8 +37,7 @@ class DirectoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        overridePendingTransition(
-            R.anim.fade_in, R.anim.fade_out)
+        openTransition(R.anim.fade_in,R.anim.fade_out)
         prepareLayout()
         prepareAdapter()
         handleIfProfileIsRequestedFromPlayer()
@@ -45,13 +45,12 @@ class DirectoryActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(
-            R.anim.fade_in, R.anim.fade_out)
+        closeTransition(R.anim.fade_in,R.anim.fade_out)
     }
 
     private fun prepareLayout() {
         binding.apply {
-            editextSearch.requestFocus()
+            editTextSearch.requestFocus()
 
             handleNotActionBar(toolbar,viewModel.appBuildPreferences.isDarkTheme())
 
@@ -80,14 +79,14 @@ class DirectoryActivity : AppCompatActivity() {
                 viewModel.getDirectoryState().collect { isSynchronized ->
 
                     if (isSynchronized) {
-                        editextSearch.addTextChangedListener {
-                            viewModel.getFullDirectory(editextSearch.text.toString())
+                        editTextSearch.addTextChangedListener {
+                            viewModel.getFullDirectory(editTextSearch.text.toString())
                                 .observe(this@DirectoryActivity) { updateData(it) }
                         }
                     }
                     else {
-                        editextSearch.addTextChangedListener {
-                            viewModel.getDirectory(editextSearch.text.toString())
+                        editTextSearch.addTextChangedListener {
+                            viewModel.getDirectory(editTextSearch.text.toString())
                                 .observe(this@DirectoryActivity) { updateData(it) }
                         }
                     }
