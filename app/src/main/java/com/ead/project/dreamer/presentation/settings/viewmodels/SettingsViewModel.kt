@@ -20,6 +20,8 @@ class SettingsViewModel @Inject constructor(
     private val appBuildPreferences = preferenceUseCase.appBuildPreferences
     val preferences = preferenceUseCase.preferences
     private val playerPreferences = preferenceUseCase.playerPreferences
+
+    val isGoogleVersion = appBuildPreferences.isGoogleVersion
     val isDarkMode = appBuildPreferences.isDarkMode
 
     val playerPreferencesFlow = playerPreferences.preference
@@ -34,12 +36,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-
-    fun getIntKeyPreference(key: String) : Int {
-        return runBlocking {
-            preferences.getInt(key)
-        }
-    }
 
     fun getBooleanKeyPreference(key: String) : Boolean {
         return runBlocking {
@@ -87,6 +83,13 @@ class SettingsViewModel @Inject constructor(
     fun updatePictureInPictureMode() : Boolean {
         viewModelScope.launch {
             playerPreferences.updatePictureInPictureMode()
+        }
+        return true
+    }
+
+    fun updateUnlockedMode() : Boolean {
+        viewModelScope.launch {
+            appBuildPreferences.updateUnlockedVersion()
         }
         return true
     }
