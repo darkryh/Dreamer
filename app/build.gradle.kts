@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -59,13 +59,14 @@ android {
 
 dependencies {
     
-    val roomVersion = "2.5.2"
+    val roomVersion = "2.6.0"
     val lottieVersion = "4.2.1"
     val media3Version = "1.1.1"
-    val okhttpVersion = "4.10.0"
+    val okhttpVersion = "4.11.0"
     val retrofitVersion = "2.9.0"
-    val admobVersion = "22.3.0"
     val ktorVersion = "2.3.4"
+    val lifecycleVersion = "2.6.2"
+    val fragmentsVersion = "2.7.4"
 
     //own libs
     implementation("com.github.darkryh:lifecycle-commons-ktx:0.0.3")
@@ -74,22 +75,28 @@ dependencies {
     implementation("com.github.darkryh:metrics-commons-ktx:0.0.1")
 
     //basics
-    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.1")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation("androidx.media:media:1.6.0")
+
+    //lifecycles
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+
+    //navigation
+    implementation("androidx.navigation:navigation-fragment-ktx:$fragmentsVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$fragmentsVersion")
+
+    //tests
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.media:media:1.6.0")
 
     //desugar
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
@@ -100,7 +107,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     //image loader coil
-    implementation("io.coil-kt:coil:2.2.2")
+    implementation("io.coil-kt:coil:2.4.0")
 
     //shimmer
     implementation("com.facebook.shimmer:shimmer:0.5.0")
@@ -169,7 +176,7 @@ dependencies {
     implementation("net.objecthunter:exp4j:0.4.8")
 
     //admob
-    implementation("com.google.android.gms:play-services-ads:$admobVersion")
+    implementation("com.google.android.gms:play-services-ads:22.4.0")
 
     //firebase
     implementation(enforcedPlatform("com.google.firebase:firebase-bom:31.0.1"))
@@ -179,7 +186,7 @@ dependencies {
     implementation("com.google.firebase:firebase-inappmessaging-display-ktx")
 
     //cast
-    implementation("androidx.mediarouter:mediarouter:1.4.0")
+    implementation("androidx.mediarouter:mediarouter:1.6.0")
     implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
     implementation("com.android.volley:volley:1.2.1")
 
