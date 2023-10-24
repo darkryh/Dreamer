@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarMain"
+        android:id="@+id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="?attr/colorSurface"
@@ -33,7 +33,7 @@
                 android:orientation="vertical">
 
                 <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/mediaRouteButton"
+                    android:id="@+id/media_route_button"
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:mediaRouteTypes="user"
@@ -42,7 +42,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/imvSearch"
+                android:id="@+id/image_search"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="8dp"
@@ -58,7 +58,7 @@
                 tools:ignore="ImageContrastCheck" />
 
             <TextView
-                android:id="@+id/edtMainSearch"
+                android:id="@+id/edit_text_main_search"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -72,7 +72,7 @@
                 tools:ignore="TextContrastCheck" />
 
             <ImageView
-                android:id="@+id/imvProfile"
+                android:id="@+id/image_profile"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
@@ -91,28 +91,28 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/fragment_container_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/castMiniController"
+        app:layout_constraintBottom_toTopOf="@+id/cast_mini_controller"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarMain"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_main"
         app:navGraph="@navigation/mobile_navigation" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/castMiniController"
+        app:layout_constraintBottom_toTopOf="@+id/cast_mini_controller"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <fragment
-        android:id="@+id/castMiniController"
+        android:id="@+id/cast_mini_controller"
         class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
         app:castControlButtons="@array/cast_mini_controller_control_buttons"
         app:castMiniControllerLoadingIndicatorColor="@color/orange_peel"
         app:castProgressBarColor="@color/orange_peel"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout="@layout/cast_mini_controller"
@@ -131,7 +131,7 @@
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/bottom_navigation_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"

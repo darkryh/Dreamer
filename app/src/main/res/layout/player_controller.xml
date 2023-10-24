@@ -2,7 +2,7 @@
 <androidx.media3.ui.AspectRatioFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dream_controller"
+    android:id="@+id/dreamer_controller"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
@@ -20,68 +20,72 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/exo_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:layout_weight="1"
-                android:textColor="@color/whitePrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.media3.ui.DefaultTimeBar
                 android:id="@+id/exo_progress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:buffered_color="@color/grey_accent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/exo_duration"
-                app:layout_constraintStart_toEndOf="@+id/exo_position"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:played_color="@color/orange_peel"
                 app:unplayed_color="@color/whiteSecondary"
                 tools:ignore="SpeakableTextPresentCheck" />
 
-            <LinearLayout
-                android:id="@+id/ln_fullscreen"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/bottom_controls_metadata"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_margin="4dp"
-                app:layout_constraintBottom_toTopOf="@+id/exo_progress"
-                app:layout_constraintEnd_toEndOf="parent" >
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/exo_progress">
 
                 <ImageView
-                    android:id="@+id/bt_fullscreen"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:contentDescription="@string/full_screen"
-                    android:src="@drawable/ic_fullscreen_24"
-                    app:tint="@color/white"/>
+                    android:id="@+id/image_logo_current_chapter"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:src="@drawable/ic_user_account"
+                    android:contentDescription="@string/chapter_logo"/>
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/exo_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:textColor="@color/whitePrimary"
+                    android:textSize="14sp" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/slash"
+                    android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/exo_position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/whitePrimary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                <TextView
+                    android:id="@+id/exo_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:textColor="@color/whitePrimary"
+                    android:textSize="14sp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RelativeLayout
-            android:id="@+id/relativeCoverDreamer"
+            android:id="@+id/relative_cover_dreamer"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imvCoverDreamer"
+                android:id="@+id/image_cover_dreamer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/cover_image" />
@@ -95,7 +99,7 @@
         </RelativeLayout>
         
         <TextView
-            android:id="@+id/txvCasting"
+            android:id="@+id/text_casting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -114,7 +118,7 @@
             tools:ignore="TextContrastCheck" />
 
         <LinearLayout
-            android:id="@+id/lnOperator"
+            android:id="@+id/linear_operator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -156,7 +160,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/bt_close_player"
+            android:id="@+id/button_close_player"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:contentDescription="@string/close"
@@ -167,7 +171,7 @@
             app:tint="@color/white"/>
 
         <TextView
-            android:id="@+id/txvChapterTitle"
+            android:id="@+id/text_chapter_title"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:ellipsize="end"
@@ -176,27 +180,40 @@
             android:paddingHorizontal="8dp"
             android:text="@string/title"
             android:textColor="@color/whitePrimary"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_close_player"
+            app:layout_constraintEnd_toStartOf="@+id/linear_fullscreen"
+            app:layout_constraintStart_toEndOf="@+id/button_close_player"
+            app:layout_constraintTop_toTopOf="@+id/button_close_player" />
+
+        <TextView
+            android:id="@+id/text_chapter_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="@string/chapter_number_short"
+            android:textColor="@color/grey_accent"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/bt_close_player"
-            app:layout_constraintEnd_toStartOf="@+id/lnGesture"
-            app:layout_constraintStart_toEndOf="@+id/bt_close_player"
-            app:layout_constraintTop_toTopOf="@+id/bt_close_player" />
+            app:layout_constraintEnd_toEndOf="@+id/text_chapter_title"
+            app:layout_constraintStart_toStartOf="@+id/text_chapter_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_chapter_title" />
 
         <LinearLayout
-            android:id="@+id/lnSettings"
+            android:id="@+id/linear_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/bt_close_player"
+            app:layout_constraintBottom_toBottomOf="@+id/button_close_player"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bt_close_player">
+            app:layout_constraintTop_toTopOf="@+id/button_close_player">
 
             <ImageView
-                android:id="@+id/bt_settings"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:contentDescription="@string/title_settings"
@@ -205,26 +222,26 @@
         </LinearLayout>
 
         <androidx.mediarouter.app.MediaRouteButton
-            android:id="@+id/mrbInPlayer"
+            android:id="@+id/media_route_button_in_player"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             app:mediaRouteButtonTint="@color/white"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/lnSettings"
-            app:layout_constraintEnd_toStartOf="@+id/lnSettings"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/linear_settings"
+            app:layout_constraintEnd_toStartOf="@+id/linear_settings"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/lnGesture"
+            android:id="@+id/linear_gesture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/lnSettings"
-            app:layout_constraintEnd_toStartOf="@+id/ln_play_list"
-            app:layout_constraintTop_toTopOf="@+id/lnSettings"
+            app:layout_constraintBottom_toBottomOf="@+id/linear_settings"
+            app:layout_constraintEnd_toStartOf="@+id/media_route_button_in_player"
+            app:layout_constraintTop_toTopOf="@+id/linear_settings"
             app:layout_constraintVertical_bias="0.0">
 
             <ImageView
@@ -236,24 +253,24 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ln_play_list"
+            android:id="@+id/linear_fullscreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="12dp"
-            app:layout_constraintEnd_toStartOf="@+id/mrbInPlayer"
-            app:layout_constraintTop_toTopOf="@+id/lnSettings">
+            app:layout_constraintBottom_toBottomOf="@+id/linear_settings"
+            app:layout_constraintEnd_toStartOf="@+id/linear_gesture"
+            app:layout_constraintTop_toTopOf="@+id/linear_settings"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
-                android:id="@+id/bt_play_list"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:contentDescription="@string/playlist"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/lnSettings"
-                app:srcCompat="@drawable/ic_format_list_numbered"
+                android:id="@+id/button_fullscreen"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/title_settings"
+                app:srcCompat="@drawable/ic_fullscreen_24"
                 app:tint="@color/white"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@
     tools:context=".presentation.player.PlayerExternalActivity">
 
     <LinearLayout
-        android:id="@+id/ln_playlist_cast"
+        android:id="@+id/linear_playlist_cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -24,7 +24,7 @@
             android:layout_height="18dp"
             android:contentDescription="@string/playlist"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lnSettings"
+            app:layout_constraintTop_toBottomOf="@+id/linear_settings"
             app:srcCompat="@drawable/ic_format_list_numbered"/>
     </LinearLayout>
 
@@ -32,7 +32,7 @@
         android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/chapterLogo"
+        android:contentDescription="@string/chapter_logo"
         android:minHeight="250dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/btn_close"
+        android:id="@+id/button_close"
         android:layout_width="19dp"
         android:layout_height="19dp"
         android:layout_marginStart="8dp"
@@ -55,7 +55,7 @@
         tools:ignore="ImageContrastCheck" />
 
     <Button
-        android:id="@+id/btnRelaunchExternal"
+        android:id="@+id/button_relaunch_external"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
@@ -77,7 +77,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cover">
 
         <FrameLayout
-            android:id="@+id/Frame_Content"
+            android:id="@+id/frame_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </FrameLayout>

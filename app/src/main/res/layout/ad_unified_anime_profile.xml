@@ -10,7 +10,7 @@
     app:cardElevation="0dp">
 
     <com.google.android.gms.ads.nativead.NativeAdView
-        android:id="@+id/nativeView"
+        android:id="@+id/native_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +20,7 @@
             android:padding="2dp">
 
             <ImageView
-                android:id="@+id/adAppIcon"
+                android:id="@+id/ad_app_icon"
                 android:layout_width="100dp"
                 android:layout_height="150dp"
                 android:background="@drawable/background_rounded_15dp"
@@ -43,7 +43,7 @@
                 android:paddingHorizontal="6dp"
                 android:textColor="@color/white"
                 android:textSize="11sp"
-                app:layout_constraintEnd_toEndOf="@+id/adAppIcon"
+                app:layout_constraintEnd_toEndOf="@+id/ad_app_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="TextContrastCheck" />
 
@@ -60,7 +60,7 @@
                 android:textColor="@color/orange_peel"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/adAppIcon"
+                app:layout_constraintStart_toEndOf="@+id/ad_app_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="TextContrastCheck" />
 
@@ -75,23 +75,23 @@
                 android:maxLines="5"
                 android:text="@string/lorem"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/lnOperation"
+                app:layout_constraintBottom_toTopOf="@+id/linear_operation"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/adAppIcon"
+                app:layout_constraintStart_toEndOf="@+id/ad_app_icon"
                 app:layout_constraintTop_toBottomOf="@+id/ad_headline"
                 tools:ignore="SmallSp" />
 
             <LinearLayout
-                android:id="@+id/lnOperation"
+                android:id="@+id/linear_operation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/adAppIcon">
+                app:layout_constraintStart_toEndOf="@+id/ad_app_icon">
 
                 <TextView
-                    android:id="@+id/adStore"
+                    android:id="@+id/ad_store"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -104,7 +104,7 @@
                     tools:ignore="TextContrastCheck" />
 
                 <TextView
-                    android:id="@+id/adPrice"
+                    android:id="@+id/ad_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -114,7 +114,7 @@
                     android:textSize="12sp" />
 
                 <Button
-                    android:id="@+id/adCallToAction"
+                    android:id="@+id/ad_call_to_action"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginStart="16dp"

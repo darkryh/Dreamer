@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/containerAccount"
+            android:id="@+id/container_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="?attr/colorSecondaryVariant"
@@ -30,7 +30,7 @@
                 android:padding="4dp">
 
                 <ImageView
-                    android:id="@+id/imvAccount"
+                    android:id="@+id/image_account"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
@@ -45,7 +45,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/txvUserName"
+                        android:id="@+id/text_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/username"
@@ -55,7 +55,7 @@
                         android:textColor="?attr/colorPrimaryVariant"/>
 
                     <TextView
-                        android:id="@+id/txvRank"
+                        android:id="@+id/text_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/rank"
@@ -227,7 +227,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Configuración de diseño, modo oscuro..."
+                                android:text="Configuración de diseño, modo oscuro"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -277,7 +277,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Pantalla flotante, servidor automatico..."
+                                android:text="Pantalla flotante, servidor automatico"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -327,7 +327,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Notificaciones de series, marketing..."
+                                android:text="Notificaciones de series, marketing"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -377,7 +377,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Configurar contenido disponible +18 y filtros..."
+                                android:text="Configurar contenido disponible +18 y filtros"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -427,7 +427,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Redes sociales e información sobre nosotros..."
+                                android:text="Redes sociales e información sobre nosotros"
                                 android:textSize="12sp"
                                 android:textColor="?attr/colorPrimaryVariant"/>
 
@@ -436,9 +436,6 @@
                 </androidx.cardview.widget.CardView>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.core.widget.NestedScrollView>
-
-
     </FrameLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

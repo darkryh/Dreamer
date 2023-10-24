@@ -25,7 +25,7 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imvProfile"
+                android:id="@+id/image_profile"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
@@ -50,7 +50,7 @@
                 android:orientation="vertical">
 
                 <androidx.mediarouter.app.MediaRouteButton
-                    android:id="@+id/mediaRouteButton"
+                    android:id="@+id/media_route_button"
                     android:layout_width="32dp"
                     android:layout_height="match_parent"
                     android:mediaRouteTypes="user"
@@ -61,7 +61,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/btnLogo"
+                android:id="@+id/image_logo"
                 android:layout_width="32dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -93,7 +93,7 @@
 
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/background_rounded_20dp"
@@ -101,7 +101,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -114,7 +114,7 @@
             </com.google.android.material.tabs.TabLayout>
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager2"
+                android:id="@+id/view_pager_2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -131,7 +131,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/txvTitle"
+        app:layout_constraintBottom_toTopOf="@+id/text_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -171,7 +171,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txvCurrentProgress"
+        android:id="@+id/text_current_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -234,7 +234,7 @@
         app:layout_constraintTop_toTopOf="@+id/btnPlay" />
 
     <TextView
-        android:id="@+id/txvTitle"
+        android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -243,12 +243,12 @@
         android:text="@string/title"
         android:textColor="?attr/colorPrimaryVariant"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/txvChapterNumber"
-        app:layout_constraintEnd_toEndOf="@+id/txvChapterNumber"
-        app:layout_constraintStart_toStartOf="@+id/txvChapterNumber" />
+        app:layout_constraintBottom_toTopOf="@+id/text_chapter_number"
+        app:layout_constraintEnd_toEndOf="@+id/text_chapter_number"
+        app:layout_constraintStart_toStartOf="@+id/text_chapter_number" />
 
     <TextView
-        android:id="@+id/txvChapterNumber"
+        android:id="@+id/text_chapter_number"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -262,7 +262,7 @@
         app:layout_constraintStart_toStartOf="@+id/seekBar" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -299,7 +299,7 @@
             android:contentDescription="@string/share" />
 
         <ImageView
-            android:id="@+id/imvLikeProfile"
+            android:id="@+id/image_like_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

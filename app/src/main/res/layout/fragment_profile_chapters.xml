@@ -8,7 +8,7 @@
     tools:context=".presentation.profile_chapters.ProfileChaptersFragment">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/currentChapter"
+        android:id="@+id/current_chapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
@@ -20,7 +20,7 @@
         android:gravity="center_vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/lnCurrentChapter"
+            android:id="@+id/linear_current_chapter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
@@ -42,7 +42,7 @@
                 android:layout_marginHorizontal="32dp">
 
                 <EditText
-                    android:id="@+id/edtChapter"
+                    android:id="@+id/edit_text_chapter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -53,11 +53,11 @@
                     android:autofillHints="phone"/>
 
                 <TextView
-                    android:id="@+id/txvCurrentChapter"
+                    android:id="@+id/text_current_chapter_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:text="Seguir viendo capítulo 1"/>
+                    android:text="@string/keep_watching_chapter_1"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -70,7 +70,7 @@
                 android:padding="4dp">
 
                 <ImageView
-                    android:id="@+id/imvSearch"
+                    android:id="@+id/image_search"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_search_24"
@@ -78,7 +78,7 @@
                     android:contentDescription="@string/search" />
 
                 <ImageView
-                    android:id="@+id/imvClose"
+                    android:id="@+id/image_close"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:visibility="gone"
@@ -95,5 +95,4 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         tools:listitem="@layout/layout_chapter"/>
-
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -26,7 +26,7 @@
             tools:ignore="RtlSymmetry,UseCompoundDrawables">
 
             <EditText
-                android:id="@+id/editextSearch"
+                android:id="@+id/edit_text_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/background_rounded_20dp"

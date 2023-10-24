@@ -14,7 +14,7 @@
         android:elevation="0dp">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
@@ -25,7 +25,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_query"
+        android:id="@+id/recycler_view_query"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="8dp"/>

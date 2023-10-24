@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/relativeProfilePlayer"
+            android:id="@+id/relative_profile_player"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCoverProfile"
+                android:id="@+id/image_cover_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/cover_image"
@@ -41,7 +41,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -56,11 +56,11 @@
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imvIcon"
-            app:layout_constraintTop_toTopOf="@+id/relativeProfilePlayer" />
+            app:layout_constraintStart_toEndOf="@+id/image_icon"
+            app:layout_constraintTop_toTopOf="@+id/relative_profile_player" />
 
         <ImageView
-            android:id="@+id/imvIcon"
+            android:id="@+id/image_icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="24dp"
@@ -68,13 +68,13 @@
             android:backgroundTint="#000"
             android:contentDescription="@string/icon"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="@+id/txvTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txvTitle"
+            app:layout_constraintTop_toTopOf="@+id/text_title"
             app:srcCompat="@drawable/ic_launcher_foreground" />
 
         <TextView
-            android:id="@+id/txvDescription"
+            android:id="@+id/text_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="96dp"
@@ -87,13 +87,13 @@
             android:text="@string/lorem"
             android:textColor="@color/white"
             android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/txvTags"
-            app:layout_constraintEnd_toEndOf="@+id/relativeProfilePlayer"
-            app:layout_constraintStart_toStartOf="@+id/relativeProfilePlayer"
+            app:layout_constraintBottom_toTopOf="@+id/text_tags"
+            app:layout_constraintEnd_toEndOf="@+id/relative_profile_player"
+            app:layout_constraintStart_toStartOf="@+id/relative_profile_player"
             tools:ignore="RtlSymmetry" />
 
         <TextView
-            android:id="@+id/txvTags"
+            android:id="@+id/text_tags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
@@ -103,9 +103,9 @@
             android:textColor="@color/white"
             android:textSize="11sp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/relativeProfilePlayer"
-            app:layout_constraintEnd_toEndOf="@+id/relativeProfilePlayer"
-            app:layout_constraintStart_toStartOf="@+id/relativeProfilePlayer" />
+            app:layout_constraintBottom_toBottomOf="@+id/relative_profile_player"
+            app:layout_constraintEnd_toEndOf="@+id/relative_profile_player"
+            app:layout_constraintStart_toStartOf="@+id/relative_profile_player" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

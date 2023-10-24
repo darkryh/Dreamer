@@ -17,7 +17,7 @@
         android:padding="2dp">
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -29,38 +29,38 @@
             android:text="@string/title"
             android:textSize="12sp"
             android:textColor="?attr/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/guidelineHalf"
-            app:layout_constraintEnd_toStartOf="@+id/txvChapterNumber"
-            app:layout_constraintStart_toEndOf="@+id/progressBar"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_half"
+            app:layout_constraintEnd_toStartOf="@+id/text_chapter_number"
+            app:layout_constraintStart_toEndOf="@+id/progress_bar"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
 
         <ImageView
-            android:id="@+id/imvPlayPause"
+            android:id="@+id/image_play_pause"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/imvCancel"
-            app:layout_constraintEnd_toStartOf="@+id/imvCancel"
-            app:layout_constraintTop_toTopOf="@+id/imvCancel"
+            app:layout_constraintBottom_toBottomOf="@+id/image_cancel"
+            app:layout_constraintEnd_toStartOf="@+id/image_cancel"
+            app:layout_constraintTop_toTopOf="@+id/image_cancel"
             app:srcCompat="@drawable/ic_pause"
             android:contentDescription="@string/play_pause" />
 
         <ImageView
-            android:id="@+id/imvCancel"
+            android:id="@+id/image_cancel"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@string/cancel"
-            app:layout_constraintBottom_toBottomOf="@+id/txvChapterNumber"
+            app:layout_constraintBottom_toBottomOf="@+id/text_chapter_number"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txvChapterNumber"
+            app:layout_constraintTop_toTopOf="@+id/text_chapter_number"
             app:srcCompat="@drawable/ic_close_24"
             app:tint="?attr/colorPrimary"/>
 
         <TextView
-            android:id="@+id/txvState"
+            android:id="@+id/text_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -68,12 +68,12 @@
             android:text="@string/state"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/txvTitle"
-            app:layout_constraintTop_toTopOf="@+id/guidelineHalf"
+            app:layout_constraintStart_toStartOf="@+id/text_title"
+            app:layout_constraintTop_toTopOf="@+id/guideline_half"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvChapterNumber"
+            android:id="@+id/text_chapter_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -81,12 +81,12 @@
             android:textColor="@color/grey_accent"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imvCancel"
-            app:layout_constraintTop_toTopOf="@+id/txvTitle"
+            app:layout_constraintEnd_toStartOf="@+id/image_cancel"
+            app:layout_constraintTop_toTopOf="@+id/text_title"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvLetter"
+            android:id="@+id/text_letter"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
@@ -101,22 +101,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/txvLetter"
-            app:layout_constraintEnd_toEndOf="@+id/txvLetter"
-            app:layout_constraintStart_toStartOf="@+id/txvLetter"
-            app:layout_constraintTop_toTopOf="@+id/txvLetter" />
+            app:layout_constraintBottom_toBottomOf="@+id/text_letter"
+            app:layout_constraintEnd_toEndOf="@+id/text_letter"
+            app:layout_constraintStart_toStartOf="@+id/text_letter"
+            app:layout_constraintTop_toTopOf="@+id/text_letter" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineHalf"
+            android:id="@+id/guideline_half"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="26dp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

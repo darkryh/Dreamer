@@ -9,7 +9,7 @@
     tools:context=".presentation.web.WebActivity">
 
     <LinearLayout
-        android:id="@+id/lnBar"
+        android:id="@+id/linear_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
@@ -24,7 +24,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/imvClose"
+            android:id="@+id/image_close"
             android:layout_width="24dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -48,7 +48,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txvTitle"
+                android:id="@+id/text_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/test_example"
@@ -59,7 +59,7 @@
                 android:ellipsize="end"/>
 
             <TextView
-                android:id="@+id/txvUrl"
+                android:id="@+id/text_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/test_example"
@@ -76,12 +76,12 @@
     </LinearLayout>
 
     <WebView
-        android:id="@+id/webView"
+        android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lnBar"/>
+        app:layout_constraintTop_toBottomOf="@+id/linear_bar"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

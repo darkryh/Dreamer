@@ -7,7 +7,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/imvDiagnostic"
+        android:id="@+id/image_diagnostic"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
@@ -18,7 +18,7 @@
         android:contentDescription="@string/diagnostic" />
 
     <TextView
-        android:id="@+id/txvAutomaticDiagnostic"
+        android:id="@+id/text_automatic_diagnostic"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -26,13 +26,13 @@
         android:text="@string/automatic_diagnostic"
         android:textStyle="bold"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imvDiagnostic"
+        app:layout_constraintBottom_toBottomOf="@+id/image_diagnostic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imvDiagnostic"
-        app:layout_constraintTop_toTopOf="@+id/imvDiagnostic" />
+        app:layout_constraintStart_toEndOf="@+id/image_diagnostic"
+        app:layout_constraintTop_toTopOf="@+id/image_diagnostic" />
 
     <TextView
-        android:id="@+id/txvLogger"
+        android:id="@+id/text_logger"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="16dp"
@@ -42,10 +42,10 @@
         android:backgroundTint="?attr/colorSecondaryVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imvDiagnostic" />
+        app:layout_constraintTop_toBottomOf="@+id/image_diagnostic" />
 
     <Button
-        android:id="@+id/btnDiagnosticTest"
+        android:id="@+id/button_diagnostic_test"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
@@ -58,5 +58,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txvLogger" />
+        app:layout_constraintTop_toBottomOf="@+id/text_logger" />
 </androidx.constraintlayout.widget.ConstraintLayout>

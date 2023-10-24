@@ -7,8 +7,6 @@
     android:orientation="vertical"
     tools:context=".presentation.server.menu.MenuServerFragment">
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,18 +21,18 @@
 
 
             <ImageView
-                android:id="@+id/imvChapterMenu"
+                android:id="@+id/image_chapter_menu"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
-                android:contentDescription="@string/chapterLogo"
+                android:contentDescription="@string/chapter_logo"
                 android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ImageContrastCheck" />
 
             <TextView
-                android:id="@+id/txvTitleMenu"
+                android:id="@+id/text_title_menu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -46,20 +44,20 @@
                 android:gravity="center_vertical"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/txvServers"
+                app:layout_constraintBottom_toTopOf="@+id/text_servers"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imvChapterMenu"
-                app:layout_constraintTop_toTopOf="@+id/imvChapterMenu" />
+                app:layout_constraintStart_toEndOf="@+id/image_chapter_menu"
+                app:layout_constraintTop_toTopOf="@+id/image_chapter_menu" />
 
             <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lavLoadingServer"
+                android:id="@+id/lottie_loading_server"
                 android:layout_width="300dp"
                 android:layout_height="175dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txvServers"
+                app:layout_constraintTop_toBottomOf="@+id/text_servers"
                 app:lottie_autoPlay="true"
                 app:lottie_fileName="moon.json"
                 app:lottie_loop="true"
@@ -68,15 +66,15 @@
                 tools:ignore="ImageContrastCheck" />
 
             <TextView
-                android:id="@+id/txvServers"
+                android:id="@+id/text_servers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/serversList"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/imvChapterMenu"
-                app:layout_constraintTop_toBottomOf="@+id/imvChapterMenu" />
+                app:layout_constraintStart_toStartOf="@+id/image_chapter_menu"
+                app:layout_constraintTop_toBottomOf="@+id/image_chapter_menu" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -85,12 +83,10 @@
             android:fillViewport="true">
 
             <LinearLayout
-                android:id="@+id/serverContainer"
+                android:id="@+id/server_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

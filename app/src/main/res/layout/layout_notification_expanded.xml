@@ -34,5 +34,4 @@
         android:src="@mipmap/ic_launcher_round"
         android:scaleType="centerCrop"
         tools:ignore="ImageContrastCheck"/>
-
 </LinearLayout>

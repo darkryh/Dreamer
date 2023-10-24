@@ -35,7 +35,7 @@
                 app:cardElevation="0dp">
 
                 <TextView
-                    android:id="@id/txvState"
+                    android:id="@id/text_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Finalizado"
@@ -53,7 +53,7 @@
                 app:cardElevation="0dp">
 
                 <TextView
-                    android:id="@id/txvDate"
+                    android:id="@id/text_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="03 de Abril de 1998"
@@ -66,7 +66,7 @@
 
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/currentChapter"
+            android:id="@+id/current_chapter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
@@ -79,7 +79,7 @@
             app:cardElevation="0dp">
 
             <TextView
-                android:id="@+id/txvDescriptionContent"
+                android:id="@+id/text_description_content"
                 android:layout_width="match_parent"
                 android:layout_height="115dp"
                 android:padding="8dp"
@@ -106,7 +106,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@id/txvRating"
+                    android:id="@id/text_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4.8"
@@ -115,7 +115,7 @@
                     android:layout_marginHorizontal="8dp"/>
 
                 <RatingBar
-                    android:id="@+id/ratingBar"
+                    android:id="@+id/rating_bar"
                     android:layout_marginTop="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -123,10 +123,7 @@
                     android:rating="3"
                     android:isIndicator="true"
                     android:contentDescription="@string/rating"/>
-
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.cardview.widget.CardView>
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.core.widget.NestedScrollView>

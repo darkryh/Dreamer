@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/relativeChapterProfile"
+            android:id="@+id/relative_chapter_profile"
             android:layout_width="0dp"
             android:layout_height="110dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvChapterProfile"
+                android:id="@+id/image_chapter_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/cover_image"
@@ -43,7 +43,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -57,24 +57,24 @@
             android:textSize="13sp"
             android:maxLines="1"
             android:ellipsize="end"
-            app:layout_constraintBottom_toBottomOf="@+id/relativeChapterProfile"
-            app:layout_constraintEnd_toEndOf="@+id/relativeChapterProfile"
-            app:layout_constraintStart_toStartOf="@+id/relativeChapterProfile"
+            app:layout_constraintBottom_toBottomOf="@+id/relative_chapter_profile"
+            app:layout_constraintEnd_toEndOf="@+id/relative_chapter_profile"
+            app:layout_constraintStart_toStartOf="@+id/relative_chapter_profile"
             tools:ignore="TextContrastCheck" />
 
         <ProgressBar
-            android:id="@+id/progressBarSeen"
+            android:id="@+id/progress_bar_seen"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
             android:layout_height="4dp"
             android:layout_marginHorizontal="8dp"
             android:progressDrawable="@drawable/user_color_progress"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/relativeChapterProfile"
-            app:layout_constraintStart_toStartOf="@+id/relativeChapterProfile" />
+            app:layout_constraintEnd_toEndOf="@+id/relative_chapter_profile"
+            app:layout_constraintStart_toStartOf="@+id/relative_chapter_profile" />
 
         <TextView
-            android:id="@+id/txvChapterRecord"
+            android:id="@+id/text_chapter_record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -85,17 +85,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imvDownload"
+            android:id="@+id/image_download"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/download"
-            app:layout_constraintBottom_toBottomOf="@+id/txvChapterRecord"
+            app:layout_constraintBottom_toBottomOf="@+id/text_chapter_record"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txvChapterRecord"
+            app:layout_constraintTop_toTopOf="@+id/text_chapter_record"
             app:srcCompat="@drawable/ic_downloaded_chapter"
             app:tint="@color/green" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

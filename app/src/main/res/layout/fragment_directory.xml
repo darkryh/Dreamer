@@ -8,7 +8,7 @@
     tools:context=".presentation.directory.DirectoryFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rcvGenres"
+        android:id="@+id/recycler_view_genres"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="16dp"
@@ -84,6 +84,5 @@
     <include
         android:id="@+id/last_series_section"
         layout="@layout/layout_section"/>
-
 
 </androidx.appcompat.widget.LinearLayoutCompat>

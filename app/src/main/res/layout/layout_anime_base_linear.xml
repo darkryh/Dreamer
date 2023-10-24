@@ -17,7 +17,7 @@
         android:padding="0dp">
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
+            android:id="@+id/relative_layout"
             android:layout_width="60dp"
             android:layout_height="85dp"
             android:scaleType="fitCenter"
@@ -32,7 +32,7 @@
                 app:srcCompat="@drawable/logo_app" />
 
             <ImageView
-                android:id="@+id/imvCoverBase"
+                android:id="@+id/image_cover_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/background_rounded_20dp"
@@ -40,7 +40,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvTitle_Base"
+            android:id="@+id/text_title_base"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -55,12 +55,12 @@
             android:textSize="12sp"
             android:textStyle="normal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintStart_toEndOf="@+id/relative_layout"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvTypeBase"
+            android:id="@+id/text_type_base"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -73,11 +73,11 @@
             android:textColor="@color/white"
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/txvTitle_Base"
+            app:layout_constraintStart_toStartOf="@+id/text_title_base"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvYearBase"
+            android:id="@+id/text_year_base"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -88,11 +88,9 @@
             android:text="@string/year"
             android:textColor="@color/white"
             android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@+id/txvTypeBase"
-            app:layout_constraintStart_toEndOf="@+id/txvTypeBase"
-            app:layout_constraintTop_toTopOf="@+id/txvTypeBase"
+            app:layout_constraintBottom_toBottomOf="@+id/text_type_base"
+            app:layout_constraintStart_toEndOf="@+id/text_type_base"
+            app:layout_constraintTop_toTopOf="@+id/text_type_base"
             tools:ignore="TextContrastCheck" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

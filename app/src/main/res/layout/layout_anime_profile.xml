@@ -15,7 +15,7 @@
         android:padding="3dp">
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
+            android:id="@+id/relative_layout"
             android:layout_width="100dp"
             android:layout_height="150dp"
             android:scaleType="fitCenter"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCoverBase"
+                android:id="@+id/image_cover_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
@@ -38,7 +38,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvRating"
+            android:id="@+id/text_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -46,11 +46,11 @@
             android:text="@string/rating"
             android:textColor="@color/white"
             android:textSize="11sp"
-            app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
+            app:layout_constraintEnd_toEndOf="@+id/relative_layout"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -62,12 +62,12 @@
             android:textColor="@color/orange_peel"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintStart_toEndOf="@+id/relative_layout"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvContent"
+            android:id="@+id/text_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -77,14 +77,14 @@
             android:maxLines="5"
             android:text="@string/lorem"
             android:textSize="10sp"
-            app:layout_constraintBottom_toTopOf="@+id/txvGenre"
+            app:layout_constraintBottom_toTopOf="@+id/text_genre"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
-            app:layout_constraintTop_toBottomOf="@+id/txvTitle"
+            app:layout_constraintStart_toEndOf="@+id/relative_layout"
+            app:layout_constraintTop_toBottomOf="@+id/text_title"
             tools:ignore="SmallSp,TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvGenre"
+            android:id="@+id/text_genre"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -96,9 +96,7 @@
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/relativeLayout"
+            app:layout_constraintStart_toEndOf="@+id/relative_layout"
             tools:ignore="SmallSp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

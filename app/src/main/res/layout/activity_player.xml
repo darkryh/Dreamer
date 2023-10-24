@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <androidx.media3.ui.AspectRatioFrameLayout
-        android:id="@+id/aspectRatio"
+        android:id="@+id/aspect_ratio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,8 +17,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.media3.ui.PlayerView
+            android:id="@+id/styled_player_view"
             app:controller_layout_id="@layout/player_controller"
-            android:id="@+id/styledPlayerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:animateLayoutChanges="true"
@@ -34,13 +34,13 @@
         android:layout_height="0dp"
         android:background="?attr/colorSurface"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/ln_castMiniController"
+        app:layout_constraintBottom_toTopOf="@+id/linear_cast_mini_controller"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aspectRatio">
+        app:layout_constraintTop_toBottomOf="@+id/aspect_ratio">
 
         <FrameLayout
-            android:id="@+id/Frame_Content"
+            android:id="@+id/frame_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ln_castMiniController"
+        android:id="@+id/linear_cast_mini_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -58,7 +58,7 @@
         app:layout_constraintStart_toEndOf="parent">
 
         <fragment
-            android:id="@+id/castMiniController"
+            android:id="@+id/cast_mini_controller"
             class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

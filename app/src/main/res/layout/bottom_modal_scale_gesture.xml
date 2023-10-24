@@ -22,7 +22,7 @@
             android:textStyle="bold"/>
 
         <LinearLayout
-            android:id="@+id/buttonStretch"
+            android:id="@+id/button_stretch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/buttonZoom"
+            android:id="@+id/button_zoom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -71,7 +71,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/buttonFixedWidth"
+            android:id="@+id/button_fixed_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"

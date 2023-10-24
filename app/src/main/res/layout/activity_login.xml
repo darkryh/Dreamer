@@ -7,14 +7,14 @@
     tools:context=".presentation.login.LoginActivity">
 
     <ImageView
-        android:id="@+id/imvLogo_login"
+        android:id="@+id/image_logo_login"
         android:layout_width="250dp"
         android:layout_height="125dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="@string/logo"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_logo_login"
-        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
         tools:ignore="RtlHardcoded,TextContrastCheck" />
 
     <EditText
-        android:id="@+id/editTextEmail"
+        android:id="@+id/edit_text_email"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="32dp"
@@ -55,14 +55,14 @@
         android:paddingHorizontal="12dp"
         android:textColor="@color/blackPrimary"
         android:textColorHint="@color/grey_accent"
-        app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imvLogo_login"
+        app:layout_constraintTop_toBottomOf="@+id/image_logo_login"
         android:visibility="gone"/>
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/edit_text_password"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="32dp"
@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_email"
         android:visibility="gone"/>
 
     <androidx.appcompat.widget.AppCompatButton
@@ -99,7 +99,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_register"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_password"
         tools:ignore="RtlHardcoded,TextContrastCheck"
         android:visibility="gone"/>
 
@@ -159,7 +159,7 @@
         tools:ignore="RtlHardcoded" />
 
     <TextView
-        android:id="@+id/txvVersioning"
+        android:id="@+id/text_versioning"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"

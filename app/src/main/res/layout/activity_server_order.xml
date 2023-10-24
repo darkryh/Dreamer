@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/text_title"
                 android:layout_weight="9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                 android:text="@string/title"/>
 
             <Button
-                android:id="@+id/buttonApply"
+                android:id="@+id/button_apply"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -42,34 +42,34 @@
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabSelectedTextColor="@color/orange_peel"
         app:tabIndicatorColor="@color/orange_peel">
 
         <com.google.android.material.tabs.TabItem
-            android:text="Interno"
+            android:text="@string/intern"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <com.google.android.material.tabs.TabItem
-            android:text="Externo"
+            android:text="@string/extern"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
         <com.google.android.material.tabs.TabItem
-            android:text="Descargas"
+            android:text="@string/downloads"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
+        android:id="@+id/view_pager_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
-        android:layout_below="@id/tabLayout" />
+        android:layout_below="@id/tab_layout" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

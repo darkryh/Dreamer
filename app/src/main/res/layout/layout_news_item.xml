@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/relativeLayout"
+            android:id="@+id/relative_layout"
             android:layout_width="0dp"
             android:layout_height="180dp"
             android:scaleType="fitCenter"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imvCover"
+                android:id="@+id/image_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/anime_logo"
@@ -40,7 +40,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvType"
+            android:id="@+id/text_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -51,11 +51,11 @@
             android:padding="4dp"
             android:background="@drawable/background_rounded_20dp"
             android:backgroundTint="@color/textBackgroundSmoothDark"
-            app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
+            app:layout_constraintEnd_toEndOf="@+id/relative_layout"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:backgroundTint="@color/transparent"
@@ -68,11 +68,11 @@
             android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/relative_layout"
             tools:ignore="TextContrastCheck" />
 
         <TextView
-            android:id="@+id/txvDate"
+            android:id="@+id/text_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -84,10 +84,8 @@
             android:padding="4dp"
             android:background="@drawable/background_rounded_20dp"
             android:backgroundTint="@color/textBackgroundSmoothDark"
-            app:layout_constraintBottom_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintBottom_toBottomOf="@+id/relative_layout"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="SmallSp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

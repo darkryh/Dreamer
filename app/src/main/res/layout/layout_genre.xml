@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/currentChapter"
+    android:id="@+id/current_chapter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
@@ -13,11 +13,10 @@
     android:gravity="center_vertical">
 
     <TextView
-        android:id="@+id/txvGenre"
+        android:id="@+id/text_genre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/genre"
         android:textSize="14sp"
         android:layout_margin="8dp"/>
-
 </androidx.cardview.widget.CardView>

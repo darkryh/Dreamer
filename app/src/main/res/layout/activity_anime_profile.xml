@@ -12,15 +12,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/castMiniController">
+        app:layout_constraintBottom_toTopOf="@id/cast_mini_controller">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbar"
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -33,7 +33,7 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/imvCover"
+                        android:id="@+id/image_cover"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -57,18 +57,18 @@
                     app:layout_collapseMode="pin">
 
                     <androidx.mediarouter.app.MediaRouteButton
-                        android:id="@+id/mediaRouteButton"
+                        android:id="@+id/media_route_button"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="end|center"
                         android:layout_margin="8dp"
                         android:mediaRouteTypes="user"
                         android:visibility="visible"
-                        app:layout_anchor="@id/rcvGenres"
+                        app:layout_anchor="@id/recycler_view_genres"
                         app:mediaRouteButtonTint="@color/white" />
 
                     <ImageView
-                        android:id="@+id/imvDownloads"
+                        android:id="@+id/image_downloads"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="end|center"
@@ -82,7 +82,7 @@
                         tools:ignore="ImageContrastCheck"/>
 
                     <ImageView
-                        android:id="@+id/imvLikeProfile"
+                        android:id="@+id/image_like_profile"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="end|center"
@@ -102,7 +102,7 @@
                     android:layout_height="match_parent">
 
                     <ImageView
-                        android:id="@+id/imvProfile"
+                        android:id="@+id/image_profile"
                         android:layout_width="110dp"
                         android:layout_height="140dp"
                         android:layout_marginStart="16dp"
@@ -116,7 +116,7 @@
                         android:contentDescription="@string/profile_logo" />
 
                     <TextView
-                        android:id="@+id/txvTitle"
+                        android:id="@+id/text_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -129,11 +129,11 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/imvProfile"
-                        app:layout_constraintTop_toTopOf="@+id/imvProfile" />
+                        app:layout_constraintStart_toEndOf="@+id/image_profile"
+                        app:layout_constraintTop_toTopOf="@+id/image_profile" />
 
                     <TextView
-                        android:id="@+id/txvSecondTitle"
+                        android:id="@+id/text_second_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -143,13 +143,13 @@
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/txvTitle"
+                        app:layout_constraintEnd_toEndOf="@+id/text_title"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@+id/txvTitle"
-                        app:layout_constraintTop_toBottomOf="@+id/txvTitle" />
+                        app:layout_constraintStart_toStartOf="@+id/text_title"
+                        app:layout_constraintTop_toBottomOf="@+id/text_title" />
 
                     <TextView
-                        android:id="@+id/txvAnimeState"
+                        android:id="@+id/text_anime_state"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -159,10 +159,10 @@
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="@+id/txvTitle"
+                        app:layout_constraintEnd_toEndOf="@+id/text_title"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="@+id/txvTitle"
-                        app:layout_constraintTop_toBottomOf="@+id/txvSecondTitle" />
+                        app:layout_constraintStart_toStartOf="@+id/text_title"
+                        app:layout_constraintTop_toBottomOf="@+id/text_second_title" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -174,7 +174,7 @@
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardview_tab_container"
+                android:id="@+id/card_view_tab_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="30dp"
@@ -209,17 +209,17 @@
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPager2"
+                android:id="@+id/view_pager_2"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/cardview_tab_container"/>
+                android:layout_below="@id/card_view_tab_container"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <fragment
-        android:id="@+id/castMiniController"
+        android:id="@+id/cast_mini_controller"
         class="com.ead.project.dreamer.presentation.player.cast.MiniControllerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

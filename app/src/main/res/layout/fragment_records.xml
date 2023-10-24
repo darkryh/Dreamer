@@ -22,7 +22,7 @@
                 android:gravity="center_horizontal">
 
                 <TextView
-                    android:id="@+id/txvIsEmpty"
+                    android:id="@+id/text_is_empty"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:gravity="center"
@@ -77,9 +77,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 app:layout_collapseMode="pin"/>
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

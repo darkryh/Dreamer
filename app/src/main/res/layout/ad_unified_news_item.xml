@@ -11,7 +11,7 @@
     app:cardElevation="0dp">
 
     <com.google.android.gms.ads.nativead.NativeAdView
-        android:id="@+id/nativeView"
+        android:id="@+id/native_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +20,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/adAppIcon"
+                android:id="@+id/ad_app_icon"
                 android:layout_width="0dp"
                 android:layout_height="180dp"
                 android:background="@drawable/background_rounded_15dp"
@@ -46,8 +46,8 @@
                 android:paddingHorizontal="6dp"
                 android:textColor="@color/white"
                 android:textSize="11sp"
-                app:layout_constraintEnd_toEndOf="@+id/adAppIcon"
-                app:layout_constraintTop_toTopOf="@+id/adAppIcon"
+                app:layout_constraintEnd_toEndOf="@+id/ad_app_icon"
+                app:layout_constraintTop_toTopOf="@+id/ad_app_icon"
                 tools:ignore="TextContrastCheck" />
 
             <TextView
@@ -79,20 +79,20 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/adAppIcon"
+                app:layout_constraintTop_toBottomOf="@+id/ad_app_icon"
                 tools:ignore="SmallSp,TextContrastCheck" />
 
             <LinearLayout
-                android:id="@+id/lnOperation"
+                android:id="@+id/linear_operation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/adAppIcon"
+                app:layout_constraintBottom_toBottomOf="@+id/ad_app_icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
-                    android:id="@+id/adStore"
+                    android:id="@+id/ad_store"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -105,7 +105,7 @@
                     tools:ignore="TextContrastCheck" />
 
                 <TextView
-                    android:id="@+id/adPrice"
+                    android:id="@+id/ad_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -115,7 +115,7 @@
                     android:textSize="12sp" />
 
                 <Button
-                    android:id="@+id/adCallToAction"
+                    android:id="@+id/ad_call_to_action"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_marginStart="16dp"

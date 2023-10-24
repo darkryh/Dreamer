@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/imvRelativeCover"
+            android:id="@+id/image_relative_cover"
             android:layout_width="150dp"
             android:layout_height="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/txvTitle"
+            android:id="@+id/text_title"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -43,10 +43,7 @@
             android:background="@color/grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imvRelativeCover"
-            app:layout_constraintTop_toTopOf="@+id/imvRelativeCover" />
-
+            app:layout_constraintStart_toEndOf="@+id/image_relative_cover"
+            app:layout_constraintTop_toTopOf="@+id/image_relative_cover" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.cardview.widget.CardView>

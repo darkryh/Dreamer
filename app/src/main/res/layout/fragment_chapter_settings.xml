@@ -7,7 +7,7 @@
     tools:context=".presentation.chapter.settings.ChapterSettingsFragment">
 
     <TextView
-        android:id="@+id/txvChapterOption"
+        android:id="@+id/text_chapter_option"
         android:padding="16dp"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -16,7 +16,7 @@
         android:text="@string/chapter_options"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lnDownload"
+        android:id="@+id/linear_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -25,7 +25,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imvDownload"
+            android:id="@+id/image_download"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
@@ -33,7 +33,7 @@
             android:contentDescription="@string/imv_download" />
 
         <TextView
-            android:id="@+id/txvDownload"
+            android:id="@+id/text_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -42,7 +42,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lnManualDownload"
+        android:id="@+id/linear_manual_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -50,7 +50,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imvManualDownload"
+            android:id="@+id/image_manual_download"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
@@ -58,7 +58,7 @@
             android:contentDescription="@string/imv_download" />
 
         <TextView
-            android:id="@+id/txvManualDownload"
+            android:id="@+id/text_manual_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -67,7 +67,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lnChapterMode"
+        android:id="@+id/linear_chapter_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -75,7 +75,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imvChapterMode"
+            android:id="@+id/image_chapter_mode"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
@@ -83,7 +83,7 @@
             android:contentDescription="@string/imv_download" />
 
         <TextView
-            android:id="@+id/txvChapterMode"
+            android:id="@+id/text_chapter_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -92,7 +92,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lnRecordDelete"
+        android:id="@+id/linear_record_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -100,7 +100,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imvRecordDelete"
+            android:id="@+id/image_record_delete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="12dp"
@@ -109,7 +109,7 @@
             android:contentDescription="@string/imv_favorites" />
 
         <TextView
-            android:id="@+id/txvRecordDelete"
+            android:id="@+id/text_record_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -118,7 +118,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/lnFavorite"
+        android:id="@+id/linear_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -126,7 +126,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imvFavorites"
+            android:id="@+id/image_favorites"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="12dp"
@@ -135,7 +135,7 @@
             android:contentDescription="@string/imv_favorites" />
 
         <TextView
-            android:id="@+id/txvFavorites"
+            android:id="@+id/text_favorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"

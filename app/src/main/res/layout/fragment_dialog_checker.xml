@@ -7,7 +7,7 @@
     tools:context=".presentation.chapter.checker.ChapterCheckerFragment">
 
     <ImageView
-        android:id="@+id/imvCoverChecker"
+        android:id="@+id/image_cover_checker"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="2dp"
