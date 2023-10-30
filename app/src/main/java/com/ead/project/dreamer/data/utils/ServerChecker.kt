@@ -27,9 +27,11 @@ class ServerChecker {
             if (url.contains(Server.URL_VIDEOBIN)) return Server.VIDEOBIN
             if (url.contains(Server.URL_MP4UPLOAD)) return Server.MP4UPLOAD
             if (url.contains(Server.URL_FILEMOON)) return Server.FILEMOON
+            if (url.contains(Server.URL_FILELIONS_DOMAINS)) return Server.FILELIONS
             if (url.contains(Server.URL_STREAMWISH_DOMAINS)) return Server.STREAMWISH
             if (url.contains(Server.URL_MIXDROP)) return Server.MIXDROP
-            if (url.contains(Server.URL_UQLOAD)) return Server.UQLOAD
+            if (url.contains(Server.URL_VIDGUARD_DOMAINS)) return Server.VIDGUARD
+            if (url.contains(Server.URL_UQLOAD_DOMAINS)) return Server.UQLOAD
             if (url.contains(Server.URL_MEGA)) return Server.MEGA
             if (url.contains(Server.URL_UPTOBOX)) return Server.UPTOBOX
             if (url.contains(Server.URL_ANONFILE)) return  Server.ANONFILE
@@ -43,19 +45,18 @@ class ServerChecker {
         private fun recommendedServers(): List<String> = listOf(
             Server.OKRU, Server.ONEFICHIER,
             Server.STREAMWISH, Server.VIDEOBIN,
-            Server.VOE, Server.MEDIAFIRE,
-            Server.STREAMSB, Server.SENDVID,
-            Server.BAYFILES, Server.PIXELDRAIN
+            Server.MEDIAFIRE, Server.STREAMSB,
+            Server.SENDVID, Server.BAYFILES,
+            Server.PIXELDRAIN
         )
 
 
         private fun webServers(): List<String> = listOf(
-            Server.MP4UPLOAD,
-            Server.MEGA,
-            Server.UQLOAD,
-            Server.FILEMOON,
-            Server.MIXDROP,
-            Server.YOUR_UPLOAD
+            Server.MP4UPLOAD, Server.MEGA,
+            Server.UQLOAD, Server.FILEMOON,
+            Server.MIXDROP, Server.YOUR_UPLOAD,
+            Server.FILELIONS, Server.VIDGUARD,
+            Server.VOE, Server.DOOD_STREAM
         )
 
         fun isRecommended(server: String): Boolean = recommendedServers().contains(server)

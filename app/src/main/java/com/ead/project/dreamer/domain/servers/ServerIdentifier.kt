@@ -26,9 +26,11 @@ class ServerIdentifier @Inject constructor() {
         if (url.contains(Server.URL_VIDEOBIN)) return Server.VIDEOBIN
         if (url.contains(Server.URL_MP4UPLOAD)) return Server.MP4UPLOAD
         if (url.contains(Server.URL_FILEMOON)) return Server.FILEMOON
+        if (url.contains(Server.URL_FILELIONS_DOMAINS)) return Server.FILELIONS
         if (url.contains(Server.URL_STREAMWISH_DOMAINS)) return Server.STREAMWISH
+        if (url.contains(Server.URL_VIDGUARD_DOMAINS)) return Server.VIDGUARD
         if (url.contains(Server.URL_MIXDROP)) return Server.MIXDROP
-        if (url.contains(Server.URL_UQLOAD)) return Server.UQLOAD
+        if (url.contains(Server.URL_UQLOAD_DOMAINS)) return Server.UQLOAD
         if (url.contains(Server.URL_MEGA)) return Server.MEGA
         if (url.contains(Server.URL_UPTOBOX)) return Server.UPTOBOX
         if (url.contains(Server.URL_ANONFILE)) return  Server.ANONFILE

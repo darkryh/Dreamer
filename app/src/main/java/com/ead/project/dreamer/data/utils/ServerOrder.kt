@@ -7,8 +7,9 @@ object ServerOrder {
     val internalServers : List<String> = listOf(
         Server.ONEFICHIER,
         Server.OKRU,
-        Server.PIXELDRAIN,
+        Server.STREAMWISH,
         Server.MEDIAFIRE,
+        Server.PIXELDRAIN,
         Server.STREAMSB,
         Server.SENDVID,
         Server.VIDEOBIN,
@@ -23,16 +24,19 @@ object ServerOrder {
         Server.ANONFILE,
         Server.FIRELOAD,
         Server.MP4UPLOAD,
+        Server.FILELIONS,
         Server.FILEMOON,
-        Server.STREAMWISH,
-        Server.MIXDROP,
         Server.UQLOAD,
-        Server.MEGA
+        Server.MEGA,
+        Server.VIDGUARD,
+        Server.MIXDROP,
+        Server.DOOD_STREAM
     )
 
     val externalServers : List<String> = listOf(
         Server.OKRU,
         Server.ONEFICHIER,
+        Server.STREAMWISH,
         Server.MEDIAFIRE,
         Server.PIXELDRAIN,
         Server.STREAMSB,
@@ -49,18 +53,20 @@ object ServerOrder {
         Server.ANONFILE,
         Server.FIRELOAD,
         Server.MP4UPLOAD,
+        Server.FILELIONS,
         Server.FILEMOON,
-        Server.STREAMWISH,
-        Server.MIXDROP,
         Server.UQLOAD,
-        Server.MEGA
+        Server.MEGA,
+        Server.VIDGUARD,
+        Server.MIXDROP,
+        Server.DOOD_STREAM
     )
 
     val downloadServers : List<String> = listOf(
         Server.ONEFICHIER,
         Server.MEDIAFIRE,
-        Server.PIXELDRAIN,
         Server.OKRU,
+        Server.PIXELDRAIN,
         Server.FEMBED,
         Server.SENDVID,
         Server.VOE,
@@ -75,10 +81,13 @@ object ServerOrder {
         Server.ANONFILE,
         Server.FIRELOAD,
         Server.MP4UPLOAD,
+        Server.FILELIONS,
         Server.FILEMOON,
-        Server.STREAMWISH,
-        Server.MIXDROP,
         Server.UQLOAD,
-        Server.MEGA
+        Server.MEGA,
+        Server.VIDGUARD,
+        Server.MIXDROP,
+        Server.DOOD_STREAM,
+        Server.STREAMWISH,
     )
 }
