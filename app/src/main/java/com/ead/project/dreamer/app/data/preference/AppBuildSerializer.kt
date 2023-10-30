@@ -26,6 +26,7 @@ object AppBuildSerializer : Serializer<AppBuild> {
             AppBuild(
                 minVersion = version,
                 update = Update(AppInfo.name, version),
+                googleBuild = null,
                 resumedVersionNotes = null,
                 versionNotes = null,
                 downloadReference = "https://dreamer-ead.net/resources/downloads/DreamerRelease1.40.apk",
