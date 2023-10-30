@@ -21,7 +21,7 @@ class SettingsViewModel @Inject constructor(
     val preferences = preferenceUseCase.preferences
     private val playerPreferences = preferenceUseCase.playerPreferences
 
-    val isGoogleVersion = appBuildPreferences.isGoogleVersion
+    val isUnlockedVersion = appBuildPreferences.isUnlockedVersion
     val isDarkMode = appBuildPreferences.isDarkMode
 
     val playerPreferencesFlow = playerPreferences.preference
