@@ -10,12 +10,28 @@ object Thread {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    fun runInMs(task: () -> Unit, ms: Long) {
+    fun executeIn(ms: Long,task: () -> Unit) {
         try {
             handler.postDelayed(task,ms)
         } catch (ex : Exception) {
             Log.e("error", "runInMs: $ex")
         }
+    }
+
+    fun onWebTimeout(task: () -> Unit) {
+        executeIn(10000,task)
+    }
+
+    fun onCasting(task: () -> Unit) {
+        executeIn(1000,task)
+    }
+
+    fun onClickEffect(task: () -> Unit) {
+        executeIn(175,task)
+    }
+
+    fun runInAWhile(task: () -> Unit) {
+        executeIn(5000,task)
     }
 
     fun launch(task: () -> Unit) {
