@@ -1,20 +1,19 @@
 package com.ead.project.dreamer.data.models.server
 
+import com.ead.project.dreamer.data.models.EmbedServer
 import com.ead.project.dreamer.data.models.Player
-import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.data.models.VideoModel
 
-class Mega(embeddedUrl:String) : Server(embeddedUrl) {
+class Mega(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Mega) {
 
-    override fun onExtract() {
-        if (isDownloading) return
-        player = Player.Mega
-        isDirect = false
-        url = fixUrl(url)
-        addVideo(VideoModel("Default",url))
+    override fun setupEmbeddedUrl(embeddedUrl: String?): String {
+        return fixRedirectUrl(embeddedUrl?:return url)
     }
 
-    private fun fixUrl(string: String) : String {
+    override fun checkIfVideoIsAvailable(): Boolean {
+        return !super.checkIfVideoIsAvailable()
+    }
+
+    private fun fixRedirectUrl(string: String) : String {
         if (string.contains("/file"))
             return string.replace("/file","/embed#")
 
