@@ -10,11 +10,7 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.util.ArrayList
 
-class Videobin (embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Videobin
-    }
+class Videobin (embeddedUrl:String) : Server(embeddedUrl, Player.Videobin) {
 
     override fun onExtract() {
         try {

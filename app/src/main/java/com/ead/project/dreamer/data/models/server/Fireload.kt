@@ -7,11 +7,7 @@ import com.ead.project.dreamer.data.models.Server
 import com.ead.project.dreamer.data.models.ServerWebClient
 import com.ead.project.dreamer.data.network.DreamerWebView
 
-class Fireload (embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Fireload
-    }
+class Fireload (embeddedUrl:String) : Server(embeddedUrl,Player.Fireload) {
 
     override fun onExtract() {
         try {

@@ -6,11 +6,7 @@ import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class Anonfiles(embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Anonfile
-    }
+class Anonfiles(embeddedUrl:String) : Server(embeddedUrl,Player.Anonfile) {
 
     override fun onExtract() {
         try {

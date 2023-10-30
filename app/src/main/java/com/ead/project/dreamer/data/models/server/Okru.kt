@@ -10,12 +10,7 @@ import okhttp3.Request
 import org.apache.commons.text.StringEscapeUtils
 import org.json.JSONObject
 
-class Okru(embeddedUrl:String) : Server(embeddedUrl) {
-
-
-    override fun onPreExtract() {
-        player = Player.Okru
-    }
+class Okru(embeddedUrl:String) : Server(embeddedUrl,Player.Okru) {
 
     override fun onExtract() {
         try {

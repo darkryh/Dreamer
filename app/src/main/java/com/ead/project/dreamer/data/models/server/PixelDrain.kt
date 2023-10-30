@@ -3,11 +3,7 @@ package com.ead.project.dreamer.data.models.server
 import com.ead.project.dreamer.data.models.Player
 import com.ead.project.dreamer.data.models.Server
 
-class PixelDrain(embeddedUrl: String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.PixelDrain
-    }
+class PixelDrain(embeddedUrl: String) : Server(embeddedUrl,Player.PixelDrain) {
 
     override fun onExtract() {
         try {

@@ -8,11 +8,7 @@ import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class Bayfiles(embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Bayfiles
-    }
+class Bayfiles(embeddedUrl:String) : Server(embeddedUrl,Player.Bayfiles) {
 
     override fun onExtract() {
         try {

@@ -6,11 +6,7 @@ import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.data.models.VideoModel
 import org.jsoup.Jsoup
 
-class Streamtape(embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Streamtape
-    }
+class Streamtape(embeddedUrl:String) : Server(embeddedUrl,Player.Streamtape) {
 
     override fun onExtract() {
         try {

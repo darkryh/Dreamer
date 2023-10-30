@@ -11,14 +11,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 
-class StreamSB(embeddedUrl:String) : Server(embeddedUrl) {
+class StreamSB(embeddedUrl:String) : Server(embeddedUrl, Player.StreamSb) {
 
-    private lateinit var rawServers : MutableList<String>
-
-    override fun onPreExtract() {
-        player = Player.StreamSb
-        rawServers = mutableListOf()
-    }
+    private val rawServers : MutableList<String> = mutableListOf()
 
     override fun onExtract() {
         try {

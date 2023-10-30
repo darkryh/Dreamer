@@ -7,11 +7,7 @@ import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class Puj (embeddedUrl: String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Puj
-    }
+class Puj (embeddedUrl: String) : Server(embeddedUrl,Player.Puj) {
 
     override fun onExtract() {
         try {

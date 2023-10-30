@@ -10,14 +10,10 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-class Onefichier (embeddedUrl:String) : Server(embeddedUrl) {
+class Onefichier (embeddedUrl:String) : Server(embeddedUrl,Player.Onefichier) {
 
     companion object {
         const val apiDownloadRequest = "https://api.1fichier.com/v1/download/get_token.cgi"
-    }
-
-    override fun onPreExtract() {
-        player = Player.Onefichier
     }
 
     override fun onExtract() {

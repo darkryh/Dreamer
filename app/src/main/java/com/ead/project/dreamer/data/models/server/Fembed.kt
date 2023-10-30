@@ -7,11 +7,7 @@ import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.*
 import org.json.JSONObject
 
-class Fembed (embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.Fembed
-    }
+class Fembed (embeddedUrl:String) : Server(embeddedUrl,Player.Fembed) {
 
     override fun onExtract() {
         try {
