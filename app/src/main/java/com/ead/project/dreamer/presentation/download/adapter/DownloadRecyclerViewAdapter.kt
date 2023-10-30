@@ -6,9 +6,9 @@ import android.app.DownloadManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
-import com.ead.commons.lib.lifecycle.activity.showShortToast
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setVisibility
 import com.ead.commons.lib.views.setVisibilityReverse
@@ -17,6 +17,7 @@ import com.ead.project.dreamer.app.data.util.Apk
 import com.ead.project.dreamer.app.data.util.system.round
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.Download
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutDownloadBinding
 import com.ead.project.dreamer.domain.ChapterUseCase
@@ -64,8 +65,8 @@ class DownloadRecyclerViewAdapter(
             binding.textTitle.text = download.title
             binding.textLetter.text = download.title[0].uppercase()
             binding.textChapterNumber.text =
-                if (download.number != -1) context.getString(R.string.chapter_number_short,download.number.toString()) else context.getString(R.string.update)
-            val percent = ((download.current * 100f) / download.total).round(2).toString()
+                if (download.number != -1) context.getString(R.string.chapter_number_short,download.number) else context.getString(R.string.update)
+            val percent = ((download.current * 100f) / download.total).round(2)
             binding.textState.text = context.getString(R.string.current_percent,percent)
             binding.root.addSelectableItemEffect()
             binding.imageCancel.addSelectableItemEffect()
@@ -89,18 +90,22 @@ class DownloadRecyclerViewAdapter(
                                     chapterUseCase.getChapter.fromTitleAndNumber(download.title,download.number)
 
                                 if (chapter != null) handleChapter(context,chapter)
-                                else activity.showShortToast(context.getString(R.string.error_chapter_not_founded))
+                                else activity.toast(context.getString(R.string.error_chapter_not_founded))
                             }
                         }
                         Download.DOWNLOAD_TYPE_UPDATE -> {
                             val downloadFile : File = download.toApkFile()
                             if (downloadFile.exists()) Apk.install(context,downloadFile)
-                            else activity.showShortToast(context.getString(R.string.error_file_not_founded))
+                            else activity.toast(context.getString(R.string.error_file_not_founded))
                         }
                     }
                 }
-                else activity.showShortToast(context.getString(R.string.warning_chapter_status_in_progress))
+                else activity.toast(context.getString(R.string.warning_chapter_status_in_progress))
             }
+        }
+
+        private fun Activity.toast(string: String) {
+            toast(string,Toast.LENGTH_SHORT)
         }
     }
 }
