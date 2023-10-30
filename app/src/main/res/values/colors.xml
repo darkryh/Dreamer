@@ -25,9 +25,12 @@
     <color name="backgroundImageDarkSmooth">#99000000</color>
     <color name="backgroundCastImageSmooth">#55000000</color>
     <color name="transparentBackground">#88000000</color>
+    <color name="transparentBackgroundNextChapter">#AAFFFFFF</color>
     <color name="transparent">#00000000</color>
 
     <color name="dark_surface_light">#2D2D2D</color>
     <color name="blue">#00BFFF</color>
     <color name="purple">#6B5B95</color>
+
+    <color name="blue_background_icon">#021221</color>
 </resources>
