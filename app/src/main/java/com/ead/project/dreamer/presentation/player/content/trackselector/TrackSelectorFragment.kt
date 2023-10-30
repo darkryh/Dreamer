@@ -1,11 +1,13 @@
 package com.ead.project.dreamer.presentation.player.content.trackselector
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.ui.PlayerView
@@ -22,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class TrackSelectorFragment : BottomSheetDialogFragment() {
 
     /*var videoRendererIndex = 0
-private var trackGroups: TrackGroupArray? = null*/
+    private var trackGroups: TrackGroupArray? = null*/
 
     lateinit var playlist: List<VideoModel>
     lateinit var player : ExoPlayer
@@ -103,10 +105,10 @@ private var trackGroups: TrackGroupArray? = null*/
                 )
                 addSelectableItemEffect()
                 setOnClickListener {
-                    Thread.runInMs({
+                    Thread.onClickEffect{
                         player.seekTo(pos,player.currentPosition)
                         dismiss()
-                    },175L)
+                    }
                 }
             }
             binding.linearLayoutQuality.addView(textQualityVideoModel)
@@ -123,4 +125,26 @@ private var trackGroups: TrackGroupArray? = null*/
         activity?.hideSystemUI()
     }
 
+    companion object {
+
+        private const val FRAGMENT = "TRACK_SELECTOR_FRAGMENT"
+
+        fun launch(
+            context : Context,
+            exoPlayer: ExoPlayer,
+            videoModelList : List<VideoModel>,
+            defaultTrackSelector: DefaultTrackSelector,
+            playerView: PlayerView
+        ) {
+            val fragmentManager = (context as FragmentActivity).supportFragmentManager
+            val trackSelectorFragment = TrackSelectorFragment()
+            trackSelectorFragment.apply {
+                this.player = exoPlayer
+                this.playlist = videoModelList
+                this.trackSelector = defaultTrackSelector
+                this.playerView = playerView
+                show(fragmentManager, FRAGMENT)
+            }
+        }
+    }
 }
