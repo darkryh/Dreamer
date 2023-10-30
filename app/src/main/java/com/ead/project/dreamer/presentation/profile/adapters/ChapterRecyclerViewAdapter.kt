@@ -81,7 +81,7 @@ class ChapterRecyclerViewAdapter(
 
         private fun settingsLayouts(chapter: Chapter) {
             binding.textTitle.text = context
-                .getString(R.string.chapter_number,chapter.number.toString())
+                .getString(R.string.chapter_number,chapter.number)
         }
 
         private fun settingImages(chapter: Chapter) {
