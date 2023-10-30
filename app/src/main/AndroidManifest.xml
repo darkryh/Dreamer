@@ -25,6 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dreamer"
+        android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".presentation.update.UpdateActivity"
@@ -58,7 +59,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Dreamer.NoActionBar" />
         <activity
-            android:name=".presentation.login.termsandconditions.TermsAndConditionsActivity"
+            android:name=".presentation.main.termsandconditions.TermsAndConditionsActivity"
             android:exported="false"
             android:launchMode="singleTop" />
         <activity
@@ -69,13 +70,15 @@
             android:name=".presentation.player.PlayerExternalActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:launchMode="singleInstance" />
+            android:launchMode="singleInstance"
+            android:hardwareAccelerated="true" />
         <activity
             android:name=".presentation.profile.AnimeProfileActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Dreamer.Translucent" />
+            android:theme="@style/Theme.Dreamer.Translucent"
+            android:hardwareAccelerated="true"/>
         <activity
             android:name=".presentation.directory.DirectoryActivity"
             android:exported="false"
@@ -84,21 +87,22 @@
         <activity
             android:name=".presentation.player.PlayerActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:screenOrientation="fullSensor"
             android:exported="false"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
             android:theme="@style/PlayerTheme"
-            tools:ignore="UnusedAttribute" />
+            android:hardwareAccelerated="true" />
         <activity
             android:name=".presentation.player.cast.ExpandedControlsActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
             android:theme="@style/Theme.Dreamer.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ead.project.dreamer.presentation.main.MainActivity" />
@@ -108,10 +112,10 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
