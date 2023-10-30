@@ -4,31 +4,27 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
-import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.justifyInterWord
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.toPixels
-import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdUnifiedAnimeProfileBinding
 import com.ead.project.dreamer.databinding.LayoutAnimeProfileBinding
-import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.presentation.player.preview_profile.AnimeProfilePreviewFragment
 import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 import com.google.android.gms.ads.nativead.NativeAd
 
 class ProfileRecyclerViewAdapter(
     private val context: Context,
     private var isFromContent: Boolean = false,
-    private var isFavoriteSegment : Boolean = false,
-    preferenceUseCase: PreferenceUseCase
+    private var isFavoriteSegment: Boolean = false
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -36,7 +32,6 @@ class ProfileRecyclerViewAdapter(
         const val NOT_AD = 0
     }
 
-    private val playerPreferences = preferenceUseCase.playerPreferences
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Any>(){}
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
 
@@ -102,25 +97,22 @@ class ProfileRecyclerViewAdapter(
             }
 
             binding.textRating.text = context
-                .getString(R.string.ratingLayout,animeProfile.rating.toString())
+                .getString(R.string.rating_layout,animeProfile.rating)
 
             binding.root.setOnClickListener {
                 if (!isFromContent) {
-                    it.context.startActivity(
+                    context.startActivity(
                         Intent(context, AnimeProfileActivity::class.java).apply {
-                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID, animeProfile.id)
                             putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
                         })
                 }
                 else {
-                    playerPreferences.setRequestingProfile(
-                        Requester(
-                            isRequesting = true,
-                            profileId = animeProfile.id,
-                            profileReference = animeProfile.reference?:return@setOnClickListener
-                        )
+                    AnimeProfilePreviewFragment.launch(
+                        context = context,
+                        id = animeProfile.id,
+                        reference = animeProfile.reference?:return@setOnClickListener
                     )
-                    (context as AppCompatActivity).onBack()
                 }
             }
 
