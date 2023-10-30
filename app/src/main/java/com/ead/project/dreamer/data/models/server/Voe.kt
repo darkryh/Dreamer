@@ -1,29 +1,11 @@
 package com.ead.project.dreamer.data.models.server
 
+import com.ead.project.dreamer.data.models.EmbedServer
 import com.ead.project.dreamer.data.models.Player
-import com.ead.project.dreamer.data.models.Server
-import com.ead.project.dreamer.data.models.VideoModel
-import com.ead.project.dreamer.data.utils.PatternManager
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
-class Voe(embeddedUrl:String) : Server(embeddedUrl) {
+class Voe(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Voe) {
 
-    override fun onPreExtract() {
-        player = Player.Voe
+    override fun checkIfVideoIsAvailable(): Boolean {
+        return !super.checkIfVideoIsAvailable()
     }
-
-    override fun onExtract() {
-        val response = OkHttpClient()
-            .newCall(Request.Builder().url(url).build())
-            .execute()
-        url = PatternManager.singleMatch(
-            response.body?.string().toString(),
-            "\"hls\": \"(.*?)\"")?.replace(",","")
-
-        if (url != null) addVideo(VideoModel("Default",url))
-        if(isConnectionNotValidated) removeVideos()
-        else endProcessing()
-    }
-
 }
