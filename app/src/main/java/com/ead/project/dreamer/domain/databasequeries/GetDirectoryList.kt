@@ -17,7 +17,7 @@ class GetDirectoryList @Inject constructor(
     suspend operator fun invoke() : List<AnimeBase> = repository.getDirectory()
 
     fun livedata (title : String,isSynchronized : Boolean) : LiveData<List<AnimeBase>> =
-        if (appBuildPreferences.isLockedVersion()) {
+        if (appBuildPreferences.isUnlockedVersion()) {
             if (isSynchronized) repository.getFlowAnimeBaseFullList(title)
             else repository.getFlowAnimeBaseList(title)
         } else {

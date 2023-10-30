@@ -16,10 +16,10 @@ class GetNews @Inject constructor(
     suspend operator fun invoke() : List<NewsItem> = repository.getNewsItems()
 
     fun flow() : Flow<List<NewsItem>> =
-        (if (appBuildPreferences.isLockedVersion()) { repository.getFlowNewsItemsCensured() }
-        else { repository.getFlowNewsItems() })
+        (if (appBuildPreferences.isUnlockedVersion()) { repository.getFlowNewsItems() }
+        else { repository.getFlowNewsItemsCensured() })
 
     fun flowLimited() : Flow<List<NewsItem>> =
-        (if (appBuildPreferences.isLockedVersion()) { repository.getFlowNewsItemsCensuredLimited() }
-        else { repository.getFlowNewsItemsLimited() })
+        (if (appBuildPreferences.isUnlockedVersion()) { repository.getFlowNewsItemsLimited() }
+        else { repository.getFlowNewsItemsCensuredLimited() })
 }
