@@ -4,6 +4,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.ead.project.dreamer.app.data.util.system.contains
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -17,12 +18,23 @@ open class AdBlockClient : WebViewClient() {
         "https://www\\.mp4upload\\.com/*",
         "https://www\\.streamwish\\.to/*",
         "https://www\\.dood\\.com/*",
+        "https://www\\.ds2play\\.com/*",
         "https://www\\.dooood\\.com/*",
         "https://www\\.mixdrop\\.co/*",
+        "https://www\\.filelions\\.com/*",
+        "https://www\\.fviplions\\.com/*",
         "https://www\\.filemoon\\.sx/*",
+        "https://www\\.voe\\.sx/*",
         "https://www\\.uqload\\.com/*",
         "https://www\\.mega\\.nz/*")
 
+    /*url variables that host.txt doesn't support*/
+    private val variablesFromTrustedSites : List<String> = listOf(
+        "cdn",
+        "uqload",
+        "lions",
+        "userstorage.mega"
+    )
 
     private fun isUrlPlayer(urlSender: String): Boolean {
         for (url in this.trustedSites) {
@@ -41,14 +53,17 @@ open class AdBlockClient : WebViewClient() {
     override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
         val url = request?.url.toString()
 
-        val isAd: Boolean
+        if (url.contains(variablesFromTrustedSites))
+            return super.shouldInterceptRequest(view, request)
+
+        val isPermitted: Boolean
         if (!loadedUrls.containsKey(url)) {
-            isAd = AdBlocker.isAd(url)
-            loadedUrls.containsValue(isAd)
+            isPermitted = AdBlocker.isPermitted(url)
+            loadedUrls.containsValue(isPermitted)
         } else {
-            isAd = loadedUrls[url] == true
+            isPermitted = loadedUrls[url] == true
         }
-        return if (isAd) AdBlocker.createEmptyResource()
-        else super.shouldInterceptRequest(view, request)
+        return if (isPermitted) super.shouldInterceptRequest(view, request)
+        else AdBlocker.createEmptyResource()
     }
 }
