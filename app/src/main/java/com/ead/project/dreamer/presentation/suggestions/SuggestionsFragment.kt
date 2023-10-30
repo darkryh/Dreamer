@@ -53,10 +53,10 @@ class SuggestionsFragment : Fragment() {
 
             recyclerViewSuggestions.apply {
                 layoutManager =  LinearLayoutManager(context)
-                this@SuggestionsFragment.suggestionsAdapter = ProfileRecyclerViewAdapter(activity as Context,
+                this@SuggestionsFragment.suggestionsAdapter = ProfileRecyclerViewAdapter(
+                    activity as Context,
                     isFromContent = false,
-                    isFavoriteSegment = false,
-                    preferenceUseCase = viewModel.preferenceUseCase
+                    isFavoriteSegment = false
                 )
                 adapter = this@SuggestionsFragment.suggestionsAdapter
                 setupRecommendations()
