@@ -17,10 +17,6 @@ class ConfigureProfile @Inject constructor(
         if (animeProfile == null) cachingProfile(id,reference)
     }
 
-    operator fun invoke(animeProfile: AnimeProfile?,id : Int,reference: String) {
-        if (animeProfile == null) cachingProfile(id,reference)
-    }
-
     private fun cachingProfile(id : Int, reference : String) {
         val array = arrayOf(id.toString(), reference)
 

@@ -27,7 +27,7 @@ class ConfigureDownload @Inject constructor(
         chapterDirectory.configureFolder()
 
         return DownloadManager.Request(Uri.parse(url))
-            .setTitle(context.getString(R.string.title_and_number_short,chapter.title,chapter.number.toString()))
+            .setTitle(context.getString(R.string.title_and_number_short,chapter.title,chapter.number))
             .configure(gson,chapter,filesPreferences.getChapterSubPath(chapter))
     }
 
@@ -37,7 +37,7 @@ class ConfigureDownload @Inject constructor(
         updateDirectory.configureFolder()
 
         return DownloadManager.Request(Uri.parse(url))
-            .setTitle(context.getString(R.string.title_and_version,update.title,update.version.toString()))
+            .setTitle(context.getString(R.string.title_and_version,update.title,update.version))
             .configure(gson,update,filesPreferences.getUpdateSubPath(update))
     }
 
