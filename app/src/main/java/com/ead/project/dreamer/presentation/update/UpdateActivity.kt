@@ -54,7 +54,7 @@ class UpdateActivity : AppCompatActivity() {
 
     private fun bindingUpdate() {
         binding.apply {
-            textTitle.text = getString(R.string.new_version, appBuild.update.version.toString())
+            textTitle.text = getString(R.string.new_version, appBuild.update.version)
             textResumedVersion.text = appBuild.resumedVersionNotes ?:getString(R.string.content_new_version_download)
 
             buttonDownloadAndInstall.setOnClickListener {
@@ -70,7 +70,7 @@ class UpdateActivity : AppCompatActivity() {
                         val percentProgress = ((download.current * 100f) / download.total).round(2)
                         val currentProgress = percentProgress.roundToInt()
                         linearProgressDownload.progress = currentProgress
-                        textProgress.text = getString(R.string.current_percent,percentProgress.toString())
+                        textProgress.text = getString(R.string.current_percent,percentProgress)
 
                         if (currentProgress < 100) return@observe
                         if (++installingCount > 1) return@observe
