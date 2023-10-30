@@ -3,6 +3,7 @@ package com.ead.project.dreamer.app.data.preference
 import androidx.datastore.core.DataStore
 import com.ead.project.dreamer.app.data.files.Files
 import com.ead.project.dreamer.app.model.AppBuild
+import com.ead.project.dreamer.app.model.GoogleBuild
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -21,14 +22,13 @@ class AppBuildPreferences @Inject constructor(
 
     val appBuild get() = store.data
 
+    val googleBuild get() = appBuild.map { it.googleBuild }
+
     val isDarkMode get() = appBuild.map { it.isDarkTheme }
 
-    val isGoogleVersion get() = appBuild.map { !it.isUnlockedVersion }
+    val isUnlockedVersion get() = appBuild.map { it.isUnlockedVersion }
 
     fun isUnlockedVersion() : Boolean = runBlocking { store.data.first().isUnlockedVersion }
-
-    fun isLockedVersion () : Boolean = !isUnlockedVersion()
-
     fun isDarkTheme() : Boolean = runBlocking { store.data.first().isDarkTheme }
 
     fun getLastVersionFile() : File = runBlocking {
@@ -71,6 +71,16 @@ class AppBuildPreferences @Inject constructor(
             store.updateData { appBuild: AppBuild ->
                 appBuild.copy(
                     isUnlockedVersion =  !appBuild.isUnlockedVersion
+                )
+            }
+        }
+    }
+
+    fun setGoogleBuild(googleBuild: GoogleBuild?) {
+        scope.launch {
+            store.updateData { appBuild : AppBuild ->
+                appBuild.copy(
+                    googleBuild = googleBuild
                 )
             }
         }
