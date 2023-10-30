@@ -68,7 +68,7 @@ class AnimeBaseRecyclerViewAdapter(
                             context,
                             AnimeProfileActivity::class.java
                         ).apply {
-                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeBase.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID, animeBase.id)
                             putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeBase.reference)
                         })
                 }
@@ -93,7 +93,7 @@ class AnimeBaseRecyclerViewAdapter(
                             context,
                             AnimeProfileActivity::class.java
                         ).apply {
-                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeBase.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID, animeBase.id)
                             putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeBase.reference)
                         })
                 }
