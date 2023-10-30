@@ -15,10 +15,12 @@ import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.round
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
+import com.ead.project.dreamer.databinding.AdUnifiedBannerBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordGridBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordLinearBinding
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
+import com.google.android.gms.ads.nativead.NativeAd
 
 class ChapterRecordRecyclerViewAdapter (
     private val context: Context,
@@ -26,11 +28,24 @@ class ChapterRecordRecyclerViewAdapter (
     private val handleChapter: HandleChapter
 ) : RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
 
-    private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
+    companion object {
+        const val IS_AD = 1
+        const val NOT_AD = 0
+    }
 
+    private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Any>(){}
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        if (viewType == IS_AD) {
+            return ViewHolder(
+                AdUnifiedBannerBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        }
         if (isLinear)
             return ViewHolder(
                 LayoutChapterRecordLinearBinding.inflate(
@@ -42,11 +57,21 @@ class ChapterRecordRecyclerViewAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val chapter = differ.currentList[position]
-        holder.bindTo(chapter)
+        when(val any = differ.currentList[position]) {
+            is Chapter -> holder.bindTo(any)
+            is NativeAd -> holder.bindTo(any)
+        }
+
     }
 
-    fun submitList (list: List<Chapter>) {
+    override fun getItemViewType(position: Int): Int {
+        if (differ.currentList[position] !is NativeAd)
+            return NOT_AD
+
+        return IS_AD
+    }
+
+    fun submitList (list: List<Any>) {
         differ.submitList(list)
     }
 
@@ -54,10 +79,21 @@ class ChapterRecordRecyclerViewAdapter (
 
     inner class ViewHolder(val binding: androidx.viewbinding.ViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bindTo (chapter: Chapter) {
-            when(binding) {
-                is LayoutChapterRecordLinearBinding -> bindToLinear(binding,chapter)
-                is LayoutChapterRecordGridBinding -> bindToGrid(binding,chapter)
+        private lateinit var bannerViewHolderAd: BannerViewHolderAd
+
+        fun bindTo(chapter: Chapter) {
+            when (binding) {
+                is LayoutChapterRecordLinearBinding -> bindToLinear(binding, chapter)
+                is LayoutChapterRecordGridBinding -> bindToGrid(binding, chapter)
+            }
+        }
+
+        fun bindTo(nativeAd: NativeAd) {
+            when (binding) {
+                is AdUnifiedBannerBinding -> {
+                    bannerViewHolderAd = BannerViewHolderAd(binding)
+                    bannerViewHolderAd.bindTo(nativeAd)
+                }
             }
         }
 
@@ -68,17 +104,18 @@ class ChapterRecordRecyclerViewAdapter (
             binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imageChapterProfile.load(chapter.cover){
+            binding.imageChapterProfile.load(chapter.cover) {
                 crossfade(true)
                 crossfade(500)
                 transformations(
-                    RoundedCornersTransformation(30f,0f,30f,0f)
+                    RoundedCornersTransformation(30f, 0f, 30f, 0f)
                 )
                 memoryCachePolicy(CachePolicy.ENABLED)
                 diskCachePolicy(CachePolicy.ENABLED)
             }
-            val percent = ((chapter.currentProgress * 100f) / chapter.totalProgress).round(2).toString()
-            binding.textCurrentProgress.text = context.getString(R.string.current_progress,percent)
+            val percent =
+                ((chapter.currentProgress * 100f) / chapter.totalProgress).round(2).toString()
+            binding.textCurrentProgress.text = context.getString(R.string.current_progress, percent)
 
             if (chapter.totalProgress > 0) {
                 binding.progressBarSeen.max = chapter.totalProgress
@@ -88,7 +125,7 @@ class ChapterRecordRecyclerViewAdapter (
 
             binding.root.setOnClickListener { handleChapter(context, chapter) }
             binding.root.setOnLongClickListener {
-                ChapterSettingsFragment.launch(context,chapter,true)
+                ChapterSettingsFragment.launch(context, chapter, true)
                 return@setOnLongClickListener true
             }
         }
@@ -100,7 +137,7 @@ class ChapterRecordRecyclerViewAdapter (
             binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imageChapterProfile.load(chapter.cover){
+            binding.imageChapterProfile.load(chapter.cover) {
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -116,9 +153,9 @@ class ChapterRecordRecyclerViewAdapter (
             binding.progressBarSeen.progress = chapter.currentProgress
             binding.imageDownload.setVisibility(chapter.isDownloaded())
 
-            binding.root.setOnClickListener { handleChapter(context,chapter) }
+            binding.root.setOnClickListener { handleChapter(context, chapter) }
             binding.root.setOnLongClickListener {
-                ChapterSettingsFragment.launch(context,chapter,true)
+                ChapterSettingsFragment.launch(context, chapter, true)
                 return@setOnLongClickListener true
             }
         }
