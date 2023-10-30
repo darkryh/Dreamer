@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.mediarouter.app.MediaRouteButton
 import com.ead.commons.lib.views.setVisibility
+import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.ObjectUseCase
@@ -38,9 +39,9 @@ class CastManager @Inject constructor(
     private val castBinding : CastBinding = CastBinding(context, castMediaSession)
 
     private val playerPreferences = preferenceUseCase.playerPreferences
-    private val appBuildPreferences = preferenceUseCase.appBuildPreferences
+    private var isCastingDeviceAvailable = false
+    private val isGoogleVersion = AppInfo.isGoogleAppVersion
 
-    var isAvailable : Boolean = false
     val isConnectedToChromeCast get() = castMediaSession.isConnected
 
     private var chapter: Chapter? = getChapter()
@@ -49,6 +50,7 @@ class CastManager @Inject constructor(
     fun initFactory(activity: Activity, mediaRouteButton: MediaRouteButton) {
         this.activity = activity
         this.mediaRouteButton = mediaRouteButton
+        mediaRouteButton.setVisibility(isCastingDeviceAvailable)
         CastButtonFactory.setUpMediaRouteButton(context,mediaRouteButton)
     }
 
@@ -131,28 +133,14 @@ class CastManager @Inject constructor(
 
     private val castStateListener = CastStateListener { newState ->
 
-        when (newState) {
-            CastState.NO_DEVICES_AVAILABLE -> {}
-            CastState.NOT_CONNECTED -> {}
-            CastState.CONNECTING -> {}
-            CastState.CONNECTED -> {}
-        }
+        isCastingDeviceAvailable = newState != CastState.NO_DEVICES_AVAILABLE && !isGoogleVersion
+        mediaRouteButton?.setVisibility(isCastingDeviceAvailable)
 
-        if (newState != CastState.NO_DEVICES_AVAILABLE) {
-
-            isAvailable = appBuildPreferences.isUnlockedVersion()
-            mediaRouteButton?.setVisibility(isAvailable)
+        if (isCastingDeviceAvailable) {
 
             castBinding.showIntroductoryOverlay(activity?:return@CastStateListener,mediaRouteButton?:return@CastStateListener)
 
         }
-        else {
-
-            isAvailable = false
-            mediaRouteButton?.setVisibility(false)
-
-        }
-
     }
 
     private val sessionManagerListener : SessionManagerListener<Session> = object : SessionManagerListener<Session>{
