@@ -158,6 +158,8 @@ object Server {
     const val FILEMOON = "FileMoon"
     const val MIXDROP = "MixDrop"
     const val PIXELDRAIN = "PixelDrain"
+    const val FILELIONS = "Filelions"
+    const val VIDGUARD = "VidGuard"
 
 
     const val URL_FEMBED = "fembed.com"
@@ -166,7 +168,6 @@ object Server {
     const val URL_VIDEOBIN = "videobin.co"
     const val URL_MP4UPLOAD = "mp4upload.com"
     const val URL_OKRU = "ok.ru"
-    const val URL_UQLOAD = "uqload.com"
     const val URL_STREAMTAPE = "streamtape.com"
     const val URL_SOLIDFILES = "solidfiles.com"
     const val URL_SENDVID = "sendvid.com"
@@ -195,5 +196,19 @@ object Server {
 
     val URL_STREAMWISH_DOMAINS = listOf(
         "streamwish.to", "embedwish.com","sfastwish.com","wishfast.top"
+    )
+
+    val URL_FILELIONS_DOMAINS = listOf(
+        "filelions.com","fviplions.com" , "filelions.online"
+    )
+
+    val URL_VIDGUARD_DOMAINS = listOf(
+        "vgfplay.com", "vidguard.to", "vid-guard.com",
+        "vembed.net", "vgembed.com", "v6embed.xyz",
+        "moflix-stream.day"
+    )
+
+    val URL_UQLOAD_DOMAINS = listOf(
+        "uqload.com","uqload.io"
     )
 }
