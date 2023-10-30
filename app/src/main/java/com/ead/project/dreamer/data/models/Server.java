@@ -25,8 +25,9 @@ public class Server {
     protected DreamerWebView webView;
 
     @Inject
-    public Server(String embeddedUrl) {
+    public Server(String embeddedUrl,Player player) {
         this.url = embeddedUrl;
+        this.player = player;
         videoList = new ArrayList<>();
         isDirect = true;
         isDownloading = getIsDownloading();
