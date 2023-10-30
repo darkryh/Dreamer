@@ -40,6 +40,7 @@ class SettingsDashboardFragment : Fragment() {
 
     private fun settingLayout() {
         binding.apply {
+
             containerAccount.addSelectableItemEffect()
             optionUser.addSelectableItemEffect()
             optionRanks.addSelectableItemEffect()
@@ -48,6 +49,7 @@ class SettingsDashboardFragment : Fragment() {
             optionNotifications.addSelectableItemEffect()
             optionContentRating.addSelectableItemEffect()
             optionAboutUs.addSelectableItemEffect()
+
             if (discordUser != null){
                 textUserName.text = discordUser.username
                 textRank.text = discordUser.rank
@@ -73,12 +75,12 @@ class SettingsDashboardFragment : Fragment() {
     }
 
     private fun launchPreferencesCategory(requestedFragment : Fragment) {
-        Thread.runInMs({
+        Thread.onClickEffect {
             val transaction = requireActivity().supportFragmentManager
                 .beginTransaction()
                 .addToBackStack(null)
 
             transaction.replace(R.id.frame_content_settings, requestedFragment).commit()
-        },160)
+        }
     }
 }
