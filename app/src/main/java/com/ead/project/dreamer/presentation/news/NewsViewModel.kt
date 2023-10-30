@@ -10,7 +10,7 @@ import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.utils.AdManager
+import com.ead.project.dreamer.data.utils.AdOrder
 import com.ead.project.dreamer.domain.NewsUseCase
 import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +23,26 @@ import javax.inject.Inject
 class NewsViewModel @Inject constructor(
     private val newsUseCase: NewsUseCase,
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
-    private val webProvider: WebProvider,
-    val adManager: AdManager
+    private val webProvider: WebProvider
 ): ViewModel() {
 
-    private val newsItemWeb : MutableLiveData<NewsItemWeb?> = MutableLiveData()
+    private val adOrder by lazy {
+        AdOrder(
+            items = mutableListOf(),
+            ads = emptyList()
+        )
+    }
+
+    private val _newsItemWeb : MutableLiveData<NewsItemWeb?> = MutableLiveData()
+
+    private val _news : MutableLiveData<List<Any>> = MutableLiveData()
+    val news : LiveData<List<Any>> = _news
+
+    fun setNews(list: List<Any>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            adOrder.setup(list,_news)
+        }
+    }
 
     fun synchronizeNews() {
         launchPeriodicTimeRequest(
@@ -43,8 +58,8 @@ class NewsViewModel @Inject constructor(
 
     fun getWebPageData(reference : String) : MutableLiveData<NewsItemWeb?> {
         viewModelScope.launch (Dispatchers.IO) {
-            newsItemWeb.postValue(webProvider.getWebPageNews(reference))
+            _newsItemWeb.postValue(webProvider.getWebPageNews(reference))
         }
-        return newsItemWeb
+        return _newsItemWeb
     }
 }
