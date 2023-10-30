@@ -94,7 +94,7 @@ class App : Application(), Configuration.Provider {
     companion object {
 
         lateinit var Instance : App
-        var InitializationStatus: InitializationStatus? = null
+        private var InitializationStatus: InitializationStatus? = null
 
         fun initAdsPreferences() {
             if (InitializationStatus != null) {
