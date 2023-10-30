@@ -27,10 +27,18 @@ object AutomaticServerSerializer : Serializer<AutomaticServerPreference> {
 
     override suspend fun readFrom(input: InputStream): AutomaticServerPreference {
         try {
+
             val reader = InputStreamReader(input, StandardCharsets.UTF_8)
-            return gson.fromJson(
+
+            val automaticServerPreference = gson.fromJson(
                 reader, AutomaticServerPreference::class.java
             )
+
+            if (automaticServerPreference.sameQuantityServers(defaultValue)) {
+                return automaticServerPreference
+            }
+
+            return defaultValue
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read protobuf", exception)
         }
