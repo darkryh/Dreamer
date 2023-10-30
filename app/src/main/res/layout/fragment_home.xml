@@ -10,8 +10,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            android:fillViewport="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,22 +48,7 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         android:layout_marginBottom="8dp"
                         tools:listitem="@layout/layout_profile_recommendations"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view_live_index"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/colorSurface"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        android:layout_marginBottom="8dp"
-                        tools:listitem="@layout/layout_circle_index"/>
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <include
-                    android:id="@+id/popular_section"
-                    layout="@layout/layout_section"
-                    android:visibility="gone"/>
 
                 <include
                     android:id="@+id/recent_section"

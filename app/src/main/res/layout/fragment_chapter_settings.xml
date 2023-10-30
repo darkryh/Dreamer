@@ -30,7 +30,7 @@
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_circle_download_24"
-            android:contentDescription="@string/imv_download" />
+            android:contentDescription="@string/image_download" />
 
         <TextView
             android:id="@+id/text_download"
@@ -55,7 +55,7 @@
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_download_32"
-            android:contentDescription="@string/imv_download" />
+            android:contentDescription="@string/image_download" />
 
         <TextView
             android:id="@+id/text_manual_download"
@@ -80,7 +80,7 @@
             android:layout_height="30dp"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_ready_24"
-            android:contentDescription="@string/imv_download" />
+            android:contentDescription="@string/image_download" />
 
         <TextView
             android:id="@+id/text_chapter_mode"
@@ -106,7 +106,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_delete_24"
-            android:contentDescription="@string/imv_favorites" />
+            android:contentDescription="@string/image_favorites" />
 
         <TextView
             android:id="@+id/text_record_delete"
@@ -132,7 +132,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_favorite_bookmark"
-            android:contentDescription="@string/imv_favorites" />
+            android:contentDescription="@string/image_favorites" />
 
         <TextView
             android:id="@+id/text_favorites"

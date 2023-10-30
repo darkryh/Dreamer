@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.login.termsandconditions.TermsAndConditionsActivity">
+    tools:context=".presentation.main.termsandconditions.TermsAndConditionsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -49,14 +49,14 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="24sp"
-                android:text="@string/termsAndConditions" />
+                android:text="@string/terms_and_conditions" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:justificationMode="inter_word"
-                android:text="@string/termsAndConditionsContent" />
+                android:text="@string/terms_and_conditions_content" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:justificationMode="inter_word"
-                android:text="@string/legalWarningContent"
+                android:text="@string/legal_warning_content"
                 android:autoLink="web"
                 android:textColorLink="@color/orange_peel_dark" />
 
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:justificationMode="inter_word"
-                android:text="@string/PrivacyPolicyContent"
+                android:text="@string/privacy_policy_content"
                  />
 
             <TextView

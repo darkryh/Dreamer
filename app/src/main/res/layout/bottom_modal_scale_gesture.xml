@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
             android:layout_marginStart="16dp"
-            android:text="@string/modo_de_gesto_al_acercar"
+            android:text="@string/zoom_gesture_mode"
             android:textSize="16sp"
             android:textStyle="bold"/>
 

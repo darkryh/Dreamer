@@ -47,7 +47,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:visibility="gone"
-        android:hint="@string/typeList"
+        android:hint="@string/type_list"
         app:startIconDrawable="@drawable/ic_list_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -67,7 +67,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="32dp"
-        android:hint="@string/genreList"
+        android:hint="@string/genre_list"
         app:startIconDrawable="@drawable/ic_film_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

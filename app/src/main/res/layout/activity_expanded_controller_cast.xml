@@ -86,7 +86,7 @@
         android:layout_marginBottom="16dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/lnBanner"
+        app:layout_constraintBottom_toTopOf="@+id/linear_banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -122,9 +122,8 @@
 
     </androidx.cardview.widget.CardView>
 
-
     <LinearLayout
-        android:id="@+id/lnBanner"
+        android:id="@+id/linear_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -136,7 +135,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/bannerShimmer"
+            android:id="@+id/shimmer_banner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible">
@@ -155,7 +154,6 @@
             android:id="@+id/banner"
             layout="@layout/ad_unified_mini_banner_cast"
             android:visibility="gone" />
-
     </LinearLayout>
 
     <SeekBar
@@ -166,7 +164,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:progressTint="@color/orange_peel"
-        app:layout_constraintBottom_toTopOf="@+id/btnPlay"
+        app:layout_constraintBottom_toTopOf="@+id/button_play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -175,25 +173,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:text="@string/txvcurrentprogress"
+        android:text="@string/text_current_progress"
         android:textColor="?attr/colorPrimaryVariant"
         android:textSize="11sp"
         app:layout_constraintStart_toStartOf="@+id/seekBar"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
     <TextView
-        android:id="@+id/txvTotalProgress"
+        android:id="@+id/text_total_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
-        android:text="@string/txvtotalprogress"
+        android:text="@string/text_total_progress"
         android:textColor="?attr/colorPrimaryVariant"
         android:textSize="11sp"
         app:layout_constraintEnd_toEndOf="@+id/seekBar"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
 
     <ImageView
-        android:id="@+id/btnRewind"
+        android:id="@+id/button_rewind"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
@@ -201,12 +199,12 @@
         android:contentDescription="@string/replay"
         android:src="@drawable/ic_replay_30"
         app:tint="@color/grey_accent"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
-        app:layout_constraintEnd_toStartOf="@+id/btnPlay"
-        app:layout_constraintTop_toTopOf="@+id/btnPlay" />
+        app:layout_constraintBottom_toBottomOf="@+id/button_play"
+        app:layout_constraintEnd_toStartOf="@+id/button_play"
+        app:layout_constraintTop_toTopOf="@+id/button_play" />
 
     <ImageView
-        android:id="@+id/btnPlay"
+        android:id="@+id/button_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="128dp"
@@ -222,16 +220,16 @@
         tools:ignore="ImageContrastCheck" />
 
     <ImageView
-        android:id="@+id/btnForward"
+        android:id="@+id/button_forward"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:contentDescription="@string/fast_forward"
         android:src="@drawable/ic_forward_30"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
-        app:layout_constraintStart_toEndOf="@+id/btnPlay"
-        app:layout_constraintTop_toTopOf="@+id/btnPlay" />
+        app:layout_constraintBottom_toBottomOf="@+id/button_play"
+        app:layout_constraintStart_toEndOf="@+id/button_play"
+        app:layout_constraintTop_toTopOf="@+id/button_play" />
 
     <TextView
         android:id="@+id/text_title"
@@ -266,14 +264,13 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btnPlay"
-        app:layout_constraintEnd_toEndOf="@+id/btnPlay"
-        app:layout_constraintStart_toStartOf="@+id/btnPlay"
-        app:layout_constraintTop_toTopOf="@+id/btnPlay"
+        app:layout_constraintBottom_toBottomOf="@+id/button_play"
+        app:layout_constraintEnd_toEndOf="@+id/button_play"
+        app:layout_constraintStart_toStartOf="@+id/button_play"
+        app:layout_constraintTop_toTopOf="@+id/button_play"
         app:layout_constraintVertical_bias="0.619" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -282,7 +279,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPlay">
+        app:layout_constraintTop_toBottomOf="@+id/button_play">
 
         <ImageView
             android:id="@+id/imvShare"
@@ -314,5 +311,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
