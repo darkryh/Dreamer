@@ -1,9 +1,11 @@
 package com.ead.project.dreamer.presentation.player.content.scalegesture
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
@@ -93,10 +95,10 @@ class ScaleGestureFragment : BottomSheetDialogFragment() {
     }
 
     private fun execute(task :  () -> Unit ) {
-        Thread.runInMs({
+        Thread.onClickEffect {
             task()
             dismiss()
-        },175L)
+        }
     }
 
     override fun onDestroyView() {
@@ -109,4 +111,20 @@ class ScaleGestureFragment : BottomSheetDialogFragment() {
         activity?.hideSystemUI()
     }
 
+    companion object {
+
+        private const val FRAGMENT = "SCALE_GESTURE_FRAGMENT"
+
+        fun launch(
+            context: Context,
+            playerView: PlayerView
+        ) {
+            val fragmentManager = (context as FragmentActivity).supportFragmentManager
+            val scaleGestureFragment = ScaleGestureFragment()
+            scaleGestureFragment.apply {
+                this.playerView = playerView
+                scaleGestureFragment.show(fragmentManager, FRAGMENT)
+            }
+        }
+    }
 }
