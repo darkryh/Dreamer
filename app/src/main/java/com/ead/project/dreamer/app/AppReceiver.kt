@@ -25,13 +25,15 @@ class AppReceiver : BroadcastReceiver() {
         Run.catching {
             when(intent.action) {
                 DownloadManager.ACTION_DOWNLOAD_COMPLETE -> {
-                    DownloadHandler.repository = repository
-                    DownloadHandler.downloadStore = downloadStore
-                    DownloadHandler.playerPreferences = preferenceUseCase.playerPreferences
-                    DownloadHandler.on(intent)
+                    DownloadHandler.apply {
+                        repository = this@AppReceiver.repository
+                        downloadStore = this@AppReceiver.downloadStore
+                        playerPreferences = this@AppReceiver.preferenceUseCase.playerPreferences
+                        on(intent)
+                    }
                 }
                 Intent.ACTION_PACKAGE_REPLACED -> {
-                    val updateFile = preferenceUseCase.appBuildPreferences.getLastVersionFile()
+                    //val updateFile = preferenceUseCase.appBuildPreferences.getLastVersionFile()
                     //Apk.install(context,updateFile.path)
                 }
             }
