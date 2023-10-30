@@ -9,10 +9,10 @@
 
         <SwitchPreference
             android:icon="@drawable/ic_policy_24"
-            android:summaryOn="Contenido +18 bloqueado"
-            app:key="PREFERENCE_GOOGLE_POLICY"
-            app:summaryOff="Contenido +18 desbloqueado"
-            app:title="Políticas de Google" />
+            android:summaryOn="Contenido +18 desbloqueado"
+            app:key="PREFERENCE_FULL_CONTENT"
+            app:summaryOff="Contenido +18 bloqueado"
+            app:title="Contenido Habilitado" />
     </PreferenceCategory>
 
 </PreferenceScreen>
