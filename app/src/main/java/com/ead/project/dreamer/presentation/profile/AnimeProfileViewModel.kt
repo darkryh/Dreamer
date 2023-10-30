@@ -2,16 +2,18 @@ package com.ead.project.dreamer.presentation.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import androidx.work.*
+import androidx.work.ExistingWorkPolicy
+import com.ead.project.dreamer.app.data.player.casting.CastManager
+import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.data.worker.Worker
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.app.data.player.casting.CastManager
-import com.ead.project.dreamer.app.data.util.TimeUtil
-import com.ead.project.dreamer.app.model.Requester
-import com.ead.project.dreamer.data.utils.AdManager
-import com.ead.project.dreamer.domain.*
+import com.ead.project.dreamer.domain.ChapterUseCase
+import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import com.ead.project.dreamer.domain.configurations.ConfigureChapters
 import com.ead.project.dreamer.domain.configurations.ConfigureProfile
 import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
@@ -32,21 +34,15 @@ class AnimeProfileViewModel @Inject constructor(
     private val launchOneTimeRequest: LaunchOneTimeRequest,
     val handleChapter: HandleChapter,
     val getChapter: GetChapter,
-    val adManager: AdManager,
     val castManager: CastManager,
     preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
 
-    private val playerPreferences = preferenceUseCase.playerPreferences
     val appBuildPreferences = preferenceUseCase.appBuildPreferences
-    val playerPreference = playerPreferences.preference
+
     fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
 
-    fun resetRequestingProfile() {
-        viewModelScope.launch {
-            playerPreferences.setRequestingProfile(Requester.Deactivate)
-        }
-    }
+    fun getIsLikedProfile(id: Int) : LiveData<Boolean?> = getAnimeProfile(id).map { it?.isFavorite }
 
     fun configureProfileData(id : Int,reference: String) =
         viewModelScope.launch (Dispatchers.IO) { configureProfile(id,reference) }
