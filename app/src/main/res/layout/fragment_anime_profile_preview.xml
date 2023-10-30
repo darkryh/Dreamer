@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context=".presentation.player.preview_profile.AnimeProfilePreviewFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="4dp">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/cover_profile"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_perm_media_24"
+            tools:ignore="ImageContrastCheck" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cover_reflex"
+            android:src="@color/backgroundCastImageSmooth" />
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/title"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:gravity="bottom"/>
+
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/layout_genre" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="4dp"
+            android:paddingHorizontal="8dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:backgroundTint="?attr/colorSecondaryVariant"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@id/text_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Finalizado"
+                    android:textSize="14sp"
+                    android:layout_margin="8dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                android:layout_marginHorizontal="8dp"
+                android:backgroundTint="?attr/colorSecondaryVariant"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@id/text_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="03 de Abril de 1998"
+                    android:textSize="14sp"
+                    android:layout_margin="8dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/current_chapter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"
+            android:layout_marginHorizontal="8dp"
+            android:padding="8dp"
+            android:background="@drawable/background_rounded_20dp"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            app:cardCornerRadius="20dp"
+            android:gravity="center_vertical"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:id="@+id/text_description_content"
+                android:layout_width="match_parent"
+                android:layout_height="115dp"
+                android:padding="8dp"
+                android:background="@drawable/background_horizontal_border"
+                android:text="@string/lorem"
+                android:textAlignment="textStart"
+                android:textSize="14sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/container_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="4dp"
+            app:cardCornerRadius="20dp"
+            android:backgroundTint="?attr/colorSecondaryVariant"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@id/text_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.8"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginHorizontal="8dp"/>
+
+                <RatingBar
+                    android:id="@+id/rating_bar"
+                    android:layout_marginTop="2dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:rating="3"
+                    android:isIndicator="true"
+                    android:contentDescription="@string/rating"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:backgroundTint="?attr/colorSecondary"
+        app:cardCornerRadius="20dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardElevation="0dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linear_current_chapter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:gravity="center">
+
+            <ProgressBar
+                android:id="@+id/progress_bar_chapter"
+                android:layout_width="24dp"
+                android:layout_height="24dp"/>
+
+            <TextView
+                android:id="@+id/text_current_chapter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:text="@string/play"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_play"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </androidx.cardview.widget.CardView>
+</androidx.appcompat.widget.LinearLayoutCompat>
