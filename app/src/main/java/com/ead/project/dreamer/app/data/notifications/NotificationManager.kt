@@ -14,7 +14,7 @@ class NotificationManager @Inject constructor(private val context: Context) {
 
     private val marketingNotificationBuilder by lazy {
         context.notificationBuilder(NotificationChannels.CHANNEL_MARKETING) {
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_foreground))
             setAutoCancel(true)
             setOnlyAlertOnce(true)
         }
