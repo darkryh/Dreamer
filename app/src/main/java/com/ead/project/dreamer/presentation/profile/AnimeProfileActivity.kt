@@ -1,30 +1,25 @@
 package com.ead.project.dreamer.presentation.profile
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.lifecycle.activity.onBackHandle
-import com.ead.commons.lib.lifecycle.activity.showLongToast
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.commons.lib.views.setVisibility
 import com.ead.commons.lib.views.setVisibilityReverse
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
-import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.toPixels
-import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.database.model.AnimeProfile
-import com.ead.project.dreamer.data.models.discord.DiscordUser
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.ui.AppBarStateChangeListener
 import com.ead.project.dreamer.databinding.ActivityAnimeProfileBinding
 import com.ead.project.dreamer.presentation.profile.adapters.ProfileViewPagerAdapter
@@ -32,20 +27,17 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AnimeProfileActivity : AppCompatActivity() {
 
     private val viewModel : AnimeProfileViewModel by viewModels()
-
-    private var id = -1
-    private var reference = "reference"
-
-    private var animeProfile : AnimeProfile ?= null
-
     private lateinit var viewPager : ProfileViewPagerAdapter
+
+    private var id = 1
+    private var reference = "reference"
+    private var animeProfile : AnimeProfile ?= null
+    private var isFavorite : Boolean? = null
 
     private val binding: ActivityAnimeProfileBinding by lazy {
         ActivityAnimeProfileBinding.inflate(layoutInflater)
@@ -55,58 +47,45 @@ class AnimeProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         onBackHandle { onBackPressedMode() }
         setContentView(binding.root)
-        init(false)
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        count = 0
-        init(true)
-    }
-
-    private fun init(isNewIntent : Boolean) {
-        if(!isNewIntent) {
-            initVariables()
-        }
+        initVariables()
         initLayouts()
         configureProfile()
         observeProfile()
-        if (isNewIntent) return
-        handleIfProfileIsRequestedFromPlayer()
+        observeLikedProfile()
     }
 
-    private var count = 0
     private fun observeProfile() {
         viewModel.getAnimeProfile(id).observe(this) { animeProfile ->
-            if (animeProfile != null) {
-                if (++count == 1) {
-                    if (viewModel.appBuildPreferences.isUnlockedVersion() || animeProfile.isAuthorizedData()) {
-                        configureChapters()
-                        loadAnimeProfileHeader(animeProfile)
-                    }
-                    else {
-                        showLongToast(getString(R.string.google_policies_message))
-                        finish()
-                        return@observe
-                    }
-                }
-                likeProfile(animeProfile)
-                updateLike(animeProfile)
+            if (animeProfile == null || this.animeProfile?.id == animeProfile.id) return@observe
+
+            this.animeProfile = animeProfile
+
+            if (viewModel.appBuildPreferences.isUnlockedVersion() || animeProfile.isAuthorizedData()) {
+                configureChapters()
+                loadAnimeProfileHeader(animeProfile)
             }
+            else {
+                toast(getString(R.string.google_policies_message),Toast.LENGTH_SHORT)
+                finish()
+            }
+        }
+    }
+
+    private fun observeLikedProfile() {
+        viewModel.getIsLikedProfile(id).observe(this) { isFavorite ->
+            if (isFavorite == null || this.isFavorite == isFavorite) return@observe
+            this@AnimeProfileActivity.isFavorite = isFavorite
+
+            bindingLikedProfile(isFavorite)
         }
     }
 
     private fun initVariables() {
         intent.extras?.apply {
-            id =  getInt(PREFERENCE_ID_BASE,0)
+            id = getInt(PREFERENCE_ID)
             reference = getString(PREFERENCE_LINK)?:return@apply
         }
-
         viewModel.castManager.initFactory(this,binding.mediaRouteButton)
-        viewModel.adManager.setUp(
-            returnCase = DiscordUser.isVip(),
-            adId = getString(R.string.ad_unit_id_native_profile)
-        )
     }
 
     override fun onResume() {
@@ -124,15 +103,14 @@ class AnimeProfileActivity : AppCompatActivity() {
 
     private fun loadAnimeProfileHeader(animeProfile: AnimeProfile) {
         binding.apply {
-            binding.textTitle.text = animeProfile.title
-            binding.textAnimeState.text = animeProfile.state
-            binding.imageProfile.load(animeProfile.profilePhoto) {
+            textTitle.text = animeProfile.title
+            textAnimeState.text = animeProfile.state
+            imageProfile.load(animeProfile.profilePhoto) {
                 transformations(RoundedCornersTransformation(12f.toPixels()))
             }
-            binding.imageCover.load(animeProfile.coverPhoto)
-            binding.textSecondTitle.text = animeProfile.titleAlternate
-            binding.textSecondTitle.setVisibility(animeProfile.titleAlternate != "null" && animeProfile.titleAlternate.isNotBlank())
-
+            imageCover.load(animeProfile.coverPhoto)
+            textSecondTitle.text = animeProfile.titleAlternate
+            textSecondTitle.setVisibility(animeProfile.titleAlternate != "null" && animeProfile.titleAlternate.isNotBlank())
         }
     }
 
@@ -148,6 +126,23 @@ class AnimeProfileActivity : AppCompatActivity() {
                     .setNegativeButton(R.string.cancel,null)
                     .show()
             }
+
+            imageLikeProfile.setOnClickListener {
+
+                val animeProfile = this@AnimeProfileActivity.animeProfile
+                val isFavorite = this@AnimeProfileActivity.isFavorite
+                if (animeProfile == null || isFavorite == null) return@setOnClickListener
+
+                viewModel.updateAnimeProfile(animeProfile.copy(isFavorite = !isFavorite))
+            }
+        }
+        setupViewPager2()
+        setupAppBarStateListener()
+        setupTabLayout()
+    }
+
+    private fun setupViewPager2() {
+        binding.apply {
             viewPager = ProfileViewPagerAdapter(this@AnimeProfileActivity,id)
             viewPager2.adapter = viewPager
             viewPager2.registerOnPageChangeCallback(object  : ViewPager2.OnPageChangeCallback() {
@@ -162,6 +157,11 @@ class AnimeProfileActivity : AppCompatActivity() {
                     }
                 }
             })
+        }
+    }
+
+    private fun setupAppBarStateListener() {
+        binding.apply {
             appBarLayout.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
                 override fun onStateChanged(appBarLayout: AppBarLayout, state: State) {
                     when(state) {
@@ -178,7 +178,6 @@ class AnimeProfileActivity : AppCompatActivity() {
                 }
             })
         }
-        setupTabLayout()
     }
 
     private fun setupTabLayout() {
@@ -195,50 +194,23 @@ class AnimeProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleIfProfileIsRequestedFromPlayer() {
-        lifecycleScope.launch {
-            viewModel.playerPreference.collectLatest { playerPreferences ->
-
-                if (playerPreferences.requester.isRequesting) {
-
-                    viewModel.resetRequestingProfile()
-                    launchActivity(this@AnimeProfileActivity,playerPreferences.requester)
-
-                }
-
+    private fun bindingLikedProfile(isFavorite : Boolean) {
+        binding.apply {
+            if (isFavorite) {
+                imageLikeProfile.setResourceImageAndColor(
+                    R.drawable.ic_favorite_24, R.color.pink)
+            }
+            else {
+                imageLikeProfile.setResourceImageAndColor(
+                    R.drawable.ic_favorite_border_24, R.color.white)
             }
         }
-    }
-
-    private fun likeProfile(animeProfile: AnimeProfile) {
-        binding.imageLikeProfile.setOnClickListener {
-            viewModel.updateAnimeProfile(animeProfile.copy(
-                isFavorite = !animeProfile.isFavorite
-            ))
-        }
-    }
-
-    private fun updateLike(animeProfile: AnimeProfile) {
-        if (animeProfile.isFavorite)
-            binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_24, R.color.pink)
-        else
-            binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
     }
 
     private fun onBackPressedMode() { finish() }
 
     companion object {
-        const val PREFERENCE_LINK = "PREFERENCE_LINK"
-        const val PREFERENCE_ID_BASE = "ID_BASE"
-
-        fun launchActivity(context : Context,requester: Requester) {
-            context.launchActivity(
-                intent = Intent(context,AnimeProfileActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    putExtra(PREFERENCE_ID_BASE,requester.profileId)
-                    putExtra(PREFERENCE_LINK,requester.profileReference)
-                }
-            )
-        }
+        const val PREFERENCE_LINK = "PROFILE_LINK"
+        const val PREFERENCE_ID = "PROFILE_ID"
     }
 }
