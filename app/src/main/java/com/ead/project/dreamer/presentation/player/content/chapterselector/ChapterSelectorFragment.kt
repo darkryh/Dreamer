@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,4 +83,24 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
         activity?.hideSystemUI()
     }
 
+    companion object {
+
+        private const val FRAGMENT = "CHAPTER_SELECTOR_FRAGMENT"
+
+        fun launch(
+            context: Context,
+            isHorizontal : Boolean,
+            playerView: PlayerView,
+            chapter: Chapter
+        ) {
+            val fragmentManager = (context as FragmentActivity).supportFragmentManager
+            val chapterSelectorFragment = ChapterSelectorFragment()
+            chapterSelectorFragment.apply {
+                this.isHorizontal = isHorizontal
+                this.playerView = playerView
+                this.chapter = chapter
+                chapterSelectorFragment.show(fragmentManager, FRAGMENT)
+            }
+        }
+    }
 }
