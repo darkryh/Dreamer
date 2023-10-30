@@ -5,15 +5,15 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.ead.commons.lib.lifecycle.activity.showLongToast
 import com.ead.commons.lib.metrics.getNavigationBarHeight
 import com.ead.commons.lib.metrics.getScreenSize
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.util.HttpUtil
-import com.ead.project.dreamer.data.network.DreamerWebView.Companion.TIMEOUT_MS
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.databinding.ActivityWebBinding
@@ -99,12 +99,12 @@ class WebActivity : AppCompatActivity() {
                     super.onPageStarted(view, url, favicon)
                     try {
                         settingWebView(view)
-                        Thread.runInMs({
+                        Thread.onWebTimeout{
                             if (timeout) {
-                                showLongToast(getString(R.string.timeout_message))
+                                toast(getString(R.string.timeout_message),Toast.LENGTH_SHORT)
                                 finish()
                             }
-                        }, TIMEOUT_MS)
+                        }
                     } catch (e: InterruptedException) { e.printStackTrace() }
                 }
 
