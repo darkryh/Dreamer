@@ -36,7 +36,7 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
 
     private fun settingLayouts() {
         lifecycleScope.launch {
-            viewModel.preferences.getBooleanFlow(AppInfo.TOPIC).collectLatest { isSubscribed ->
+            viewModel.preferences.getBooleanFlow(AppInfo.TOPIC,true).collectLatest { isSubscribed ->
                 swMarketingNotifications.isChecked = isSubscribed
                 viewModel.subscribeToAppTopicIf(isSubscribed)
             }
@@ -59,7 +59,10 @@ class SettingsNotificationsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
-        return viewModel.updateBooleanKeyPreference(preference.key)
+        return when (val key = preference.key) {
+            AppInfo.TOPIC -> viewModel.updateBooleanKeyPreference(key)
+            else -> false
+        }
     }
 
     companion object {
