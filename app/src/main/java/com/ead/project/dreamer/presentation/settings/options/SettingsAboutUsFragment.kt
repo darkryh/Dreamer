@@ -58,7 +58,7 @@ class SettingsAboutUsFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-        prefVersion.summary = getString(R.string.version_description,"Release",AppInfo.version, AppInfo.versionCode.toString())
+        prefVersion.summary = getString(R.string.version_description,"Release",AppInfo.version, AppInfo.versionCode)
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {

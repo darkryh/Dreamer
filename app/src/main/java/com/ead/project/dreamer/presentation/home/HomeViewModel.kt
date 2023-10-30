@@ -9,7 +9,6 @@ import com.ead.project.dreamer.app.model.Publicity
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.ChapterHome
 import com.ead.project.dreamer.data.database.model.NewsItem
-import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.domain.ApplicationUseCase
 import com.ead.project.dreamer.domain.HomeUseCase
 import com.ead.project.dreamer.domain.NewsUseCase
@@ -26,7 +25,6 @@ class HomeViewModel @Inject constructor(
     private val homeUseCase: HomeUseCase,
     private val newsUseCase: NewsUseCase,
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
-    val adManager: AdManager,
     val handleChapter: HandleChapter,
     val launchDownload: LaunchDownload
 ): ViewModel() {

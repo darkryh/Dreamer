@@ -43,7 +43,6 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        viewModel.adManager.restore()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -106,21 +105,13 @@ class HomeFragment : Fragment() {
                 setupRecommendations()
             }
 
-            popularSection.apply {
-                textTitle.text = requireContext().getText(R.string.popular_section_title)
+            recentSection.apply {
+                textTitle.text = requireContext().getText(R.string.recent_section_title)
                 recyclerView.apply {
-                    layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                     this@HomeFragment.adapterHome = ChapterHomeRecyclerViewAdapter(
                         activity as Context,
                         viewModel.handleChapter
                     )
-                    adapter = this@HomeFragment.adapterHome
-                }
-            }
-
-            recentSection.apply {
-                textTitle.text = requireContext().getText(R.string.recent_section_title)
-                recyclerView.apply {
                     layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
                     adapter = this@HomeFragment.adapterHome
                     setupHomeList()

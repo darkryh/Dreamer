@@ -68,7 +68,7 @@ class QueryActivity : AppCompatActivity() {
     private fun getRequestedAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return when(queryOption) {
             QUERY_OPTION_CHAPTER_HOME -> ChapterLinearRecyclerViewAdapter(this,viewModel.handleChapter,viewModel.launchDownload)
-            QUERY_OPTION_PROFILE -> ProfileRecyclerViewAdapter(this, preferenceUseCase = viewModel.preferenceUseCase)
+            QUERY_OPTION_PROFILE -> ProfileRecyclerViewAdapter(this)
             else -> ChapterLinearRecyclerViewAdapter(this,viewModel.handleChapter,viewModel.launchDownload)
         }
     }

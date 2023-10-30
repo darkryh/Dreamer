@@ -97,7 +97,7 @@ class ProfileBannerRecyclerViewAdapter(private val context: Context) :
             binding.root.setOnClickListener {
                 it.context.startActivity(
                     Intent(context, AnimeProfileActivity::class.java).apply {
-                        putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                        putExtra(AnimeProfileActivity.PREFERENCE_ID, animeProfile.id)
                         putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
                     }
                 )

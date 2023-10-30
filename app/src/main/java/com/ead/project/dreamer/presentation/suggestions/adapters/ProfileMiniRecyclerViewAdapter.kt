@@ -58,13 +58,12 @@ class ProfileMiniRecyclerViewAdapter(private val context: Context) :
                     diskCachePolicy(CachePolicy.ENABLED)
                 }
 
-                textRating.text = context
-                    .getString(R.string.ratingLayout,animeProfile.rating.toString())
+                textRating.text = context.getString(R.string.rating_layout,animeProfile.rating)
 
                 root.setOnClickListener {
                     context.startActivity(
                         Intent(context, AnimeProfileActivity::class.java).apply {
-                            putExtra(AnimeProfileActivity.PREFERENCE_ID_BASE, animeProfile.id)
+                            putExtra(AnimeProfileActivity.PREFERENCE_ID, animeProfile.id)
                             putExtra(AnimeProfileActivity.PREFERENCE_LINK, animeProfile.reference)
                         })
                 }

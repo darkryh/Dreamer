@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (isVersionDeprecated) {
                     binding.apply {
-                        textVersioning.text = getString(R.string.status_app, AppInfo.version,appBuild.minVersion.toString())
+                        textVersioning.text = getString(R.string.status_app, AppInfo.version,appBuild.minVersion)
                         textVersioning.setVisibility(false)
                         textVersioning.setOnClickListener {
                             val redirectionIntent : Intent = if (AppInfo.isGoogleAppVersion)

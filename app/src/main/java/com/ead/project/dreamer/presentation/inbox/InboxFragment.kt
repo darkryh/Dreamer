@@ -25,7 +25,6 @@ class InboxFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[InboxViewModel::class.java]
-        viewModel.adManager.restore()
     }
 
     override fun onCreateView(

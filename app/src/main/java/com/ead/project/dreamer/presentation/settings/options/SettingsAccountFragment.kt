@@ -52,7 +52,7 @@ class SettingsAccountFragment : PreferenceFragmentCompat() {
                 if (discordUser != null) {
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle(getString(R.string.session))
-                        .setMessage(getString(R.string.warning_logout,null))
+                        .setMessage(getString(R.string.warning_logout,discordUser.username))
                         .setPositiveButton(getString(R.string.confirm)) { _: DialogInterface?, _: Int ->
                             Discord.logout()
                             val intent: Intent? = requireActivity().baseContext.packageManager.getLaunchIntentForPackage(

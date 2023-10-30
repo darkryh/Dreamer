@@ -130,7 +130,7 @@ class ProfileChaptersFragment : Fragment() {
     private fun bindingChapter(chapter: Chapter) {
         binding.apply {
 
-            textCurrentChapterNumber.text = getString(R.string.continue_watching_chapter_number, chapter.number.toString())
+            textCurrentChapterNumber.text = getString(R.string.continue_watching_chapter_number, chapter.number)
 
             currentChapter.setOnClickListener {
 
