@@ -35,6 +35,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -60,13 +61,14 @@ android {
 dependencies {
     
     val roomVersion = "2.6.0"
-    val lottieVersion = "4.2.1"
+    val lottieVersion = "6.1.0"
     val media3Version = "1.1.1"
     val okhttpVersion = "4.11.0"
     val retrofitVersion = "2.9.0"
-    val ktorVersion = "2.3.4"
+    val ktorVersion = "2.3.5"
     val lifecycleVersion = "2.6.2"
     val fragmentsVersion = "2.7.4"
+    val daggerHiltVersion = "2.48.1"
 
     //own libs
     implementation("com.github.darkryh:lifecycle-commons-ktx:0.0.3")
@@ -113,7 +115,7 @@ dependencies {
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     //html parser
-    implementation("org.jsoup:jsoup:1.15.3")
+    implementation("org.jsoup:jsoup:1.16.2")
 
     //data store
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -140,20 +142,19 @@ dependencies {
     implementation("androidx.media3:media3-cast:$media3Version")
 
     //apacheCommons
-    implementation("org.apache.commons:commons-text:1.9")
+    implementation("org.apache.commons:commons-text:1.10.0")
 
     //workManager
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("androidx.hilt:hilt-common:1.0.0")
     implementation("androidx.hilt:hilt-work:1.0.0")
 
-
     //gson
     implementation("com.google.code.gson:gson:2.10.1")
 
     //dagger hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
 
     //lottie
@@ -168,9 +169,9 @@ dependencies {
         // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
         exclude (module = "okhttp")
     }
+
     //gson converter
     implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-
 
     //calculator string
     implementation("net.objecthunter:exp4j:0.4.8")
@@ -179,7 +180,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:22.4.0")
 
     //firebase
-    implementation(enforcedPlatform("com.google.firebase:firebase-bom:31.0.1"))
+    implementation(enforcedPlatform("com.google.firebase:firebase-bom:32.4.0"))
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
