@@ -8,6 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class AppBuild(
     val minVersion: Double,
     val update : Update,
+    val googleBuild: GoogleBuild? = null,
     val resumedVersionNotes : String?,
     val versionNotes : String?,
     val downloadReference : String,
