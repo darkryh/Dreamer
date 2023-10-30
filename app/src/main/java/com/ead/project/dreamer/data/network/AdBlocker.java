@@ -19,8 +19,8 @@ import okio.BufferedSource;
 import okio.Okio;
 
 public class AdBlocker {
-    private static final String AD_HOSTS_FILE = "host.txt";
-    private static final Set<String> AD_HOSTS = new HashSet<>();
+    private static final String HOSTS_FILE = "host.txt";
+    private static final Set<String> HOSTS = new HashSet<>();
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static void init(Context context) {
@@ -35,32 +35,32 @@ public class AdBlocker {
 
     @WorkerThread
     private static void loadFromAssets(Context context) throws IOException {
-        InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
+        InputStream stream = context.getAssets().open(HOSTS_FILE);
         BufferedSource buffer = Okio.buffer(Okio.source(stream));
         String line;
         while ((line = buffer.readUtf8Line()) != null) {
-            AD_HOSTS.add(line);
+            HOSTS.add(line);
         }
         buffer.close();
         stream.close();
     }
 
-    public static boolean isAd(String url) {
+    public static boolean isPermitted(String url) {
         try {
-            return isAdHost(getHost(url));
+            return isPermittedHost(getHost(url));
         } catch (MalformedURLException e) {
             Log.e("error host..", e.toString());
             return false;
         }
     }
 
-    private static boolean isAdHost(String host) {
+    private static boolean isPermittedHost(String host) {
         if (TextUtils.isEmpty(host)) {
             return false;
         }
         int index = host.indexOf(".");
-        return index >= 0 && (AD_HOSTS.contains(host) ||
-                index + 1 < host.length() && isAdHost(host.substring(index + 1)));
+        return index >= 0 && (HOSTS.contains(host) ||
+                index + 1 < host.length() && isPermittedHost(host.substring(index + 1)));
     }
 
     public static WebResourceResponse createEmptyResource() {
