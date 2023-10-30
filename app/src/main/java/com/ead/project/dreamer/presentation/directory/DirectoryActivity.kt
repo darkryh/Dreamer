@@ -12,15 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ead.commons.lib.metrics.getAvailableWidthReference
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
 import com.ead.project.dreamer.app.data.util.system.closeTransition
+import com.ead.project.dreamer.app.data.util.system.handleNotActionBar
 import com.ead.project.dreamer.app.data.util.system.openTransition
 import com.ead.project.dreamer.data.database.model.AnimeBase
 import com.ead.project.dreamer.databinding.ActivityDirectoryBinding
 import com.ead.project.dreamer.presentation.directory.adapter.AnimeBaseRecyclerViewAdapter
-import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -40,7 +38,6 @@ class DirectoryActivity : AppCompatActivity() {
         openTransition(R.anim.fade_in,R.anim.fade_out)
         prepareLayout()
         prepareAdapter()
-        handleIfProfileIsRequestedFromPlayer()
     }
 
     override fun finish() {
@@ -99,19 +96,6 @@ class DirectoryActivity : AppCompatActivity() {
     private fun updateData(animeBaseList: List<AnimeBase>) {
         this.adapter = AnimeBaseRecyclerViewAdapter(animeBaseList, this,isSmallDevice)
         binding.recyclerView.adapter = adapter
-    }
-
-    private fun handleIfProfileIsRequestedFromPlayer() {
-        lifecycleScope.launch {
-            viewModel.playerPreference.collectLatest { playerPreferences ->
-
-                if (playerPreferences.requester.isRequesting) {
-                    viewModel.resetRequestingProfile()
-                    AnimeProfileActivity.launchActivity(this@DirectoryActivity,playerPreferences.requester)
-                }
-
-            }
-        }
     }
 
 }
