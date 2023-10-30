@@ -44,7 +44,6 @@ import com.ead.project.dreamer.data.database.AnimeDatabase
 import com.ead.project.dreamer.data.database.dao.*
 import com.ead.project.dreamer.data.models.DownloadList
 import com.ead.project.dreamer.data.network.WebProvider
-import com.ead.project.dreamer.data.utils.AdManager
 import com.ead.project.dreamer.domain.*
 import com.ead.project.dreamer.domain.apis.app.*
 import com.ead.project.dreamer.domain.apis.discord.*
@@ -151,10 +150,6 @@ object AppModule {
     @Provides
     fun provideActionStore(context: Context) : ActionStore
     = ActionStore(context = context)
-    @Singleton
-    @Provides
-    fun provideAdManager(context: Context) : AdManager
-    = AdManager(context)
 
     @Singleton
     @Provides
