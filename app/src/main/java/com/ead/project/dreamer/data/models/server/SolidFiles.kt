@@ -6,11 +6,7 @@ import com.ead.project.dreamer.data.utils.PatternManager
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class SolidFiles(embeddedUrl:String) : Server(embeddedUrl) {
-
-    override fun onPreExtract() {
-        player = Player.SolidFiles
-    }
+class SolidFiles(embeddedUrl:String) : Server(embeddedUrl,Player.SolidFiles) {
 
     override fun onExtract() {
         try {
