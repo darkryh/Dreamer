@@ -25,7 +25,6 @@ class DirectoryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[DirectoryViewModel::class.java]
-        viewModel.adManager.restore()
     }
 
     override fun onCreateView(
