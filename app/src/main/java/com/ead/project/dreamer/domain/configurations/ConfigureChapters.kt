@@ -31,7 +31,7 @@ class ConfigureChapters @Inject constructor(
         repository.updateAnimeProfile(animeProfile)
     }
 
-    private fun cachingChaptersTrigger (animeProfile: AnimeProfile,byPassFinalState: Boolean) =
+    private fun cachingChaptersTrigger(animeProfile: AnimeProfile,byPassFinalState: Boolean) =
         animeProfile.lastChapterId == 0 ||
         animeProfile.state != AnimeProfile.PROFILE_FINAL_STATE ||
         byPassFinalState
