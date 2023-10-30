@@ -3,9 +3,9 @@ package com.ead.project.dreamer.presentation.player.cast
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -13,6 +13,7 @@ import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.resource.getDrawableFromIdNotNull
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setResourceImageAndColor
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.util.system.hide
@@ -23,9 +24,14 @@ import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.ActivityExpandedControllerCastBinding
 import com.ead.project.dreamer.presentation.player.PlayerViewModel
 import com.ead.project.dreamer.presentation.player.cast.adapters.CastingViewPagerAdapter
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.cast.framework.media.widget.ExpandedControllerActivity
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -61,14 +67,11 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         setCastingFunctionality()
         settingLayouts()
         settingProfile()
+        observeUser()
     }
 
     private fun settingVariables() {
         chapter = viewModel.castManager.getChapter()?:return
-        viewModel.adManager.setUp(
-            returnCase = DiscordUser.isVip(),
-            adId = getString(R.string.ad_unit_id_native_casting)
-        )
         viewModel.castManager.initFactory(this,binding.mediaRouteButton)
     }
 
@@ -107,27 +110,27 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
                 startActivity(Intent.createChooser(shareIntent, "Escoge uno"))
             }
             textTitle.text = chapter?.title
-            textChapterNumber.text = getString(R.string.chapter_number,chapter?.number.toString())
+            textChapterNumber.text = getString(R.string.chapter_number,chapter?.number)
         }
     }
 
     private fun setFunctionality() {
         binding.apply {
+
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            bannerShimmer.show()
+
+            shimmerBanner.show()
             toolbar.navigationIcon = getDrawableFromIdNotNull(R.drawable.ic_down_back_24)
             toolbar.setNavigationOnClickListener { onBack() }
-            btnForward.addSelectableItemEffect()
-            btnRewind.addSelectableItemEffect()
-            btnPlay.addSelectableItemEffect()
+
+            buttonForward.addSelectableItemEffect()
+            buttonRewind.addSelectableItemEffect()
+            buttonPlay.addSelectableItemEffect()
+
             castViewHolderAd = CastViewHolderAd(banner)
-            if (DiscordUser.isVip()) {
-                lnBanner.visibility = View.GONE
-                bannerShimmer.hide()
-            }
-            setupAd()
+
         }
     }
 
@@ -135,16 +138,16 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         binding.apply {
             uiMediaController.bindSeekBar(seekBar)
             uiMediaController.bindTextViewToStreamPosition(textCurrentProgress,true)
-            uiMediaController.bindTextViewToStreamDuration(txvTotalProgress)
+            uiMediaController.bindTextViewToStreamDuration(textTotalProgress)
             uiMediaController.bindImageViewToPlayPauseToggle(
-                btnPlay,
+                buttonPlay,
                 getDrawableFromIdNotNull(R.drawable.ic_play),
                 getDrawableFromIdNotNull(R.drawable.ic_pause),
-                getDrawableFromIdNotNull(R.drawable.cast_ic_expanded_controller_stop),
+                getDrawableFromIdNotNull(com.google.android.gms.cast.framework.R.drawable.cast_ic_expanded_controller_stop),
                 progressBar,
                 true)
-            uiMediaController.bindViewToRewind(btnRewind,30 * DateUtils.SECOND_IN_MILLIS)
-            uiMediaController.bindViewToForward(btnForward,30 * DateUtils.SECOND_IN_MILLIS)
+            uiMediaController.bindViewToRewind(buttonRewind,30 * DateUtils.SECOND_IN_MILLIS)
+            uiMediaController.bindViewToForward(buttonForward,30 * DateUtils.SECOND_IN_MILLIS)
         }
     }
 
@@ -162,13 +165,35 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
         }
     }
 
-    private fun setupAd() {
-        viewModel.adManager.getItem().observe(this) {
-            castViewHolderAd.bindTo(it?:return@observe)
-            binding.banner.root.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
-            binding.bannerShimmer.hide()
-            binding.banner.root.visibility = View.VISIBLE
+    private fun observeUser() {
+        lifecycleScope.launch {
+            Discord.user.collectLatest { user ->
+                if (user != null) {
+                    stateAd(false)
+                    return@collectLatest
+                }
+                setupAd()
+            }
         }
+    }
+
+    private fun setupAd() {
+        val context = this@ExpandedControlsActivity
+
+        val adLoader = AdLoader.Builder(context, context.getString(R.string.ad_unit_id_native_casting))
+            .forNativeAd { ad: NativeAd ->
+                castViewHolderAd.bindTo(ad)
+                stateAd(true)
+            }.build()
+
+        val adRequest = AdRequest.Builder().build()
+        adLoader.loadAd(adRequest)
+    }
+
+    private fun stateAd(showAd : Boolean) {
+        binding.banner.root.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        binding.shimmerBanner.hide()
+        binding.banner.root.setVisibility(showAd)
     }
 
     private fun likeProfile(animeProfile: AnimeProfile) {
@@ -186,15 +211,4 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
              binding.imageLikeProfile.setResourceImageAndColor(R.drawable.ic_favorite_border_24, R.color.white)
     }
 
-    override fun onPause() {
-        viewModel.castManager.onMediaStatus()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        viewModel.castManager.onDestroy()
-        viewModel.adManager.restore()
-        viewModel.adManager.onDestroy()
-        super.onDestroy()
-    }
 }
