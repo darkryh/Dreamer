@@ -25,7 +25,6 @@ class DreamerWebView @JvmOverloads constructor(
 
     companion object {
         const val BLANK_BROWSER = "about:blank"
-        const val TIMEOUT_MS = 10000L
     }
 
 }

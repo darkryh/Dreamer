@@ -6,7 +6,7 @@ public class EmbedServer extends Server {
 
     @Inject
     public EmbedServer(String embeddedUrl,Player player) {
-        super(embeddedUrl);
+        super(embeddedUrl,player);
 
         if (isDownloading) return;
 
