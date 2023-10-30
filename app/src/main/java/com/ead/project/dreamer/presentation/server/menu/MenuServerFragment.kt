@@ -2,7 +2,6 @@ package com.ead.project.dreamer.presentation.server.menu
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.core.view.allViews
 import androidx.core.view.children
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.RoundedCornersTransformation
@@ -29,7 +27,6 @@ import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.databinding.BottomModalMenuPlayerBinding
 import com.ead.project.dreamer.presentation.chapter.checker.ChapterCheckerFragment
 import com.ead.project.dreamer.presentation.player.PlayerActivity
-import com.ead.project.dreamer.presentation.settings.options.SettingsPlayerFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -195,7 +192,16 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun prepareChecker(server: Server) {
         if (chapter.id == 0) {
-            launchChapterChecker(server.videoList,server.isDirect)
+            ChapterCheckerFragment.launch(
+                context = requireActivity() as Context,
+                chapter = chapter,
+                previousChapter = previousChapter,
+                playList = server.videoList,
+                isDirect = server.isDirect,
+                isExternalPlayer = false,
+                isDownloadingMode = isDownloadingMode,
+                isFromContent = isFromContent
+            )
             dismiss()
         }
     }
@@ -206,7 +212,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
                 serverLayout.setOnClickListener {
 
                     serverContainer.allViews.forEach { server -> server.isEnabled = false }
-                    Thread.runInMs({ getSelectedServer(index) }, 175L)
+                    Thread.onClickEffect { getSelectedServer(index) }
 
                 }
             }
@@ -220,7 +226,17 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
                     if (chapter.id == 0) {
 
-                        launchChapterChecker(server.videoList,server.isDirect)
+                        ChapterCheckerFragment.launch(
+                            context = requireActivity() as Context,
+                            chapter = chapter,
+                            previousChapter = previousChapter,
+                            playList = server.videoList,
+                            isDirect = server.isDirect,
+                            isExternalPlayer = false,
+                            isDownloadingMode = isDownloadingMode,
+                            isFromContent = isFromContent
+                        )
+
                         dismiss()
                         return@observeOnce
 
@@ -277,23 +293,6 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun hideServers() {
         menuServerManager.hideServers()
-    }
-
-    private fun launchChapterChecker(playList: List<VideoModel>, isDirect: Boolean, isExternalPlayer: Boolean=false) = ChapterCheckerFragment().apply {
-        val fragmentManager: FragmentManager =
-            (this@MenuServerFragment.activity as FragmentActivity).supportFragmentManager
-        val data = Bundle()
-        data.apply {
-            putParcelable(Chapter.REQUESTED, chapter)
-            putParcelable(Chapter.PREVIOUS_CASTING_MEDIA,previousChapter)
-            putParcelableArrayList(Chapter.PLAY_VIDEO_LIST, playList as ArrayList<out Parcelable>)
-            putBoolean(Chapter.CONTENT_IS_DIRECT,isDirect)
-            putBoolean(SettingsPlayerFragment.PREFERENCE_EXTERNAL_PLAYER,isExternalPlayer)
-            putBoolean(IS_DATA_FOR_DOWNLOADING_MODE,isDownloadingMode)
-            putBoolean(PlayerActivity.IS_FROM_CONTENT_PLAYER,isFromContent)
-        }
-        arguments = data
-        show(fragmentManager, ChapterCheckerFragment.FRAGMENT)
     }
 
     override fun onDestroyView() {
