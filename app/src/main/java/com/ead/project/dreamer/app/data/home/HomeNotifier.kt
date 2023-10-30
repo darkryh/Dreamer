@@ -19,7 +19,7 @@ class HomeNotifier @Inject constructor(
 
     private val chapterNotificationBuilder by lazy {
         context.notificationBuilder(NotificationChannels.CHANNEL_NEW_EPISODES) {
-            setSmallIcon(R.drawable.ic_launcher_foreground)
+            setSmallIcon(R.drawable.ic_new_chapters)
             setAutoCancel(true)
             setOnlyAlertOnce(true)
             color = context.getColorCompact(R.color.orange_peel_dark)
@@ -31,7 +31,7 @@ class HomeNotifier @Inject constructor(
     private val summaryBuilder by lazy {
         context.notificationBuilder(NotificationChannels.CHANNEL_NEW_EPISODES) {
             setContentTitle(context.getString(R.string.new_episodes_available))
-            setSmallIcon(R.drawable.ic_launcher_foreground)
+            setSmallIcon(R.drawable.ic_new_chapters)
             color = context.getColorCompact(R.color.orange_peel_dark)
             setColorized(true)
             setGroup(GROUP_SUMMARY_NEW_EPISODES)
@@ -74,7 +74,7 @@ class HomeNotifier @Inject constructor(
             }*/
 
             setContentTitle(chapter.title)
-            setContentText(context.getString(R.string.chapter_number,chapter.chapterNumber.toString()))
+            setContentText(context.getString(R.string.chapter_number,chapter.chapterNumber))
             setContentIntent(NotificationHandler.getToMainPendingIntent(context,MainActivity.CHAPTER_HOME_TARGET))
             loadImage(chapter.chapterCover)
 
