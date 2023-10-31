@@ -1,14 +1,18 @@
 package com.ead.project.dreamer.presentation.directory.filter
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.databinding.BottomModalFilterBinding
+import com.ead.project.dreamer.presentation.favorites.FavoriteFragment
 import com.ead.project.dreamer.presentation.favorites.FavoriteViewModel
 import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,8 +22,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class FilterFragment : BottomSheetDialogFragment() {
 
     lateinit var viewModel: FavoriteViewModel
-
     lateinit var adapter: ProfileRecyclerViewAdapter
+    private var favoriteFragment : FavoriteFragment?=null
 
     private var state : String?=null
     private var type : String?=null
@@ -71,7 +75,29 @@ class FilterFragment : BottomSheetDialogFragment() {
 
     private fun filtering() {
         viewModel.getFilterDirectory(state,genre).observe(viewLifecycleOwner) {
+            favoriteFragment?.filteredAnimes = it
             adapter.submitList(it)
+        }
+    }
+
+    companion object {
+
+        private const val FRAGMENT = "FILTER_FRAGMENT"
+        fun launch(
+            context: Context,
+            adapter : ProfileRecyclerViewAdapter,
+            favoriteFragment: FavoriteFragment,
+            favoriteViewModel: FavoriteViewModel
+        ) {
+            val fragmentManager: FragmentManager = (context as FragmentActivity).supportFragmentManager
+            val filterFragment = FilterFragment()
+
+            filterFragment.apply {
+                this.adapter = adapter
+                this.favoriteFragment = favoriteFragment
+                this.viewModel = favoriteViewModel
+                this.show(fragmentManager, FRAGMENT)
+            }
         }
     }
 }

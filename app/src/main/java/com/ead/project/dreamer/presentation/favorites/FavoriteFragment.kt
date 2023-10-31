@@ -2,15 +2,15 @@ package com.ead.project.dreamer.presentation.favorites
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.commons.lib.views.setVisibility
+import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.databinding.FragmentFavoritesBinding
 import com.ead.project.dreamer.presentation.directory.filter.FilterFragment
 import com.ead.project.dreamer.presentation.player.content.adapters.ProfileRecyclerViewAdapter
@@ -23,8 +23,10 @@ class FavoriteFragment : Fragment() {
     private var columnCount = 1
 
     private lateinit var viewModel: FavoriteViewModel
-
     private lateinit var adapter: ProfileRecyclerViewAdapter
+
+    private var likedAnimes : List<AnimeProfile> = listOf()
+    var filteredAnimes : List<AnimeProfile> = listOf()
 
     private var _binding : FragmentFavoritesBinding?=null
     private val binding get() = _binding!!
@@ -52,46 +54,36 @@ class FavoriteFragment : Fragment() {
             }
             this@FavoriteFragment.adapter = ProfileRecyclerViewAdapter(
                 context = activity as Context,
-                isFavoriteSegment = true,
                 isFromContent = false,
-                preferenceUseCase = viewModel.preferenceUseCase
+                isFavoriteSegment = true
             )
             adapter = this@FavoriteFragment.adapter
-            countProfile = 0
             setupDirectoryFavoriteList()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        countProfile = 0
-        setupDirectoryFavoriteList()
-    }
-
     private fun prepareLayout(){
         binding.floatButtonSorter.setOnClickListener {
-            launchFilter()
+
+            FilterFragment.launch(
+                context = activity as Context,
+                adapter = adapter,
+                favoriteFragment = this@FavoriteFragment,
+                favoriteViewModel = viewModel
+            )
+
         }
     }
 
-    var countProfile = 0
     private fun setupDirectoryFavoriteList() {
-        viewModel.getLikedDirectory().observe(viewLifecycleOwner) {
+        viewModel.getLikedDirectory().observe(viewLifecycleOwner) { likedAnimes ->
+            binding.textIsEmpty.setVisibility(likedAnimes.isEmpty())
+            if (likedAnimes.isEmpty() || this.likedAnimes == likedAnimes) return@observe
 
-            if (++countProfile == 1) {
-                binding.textIsEmpty.setVisibility(it.isEmpty())
-                if (it.isEmpty()) return@observe
-                adapter.submitList(it)
-            }
+            this.likedAnimes
+            
+            adapter.submitList(likedAnimes)
         }
-    }
-
-    private fun launchFilter() {
-        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
-        val filterFragment = FilterFragment()
-        filterFragment.adapter = adapter
-        filterFragment.viewModel = viewModel
-        filterFragment.show(fragmentManager, null)
     }
 
     override fun onDestroyView() {
