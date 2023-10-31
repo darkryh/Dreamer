@@ -29,7 +29,7 @@
             android:id="@+id/text_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/modo_invitado"
+            android:text="@string/guest_mode"
             android:textColor="?attr/colorPrimaryVariant"
             android:textSize="18sp"
             android:layout_margin="4dp"/>
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:paddingHorizontal="8dp"
-            android:text="@string/usuario"
+            android:text="@string/user"
             android:textSize="13sp"
             android:textColor="@color/grey_accent"
             tools:ignore="TextContrastCheck" />
