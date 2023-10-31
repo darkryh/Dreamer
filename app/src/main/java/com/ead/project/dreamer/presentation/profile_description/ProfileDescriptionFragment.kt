@@ -1,26 +1,39 @@
 package com.ead.project.dreamer.presentation.profile_description
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.justifyInterWord
+import com.ead.commons.lib.views.margin
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.discord.Discord
+import com.ead.project.dreamer.app.data.util.system.hide
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.databinding.FragmentProfileDescriptionBinding
 import com.ead.project.dreamer.presentation.profile.AnimeProfileViewModel
+import com.ead.project.dreamer.presentation.profile.MiniBannerViewHolderAd
 import com.ead.project.dreamer.presentation.profile.adapters.GenreRecyclerViewAdapter
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.nativead.NativeAd
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProfileDescriptionFragment : Fragment() {
 
     private val viewModel : AnimeProfileViewModel by viewModels()
+    private lateinit var miniBannerViewHolderAd: MiniBannerViewHolderAd
 
     private val minLettersCharacter = 240
     private var descriptionOverloaded = false
@@ -43,6 +56,8 @@ class ProfileDescriptionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        miniBannerViewHolderAd = MiniBannerViewHolderAd(binding.banner)
+
         binding.apply {
 
             recyclerViewGenres.apply {
@@ -62,6 +77,8 @@ class ProfileDescriptionFragment : Fragment() {
             }
 
         }
+
+        observeUser()
     }
 
     private fun loadAnimeProfileDetails(animeProfile: AnimeProfile) {
@@ -97,6 +114,42 @@ class ProfileDescriptionFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun observeUser() {
+        lifecycleScope.launch {
+            Discord.user.collectLatest { user ->
+                if (user?.isVip == true) {
+                    stateAd(false,null)
+                    return@collectLatest
+                }
+                setupAd()
+            }
+        }
+    }
+
+    private fun setupAd() {
+        val context = requireContext()
+
+        val adLoader = AdLoader.Builder(context, context.getString(R.string.ad_unit_id_native_profile))
+            .forNativeAd { ad: NativeAd ->
+                miniBannerViewHolderAd.bindTo(ad)
+                stateAd(true,ad)
+            }.build()
+
+        val adRequest = AdRequest.Builder().build()
+        adLoader.loadAd(adRequest)
+    }
+
+    private fun stateAd(showAd : Boolean,nativeAd: NativeAd?) {
+        if (_binding == null) {
+            nativeAd?.destroy()
+            return
+        }
+        binding.banner.root.layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        binding.shimmerBanner.hide()
+        binding.banner.root.setVisibility(showAd)
+        binding.containerRating.margin(dpInTop =  if (!showAd) 0f else return)
     }
 
     private fun wrappedDescription(animeProfile: AnimeProfile, wrapContent : Boolean) {

@@ -95,8 +95,6 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
                 }
             })
             setupTabLayout()
-            if (discordUser?.getAvatarUrl()!= null)
-                imageProfile.load(discordUser.getAvatarUrl()) { transformations(CircleCropTransformation()) }
 
             imvShare.setOnClickListener {
                 shareIntent.type = "text/plain"
@@ -111,6 +109,10 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
             }
             textTitle.text = chapter?.title
             textChapterNumber.text = getString(R.string.chapter_number,chapter?.number)
+
+            imageProfile.load(discordUser?.cdn_avatar?:return@apply) {
+                transformations(CircleCropTransformation())
+            }
         }
     }
 
@@ -168,7 +170,7 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     private fun observeUser() {
         lifecycleScope.launch {
             Discord.user.collectLatest { user ->
-                if (user != null) {
+                if (user?.isVip == true) {
                     stateAd(false)
                     return@collectLatest
                 }

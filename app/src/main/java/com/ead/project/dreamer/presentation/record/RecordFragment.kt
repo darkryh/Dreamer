@@ -7,17 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ead.commons.lib.metrics.getAvailableWidthReference
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.data.models.discord.DiscordUser
+import com.ead.project.dreamer.app.data.discord.Discord
+import com.ead.project.dreamer.data.utils.AdOrder
 import com.ead.project.dreamer.databinding.FragmentRecordsBinding
-import com.ead.project.dreamer.presentation.record.adapters.BannerViewHolderAd
 import com.ead.project.dreamer.presentation.record.adapters.ChapterRecordRecyclerViewAdapter
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.nativead.NativeAd
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -30,7 +34,6 @@ class RecordFragment : Fragment() {
 
     private var _binding : FragmentRecordsBinding?=null
     private val binding get() = _binding!!
-    private lateinit var bannerViewHolderAd: BannerViewHolderAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,22 +51,12 @@ class RecordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initAdSettings()
         initLayouts()
-        setupAds()
+        observeUser()
     }
 
     private fun initLayouts() {
-        bannerViewHolderAd = BannerViewHolderAd(binding.banner)
-        binding.banner.root.visibility = View.GONE
         prepareRecyclerView()
-    }
-
-    private fun initAdSettings() {
-        viewModel.adManager.setUp(
-            returnCase = DiscordUser.isVip(),
-            adId = getString(R.string.ad_unit_id_native_records)
-        )
     }
 
     private fun prepareRecyclerView() {
@@ -77,15 +70,11 @@ class RecordFragment : Fragment() {
         }
     }
 
-    private fun getLayoutManagerMode() : RecyclerView.LayoutManager =
-        when(getAvailableWidthReference(380)) {
-            0 -> {
-                isSmallDevice = true
-                binding.list.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                LinearLayoutManager(requireContext())
-            }
-            else -> GridLayoutManager(requireContext(),getAvailableWidthReference(180))
-        }
+    private fun getLayoutManagerMode() : RecyclerView.LayoutManager {
+        isSmallDevice = true
+        binding.list.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        return LinearLayoutManager(requireContext())
+    }
 
     private fun setupRecords() {
         viewModel.getLiveDataRecords().observe(viewLifecycleOwner) {
@@ -97,22 +86,36 @@ class RecordFragment : Fragment() {
 
             if (isDataEmpty) return@observe
 
-            adapter.submitList(it)
+            viewModel.setRecords(it)
             viewModel.configureRecords(it)
         }
-    }
 
-    private fun setupAds() {
-        viewModel.adManager.getItem().observe(viewLifecycleOwner) {
-
-            bannerViewHolderAd.bindTo(it?:return@observe)
-            binding.banner.root.visibility = View.VISIBLE
-
+        viewModel.records.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            if (AdOrder.isFirstItemAd(it)) {
+                binding.list.smoothScrollToPosition(0)
+            }
         }
     }
 
-    override fun onDestroy() {
-        viewModel.adManager.onDestroy()
-        super.onDestroy()
+    private fun observeUser() {
+        lifecycleScope.launch {
+            Discord.user.collectLatest { user ->
+                setupAd(user?.isVip?:false)
+            }
+        }
+    }
+
+    private fun setupAd(returnCase : Boolean) {
+        if (returnCase) return
+        val context = requireContext()
+
+        val adLoader = AdLoader.Builder(context, context.getString(R.string.ad_unit_id_native_records))
+            .forNativeAd { ad: NativeAd ->
+                viewModel.setRecords(listOf(ad))
+            }.build()
+
+        val adRequest = AdRequest.Builder().build()
+        adLoader.loadAd(adRequest)
     }
 }
