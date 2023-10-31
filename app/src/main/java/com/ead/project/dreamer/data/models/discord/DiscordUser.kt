@@ -8,72 +8,30 @@ data class DiscordUser(
     val avatar: String?,
     val banner: String?,
     val discriminator: String,
-    val email: String,
+    val email: String?,
     val flags: Int,
     val id: String,
     val premium_type: Int,
     val public_flags: Int,
     val username: String,
     val verified: Boolean,
-    val rank : String? = DiscordEAD.RANK_USER,
-    val level : Int = -1
+    val ranks : List<String>
 ) {
-    companion object {
 
-        fun isVip() : Boolean = false
+    private val stringBuilder = StringBuilder()
 
-    }
-
-    fun getAvatarUrl() : String? = if (avatar != null) {
-        "${Discord.CDN_ENDPOINT}/avatars/${id}/${avatar}"
-    }
+    val cdn_avatar get() = if (avatar != null) { "${Discord.CDN_ENDPOINT}/avatars/${id}/${avatar}" }
     else { null }
 
-    fun getRoles(roleIds : List<String>) : DiscordUser  {
-        val level : Int
-        if (roleIds.size in 1..1) {
-
-            level = getRankForCorrespondingId(roleIds[0])
-
+    val all_ranks : String get() = run {
+        ranks.forEach { rankId ->
+            stringBuilder.append("${DiscordEAD.rankFromId(rankId)} ")
         }
-        else {
-
-            var idRol = getRankForCorrespondingId(roleIds[0])
-
-            for (pos in 1 until roleIds.size) {
-                val currentRol = getRankForCorrespondingId(roleIds[pos])
-                if (currentRol < idRol) {
-                    idRol = currentRol
-                }
-            }
-
-            level = idRol
-
-        }
-
-        return copy(
-            level = level,
-            rank = when(level) {
-                5 -> DiscordEAD.RANK_USER
-                4 -> DiscordEAD.RANK_MPV
-                3 -> DiscordEAD.RANK_VIP
-                2 -> DiscordEAD.RANK_ADMIN
-                1 -> DiscordEAD.RANK_OWNER
-                else -> DiscordEAD.RANK_UNKNOWN
-            }
-        )
+        val result = stringBuilder.toString()
+        stringBuilder.clear()
+        return result
     }
 
-    private fun getRankForCorrespondingId(id : String) : Int {
-        return when (id) {
-            DiscordEAD.RANK_USER_ID -> 5
-            DiscordEAD.RANK_MPV_ID -> 4
-            DiscordEAD.RANK_VIP_ID -> 3
-            DiscordEAD.RANK_ADMIN_ID -> 2
-            DiscordEAD.RANK_OWNER_ID -> 1
-            else -> -1
-        }
-    }
+    val isVip get() = ranks.any { rank -> rank == DiscordEAD.RANK_VIP_ID }
 
-    fun isVip() = rank == DiscordEAD.RANK_VIP
 }
