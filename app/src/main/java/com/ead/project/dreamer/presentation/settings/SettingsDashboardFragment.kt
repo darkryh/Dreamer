@@ -52,8 +52,9 @@ class SettingsDashboardFragment : Fragment() {
 
             if (discordUser != null){
                 textUserName.text = discordUser.username
-                textRank.text = discordUser.rank
-                imageAccount.load(discordUser.getAvatarUrl()?:return){
+                textRank.text = discordUser.all_ranks
+
+                imageAccount.load(discordUser.cdn_avatar?:return){
                     transformations(CircleCropTransformation())
                 }
             }
