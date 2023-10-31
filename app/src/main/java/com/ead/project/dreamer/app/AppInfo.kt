@@ -16,7 +16,6 @@ object AppInfo {
     const val WEB_APP = "https://dreamer-ead.net/"
     const val PLAY_STORE_APP = "https://play.google.com/store/apps/details?id=com.ead.project.dreamer"
 
-    const val LOGO_URL = "https://i.ibb.co/6nfLSKL/logo-app.png"
     const val TOPIC = "Dreamer_Topic"
 
     const val CONTACT_DEVELOPER_EMAIL = "darkryhsthreatment@gmail.com"
