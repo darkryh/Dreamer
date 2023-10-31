@@ -32,4 +32,6 @@ class LoginViewModel @Inject constructor(
     fun getDiscordUser() : MutableLiveData<DiscordUser?> = discordUseCase.getDiscordUserData.livedata()
 
     fun getDiscordUserInToGuild(id: String) : MutableLiveData<GuildMember?> = discordUseCase.getDiscordUserInToGuild.livedata(id)
+
+    fun getGuildMember(id : String) = discordUseCase.getDiscordMember.livedata(id)
 }
