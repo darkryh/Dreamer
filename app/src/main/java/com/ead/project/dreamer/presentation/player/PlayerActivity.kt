@@ -15,29 +15,32 @@ import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentManager
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.lifecycle.activity.onBack
 import com.ead.commons.lib.lifecycle.activity.onBackHandle
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
 import com.ead.commons.lib.views.addSelectableItemEffect
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.player.PlayerManager
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.models.VideoModel
 import com.ead.project.dreamer.data.system.extensions.toast
+import com.ead.project.dreamer.data.utils.DimensionUtil
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.data.utils.ui.PlayerOnScaleGestureListener
 import com.ead.project.dreamer.presentation.player.content.PlayerContentFragment
+import com.ead.project.dreamer.presentation.player.content.chapterselector.ChapterSelectorFragment
 import com.ead.project.dreamer.presentation.player.content.scalegesture.ScaleGestureFragment
 import com.ead.project.dreamer.presentation.player.content.trackselector.TrackSelectorFragment
+import com.ead.project.dreamer.presentation.player.model.NextChapterLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -53,6 +56,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     lateinit var chapter: Chapter
+    private var nextChapter : Chapter?= null
     private var previousChapter : Chapter?=null
     var playList : List<VideoModel> = emptyList()
 
@@ -65,22 +69,36 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private val fillMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
     private val fitMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
+    private val nextChapterLayout by lazy {
+        NextChapterLayout(
+            root = findViewById(R.id.next_chapter_root),
+            logo = findViewById(R.id.next_chapter_logo),
+            textNumber = findViewById(R.id.text_next_chapter_number)
+        )
+    }
+
     private val playerView : PlayerView by lazy { findViewById(R.id.styled_player_view) }
-    private val controller : AspectRatioFrameLayout by lazy { findViewById(R.id.dreamer_controller) }
+    private val controller : AspectRatioFrameLayout by lazy { findViewById(R.id.aspect_ratio_controller) }
     private val aspectFrameRatio : AspectRatioFrameLayout by lazy { findViewById(R.id.aspect_ratio) }
 
-    private val bottomControlsPlayer : ConstraintLayout by lazy { findViewById(R.id.bottom_controls) }
-    private val playerCover : RelativeLayout by lazy { findViewById(R.id.relative_cover_dreamer) }
+    private val bottomControlsPlayer : LinearLayout by lazy { findViewById(R.id.bottom_controls) }
+    private val playerCover : RelativeLayout by lazy { findViewById(R.id.relative_cover_casting) }
     private val contentPlayer  : FrameLayout by lazy { findViewById(R.id.frame_content) }
+
+    private val buttonPlayPause : ImageButton by lazy { findViewById(R.id.exo_play_pause) }
+    private val buttonForward : ImageButton by lazy { findViewById(R.id.exo_ffwd) }
+    private val buttonRewind : ImageButton by lazy { findViewById(R.id.exo_rew) }
 
     private val buttonChangeOrientationScreen : LinearLayout by lazy { findViewById(R.id.linear_fullscreen) }
     private val buttonClose : ImageView by lazy { findViewById(R.id.button_close_player) }
     private val buttonSettings : LinearLayout by lazy { findViewById(R.id.linear_settings) }
-    //private val buttonPlaylist : LinearLayout by lazy { findViewById(R.id.ln_play_list) }
+    private val buttonNextChapter : LinearLayout by lazy { findViewById(R.id.linear_next_chapter) }
+    private val buttonPlaylist : LinearLayout by lazy { findViewById(R.id.linear_playlist) }
     private val buttonGesture : LinearLayout by lazy { findViewById(R.id.linear_gesture) }
 
     private val imagePlayerOrientationScreen : ImageView by lazy { findViewById(R.id.button_fullscreen) }
-    private val imageChapterCover : ImageView by lazy { findViewById(R.id.image_cover_dreamer) }
+    private val imageChapterCoverInCasting : ImageView by lazy { findViewById(R.id.image_cover_casting) }
+    private val imageChapterCoverInPlayer : ImageView by lazy { findViewById(R.id.image_logo_current_chapter) }
 
     private val containerContentPlayer : LinearLayout by lazy { findViewById(R.id.content_reference) }
     private val containerPlayerOperations : LinearLayout by lazy { findViewById(R.id.linear_operator) }
@@ -119,7 +137,8 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
             initPlayerGesture()
         }
         initLayouts()
-        launchSuggestions()
+        initSuggestions()
+        observeNextChapter()
     }
 
     private fun initSettings() {
@@ -129,7 +148,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     private fun initPlayer() {
         playerManager.setMediaRouteButton(mediaRouteButton)
         playerManager.initPlayer()
-        setOrientationMode(orientation)
+        setOrientationMode()
         viewModel.updateChapter(previousChapter?:return)
     }
 
@@ -149,11 +168,19 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun initLayouts() {
-        imageChapterCover.load(chapter.cover)
-        //buttonPlaylist.addSelectableItemEffect()
+        imageChapterCoverInCasting.load(chapter.cover)
+        imageChapterCoverInPlayer.load(chapter.cover) {
+            transformations(
+                CircleCropTransformation()
+            )
+        }
+
+        nextChapterLayout.root.addSelectableItemEffect()
+        buttonPlaylist.addSelectableItemEffect()
         buttonSettings.addSelectableItemEffect()
-        imagePlayerOrientationScreen.addSelectableItemEffect()
+        buttonNextChapter.addSelectableItemEffect()
         buttonGesture.addSelectableItemEffect()
+        imagePlayerOrientationScreen.addSelectableItemEffect()
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
@@ -168,12 +195,16 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         buttonChangeOrientationScreen.setOnClickListener {
 
             requestedOrientation =
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (isInPortraitMode()) {
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                 }
                 else {
                     ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
+
+            Thread.runInAWhile {
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
 
         }
 
@@ -191,44 +222,52 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         buttonSettings.setOnClickListener {
 
             if (playerManager.isNotCasting()) {
-                val fragmentManager: FragmentManager = supportFragmentManager
-                val trackSelectorFragment = TrackSelectorFragment()
-                trackSelectorFragment.player = playerManager.currentPlayer as ExoPlayer
-                trackSelectorFragment.playlist = playList.asReversed()
-                trackSelectorFragment.trackSelector = playerManager.trackSelector
-                trackSelectorFragment.playerView = playerManager.playerView
-                trackSelectorFragment.show(fragmentManager, null)
-            }
-            else {
-                toast(getString(R.string.casting_mode))
+
+                TrackSelectorFragment.launch(
+                    context = this@PlayerActivity,
+                    exoPlayer = playerManager.currentPlayer as ExoPlayer,
+                    videoModelList = playList.reversed(),
+                    defaultTrackSelector = playerManager.trackSelector,
+                    playerView = playerManager.playerView
+                )
+
+                return@setOnClickListener
             }
 
+            toast(getString(R.string.casting_mode))
         }
 
         buttonGesture.setOnClickListener {
 
             if (playerManager.isNotCasting()) {
-                val fragmentManager: FragmentManager = supportFragmentManager
-                val scaleGestureFragment = ScaleGestureFragment()
-                scaleGestureFragment.playerView = playerManager.playerView
-                scaleGestureFragment.show(fragmentManager, null)
+
+                ScaleGestureFragment.launch(
+                    context = this@PlayerActivity,
+                    playerView = playerManager.playerView
+                )
+
+                return@setOnClickListener
             }
-            else {
-                toast(getString(R.string.casting_mode))
-            }
+
+            toast(getString(R.string.casting_mode))
+        }
+
+        buttonNextChapter.setOnClickListener {
+
+            viewModel.handleChapter(this@PlayerActivity, nextChapter?:return@setOnClickListener)
 
         }
 
-        /*buttonPlaylist.setOnClickListener {
+        buttonPlaylist.setOnClickListener {
 
-            val fragmentManager: FragmentManager = supportFragmentManager
-            val chapterSelectorFragment = ChapterSelectorFragment()
-            chapterSelectorFragment.isHorizontal = orientation == Configuration.ORIENTATION_LANDSCAPE
-            chapterSelectorFragment.playerView = playerManager.playerView
-            chapterSelectorFragment.chapter = chapter
-            chapterSelectorFragment.show(fragmentManager, null)
+            ChapterSelectorFragment.launch(
+                context = this@PlayerActivity,
+                isHorizontal = !isInPortraitMode(),
+                playerView = playerView,
+                chapter = chapter
+            )
 
-        }*/
+        }
     }
 
     override fun onStart() {
@@ -245,6 +284,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     public override fun onPause() {
         super.onPause()
         playerManager.onPause()
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
     public override fun onStop() {
@@ -258,11 +298,11 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         orientation = resources.configuration.orientation
-        setOrientationMode(orientation)
+        setOrientationMode()
     }
 
-    private fun setOrientationMode(orientation : Int) {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+    private fun setOrientationMode() {
+        if (isInPortraitMode()) {
             portraitMode()
         }
          else {
@@ -271,29 +311,124 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun portraitMode() {
-        imagePlayerOrientationScreen.setImageDrawable(AppCompatResources
-            .getDrawable(this,R.drawable.ic_fullscreen_24))
+
+        imagePlayerOrientationScreen.setImageDrawable(
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.ic_fullscreen_24
+            )
+        )
+
         playerOnScaleGestureListener?.isHorizontalMode = false
+
+        buttonPlayPause.apply {
+            layoutParams.height = DimensionUtil.portraitPlayPause
+            layoutParams.width = DimensionUtil.portraitPlayPause
+            requestLayout()
+        }
+
+        buttonForward.apply {
+            layoutParams.height = DimensionUtil.portraitControls
+            layoutParams.width = DimensionUtil.portraitControls
+            requestLayout()
+            setImageResource(R.drawable.ic_forward_30)
+        }
+
+        buttonRewind.apply {
+            layoutParams.height = DimensionUtil.portraitControls
+            layoutParams.width = DimensionUtil.portraitControls
+            requestLayout()
+            setImageResource(R.drawable.ic_replay_30)
+        }
+
         controller.setAspectRatio(aspectRatio)
         aspectFrameRatio.setAspectRatio(aspectRatio)
+
         textTitle.visibility = View.GONE
+
         aspectFrameRatio.resizeMode = fixedWidthMode
         playerView.resizeMode = fixedWidthMode
         controller.resizeMode = fixedWidthMode
+
+        imageChapterCoverInPlayer.setVisibility(false)
+        buttonNextChapter.setVisibility(nextChapter != null)
+        nextChapterLayout.root.setVisibility(false)
     }
 
     private fun horizontalMode() {
+
         imagePlayerOrientationScreen.setImageDrawable(
-            AppCompatResources
-                .getDrawable(this,R.drawable.ic_fullscreen_exit_24))
+            AppCompatResources.getDrawable(
+                this,
+                R.drawable.ic_fullscreen_exit_24
+            )
+        )
+
         playerOnScaleGestureListener?.isHorizontalMode = true
+
         if (playerManager.isNotCasting()) {
             textTitle.visibility = View.VISIBLE
         }
+
+        buttonPlayPause.apply {
+            layoutParams.height = DimensionUtil.landscapePlayPause
+            layoutParams.width = DimensionUtil.landscapePlayPause
+            requestLayout()
+        }
+
+        buttonForward.apply {
+            layoutParams.height = DimensionUtil.landscapeControls
+            layoutParams.width = DimensionUtil.landscapeControls
+            requestLayout()
+            setImageResource(R.drawable.ic_forward_30_64)
+        }
+
+        buttonRewind.apply {
+            layoutParams.height = DimensionUtil.landscapeControls
+            layoutParams.width = DimensionUtil.landscapeControls
+            requestLayout()
+            setImageResource(R.drawable.ic_replay_30_64)
+        }
+
         aspectFrameRatio.resizeMode = fillMode
-        controller.resizeMode = fillMode
         playerView.resizeMode = fitMode
+        controller.resizeMode = fillMode
+
+        imageChapterCoverInPlayer.setVisibility(true)
+        buttonNextChapter.setVisibility(false)
+        nextChapterLayout.root.setVisibility(nextChapter != null)
     }
+
+    private fun observeNextChapter() {
+        viewModel.geNextChapterFrom(chapter).observe(this) { nextChapter ->
+            this@PlayerActivity.nextChapter = nextChapter
+
+            val nextChapterIsAvailable = nextChapter != null
+            val isInPortraitMode = isInPortraitMode()
+
+            nextChapterLayout.root.setVisibility(nextChapterIsAvailable && !isInPortraitMode)
+            buttonNextChapter.setVisibility(nextChapterIsAvailable && isInPortraitMode)
+
+            if (nextChapter == null) return@observe
+
+            nextChapterLayout.apply {
+
+                root.setOnClickListener {
+                    viewModel.handleChapter(this@PlayerActivity, nextChapter)
+                }
+
+                logo.load(nextChapter.cover) {
+                    transformations(
+                        CircleCropTransformation()
+                    )
+                }
+
+                textNumber.text = getString(R.string.chapter_number_normal,nextChapter.number)
+            }
+        }
+    }
+
+    private fun isInPortraitMode() : Boolean = orientation == Configuration.ORIENTATION_PORTRAIT
 
     //PIP-MODE
 
@@ -347,8 +482,9 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
                 .setAspectRatio(rationalAspectRatio)
             this.enterPictureInPictureMode(params.build())
 
-            Thread.runInMs({checkPIPPermission()}, pipPermissionTimeout)
-
+            Thread.executeIn(pipPermissionTimeout) {
+                checkPIPPermission()
+            }
         }
     }
 
@@ -357,15 +493,12 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         if(!isInPictureInPictureMode) { onBack() }
     }
 
-    private fun launchSuggestions() {
-        contentPlayer.removeAllViews()
-        val fragment = PlayerContentFragment()
-        val data = Bundle()
-        val transaction = supportFragmentManager
-            .beginTransaction()
-        data.putParcelable(Chapter.REQUESTED,chapter)
-        fragment.arguments = data
-        transaction.replace(R.id.frame_content,fragment).commit()
+    private fun initSuggestions() {
+        PlayerContentFragment.launch(
+            context = this@PlayerActivity,
+            contentPlayer = contentPlayer,
+            chapter = chapter
+        )
     }
 
     //Casting
@@ -377,7 +510,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
 
     fun setMetaData() {
         textTitle.text = chapter.title
-        textChapterNumber.text = getString(R.string.chapter_number_short,chapter.number.toString())
+        textChapterNumber.text = getString(R.string.chapter_number_short,chapter.number)
     }
 
     fun preparingLayoutByMode() {
