@@ -8,12 +8,11 @@ import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.BypassInitializer
 import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.worker.Worker
-import com.ead.project.dreamer.app.model.Requester
+import com.ead.project.dreamer.app.model.GoogleBuild
 import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.ApplicationUseCase
 import com.ead.project.dreamer.domain.DirectoryUseCase
-import com.ead.project.dreamer.domain.DiscordUseCase
 import com.ead.project.dreamer.domain.DownloadUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
 import com.ead.project.dreamer.domain.PreferenceUseCase
@@ -33,7 +32,6 @@ class MainActivityViewModel @Inject constructor(
     private val applicationUseCase: ApplicationUseCase,
     private val installWorkers: InstallWorkers,
     private val directoryUseCase: DirectoryUseCase,
-    private val discordUseCase: DiscordUseCase,
     private val objectUseCase: ObjectUseCase,
     private val client: FirebaseClient,
     val downloadUseCase: DownloadUseCase,
@@ -44,13 +42,10 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val preferences = preferenceUseCase.preferences
-    private val playerPreferences = preferenceUseCase.playerPreferences
     private val filesPreferences = preferenceUseCase.filesPreferences
     private val appBuildPreferences = preferenceUseCase.appBuildPreferences
 
     private val bypassInitializer by lazy { BypassInitializer(context) }
-
-    val playerPreference = playerPreferences.preference
 
     init {
         fetchingPreferences()
@@ -90,15 +85,11 @@ class MainActivityViewModel @Inject constructor(
 
     fun getDirectoryState() : Flow<Boolean> = directoryUseCase.getDirectoryState()
 
-    fun resetRequestingProfile() {
-        viewModelScope.launch {
-            playerPreferences.setRequestingProfile(Requester.Deactivate)
-        }
-    }
-
     fun updateVersion(version : Double) {
         appBuildPreferences.updateVersion(version)
     }
+
+    fun getContractIfIsGoogleBuild() : Flow<GoogleBuild?> = appBuildPreferences.googleBuild
 
     private fun fetchingPreferences() {
         filesPreferences.fetchingPreferences()
@@ -156,10 +147,7 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
-    fun getGuildMember(id : String) = discordUseCase.getDiscordMember.livedata(id)
-
     fun updateChapter(chapter: Chapter) = viewModelScope.launch (Dispatchers.IO) {
         objectUseCase.updateObject(chapter)
     }
-
 }
