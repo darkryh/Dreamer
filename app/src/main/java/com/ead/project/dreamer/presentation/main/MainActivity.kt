@@ -16,7 +16,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.ead.commons.lib.lifecycle.activity.showLongToast
 import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
@@ -27,13 +26,16 @@ import com.ead.project.dreamer.app.data.network.NetworkType
 import com.ead.project.dreamer.app.data.util.DirectoryUtil
 import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
+import com.ead.project.dreamer.app.data.util.system.showSnackBar
 import com.ead.project.dreamer.app.model.AppBuild
+import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.ActivityMainBinding
 import com.ead.project.dreamer.presentation.directory.DirectoryActivity
 import com.ead.project.dreamer.presentation.login.LoginActivity
-import com.ead.project.dreamer.presentation.profile.AnimeProfileActivity
+import com.ead.project.dreamer.presentation.main.termsandconditions.TermsAndConditionsActivity
 import com.ead.project.dreamer.presentation.settings.SettingsActivity
 import com.ead.project.dreamer.presentation.update.UpdateActivity
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
@@ -43,7 +45,9 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private val viewModel : MainActivityViewModel by viewModels()
+    private val isGoogleVersion = AppInfo.isGoogleAppVersion
     private val currentVersion = AppInfo.versionValue
+    private var isConnectionUnavailable = true
 
     private var isPostNotificationPermissionGranted = false
     private var isWriteExternalPermissionGranted = false
@@ -68,7 +72,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home,
                 R.id.navigation_inbox,
                 R.id.navigation_news,
-                R.id.navigation_directory,
                 R.id.navigation_records,
             )
         )
@@ -79,14 +82,12 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         initVariables()
         initLayouts()
-        handleSplashArt()
-        settingPermissions()
         observeNetworkState()
         observeDiscordUserState()
         observeDirectoryState()
         observeApplicationState()
         observeNotificationSubscription()
-        handleIfProfileIsRequestedFromPlayer()
+        handleContractInGoogleVersion()
     }
 
     private fun initVariables() {
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initLayouts() {
         binding.apply {
-            editTextMainSearch.setOnClickListener{ goToDirectory() }
+            editTextMainSearch.setOnClickListener { goToDirectory() }
             imageSearch.setOnClickListener { goToDirectory() }
             imageProfile.setResourceImageAndColor(R.drawable.ic_user,R.color.white)
             imageProfile.setOnClickListener { goToSettings() }
@@ -135,15 +136,11 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun handleSplashArt() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) splashScreen
-    }
-
     private fun observeDirectoryState() {
         lifecycleScope.launch {
             viewModel.getDirectoryState().collect { isSynchronized ->
 
-                if (DirectoryUtil.stateSynchronized) {
+                if (DirectoryUtil.stateSynchronized || isConnectionUnavailable) {
                     cancel("No need to collect more")
                     return@collect
                 }
@@ -163,31 +160,31 @@ class MainActivity : AppCompatActivity() {
     private fun observeNetworkState() {
         lifecycleScope.launch {
             Network.networkState.collectLatest { networkType ->
-                if (networkType != NetworkType.Wifi) {
-                    showLongToast(getString(R.string.wifi_warning))
+                isConnectionUnavailable = networkType != NetworkType.Wifi
+                if (isConnectionUnavailable) {
+                    showSnackBar(
+                        rootView = binding.coordinator,
+                        text = getString(R.string.wifi_warning),
+                        color = R.color.orange_peel_dark,
+                        duration = Snackbar.LENGTH_SHORT
+                    )
                 }
             }
         }
     }
 
+
+    private var discordUser : DiscordUser?=null
     private fun observeDiscordUserState() {
-        Discord.userLivedata.observeOnce(this@MainActivity) { discordUser ->
+        lifecycleScope.launch {
+            Discord.user.collectLatest { discordUser ->
+                if (discordUser == null || this@MainActivity.discordUser == discordUser) return@collectLatest
 
-            if (discordUser != null) {
+                this@MainActivity.discordUser = discordUser
 
-                if (discordUser.getAvatarUrl() != null) {
-                    binding.imageProfile.load(discordUser.getAvatarUrl()) {
-                        transformations(CircleCropTransformation())
-                    }
+                binding.imageProfile.load(discordUser.cdn_avatar?:return@collectLatest) {
+                    transformations(CircleCropTransformation())
                 }
-
-                viewModel.getGuildMember(discordUser.id)
-                    .observeOnce(this@MainActivity) { guildMember ->
-                        if (guildMember != null) {
-                            Discord.login(discordUser.getRoles(guildMember.roles))
-                        }
-                    }
-
             }
         }
     }
@@ -225,6 +222,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleContractInGoogleVersion() {
+        lifecycleScope.launch {
+            viewModel.getContractIfIsGoogleBuild().collectLatest { googleBuild ->
+                if (!isGoogleVersion) {
+                    settingPermissions()
+                    return@collectLatest
+                }
+
+
+                if (googleBuild == null || !googleBuild.isTermsAndConditionsAccepted) {
+                    launchActivity(TermsAndConditionsActivity::class.java)
+                }
+                else {
+                    settingPermissions()
+                }
+            }
+        }
+    }
+
     private fun goBackToLogin() { launchActivityAndFinish(LoginActivity::class.java) }
 
     private fun goToDirectory() { launchActivity(DirectoryActivity::class.java) }
@@ -253,30 +269,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun handleIfProfileIsRequestedFromPlayer() {
-        lifecycleScope.launch {
-            viewModel.playerPreference.collectLatest { playerPreferences ->
-
-                if (playerPreferences.requester.isRequesting) {
-                    viewModel.resetRequestingProfile()
-                    AnimeProfileActivity.launchActivity(this@MainActivity,playerPreferences.requester)
-                }
-
-            }
-        }
-    }
-
     companion object {
         const val CHAPTER_HOME_TARGET = "CHAPTER_HOME_TARGET"
     }
 
-    /* para mostrar notificación de configuración
-
-    * isGranted -> {
-                if (Constants.isFirstTimeShowingNotification())
-                    NotificationManager.showSettingNotification(notifier,this)
-                "Granted permission"
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> "Rational permission"
-            else -> "Denied permission"*/
 }
