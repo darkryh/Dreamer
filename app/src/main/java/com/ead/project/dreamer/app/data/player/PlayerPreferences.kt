@@ -2,7 +2,6 @@ package com.ead.project.dreamer.app.data.player
 
 import androidx.datastore.core.DataStore
 import com.ead.project.dreamer.app.model.PlayerPreference
-import com.ead.project.dreamer.app.model.Requester
 import com.ead.project.dreamer.data.database.model.Chapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,13 +66,4 @@ class PlayerPreferences @Inject constructor(
         }
     }
 
-    fun setRequestingProfile(requester: Requester) {
-        scope.launch {
-            store.updateData { playerPreference: PlayerPreference ->
-                playerPreference.copy(
-                    requester = requester
-                )
-            }
-        }
-    }
 }

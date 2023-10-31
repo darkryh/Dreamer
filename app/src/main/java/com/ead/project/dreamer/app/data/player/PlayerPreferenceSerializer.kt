@@ -4,7 +4,6 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
 import androidx.datastore.preferences.protobuf.InvalidProtocolBufferException
 import com.ead.project.dreamer.app.model.PlayerPreference
-import com.ead.project.dreamer.app.model.Requester
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,7 +22,6 @@ object PlayerPreferenceSerializer : Serializer<PlayerPreference> {
         get() = PlayerPreference(
             isInExternalMode = false,
             isInPictureInPictureMode = true,
-            requester = Requester.Deactivate,
             chapter = null,
             castingChapter = null
         )
