@@ -23,4 +23,14 @@ object DiscordEAD {
     const val RANK_ADMIN_ID = "934336329070833674"
     const val RANK_OWNER_ID = "952259476864499782"
 
+    fun rankFromId(id : String) : String {
+        return when(id) {
+            RANK_USER_ID -> RANK_USER
+            RANK_MPV_ID -> RANK_MPV
+            RANK_VIP_ID -> RANK_VIP
+            RANK_ADMIN_ID -> RANK_ADMIN
+            RANK_OWNER_ID -> RANK_OWNER
+            else -> RANK_UNKNOWN
+        }
+    }
 }
