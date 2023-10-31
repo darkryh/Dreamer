@@ -56,7 +56,7 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
                     transformations(CircleCropTransformation())
                 }
             userName.text = it.username
-            rank.text = it.rank
+            rank.text = it.all_ranks
             state.setResourceImageAndColor(R.drawable.ic_check_24,R.color.green)
         }
     }

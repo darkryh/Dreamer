@@ -3,8 +3,6 @@ package com.ead.project.dreamer.app.data.discord
 import android.content.Context
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.data.models.discord.DiscordPreference
 import com.ead.project.dreamer.data.models.discord.DiscordToken
@@ -42,9 +40,6 @@ object Discord {
             discordPreference.discordUser
         }
 
-    val userLivedata : LiveData<DiscordUser?>
-        get() = user.asLiveData()
-
     fun setExchangeCode(exchangeCode : String) = runBlocking {
         store.updateData { discordPreference: DiscordPreference ->
             discordPreference.copy(
@@ -79,25 +74,12 @@ object Discord {
         store.data.first().exchangeCode
     }
 
-    fun isCurrentlyDiscordTokenUsed() = runBlocking {
-        val discordPreference = store.data.first()
-        discordPreference.discordToken?.access_token == discordPreference.accessTokenUsed ||
-                (discordPreference.discordToken?.access_token == null && discordPreference.accessTokenUsed == null)
-    }
-
-    fun isDiscordTokensNotInitialized() = runBlocking {
-        val discordPreference = store.data.first()
-        discordPreference.discordToken?.access_token == null && discordPreference.accessTokenUsed == null
-    }
-
     // Login State method
-    fun login(discordUser: DiscordUser) {
-        scope.launch {
-            store.updateData { discordPreference ->
-                discordPreference.copy(
-                    discordUser = discordUser
-                )
-            }
+    suspend fun login(discordUser: DiscordUser) {
+        store.updateData { discordPreference ->
+            discordPreference.copy(
+                discordUser = discordUser
+            )
         }
     }
 
