@@ -34,7 +34,6 @@ import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import androidx.media3.ui.PlayerView
 import androidx.mediarouter.app.MediaRouteButton
-import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.ads.AdPreferences
 import com.ead.project.dreamer.app.data.files.FilesPreferences
@@ -128,7 +127,6 @@ import com.google.common.util.concurrent.ListenableFuture
 
     fun setMediaRouteButton(mediaRouteButton: MediaRouteButton){
         this.mediaRouteButton = mediaRouteButton
-        this.mediaRouteButton?.setVisibility(castManager.isAvailable)
     }
 
 
@@ -211,6 +209,8 @@ import com.google.common.util.concurrent.ListenableFuture
 
         if (currentPlayer == castPlayer) {
 
+            playerPreferences.setCastingChapter(chapter)
+
             setCastingPlayerFlags()
 
             val reference : String = if (isLocalVideo()) {
@@ -222,7 +222,7 @@ import com.google.common.util.concurrent.ListenableFuture
 
             val metadata = MediaMetadata.Builder().apply {
                 setTitle(chapter.title)
-                setSubtitle(context.getString(R.string.chapter_number,chapter.number.toString()))
+                setSubtitle(context.getString(R.string.chapter_number,chapter.number))
                 setArtworkUri(Uri.parse(chapter.cover))
                 setWriter(context.applicationInfo.name)
             }.build()
@@ -513,14 +513,11 @@ import com.google.common.util.concurrent.ListenableFuture
 
             LocalServer.start()
             LocalServer.add(chapter)
-            startCasting {
+            Thread.onCasting {
                 playOnPlayer(castPlayer)
             }
 
         }
 
     }
-
-    private fun startCasting(task: () -> Unit) = Thread.runInMs(task,1000)
-
 }
