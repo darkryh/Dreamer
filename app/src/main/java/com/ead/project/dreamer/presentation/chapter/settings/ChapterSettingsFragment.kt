@@ -151,6 +151,7 @@ class ChapterSettingsFragment : BottomSheetDialogFragment() {
         const val IS_INSTANCE_A_CHAPTER = "MENU_CHAPTER_IS_INSTANCE_A_CHAPTER"
 
         fun launch(context: Context, chapter: Chapter,isChapter : Boolean) {
+            if (true) return
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val chapterSettings = ChapterSettingsFragment()
             chapterSettings.apply {

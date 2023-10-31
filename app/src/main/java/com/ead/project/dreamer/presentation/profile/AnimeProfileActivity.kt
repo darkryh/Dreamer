@@ -122,7 +122,10 @@ class AnimeProfileActivity : AppCompatActivity() {
                 MaterialAlertDialogBuilder(this@AnimeProfileActivity)
                     .setTitle(getString(R.string.to_download))
                     .setMessage(getString(R.string.message_to_download_all_series,animeProfile?.title.toString()))
-                    .setPositiveButton(getString(R.string.confirm)) { _: DialogInterface?, _: Int -> viewModel.downloadAllChapters(id) }
+                    .setPositiveButton(getString(R.string.confirm)) { _: DialogInterface?, _: Int ->
+                        toast("funcionalidad estara habilitada en versiones posteriores.",Toast.LENGTH_SHORT)
+                        viewModel.downloadAllChapters(id)
+                    }
                     .setNegativeButton(R.string.cancel,null)
                     .show()
             }
