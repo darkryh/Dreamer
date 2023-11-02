@@ -20,7 +20,6 @@ import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppInfo
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.network.Network
 import com.ead.project.dreamer.app.data.network.NetworkType
 import com.ead.project.dreamer.app.data.util.DirectoryUtil
@@ -28,7 +27,7 @@ import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
 import com.ead.project.dreamer.app.data.util.system.showSnackBar
 import com.ead.project.dreamer.app.model.AppBuild
-import com.ead.project.dreamer.data.models.discord.DiscordUser
+import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.databinding.ActivityMainBinding
 import com.ead.project.dreamer.presentation.directory.DirectoryActivity
 import com.ead.project.dreamer.presentation.login.LoginActivity
@@ -36,10 +35,21 @@ import com.ead.project.dreamer.presentation.main.termsandconditions.TermsAndCond
 import com.ead.project.dreamer.presentation.settings.SettingsActivity
 import com.ead.project.dreamer.presentation.update.UpdateActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -51,6 +61,11 @@ class MainActivity : AppCompatActivity() {
 
     private var isPostNotificationPermissionGranted = false
     private var isWriteExternalPermissionGranted = false
+
+    private var appUpdateManager: AppUpdateManager?= null
+
+    private val isUpdateImmediate = true
+    private val updateType = if (isUpdateImmediate) AppUpdateType.IMMEDIATE else AppUpdateType.FLEXIBLE
 
     private lateinit var binding: ActivityMainBinding
 
@@ -121,9 +136,31 @@ class MainActivity : AppCompatActivity() {
         if (permissionRequest.isNotEmpty()) requestPermission.launch(permissionRequest.toTypedArray())
     }
 
+    private val installStateUpdateListener = InstallStateUpdatedListener { installState ->  
+        if (installState.installStatus() == InstallStatus.DOWNLOADED) {
+            showSnackBar(
+                rootView = binding.coordinator,
+                text = "Descarga completa, reiniciando app.",
+                color = R.color.orange_peel_dark,
+                duration = Snackbar.LENGTH_SHORT
+            )
+
+            lifecycleScope.launch {
+                delay(3.seconds)
+                appUpdateManager?.completeUpdate()
+            }
+        }
+    }
+
     override fun onResume() {
         viewModel.onResume()
         super.onResume()
+        if (updateType == AppUpdateType.IMMEDIATE)
+            appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                sendUpdateFlowResult(appUpdateInfo)
+            }
+        }
     }
 
     override fun onPause() {
@@ -134,6 +171,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         viewModel.onDestroy()
         super.onDestroy()
+        if (updateType == AppUpdateType.FLEXIBLE) {
+            appUpdateManager?.unregisterListener(installStateUpdateListener)
+        }
     }
 
     private fun observeDirectoryState() {
@@ -174,15 +214,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private var discordUser : DiscordUser?=null
     private fun observeDiscordUserState() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { discordUser ->
-                if (discordUser == null || this@MainActivity.discordUser == discordUser) return@collectLatest
+            viewModel.getAccount().collectLatest { eadAccount ->
+                if (eadAccount == null) return@collectLatest
 
-                this@MainActivity.discordUser = discordUser
-
-                binding.imageProfile.load(discordUser.cdn_avatar?:return@collectLatest) {
+                binding.imageProfile.load(eadAccount.profileImage?:return@collectLatest){
                     transformations(CircleCropTransformation())
                 }
             }
@@ -202,6 +239,30 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun checkGoogleUpdates() {
+        appUpdateManager?.appUpdateInfo?.addOnSuccessListener { appUpdateInfo ->
+            val updateIsAvailable = appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val updateIsAllowed = when(updateType) {
+                AppUpdateType.FLEXIBLE -> appUpdateInfo.isFlexibleUpdateAllowed
+                AppUpdateType.IMMEDIATE -> appUpdateInfo.isImmediateUpdateAllowed
+                else -> false
+            }
+
+            if (updateIsAvailable && updateIsAllowed) {
+                sendUpdateFlowResult(appUpdateInfo)
+            }
+        }
+    }
+
+    private fun sendUpdateFlowResult(appUpdateInfo : AppUpdateInfo) {
+        appUpdateManager?.startUpdateFlowForResult(
+            appUpdateInfo,
+            updateType,
+            this@MainActivity,
+            GOOGLE_UPDATE_CODE
+        )
     }
 
     private fun updateVersionBuild(appBuild: AppBuild) {
@@ -235,6 +296,11 @@ class MainActivity : AppCompatActivity() {
                     launchActivity(TermsAndConditionsActivity::class.java)
                 }
                 else {
+                    appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+                    if (updateType == AppUpdateType.FLEXIBLE) {
+                        appUpdateManager?.registerListener(installStateUpdateListener)
+                    }
+                    checkGoogleUpdates()
                     settingPermissions()
                 }
             }
@@ -255,6 +321,19 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith(
+        "super.onActivityResult(requestCode, resultCode, data)",
+        "androidx.appcompat.app.AppCompatActivity"
+    ))
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GOOGLE_UPDATE_CODE) {
+            if (resultCode != RESULT_OK) {
+                toast("error google update")
+            }
+        }
+    }
+
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -271,6 +350,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val CHAPTER_HOME_TARGET = "CHAPTER_HOME_TARGET"
+        const val GOOGLE_UPDATE_CODE = 240
     }
 
 }
