@@ -15,13 +15,13 @@ class GetHomeScrap @Inject constructor(
 
     private val preferences = preferenceUseCase.preferences
 
-    operator fun invoke() : ChapterHomeScrap =
+    suspend operator fun invoke() : ChapterHomeScrap =
         get()?: fromApi().also { set(it) }
 
-    fun fromApi() : ChapterHomeScrap = repository.getChapterHomeScrap()
+    suspend fun fromApi() : ChapterHomeScrap = repository.getChapterHomeScrap()
 
-    private fun get() : ChapterHomeScrap? = try {
-        val chapterHomeScrapJson = runBlocking { preferences.getString(ChapterHomeScrap.INSTANCE) }
+    private suspend fun get() : ChapterHomeScrap? = try {
+        val chapterHomeScrapJson = preferences.getString(ChapterHomeScrap.INSTANCE)
         gson.fromJson(chapterHomeScrapJson, ChapterHomeScrap::class.java)
     }
     catch (e : Exception) {

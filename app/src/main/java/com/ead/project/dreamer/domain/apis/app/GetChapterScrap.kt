@@ -14,13 +14,13 @@ class GetChapterScrap @Inject constructor(
 ) {
 
     private val preferences = preferenceUseCase.preferences
-    operator fun invoke() : ChapterScrap =
+    suspend operator fun invoke() : ChapterScrap =
         get()?: fromApi().also { set(it) }
 
-    fun fromApi() : ChapterScrap = repository.getChapterScrap()
+    suspend fun fromApi() : ChapterScrap = repository.getChapterScrap()
 
-    private fun get() : ChapterScrap? = try {
-        val chapterScrapJson = runBlocking { preferences.getString(ChapterScrap.INSTANCE) }
+    private suspend fun get() : ChapterScrap? = try {
+        val chapterScrapJson = preferences.getString(ChapterScrap.INSTANCE)
         gson.fromJson(chapterScrapJson, ChapterScrap::class.java)
     }
     catch (e : Exception) {

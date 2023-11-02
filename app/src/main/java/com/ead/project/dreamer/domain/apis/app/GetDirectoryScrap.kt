@@ -15,13 +15,13 @@ class GetDirectoryScrap @Inject constructor(
 
     private val preferences = preferenceUseCase.preferences
 
-    operator fun invoke() : AnimeBaseScrap =
+    suspend operator fun invoke() : AnimeBaseScrap =
         get() ?: fromApi().also { set(it) }
 
-    fun fromApi() : AnimeBaseScrap = repository.getAnimeBaseScrap()
+    suspend fun fromApi() : AnimeBaseScrap = repository.getAnimeBaseScrap()
 
-    private fun get() : AnimeBaseScrap? = try {
-        val animeBaseScrapJson = runBlocking { preferences.getString(AnimeBaseScrap.INSTANCE) }
+    private suspend fun get() : AnimeBaseScrap? = try {
+        val animeBaseScrapJson = preferences.getString(AnimeBaseScrap.INSTANCE)
         gson.fromJson(animeBaseScrapJson, AnimeBaseScrap::class.java)
     }
     catch (e : Exception) {

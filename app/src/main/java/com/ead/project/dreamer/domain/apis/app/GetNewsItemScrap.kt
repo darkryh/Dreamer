@@ -15,13 +15,13 @@ class GetNewsItemScrap @Inject constructor(
 
     private val preferences = preferenceUseCase.preferences
 
-    operator fun invoke () : NewsItemScrap =
+    suspend operator fun invoke () : NewsItemScrap =
         get()?: fromApi().also { set(it) }
 
-    fun fromApi() : NewsItemScrap = repository.getNewsItemScrap()
+    suspend fun fromApi() : NewsItemScrap = repository.getNewsItemScrap()
 
-    private fun get() : NewsItemScrap? = try {
-        val newsItemScrapJson = runBlocking { preferences.getString(NewsItemScrap.INSTANCE) }
+    private suspend fun get() : NewsItemScrap? = try {
+        val newsItemScrapJson = preferences.getString(NewsItemScrap.INSTANCE)
         gson.fromJson(newsItemScrapJson, NewsItemScrap::class.java)
     }
     catch (e : Exception) {

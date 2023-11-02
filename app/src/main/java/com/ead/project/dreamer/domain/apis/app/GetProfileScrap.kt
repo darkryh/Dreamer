@@ -15,13 +15,13 @@ class GetProfileScrap @Inject constructor(
 
     private val preferences = preferenceUseCase.preferences
 
-    operator fun invoke() : AnimeProfileScrap =
+    suspend operator fun invoke() : AnimeProfileScrap =
         get()?: fromApi().also { set(it) }
 
-    fun fromApi() : AnimeProfileScrap = repository.getAnimeProfileScrap()
+    suspend fun fromApi() : AnimeProfileScrap = repository.getAnimeProfileScrap()
 
-    fun get() : AnimeProfileScrap? = try {
-        val animeProfileScrapJson = runBlocking { preferences.getString(AnimeProfileScrap.INSTANCE) }
+    suspend fun get() : AnimeProfileScrap? = try {
+        val animeProfileScrapJson = preferences.getString(AnimeProfileScrap.INSTANCE)
         gson.fromJson(animeProfileScrapJson, AnimeProfileScrap::class.java)
     } catch (e : Exception) {
         e.printStackTrace()
