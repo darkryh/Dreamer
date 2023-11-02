@@ -32,9 +32,13 @@ import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.preference.APP_BUILD
 import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
 import com.ead.project.dreamer.app.data.preference.AppBuildSerializer
+import com.ead.project.dreamer.app.data.preference.EAD_ACCOUNT
+import com.ead.project.dreamer.app.data.preference.EadAccountSerializer
+import com.ead.project.dreamer.app.data.preference.EadPreferences
 import com.ead.project.dreamer.app.data.preference.Preferences
 import com.ead.project.dreamer.app.model.AdPreference
 import com.ead.project.dreamer.app.model.AppBuild
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.app.model.FilePreference
 import com.ead.project.dreamer.app.model.HomePreference
 import com.ead.project.dreamer.app.model.PlayerPreference
@@ -167,6 +171,13 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideEadPreferences(
+        store : DataStore<EadAccount?>
+    ) : EadPreferences
+    = EadPreferences(store)
+
+    @Singleton
+    @Provides
     fun provideFilesPreferences(
         store : DataStore<FilePreference>,
     ) : FilesPreferences
@@ -234,6 +245,16 @@ object AppModule {
         return DataStoreFactory.create(
             serializer = AppBuildSerializer,
             produceFile = { context.dataStoreFile(APP_BUILD) },
+            corruptionHandler = null
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreEadPreferences(context: Context) : DataStore<EadAccount?> {
+        return DataStoreFactory.create(
+            serializer = EadAccountSerializer,
+            produceFile = { context.dataStoreFile(EAD_ACCOUNT) },
             corruptionHandler = null
         )
     }
@@ -417,12 +438,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideDiscordUseCase(
-        getDiscordMember: GetDiscordMember,
-        getDiscordUserData: GetDiscordUserData,
-        getDiscordUserInToGuild: GetDiscordUserInToGuild,
-        getDiscordUserRefreshToken: GetDiscordUserRefreshToken,
-        getDiscordUserToken: GetDiscordUserToken
-    ) : DiscordUseCase = DiscordUseCase(getDiscordMember, getDiscordUserData, getDiscordUserInToGuild, getDiscordUserRefreshToken, getDiscordUserToken)
+        getDiscordMember: GetDiscordMember
+    ) : DiscordUseCase =
+        DiscordUseCase(getDiscordMember)
 
 
     @Singleton
@@ -556,21 +574,40 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetDiscordMember(repository: AnimeRepository,retrofit: Retrofit) : GetDiscordMember
-    = GetDiscordMember(repository,retrofit)
+    fun provideGetDiscordMember(
+        getDiscordUserData: GetDiscordUserData,
+        getDiscordUserInGuild: GetDiscordUserInGuild,
+        getDiscordUserInToGuild: GetDiscordUserInToGuild,
+        getDiscordUserRefreshToken: GetDiscordUserRefreshToken,
+        getDiscordUserToken: GetDiscordUserToken
+    ) : GetDiscordMember
+    = GetDiscordMember(
+        getDiscordUserToken,
+        getDiscordUserRefreshToken,
+        getDiscordUserData,
+        getDiscordUserInGuild,
+        getDiscordUserInToGuild
+    )
 
     @Singleton
     @Provides
     fun provideGetDiscordUserData(repository: AnimeRepository) : GetDiscordUserData
     = GetDiscordUserData(repository)
 
+
+    @Singleton
+    @Provides
+    fun provideGetDiscordUserInGuild(
+        repository: AnimeRepository
+    ) : GetDiscordUserInGuild
+    = GetDiscordUserInGuild(repository)
+
     @Singleton
     @Provides
     fun provideGetDiscordUserInToGuild(
-        repository: AnimeRepository,
-        context: Context
+        repository: AnimeRepository
     ) : GetDiscordUserInToGuild
-    = GetDiscordUserInToGuild(repository,context)
+    = GetDiscordUserInToGuild(repository)
 
     @Singleton
     @Provides
@@ -856,7 +893,8 @@ object AppModule {
         adPreferences: AdPreferences,
         homePreferences: HomePreferences,
         filesPreferences: FilesPreferences,
-        playerPreferences: PlayerPreferences
+        playerPreferences: PlayerPreferences,
+        eadPreferences: EadPreferences
     ) : PreferenceUseCase =
         PreferenceUseCase(
             appBuildPreferences = appBuildPreferences,
@@ -865,7 +903,8 @@ object AppModule {
             adPreferences = adPreferences,
             homePreferences = homePreferences,
             filesPreferences = filesPreferences,
-            playerPreferences = playerPreferences
+            playerPreferences = playerPreferences,
+            userPreferences = eadPreferences
         )
 
     @Singleton
