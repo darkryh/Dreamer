@@ -15,6 +15,7 @@ object AppInfo {
     const val API_APP = "https://darkryh.github.io/Api_Dreamer/"
     const val WEB_APP = "https://dreamer-ead.net/"
     const val PLAY_STORE_APP = "https://play.google.com/store/apps/details?id=com.ead.project.dreamer"
+    const val DEFAULT_DOWNLOAD_LINK_APP = "https://1fichier.com/?z4ts0rk3jp35ckw6kzat"
 
     const val TOPIC = "Dreamer_Topic"
 
