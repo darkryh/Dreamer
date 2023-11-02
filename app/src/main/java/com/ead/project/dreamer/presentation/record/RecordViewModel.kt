@@ -4,20 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.AdOrder
+import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.RecordsUseCase
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RecordViewModel @Inject constructor(
     private val recordsUseCase: RecordsUseCase,
-    val handleChapter: HandleChapter
+    val handleChapter: HandleChapter,
+    preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
+
+    private val userPreferences = preferenceUseCase.userPreferences
 
     private val adOrder by lazy {
         AdOrder(
@@ -34,6 +40,8 @@ class RecordViewModel @Inject constructor(
            adOrder.setup(list,_records)
        }
    }
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun getLiveDataRecords() : LiveData<List<Chapter>> = recordsUseCase.getRecords.livedata()
 

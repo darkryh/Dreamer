@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ead.project.dreamer.app.data.player.casting.CastManager
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.AdOrder
@@ -17,6 +18,7 @@ import com.ead.project.dreamer.domain.servers.HandleChapter
 import com.google.android.gms.cast.framework.CastContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +37,7 @@ class PlayerViewModel @Inject constructor(
     val preferences = preferenceUseCase.preferences
     val playerPreferences = preferenceUseCase.playerPreferences
     private val adPreferences = preferenceUseCase.adPreferences
+    private val userPreferences = preferenceUseCase.userPreferences
 
     private val adOrder by lazy {
         AdOrder(
@@ -53,6 +56,8 @@ class PlayerViewModel @Inject constructor(
             adOrder.setup(list,_recommendedProfiles)
         }
     }
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun addViewedTime() {
         adPreferences.addViewedTime()

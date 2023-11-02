@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.server.Server
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.domain.PreferenceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -18,14 +20,20 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val appBuildPreferences = preferenceUseCase.appBuildPreferences
-    val preferences = preferenceUseCase.preferences
     private val playerPreferences = preferenceUseCase.playerPreferences
+    private val userPreferences = preferenceUseCase.userPreferences
+    val preferences = preferenceUseCase.preferences
+
 
     val isUnlockedVersion = appBuildPreferences.isUnlockedVersion
     val isDarkMode = appBuildPreferences.isDarkMode
 
     val playerPreferencesFlow = playerPreferences.preference
     val serverPreferenceFlow = Server.serverPreferenceFlow
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
+
+    fun logout() = userPreferences.logout()
 
     fun subscribeToAppTopicIf(isSubscribed : Boolean) {
         if(isSubscribed) {

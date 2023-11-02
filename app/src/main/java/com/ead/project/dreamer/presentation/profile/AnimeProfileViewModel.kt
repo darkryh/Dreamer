@@ -8,6 +8,7 @@ import androidx.work.ExistingWorkPolicy
 import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.data.worker.Worker
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.ChapterUseCase
@@ -21,6 +22,7 @@ import com.ead.project.dreamer.domain.databasequeries.GetChapter
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,6 +41,9 @@ class AnimeProfileViewModel @Inject constructor(
 ): ViewModel() {
 
     val appBuildPreferences = preferenceUseCase.appBuildPreferences
+    private val userPreferences = preferenceUseCase.userPreferences
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
 

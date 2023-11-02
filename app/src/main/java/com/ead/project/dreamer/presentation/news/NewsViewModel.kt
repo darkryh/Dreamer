@@ -7,14 +7,17 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import com.ead.project.dreamer.app.data.worker.Worker
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.models.NewsItemWeb
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.data.utils.AdOrder
 import com.ead.project.dreamer.domain.NewsUseCase
+import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.configurations.LaunchPeriodicTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -23,8 +26,11 @@ import javax.inject.Inject
 class NewsViewModel @Inject constructor(
     private val newsUseCase: NewsUseCase,
     private val launchPeriodicTimeRequest: LaunchPeriodicTimeRequest,
-    private val webProvider: WebProvider
+    private val webProvider: WebProvider,
+    preferenceUseCase: PreferenceUseCase
 ): ViewModel() {
+
+    private val userPreferences = preferenceUseCase.userPreferences
 
     private val adOrder by lazy {
         AdOrder(
@@ -43,6 +49,8 @@ class NewsViewModel @Inject constructor(
             adOrder.setup(list,_news)
         }
     }
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun synchronizeNews() {
         launchPeriodicTimeRequest(
