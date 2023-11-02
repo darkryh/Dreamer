@@ -20,6 +20,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.Dreamer.Web" parent="Theme.Dreamer">
+        <item name="android:statusBarColor">@color/blackPrimary</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="Theme.Dreamer.Translucent" parent="Theme.Dreamer.NoActionBar">
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
@@ -122,10 +127,4 @@
         <item name="itemTextColor">@color/bottom_nav_icon_color</item>
         <item name="itemIconTint">@color/bottom_nav_icon_color</item>
     </style>
-
-    <style name="DialogFragmentTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:background">@drawable/background_rounded_dialog_fragment</item>
-    </style>
-
 </resources>
