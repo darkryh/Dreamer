@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.commons.lib.views.setResourceColor
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
@@ -17,17 +16,11 @@ import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
 import com.ead.project.dreamer.app.data.util.system.launchActivity
 import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
-import com.ead.project.dreamer.data.models.discord.DiscordToken
-import com.ead.project.dreamer.data.models.discord.DiscordUser
-import com.ead.project.dreamer.data.models.discord.GuildMember
 import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.databinding.ActivityLoginBinding
 import com.ead.project.dreamer.presentation.main.MainActivity
 import com.ead.project.dreamer.presentation.web.WebActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
@@ -48,8 +41,6 @@ class LoginActivity : AppCompatActivity() {
         initLayouts()
         observeApplicationState()
         observerAuthentication()
-        observeLoggedUser()
-        observeDiscordState()
     }
 
     private fun initLayouts() {
@@ -136,77 +127,6 @@ class LoginActivity : AppCompatActivity() {
 
                 launchActivity(intent =  Intent(Intent.ACTION_VIEW, Uri.parse(MonosChinos.REGISTER)))
 
-            }
-        }
-    }
-
-    private fun getDiscordUser() {
-        viewModel.getDiscordUser().observe(this) { discordUser ->
-
-            if (discordUser != null) {
-                binding.buttonGuest.text = getString(R.string.accepted_user,discordUser.username)
-                observeDiscordRefreshToken(discordUser)
-            }
-
-        }
-    }
-
-    private var loggedUser : DiscordUser?= null
-    private var guildMember : GuildMember?= null
-    private fun observeLoggedUser() {
-        lifecycleScope.launch {
-            Discord.user.collectLatest { loggedUser ->
-                if (loggedUser == null || this@LoginActivity.loggedUser == loggedUser) return@collectLatest
-
-                this@LoginActivity.loggedUser = loggedUser
-
-                viewModel.getGuildMember(loggedUser.id).observeOnce(this@LoginActivity) { guildMember ->
-                    if (guildMember == null || this@LoginActivity.guildMember == guildMember) return@observeOnce
-
-                    this@LoginActivity.guildMember = guildMember
-
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val loadRoles = async { Discord.login(loggedUser.copy(ranks = guildMember.roles)) }
-                        loadRoles.await().apply {
-                            goToMain()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private var discordToken : DiscordToken?= null
-    private fun observeDiscordState() {
-        viewModel.getDiscordToken().observe(this) { discordToken ->
-            if (discordToken == null || this.discordToken == discordToken) return@observe
-
-            this.discordToken = discordToken
-
-            Discord.setAccessUsedToken(discordToken.access_token)
-            Discord.setDiscordToken(discordToken)
-            getDiscordUser()
-
-        }
-    }
-
-    private var accessToken : DiscordToken?=null
-    private fun observeDiscordRefreshToken(discordUser: DiscordUser) {
-        viewModel.getRefreshToken().observe(this) { accessToken ->
-            if (accessToken == null || this.accessToken == accessToken) return@observe
-
-            this.accessToken = accessToken
-
-            Discord.setDiscordToken(accessToken)
-            getDiscordUserIntoGuild(discordUser)
-
-        }
-    }
-
-    private fun getDiscordUserIntoGuild(discordUser: DiscordUser) {
-        viewModel.getDiscordUserInToGuild(discordUser.id).observe(this) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                Discord.login(discordUser.copy(ranks = emptyList()))
             }
         }
     }
