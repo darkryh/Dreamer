@@ -1,34 +1,50 @@
 package com.ead.project.dreamer.domain.apis.discord
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.models.discord.DiscordToken
-import retrofit2.Call
-import retrofit2.Callback
+import com.ead.project.dreamer.data.retrofit.service.DiscordService
+import okhttp3.FormBody
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Response
+import retrofit2.awaitResponse
 import javax.inject.Inject
 
 class GetDiscordUserRefreshToken @Inject constructor(
     private val repository: AnimeRepository
 ) {
+    suspend operator fun invoke(refreshToken : String) : Response<DiscordToken?> {
 
-    fun livedata () : MutableLiveData<DiscordToken?> = getRefreshAccessToken()
+        val interceptor = Interceptor { chain ->
+            var request = chain.request()
 
-    private var refreshDiscordToken : MutableLiveData<DiscordToken?>?= null
+            val requestBuilder = request.newBuilder()
+            val formBody = FormBody.Builder()
+                .add("grant_type","refresh_token")
+                .add("client_id", Discord.CLIENT_ID)
+                .add("client_secret", Discord.CLIENT_SECRET)
+                .add("redirect_uri", Discord.REDIRECT_URI)
+                .add("refresh_token",refreshToken)
+                .build()
 
-    private fun getRefreshAccessToken() : MutableLiveData<DiscordToken?> {
-        val discordService = repository.getDiscordService(repository.getDiscordUserRefreshTokenRetrofit())
-        val response : Call<DiscordToken?> = discordService.getAccessToken()
-        response.enqueue(object : Callback<DiscordToken?> {
-            override fun onResponse(call: Call<DiscordToken?>, response: Response<DiscordToken?>) {
-                try { if (response.isSuccessful) refreshDiscordToken?.value = response.body() }
-                catch ( e : Exception) { e.printStackTrace() }
-            }
-            override fun onFailure(call: Call<DiscordToken?>, t: Throwable) {
-                Log.e("error", "onFailure: ${t.cause?.message.toString()}", )
-            }
-        })
-        return refreshDiscordToken?:MutableLiveData<DiscordToken?>().also { refreshDiscordToken = it }
+            request = requestBuilder.post(formBody)
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .build()
+
+            chain.proceed(request)
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
+        val retrofit = repository.getDiscordRetrofit().newBuilder()
+            .client(okHttpClient)
+            .build()
+
+        val discordService = retrofit.create(DiscordService::class.java)
+
+        return discordService.getAccessToken().awaitResponse()
     }
 }

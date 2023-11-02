@@ -1,35 +1,43 @@
 package com.ead.project.dreamer.domain.apis.discord
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.ead.project.dreamer.data.AnimeRepository
 import com.ead.project.dreamer.data.models.discord.DiscordUser
-import retrofit2.Call
-import retrofit2.Callback
+import com.ead.project.dreamer.data.retrofit.service.DiscordService
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Response
+import retrofit2.awaitResponse
 import javax.inject.Inject
 
 class GetDiscordUserData @Inject constructor(
     private val repository: AnimeRepository
 ) {
 
-    fun livedata () :  MutableLiveData<DiscordUser?> = getUserData()
+    suspend operator fun invoke(accessToken : String) : Response<DiscordUser?> {
 
-    private var discordUser : MutableLiveData<DiscordUser?>?= null
+        val interceptor = Interceptor { chain ->
+            var request = chain.request()
 
-    private fun getUserData() : MutableLiveData<DiscordUser?> {
-        discordUser?.value = null
-        val discordService = repository.getDiscordService(repository.getDiscordAuthRetrofit())
-        val response : Call<DiscordUser?> = discordService.getCurrentUser()
-        response.enqueue(object : Callback<DiscordUser?> {
-            override fun onResponse(call: Call<DiscordUser?>, response: Response<DiscordUser?>) {
-                try { if (response.isSuccessful) discordUser?.value = response.body() }
-                catch ( e : Exception) { e.printStackTrace() }
-            }
-            override fun onFailure(call: Call<DiscordUser?>, t: Throwable) {
-                Log.e("error", "onFailure: ${t.cause?.message.toString()}")
-            }
-        })
-        return discordUser?:MutableLiveData<DiscordUser?>().also { discordUser = it }
+            val requestBuilder = request.newBuilder()
+
+            request = requestBuilder.get()
+                .header("Authorization","Bearer $accessToken")
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .build()
+
+            chain.proceed(request)
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
+
+        val retrofit = repository.getDiscordRetrofit().newBuilder()
+            .client(okHttpClient)
+            .build()
+
+        val discordService = retrofit.create(DiscordService::class.java)
+
+        return discordService.getCurrentUser().awaitResponse()
     }
 }
