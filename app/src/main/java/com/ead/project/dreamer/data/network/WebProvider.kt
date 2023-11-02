@@ -35,27 +35,28 @@ import java.io.IOException
 import javax.inject.Inject
 
 class WebProvider @Inject constructor(
-    getHomeScrap: GetHomeScrap,
-    getDirectoryScrap: GetDirectoryScrap,
-    getProfileScrap: GetProfileScrap,
-    getChapterScrap: GetChapterScrap,
-    getNewsItemScrap: GetNewsItemScrap,
-    getNewsItemWebScrap: GetNewsItemWebScrap
+    private val getHomeScrap: GetHomeScrap,
+    private val getDirectoryScrap: GetDirectoryScrap,
+    private val getProfileScrap: GetProfileScrap,
+    private val getChapterScrap: GetChapterScrap,
+    private val getNewsItemScrap: GetNewsItemScrap,
+    private val getNewsItemWebScrap: GetNewsItemWebScrap
 ) {
 
-    private val chapterHomeScrap : ChapterHomeScrap = getHomeScrap()
-    private val animeBaseScrap : AnimeBaseScrap = getDirectoryScrap()
-    private val animeProfileScrap : AnimeProfileScrap = getProfileScrap()
-    private val chapterScrap : ChapterScrap = getChapterScrap()
+    private var chapterHomeScrap : ChapterHomeScrap? = null
+    private var animeBaseScrap : AnimeBaseScrap? = null
+    private var animeProfileScrap : AnimeProfileScrap? = null
+    private var chapterScrap : ChapterScrap? = null
 
-    private val newsItemScrap : NewsItemScrap = getNewsItemScrap()
-    private val newsItemWebScrap : NewsItemWebScrap = getNewsItemWebScrap()
+    private var newsItemScrap : NewsItemScrap? = null
+    private var newsItemWebScrap : NewsItemWebScrap? = null
 
-    fun getChaptersHome(
+    suspend fun getChaptersHome(
         firstChapter: ChapterHome,
     ): List<ChapterHome> {
 
         val auxChapterList = mutableListOf<ChapterHome>()
+        val chapterHomeScrap = chapterHomeScrap?:getHomeScrap().also { chapterHomeScrap = it }
 
         try {
             val doc = Jsoup.connect(MonosChinos.URL).get()
@@ -89,7 +90,9 @@ class WebProvider @Inject constructor(
         return auxChapterList
     }
 
-    fun requestingData (sectionPos : Int) : List<AnimeBase> {
+    suspend  fun requestingData (sectionPos : Int) : List<AnimeBase> {
+
+        val animeBaseScrap = animeBaseScrap?:getDirectoryScrap().also { animeBaseScrap = it }
 
         val document = Jsoup.connect(MonosChinos.URL + MonosChinos.LIST)
             .userAgent(DreamerRequest.userAgent()).get()
@@ -102,7 +105,7 @@ class WebProvider @Inject constructor(
         val elementsTesting = Jsoup.connect(MonosChinos.URL + MonosChinos.PAGE + 1)
             .userAgent(DreamerRequest.userAgent()).get().getElementsByClass(animeBaseScrap.classList)
         val attrImage = getAttrImage(elementsTesting,animeBaseScrap.imageContainer)
-        val animeBaseTest = getAnimeBaseTest(elementsTesting,attrImage)
+        val animeBaseTest = getAnimeBaseTest(animeBaseScrap,elementsTesting,attrImage)
 
         if (animeBaseTest.isWorking())
             for (page in section.first until section.second + 1) {
@@ -136,14 +139,16 @@ class WebProvider @Inject constructor(
         return auxChapterList
     }
 
-    private fun getAnimeBaseTest(elements: Elements,attrImage: String) : AnimeBase = AnimeBase(0, elements.getCatch(0).select(animeBaseScrap.titleContainer).attr("title"), elements.getCatch(0).select(animeBaseScrap.imageContainer).attr(attrImage), elements.getCatch(0).select(animeBaseScrap.referenceContainer).attr("href"), elements.getCatch(0).select(animeBaseScrap.typeContainer).text().split(" · ").getCatch(0), elements.getCatch(0).select(animeBaseScrap.yearContainer).text().split(" · ").getCatch(1).toIntCatch())
+    private fun getAnimeBaseTest(animeBaseScrap: AnimeBaseScrap,elements: Elements,attrImage: String) : AnimeBase = AnimeBase(0, elements.getCatch(0).select(animeBaseScrap.titleContainer).attr("title"), elements.getCatch(0).select(animeBaseScrap.imageContainer).attr(attrImage), elements.getCatch(0).select(animeBaseScrap.referenceContainer).attr("href"), elements.getCatch(0).select(animeBaseScrap.typeContainer).text().split(" · ").getCatch(0), elements.getCatch(0).select(animeBaseScrap.yearContainer).text().split(" · ").getCatch(1).toIntCatch())
 
     private fun requestDirectorySize(document: Document) : Int {
         val refLinkPages = document.getElementsByClass("page-item")
         return refLinkPages.getCatch(refLinkPages.size - 2).text().toIntCatch()
     }
 
-    fun getAnimeProfile(idProfile: Int,reference: String): AnimeProfile {
+    suspend fun getAnimeProfile(idProfile: Int,reference: String): AnimeProfile {
+
+        val animeProfileScrap = animeProfileScrap?:getProfileScrap().also { animeProfileScrap = it }
 
         val document = Jsoup.connect(reference).get()
 
@@ -168,10 +173,12 @@ class WebProvider @Inject constructor(
         )
     }
 
-    fun getChaptersFromProfile(
+    suspend fun getChaptersFromProfile(
         lastChapter: Chapter,
         reference : String,
         idProfile : Int) : List<Chapter> {
+
+        val chapterScrap = chapterScrap?:getChapterScrap().also { chapterScrap = it }
 
         val document = Jsoup.connect(reference).get()
 
@@ -199,8 +206,10 @@ class WebProvider @Inject constructor(
         return chaptersList
     }
 
-    fun getNews(firstNewItem : NewsItem) : List<NewsItem> {
+    suspend fun getNews(firstNewItem : NewsItem) : List<NewsItem> {
         val auxNewsList = mutableListOf<NewsItem>()
+        val newsItemScrap = newsItemScrap?:getNewsItemScrap().also { newsItemScrap = it }
+
         try {
             val doc = Jsoup.connect(SomosKudasai.URL).get()
 
@@ -225,7 +234,8 @@ class WebProvider @Inject constructor(
         return auxNewsList
     }
 
-    fun getWebPageNews(reference: String) : NewsItemWeb? {
+    suspend  fun getWebPageNews(reference: String) : NewsItemWeb? {
+        val newsItemWebScrap = newsItemWebScrap?: getNewsItemWebScrap().also { newsItemWebScrap = it }
         return try {
             val doc = Jsoup.connect(reference).get()
 
