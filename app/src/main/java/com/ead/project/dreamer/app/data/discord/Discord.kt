@@ -1,13 +1,16 @@
 package com.ead.project.dreamer.app.data.discord
 
+import com.ead.project.dreamer.data.models.discord.DISCORD_CLIENT_ID
+import com.ead.project.dreamer.data.models.discord.DISCORD_CLIENT_SECRET
+
 object Discord {
 
     // Constants
     const val ENDPOINT = "https://discord.com/api/v10/"
     const val CDN_ENDPOINT = "https://cdn.discordapp.com"
 
-    const val CLIENT_ID = "934278886412406814"
-    const val CLIENT_SECRET = "e1xHywqylVMB6P4PjpL-5p_M0dmYHy79"
+    const val CLIENT_ID = DISCORD_CLIENT_ID
+    const val CLIENT_SECRET = DISCORD_CLIENT_SECRET
     const val REDIRECT_URI = "https://discord.com/channels/@me"
 
     const val LOGIN_PAGE = "oauth2/authorize?response_type=code&" +
