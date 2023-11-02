@@ -13,5 +13,6 @@ data class GuildMember(
     val pending: Boolean,
     val premium_since: Date?,
     val roles: List<String>,
+    val unusual_dm_activity_until: String?,
     val user: UserIn
 )
