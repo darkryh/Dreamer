@@ -14,16 +14,18 @@ class NotificationManager @Inject constructor(private val context: Context) {
 
     private val marketingNotificationBuilder by lazy {
         context.notificationBuilder(NotificationChannels.CHANNEL_MARKETING) {
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_foreground))
+            setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher))
+            setSmallIcon(R.drawable.ic_new_chapters)
             setAutoCancel(true)
             setOnlyAlertOnce(true)
+            setGroup(GROUP_SUMMARY_MARKETING)
         }
     }
 
     private val marketingSummaryBuilder by lazy {
         context.notificationBuilder(NotificationChannels.CHANNEL_MARKETING) {
             setContentTitle(context.getString(R.string.marketing))
-            setSmallIcon(R.drawable.ic_play)
+            setSmallIcon(R.drawable.ic_new_chapters)
             setGroup(GROUP_SUMMARY_MARKETING)
             setGroupSummary(true)
         }

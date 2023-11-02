@@ -14,12 +14,13 @@ class InAppMessaging: FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("testing", "onNewToken: $token")
+        Log.d("InAppMessaging", "token: $token")
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        notifier.onMarketing(message.notification?:return)
+        val notification = message.notification ?: return
+        notifier.onMarketing(notification)
         notifier.createGroupMarketingSummaryNotification()
     }
 }
