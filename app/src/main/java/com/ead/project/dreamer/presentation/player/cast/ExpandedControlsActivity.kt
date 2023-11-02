@@ -15,12 +15,10 @@ import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.util.system.hide
 import com.ead.project.dreamer.app.data.util.system.show
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
-import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.databinding.ActivityExpandedControllerCastBinding
 import com.ead.project.dreamer.presentation.player.PlayerViewModel
 import com.ead.project.dreamer.presentation.player.cast.adapters.CastingViewPagerAdapter
@@ -40,7 +38,6 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
     private val viewModel : PlayerViewModel by viewModels()
 
     private var chapter : Chapter?= null
-    private val discordUser : DiscordUser? = Discord.getUser()
     private lateinit var viewPager: CastingViewPagerAdapter
     private var count = 0
 
@@ -109,10 +106,6 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
             }
             textTitle.text = chapter?.title
             textChapterNumber.text = getString(R.string.chapter_number,chapter?.number)
-
-            imageProfile.load(discordUser?.cdn_avatar?:return@apply) {
-                transformations(CircleCropTransformation())
-            }
         }
     }
 
@@ -169,10 +162,17 @@ class ExpandedControlsActivity  : ExpandedControllerActivity() {
 
     private fun observeUser() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                if (user?.isVip == true) {
-                    stateAd(false)
-                    return@collectLatest
+            viewModel.getAccount().collectLatest { eadAccount ->
+                if (eadAccount != null) {
+                    if (eadAccount.profileImage != null) {
+                        binding.imageProfile.load(eadAccount.profileImage) {
+                            transformations(CircleCropTransformation())
+                        }
+                    }
+                    if (eadAccount.isVip) {
+                        stateAd(false)
+                        return@collectLatest
+                    }
                 }
                 setupAd()
             }
