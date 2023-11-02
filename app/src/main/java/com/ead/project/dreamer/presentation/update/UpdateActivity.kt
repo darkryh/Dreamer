@@ -24,8 +24,6 @@ class UpdateActivity : AppCompatActivity() {
     private lateinit var appBuild : AppBuild
     private var installingCount = 0
 
-    private var isRequestInstallPackagePermissionGranted = false
-
     private val binding : ActivityUpdateBinding by lazy {
         ActivityUpdateBinding.inflate(layoutInflater)
     }
@@ -35,7 +33,6 @@ class UpdateActivity : AppCompatActivity() {
         initVariables()
         setupLayouts()
         bindingUpdate()
-        settingPermission()
     }
 
     private fun initVariables() {
@@ -58,10 +55,20 @@ class UpdateActivity : AppCompatActivity() {
             textResumedVersion.text = appBuild.resumedVersionNotes ?:getString(R.string.content_new_version_download)
 
             buttonDownloadAndInstall.setOnClickListener {
+                if (!canRequestUpdate()) {
+
+                    requestInstallPermission()
+
+                    return@setOnClickListener
+                }
+
                 if (viewModel.updateUseCase.isAlreadyDownloaded()) {
+
                     installUpdate()
+
                 }
                 else {
+
                     viewModel.updateUseCase.getUpdate(viewModel.downloadUpdate(appBuild)).observe(this@UpdateActivity) { download ->
                         if (download == null) return@observe
 
@@ -77,33 +84,31 @@ class UpdateActivity : AppCompatActivity() {
 
                         installUpdate()
                     }
+
                 }
             }
         }
 
     }
 
-    private fun settingPermission() {
-        isRequestInstallPackagePermissionGranted = packageManager.canRequestPackageInstalls()
+    private fun requestInstallPermission() {
+        toast(getString(R.string.requesting_installer_permission))
 
-        if (!isRequestInstallPackagePermissionGranted) {
-            val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+        val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
 
-            if (intent.resolveActivity(packageManager) != null) {
-                startActivity(intent)
-            } else {
-                toast(getString(R.string.couldnt_open_package_installer))
-            }
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            toast(getString(R.string.couldnt_open_package_installer))
         }
     }
 
-    private fun installUpdate() {
-        isRequestInstallPackagePermissionGranted = packageManager.canRequestPackageInstalls()
+    private fun canRequestUpdate() : Boolean {
+        return packageManager.canRequestPackageInstalls()
+    }
 
-        if (isRequestInstallPackagePermissionGranted)
-            Apk.install(this@UpdateActivity,viewModel.appBuildPreferences.getLastVersionFile())
-        else
-            toast(getString(R.string.cant_install_update_warning))
+    private fun installUpdate() {
+        Apk.install(this@UpdateActivity,viewModel.appBuildPreferences.getLastVersionFile())
     }
 
     companion object {
