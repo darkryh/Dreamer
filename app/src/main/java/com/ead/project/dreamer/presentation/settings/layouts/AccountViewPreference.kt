@@ -5,18 +5,23 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
-import com.ead.commons.lib.views.setResourceImageAndColor
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 
 
-class AccountViewPreference(context: Context, attrs: AttributeSet?) :
-    Preference(context, attrs) {
+class AccountViewPreference@JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet,
+    defStyleAttr: Int = 0
+) : Preference(context, attrs, defStyleAttr) {
+
+    private val _isBinded : MutableLiveData<Boolean> = MutableLiveData(false)
+    val isBinded : LiveData<Boolean> = _isBinded
+
     private var _profile: ImageView? = null
     val profile get() = _profile!!
 
@@ -29,38 +34,20 @@ class AccountViewPreference(context: Context, attrs: AttributeSet?) :
     private var _rank : TextView?= null
     val rank get() = _rank!!
 
-    private var accountClickListener: View.OnClickListener? = null
-
-    private val discordUser = Discord.getUser()
-
     init { widgetLayoutResource = R.layout.layout_account_view_preference }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        _profile = holder.findViewById(R.id.image_account) as ImageView
-        _state = holder.findViewById(R.id.image_state) as ImageView
-        _userName = holder.findViewById(R.id.text_user_name) as TextView
-        _rank = holder.findViewById(R.id.text_rank) as TextView
-        _profile?.setOnClickListener(accountClickListener)
-        val root = _profile?.parent as View
-        root.addSelectableItemEffect()
-        root.setOnClickListener { /*to do*/ }
-        bindUser()
-    }
+        with(holder.itemView) {
+            _profile = findViewById(R.id.image_account)
+            _state = findViewById(R.id.image_state_account)
+            _userName = findViewById(R.id.text_user_name_account)
+            _rank = findViewById(R.id.text_rank_account)
+            val root = _profile?.parent as View
 
-    private fun bindUser() {
-        discordUser?.let {
-            if (it.avatar != null)
-                profile.load(
-                    Discord.CDN_ENDPOINT + "/avatars/${it.id}/${it.avatar}") {
-                    transformations(CircleCropTransformation())
-                }
-            userName.text = it.username
-            rank.text = it.all_ranks
-            state.setResourceImageAndColor(R.drawable.ic_check_24,R.color.green)
+            root.addSelectableItemEffect()
+            root.setOnClickListener { /*Clicking effect*/ }
         }
+        _isBinded.value = true
     }
-
-    @JvmName("setAccountClickListener")
-    fun setAccountClickListener(onClickListener: View.OnClickListener?) { accountClickListener = onClickListener }
 }
