@@ -3,6 +3,8 @@ package com.ead.project.dreamer.presentation.chapter.checker
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -76,7 +78,9 @@ class ChapterCheckerFragment : DialogFragment() {
         binding.imageCoverChecker.load(chapter.cover){
             transformations(RoundedCornersTransformation(20f.toPixels()))
         }
-        return builder.create()
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
     }
 
     override fun onCreateView(
