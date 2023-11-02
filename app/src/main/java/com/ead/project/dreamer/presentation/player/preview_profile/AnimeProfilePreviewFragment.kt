@@ -3,6 +3,8 @@ package com.ead.project.dreamer.presentation.player.preview_profile
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +17,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.size.Scale
+import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
+import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.system.extensions.toast
@@ -56,7 +60,9 @@ class AnimeProfilePreviewFragment : DialogFragment() {
         _binding = FragmentAnimeProfilePreviewBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(binding.root)
-        return builder.create()
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
     }
 
     override fun onCreateView(
@@ -64,9 +70,18 @@ class AnimeProfilePreviewFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_anime_profile_preview, container, false)
+        initLayouts()
         observeProfile()
         observeChapters()
         return view
+    }
+
+    private fun initLayouts() {
+        binding.apply {
+
+            imageClose.setOnClickListener { dismiss() }
+
+        }
     }
 
     private fun observeProfile() {
@@ -120,6 +135,7 @@ class AnimeProfilePreviewFragment : DialogFragment() {
         binding.apply {
             imageCover.load(animeProfile.coverPhoto) {
                 scale(Scale.FIT)
+                transformations(RoundedCornersTransformation(topLeft = 20f.toPixels(), topRight = 20f.toPixels()))
             }
             textTitle.text = animeProfile.title
         }
