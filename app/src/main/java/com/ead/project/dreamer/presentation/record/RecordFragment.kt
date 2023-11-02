@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.data.utils.AdOrder
 import com.ead.project.dreamer.databinding.FragmentRecordsBinding
 import com.ead.project.dreamer.presentation.record.adapters.ChapterRecordRecyclerViewAdapter
@@ -100,8 +99,8 @@ class RecordFragment : Fragment() {
 
     private fun observeUser() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                setupAd(user?.isVip?:false)
+            viewModel.getAccount().collectLatest { eadAccount ->
+                setupAd(eadAccount?.isVip?:false)
             }
         }
     }

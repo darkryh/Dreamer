@@ -15,7 +15,6 @@ import com.ead.commons.lib.views.justifyInterWord
 import com.ead.commons.lib.views.margin
 import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.util.system.hide
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.databinding.FragmentProfileDescriptionBinding
@@ -118,8 +117,8 @@ class ProfileDescriptionFragment : Fragment() {
 
     private fun observeUser() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                if (user?.isVip == true) {
+            viewModel.getAccount().collectLatest { eadAccount ->
+                if (eadAccount?.isVip == true) {
                     stateAd(false,null)
                     return@collectLatest
                 }

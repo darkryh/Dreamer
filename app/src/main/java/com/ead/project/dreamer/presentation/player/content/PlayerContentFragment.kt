@@ -16,7 +16,6 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.data.database.model.AnimeProfile
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.databinding.FragmentPlayerContentBinding
@@ -109,8 +108,8 @@ class PlayerContentFragment : Fragment() {
 
     private fun observeUser() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                setupAds(user?.isVip?:false)
+            viewModel.getAccount().collectLatest { eadAccount ->
+                setupAds(eadAccount?.isVip?:false)
             }
         }
     }

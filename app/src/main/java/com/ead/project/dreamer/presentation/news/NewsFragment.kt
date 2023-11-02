@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ead.project.dreamer.R
-import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.databinding.FragmentNewsBinding
 import com.ead.project.dreamer.presentation.news.adapters.NewsItemRecyclerViewAdapter
 import com.google.android.gms.ads.AdLoader
@@ -78,8 +77,8 @@ class NewsFragment : Fragment() {
 
     private fun observeUser() {
         lifecycleScope.launch {
-            Discord.user.collectLatest { user ->
-                setupAds(user?.isVip?:false)
+            viewModel.getAccount().collectLatest { eadAccount ->
+                setupAds(eadAccount?.isVip?:false)
             }
         }
     }
