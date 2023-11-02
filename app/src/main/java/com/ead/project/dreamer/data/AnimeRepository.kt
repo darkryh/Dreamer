@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.data
 
 import com.ead.project.dreamer.app.AppInfo
+import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
 import com.ead.project.dreamer.app.data.util.system.getCatch
 import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
@@ -9,16 +10,22 @@ import com.ead.project.dreamer.app.model.scraper.ChapterHomeScrap
 import com.ead.project.dreamer.app.model.scraper.ChapterScrap
 import com.ead.project.dreamer.app.model.scraper.NewsItemScrap
 import com.ead.project.dreamer.app.model.scraper.NewsItemWebScrap
-import com.ead.project.dreamer.data.database.dao.*
-import com.ead.project.dreamer.data.database.model.*
-import com.ead.project.dreamer.data.retrofit.interceptor.*
+import com.ead.project.dreamer.data.database.dao.AnimeBaseDao
+import com.ead.project.dreamer.data.database.dao.AnimeProfileDao
+import com.ead.project.dreamer.data.database.dao.ChapterDao
+import com.ead.project.dreamer.data.database.dao.ChapterHomeDao
+import com.ead.project.dreamer.data.database.dao.NewsItemDao
+import com.ead.project.dreamer.data.database.model.AnimeBase
+import com.ead.project.dreamer.data.database.model.AnimeProfile
+import com.ead.project.dreamer.data.database.model.Chapter
+import com.ead.project.dreamer.data.database.model.ChapterHome
+import com.ead.project.dreamer.data.database.model.NewsItem
 import com.ead.project.dreamer.data.retrofit.service.ApplicationService
-import com.ead.project.dreamer.data.retrofit.service.DiscordService
 import com.ead.project.dreamer.data.retrofit.service.MonosChinosService
 import kotlinx.coroutines.flow.Flow
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.await
 import javax.inject.Inject
 
 
@@ -173,78 +180,59 @@ class AnimeRepository @Inject constructor(
 
     fun getFlowNewsItemsCensuredLimited() : Flow<List<NewsItem>> = newsItemDao.getFlowDataListCensuredLimited()
 
-
-    //DISCORD API
-    
-    fun getDiscordService(retrofit: Retrofit) : DiscordService =
-        retrofit.create(DiscordService::class.java)
-
-    fun getDiscordUserTokenRetrofit() : Retrofit = retrofit.newBuilder()
-        .client(OkHttpClient.Builder().addInterceptor(AccessInterceptor()).build()).build()
-
-    fun getDiscordUserRefreshTokenRetrofit() : Retrofit = retrofit.newBuilder()
-        .client(OkHttpClient.Builder().addInterceptor(RefreshInterceptor()).build()).build()
-
-    fun getDiscordAuthRetrofit() : Retrofit = retrofit.newBuilder()
-        .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor()).build()).build()
-
-    fun getDiscordGuildRetrofit() : Retrofit = retrofit.newBuilder()
-        .client(OkHttpClient.Builder().addInterceptor(GuildInterceptor()).build()).build()
-
-    @Suppress("unused")
-    private fun getDiscordUserAccessTokenDiscord() = retrofit.newBuilder()
-    .client(OkHttpClient.Builder().addInterceptor(UserAccessInterceptorInterceptor()).build()).build()
-
-
     //APP API
 
     fun getAppRetrofit() : Retrofit =
         retrofit.newBuilder().baseUrl(AppInfo.API_APP)
             .build()
 
+    fun getDiscordRetrofit() : Retrofit =
+        retrofit.newBuilder().baseUrl(Discord.ENDPOINT)
+            .build()
+
     fun getAppService(retrofit: Retrofit) : ApplicationService =
         retrofit.create(ApplicationService::class.java)
 
-    fun getAnimeBaseScrap() : AnimeBaseScrap {
+    suspend fun getAnimeBaseScrap() : AnimeBaseScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<AnimeBaseScrap> = appService.getAnimeBaseScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getAnimeProfileScrap() : AnimeProfileScrap {
+    suspend fun getAnimeProfileScrap() : AnimeProfileScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<AnimeProfileScrap> = appService.getAnimeProfileScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getChapterHomeScrap() : ChapterHomeScrap {
+    suspend fun getChapterHomeScrap() : ChapterHomeScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<ChapterHomeScrap> = appService.getChapterHomeScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getChapterScrap() : ChapterScrap {
+    suspend fun getChapterScrap() : ChapterScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<ChapterScrap> = appService.getChapterScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getNewsItemScrap() : NewsItemScrap {
+    suspend fun getNewsItemScrap() : NewsItemScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<NewsItemScrap> = appService.getNewsItemScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getNewsItemWebScrap() : NewsItemWebScrap {
+    suspend fun getNewsItemWebScrap() : NewsItemWebScrap {
         val appService = getAppService(getAppRetrofit())
         val response : Call<NewsItemWebScrap> = appService.getNewsItemWebScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
-    fun getServerScript() : String {
+    suspend fun getServerScript() : String {
         val appService = getAppService(getAppRetrofit())
         val response : Call<String> = appService.getServerScriptScrap()
-        return response.execute().body()!!
+        return response.await()
     }
 
     // MONOS-CHINOS API
