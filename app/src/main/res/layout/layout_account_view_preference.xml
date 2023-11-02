@@ -26,7 +26,7 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/text_user_name"
+            android:id="@+id/text_user_name_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/guest_mode"
@@ -35,7 +35,7 @@
             android:layout_margin="4dp"/>
 
         <TextView
-            android:id="@+id/text_rank"
+            android:id="@+id/text_rank_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/image_state"
+        android:id="@+id/image_state_account"
         android:layout_gravity="center"
         android:layout_marginHorizontal="32dp"
         android:layout_width="32dp"
