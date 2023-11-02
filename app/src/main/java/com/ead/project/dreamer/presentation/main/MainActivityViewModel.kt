@@ -8,6 +8,7 @@ import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.BypassInitializer
 import com.ead.project.dreamer.app.data.player.casting.CastManager
 import com.ead.project.dreamer.app.data.worker.Worker
+import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.app.model.GoogleBuild
 import com.ead.project.dreamer.app.repository.FirebaseClient
 import com.ead.project.dreamer.data.database.model.Chapter
@@ -44,6 +45,7 @@ class MainActivityViewModel @Inject constructor(
     private val preferences = preferenceUseCase.preferences
     private val filesPreferences = preferenceUseCase.filesPreferences
     private val appBuildPreferences = preferenceUseCase.appBuildPreferences
+    private val userPreferences = preferenceUseCase.userPreferences
 
     private val bypassInitializer by lazy { BypassInitializer(context) }
 
@@ -78,6 +80,8 @@ class MainActivityViewModel @Inject constructor(
             client.inAppMessage.unsubscribeFromTopic(AppInfo.TOPIC)
         }
     }
+
+    fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun getIsAppNotificationActivated() : Flow<Boolean> = preferences.getBooleanFlow(AppInfo.TOPIC,true)
 
