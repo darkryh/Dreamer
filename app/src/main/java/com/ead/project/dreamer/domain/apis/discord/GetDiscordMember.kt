@@ -1,35 +1,80 @@
 package com.ead.project.dreamer.domain.apis.discord
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.ead.project.dreamer.data.AnimeRepository
+import com.ead.project.dreamer.app.model.EadAccount
+import com.ead.project.dreamer.app.model.TypeAccount
+import com.ead.project.dreamer.data.models.discord.DiscordToken
+import com.ead.project.dreamer.data.models.discord.DiscordUser
 import com.ead.project.dreamer.data.models.discord.GuildMember
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import com.ead.project.dreamer.data.models.discord.SignInResult
+import java.io.IOException
 import javax.inject.Inject
 
 class GetDiscordMember @Inject constructor(
-    private val repository: AnimeRepository,
-    private val retrofit: Retrofit
+    private val getDiscordUserToken: GetDiscordUserToken,
+    private val getDiscordUserRefreshToken: GetDiscordUserRefreshToken,
+    private val getDiscordUserData: GetDiscordUserData,
+    private val getDiscordUserInGuild: GetDiscordUserInGuild,
+    private val getDiscordUserInToGuild: GetDiscordUserInToGuild
 ) {
 
-    fun livedata(id : String) :  MutableLiveData<GuildMember?> = getGuildMember(id)
+    @Throws(IOException::class)
+    suspend operator fun invoke(code : String) : SignInResult {
+        return try {
+            val userToken = getDiscordUserToken(code).body()?:
+            return errorResult(message = "Error reconocimiento de token de cambio.")
 
-    private var guildMember : MutableLiveData<GuildMember?>?= null
+            val discordUser = getDiscordUserData(userToken.access_token).body()?:
+            return errorResult(message = "Error sincronizando cuenta.")
 
-    private fun getGuildMember(id : String) : MutableLiveData<GuildMember?> {
-        val response : Call<GuildMember?> = repository.getDiscordService(retrofit).getGuildMember(id)
-        response.enqueue(object : Callback<GuildMember?> {
-            override fun onResponse(call: Call<GuildMember?>, response: Response<GuildMember?>) {
-                try { if (response.isSuccessful) guildMember?.value = response.body() }
-                catch ( e : Exception) { e.printStackTrace() }
+            val guildMember = getDiscordUserInGuild(discordUser.id).body()
+
+            return if (guildMember != null) {
+                successfulResult(
+                    discordUser = discordUser,
+                    guildMember = guildMember
+                )
             }
-            override fun onFailure(call: Call<GuildMember?>, t: Throwable) {
-                Log.e("error", "onFailure: ${t.cause?.message.toString()}")
+            else {
+                val refreshToken : DiscordToken = getDiscordUserRefreshToken(userToken.refresh_token).body()?:
+                return errorResult(message = "Error reconocimiento de refresh token.")
+
+                successfulResult(
+                    discordUser = discordUser,
+                    guildMember = getDiscordUserInToGuild(refreshToken.access_token,discordUser.id).body()?:
+                    return errorResult(message = "Error de ingreso en guild.")
+                )
             }
-        })
-        return guildMember?:MutableLiveData<GuildMember?>().also { guildMember = it }
+        }
+        catch (exception : IOException) {
+            exception.printStackTrace()
+            errorResult(message = "Error conexión : ${exception.message}")
+        }
+        catch (exception : Exception) {
+            exception.printStackTrace()
+            errorResult(message = exception.message)
+        }
+    }
+
+    private fun successfulResult(discordUser: DiscordUser, guildMember: GuildMember) : SignInResult {
+        return SignInResult(
+            data = EadAccount(
+                id = discordUser.id,
+                typeAccount = TypeAccount.Discord,
+                displayName = discordUser.username,
+                email = discordUser.email,
+                profileImage = discordUser.cdn_avatar,
+                banner = discordUser.banner,
+                locale = discordUser.locale,
+                ranks = guildMember.roles
+            ),
+            errorMessage = null
+        )
+    }
+
+    private fun errorResult(message : String?) : SignInResult {
+        return SignInResult(
+            data = null,
+            errorMessage = message
+        )
     }
 }
