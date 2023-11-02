@@ -1,6 +1,7 @@
 package com.ead.project.dreamer.presentation.web
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.webkit.WebView
@@ -13,10 +14,12 @@ import com.ead.commons.lib.metrics.getScreenSize
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.discord.Discord
 import com.ead.project.dreamer.app.data.util.HttpUtil
+import com.ead.project.dreamer.app.data.util.system.launchActivityAndFinish
 import com.ead.project.dreamer.data.system.extensions.toast
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.data.utils.receiver.DreamerRequest
 import com.ead.project.dreamer.databinding.ActivityWebBinding
+import com.ead.project.dreamer.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.net.URI
 
@@ -44,9 +47,9 @@ class WebActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        intent.extras?.let {
-            action = it.getInt(WEB_ACTION)
-            url = it.getString(WEB_ACTION_URL)?:return@let
+        intent.extras?.apply {
+            action = getInt(WEB_ACTION)
+            url = getString(WEB_ACTION_URL)?:return@apply
         }
         orientation = resources.configuration.orientation
     }
@@ -129,16 +132,23 @@ class WebActivity : AppCompatActivity() {
 
     private fun loginWithDiscord(url: String) {
         if (url.isDiscordUserLogged()) {
-            Discord.setExchangeCode(url.getDiscordExchangeCode())
-            getDiscordToken()
+            signInDiscordWithToken(url.getDiscordExchangeCode())
         }
     }
 
-    private fun getDiscordToken() {
-        viewModel.getToken().observe(this) { discordToken ->
-            if (discordToken != null) {
-                finish()
+    private fun signInDiscordWithToken(code : String) {
+        viewModel.signInDiscord(code).observe(this) { signInResult ->
+            if (signInResult.data == null) {
+                toast(signInResult.errorMessage?:"Error desconocido.")
+                return@observe
             }
+            viewModel.login(signInResult.data)
+            launchActivityAndFinish(
+                intent = Intent(this@WebActivity,MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                }
+            )
         }
     }
 
