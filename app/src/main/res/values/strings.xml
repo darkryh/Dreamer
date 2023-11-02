@@ -43,6 +43,7 @@
     <string name="chapter_number">Capítulo número %1$d</string>
     <string name="continue_watching_chapter_number">Seguir viendo desde capítulo número %1$d</string>
     <string name="cant_install_update_warning">No hay permiso de instalación, se recomienda habilitar en las propiedades del la app manualmente.</string>
+    <string name="requesting_installer_permission">Solicitando, permiso para actualizar dreamer.</string>
     <string name="couldnt_open_package_installer">Error abriendo configuración de PackageInstaller</string>
     <string name="chapter_number_hint">Capítulo a buscar</string>
     <string name="chapter_number_short">Cap. %1$d</string>
@@ -351,4 +352,5 @@
     <string name="extern">Externo</string>
     <string name="keep_watching_chapter_1">Seguir viendo capítulo 1</string>
     <string name="enter">enter</string>
+    <string name="linkdin_developer">linkdin_developer</string>
 </resources>
