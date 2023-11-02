@@ -43,7 +43,7 @@
             android:name=".presentation.news.NewsActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
-            android:theme="@style/Theme.Dreamer.NoActionBar" />
+            android:theme="@style/Theme.Dreamer.Translucent"/>
         <activity
             android:name=".presentation.player.PlayerWebActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
@@ -51,6 +51,7 @@
         <activity
             android:name=".presentation.web.WebActivity"
             android:exported="false"
+            android:theme="@style/Theme.Dreamer.Web"
             android:launchMode="singleInstance" />
         <activity
             android:name=".presentation.settings.SettingsActivity"
