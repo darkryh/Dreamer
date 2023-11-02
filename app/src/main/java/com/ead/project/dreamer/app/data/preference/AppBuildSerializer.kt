@@ -29,7 +29,7 @@ object AppBuildSerializer : Serializer<AppBuild> {
                 googleBuild = null,
                 resumedVersionNotes = null,
                 versionNotes = null,
-                downloadReference = "https://dreamer-ead.net/resources/downloads/DreamerRelease1.40.apk",
+                downloadReference = AppInfo.DEFAULT_DOWNLOAD_LINK_APP,
                 currentVersionDeprecated = false,
                 isUnlockedVersion = true,
                 isDarkTheme = false
