@@ -16,8 +16,8 @@ android {
         applicationId = "com.ead.project.dreamer"
         minSdk = 26
         targetSdk = 34
-        versionCode = 20
-        versionName = "1.91"
+        versionCode = 22
+        versionName = "1.921"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -69,6 +69,7 @@ dependencies {
     val lifecycleVersion = "2.6.2"
     val fragmentsVersion = "2.7.4"
     val daggerHiltVersion = "2.48.1"
+    val googlePlayInAppUpdateVersion = "2.1.0"
 
     //own libs
     implementation("com.github.darkryh:lifecycle-commons-ktx:0.0.3")
@@ -177,7 +178,7 @@ dependencies {
     implementation("net.objecthunter:exp4j:0.4.8")
 
     //admob
-    implementation("com.google.android.gms:play-services-ads:22.4.0")
+    implementation("com.google.android.gms:play-services-ads:22.5.0")
 
     //firebase
     implementation(enforcedPlatform("com.google.firebase:firebase-bom:32.4.0"))
@@ -198,4 +199,7 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-partial-content:$ktorVersion")
 
+    //play In-App Update:
+    implementation("com.google.android.play:app-update:$googlePlayInAppUpdateVersion")
+    implementation("com.google.android.play:app-update-ktx:$googlePlayInAppUpdateVersion")
 }
