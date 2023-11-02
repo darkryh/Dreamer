@@ -17,12 +17,13 @@ interface DiscordService {
     fun getCurrentUser() : Call<DiscordUser?>
 
     @Headers("Authorization: Bot ${DiscordEAD.BOT_TOKEN}")
-    @GET("guilds/${DiscordEAD.SERVER_ID}/members/{id}")
+    @GET("guilds/${DiscordEAD.ID}/members/{id}")
     fun getGuildMember(
         @Path("id") userId:String
     ) : Call<GuildMember?>
 
-    @PUT("guilds/${DiscordEAD.SERVER_ID}/members/{id}")
+    @Headers("Authorization: Bot ${DiscordEAD.BOT_TOKEN}")
+    @PUT("guilds/${DiscordEAD.ID}/members/{id}")
     fun getUserIntoGuild(
         @Path("id") userId:String
     ) : Call<GuildMember?>
