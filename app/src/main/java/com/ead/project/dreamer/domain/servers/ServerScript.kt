@@ -12,20 +12,17 @@ class ServerScript @Inject constructor(
 ) {
 
     private val preferences = preferenceUseCase.preferences
-    operator fun invoke() : String {
+    operator fun invoke() : String = runBlocking {
         val code = get()
         if (code != "null") {
-            return code
+            return@runBlocking code
         }
-        return fromApi().also { set(it) }
+        return@runBlocking fromApi().also { set(it) }
     }
 
-    fun fromApi() : String = repository.getServerScript()
+    suspend fun fromApi() : String = repository.getServerScript()
 
-    private fun get() : String =
-        runBlocking { preferences.getString(Server.PREFERENCE_SERVER_SCRIPT) }
+    private suspend fun get() : String = preferences.getString(Server.PREFERENCE_SERVER_SCRIPT)
 
-    private fun set(code : String) = runBlocking {
-        preferences.set(Server.PREFERENCE_SERVER_SCRIPT,code)
-    }
+    private suspend fun set(code : String) = preferences.set(Server.PREFERENCE_SERVER_SCRIPT,code)
 }
