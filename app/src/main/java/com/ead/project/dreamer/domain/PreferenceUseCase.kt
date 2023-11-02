@@ -6,6 +6,7 @@ import com.ead.project.dreamer.app.data.files.FilesPreferences
 import com.ead.project.dreamer.app.data.home.HomePreferences
 import com.ead.project.dreamer.app.data.player.PlayerPreferences
 import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
+import com.ead.project.dreamer.app.data.preference.EadPreferences
 import com.ead.project.dreamer.app.data.preference.Preferences
 
 data class PreferenceUseCase(
@@ -15,5 +16,6 @@ data class PreferenceUseCase(
     val adPreferences: AdPreferences,
     val homePreferences: HomePreferences,
     val filesPreferences: FilesPreferences,
-    val playerPreferences: PlayerPreferences
+    val playerPreferences: PlayerPreferences,
+    val userPreferences: EadPreferences
 )
