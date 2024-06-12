@@ -18,6 +18,7 @@ import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
+import com.ead.commons.lib.resource.getDrawableFromId
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.preference.AppBuildPreferences
 import com.ead.project.dreamer.app.data.util.system.toPixels
@@ -75,8 +76,15 @@ class ChapterCheckerFragment : DialogFragment() {
         _binding = FragmentDialogCheckerBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(binding.root)
-        binding.imageCoverChecker.load(chapter.cover){
-            transformations(RoundedCornersTransformation(20f.toPixels()))
+        binding.imageCoverChecker.apply {
+            if (chapter.cover.isNotBlank()) {
+                load(chapter.cover) {
+                    transformations(RoundedCornersTransformation(20f.toPixels()))
+                }
+            }
+            else {
+                setImageDrawable(getDrawableFromId(R.drawable.ic_launcher_foreground))
+            }
         }
         val dialog = builder.create()
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
