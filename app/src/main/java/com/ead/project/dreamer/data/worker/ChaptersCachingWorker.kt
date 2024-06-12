@@ -9,6 +9,7 @@ import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.ChapterUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +19,9 @@ import java.io.IOException
 
 @HiltWorker
 class ChaptersCachingWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
+    private val profileUseCase: ProfileUseCase,
     private val chapterUseCase: ChapterUseCase,
     private val objectUseCase: ObjectUseCase,
     private val webProvider: WebProvider
@@ -35,18 +37,29 @@ class ChaptersCachingWorker @AssistedInject constructor(
                 val reference = array[2]
                 val chapterId = array[3].toInt()
 
-                val chapter = getChapterIfChapterExist(size, chapterId)
+                val localChapters = chapterUseCase.getChapters(id)
+                val title = (profileUseCase.getProfile(id)?:
+                return@withContext Result.failure()).title
 
-                val requestedProfileChapters = async {
+                val localChaptersToCompare = localChapters.map { it.toComparison() }
+
+                val requestedChaptersToCompare = async {
                     webProvider.getChaptersFromProfile(
-                        chapter,
                         reference,
-                        id) }
+                        id,
+                        title,
+                        context
+                    ) }
 
-                requestedProfileChapters.await().apply {
-                    objectUseCase.insertObject(this)
+                requestedChaptersToCompare.await().apply {
+                    val remainingChapters = this.filter { chapterToCompare ->
+                        chapterToCompare !in localChaptersToCompare
+                    }.map { it.toChapter() }
+
+                    objectUseCase.insertObject(remainingChapters)
                     Result.success()
                 }
+
                 Result.failure()
             }
             catch (ex : IOException) {
@@ -55,18 +68,4 @@ class ChaptersCachingWorker @AssistedInject constructor(
             }
         }
     }
-
-    private suspend fun getChapterIfChapterExist(size : Int,chapterId : Int) : Chapter {
-        if (size <= 0) chapterUseCase.getChapter.fromId(chapterId).apply { if (this != null) return this }
-        return fakeChapter
-    }
-
-    private val fakeChapter : Chapter = Chapter(
-        id = 0,
-        idProfile = 0,
-        title = "null",
-        cover = "null",
-        number = -1,
-        reference = "null"
-    )
 }
