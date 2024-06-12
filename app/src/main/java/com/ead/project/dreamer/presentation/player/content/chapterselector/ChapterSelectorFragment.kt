@@ -60,7 +60,7 @@ class ChapterSelectorFragment : BottomSheetDialogFragment() {
         chapter = viewModel.playerPreferences.getChapter()?:return
         binding.recyclerViewChapters.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapterChapters = ChapterRecyclerViewAdapter(requireActivity() as Context, handleChapter = viewModel.handleChapter)
+            adapterChapters = ChapterRecyclerViewAdapter(requireActivity() as Context, handleChapter = viewModel.handleChapter, getProfile = viewModel.getProfile)
             adapter = adapterChapters
             setupRecords()
         }
