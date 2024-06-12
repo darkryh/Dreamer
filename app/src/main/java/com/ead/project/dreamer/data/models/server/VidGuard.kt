@@ -1,11 +1,10 @@
 package com.ead.project.dreamer.data.models.server
 
+import android.content.Context
 import com.ead.project.dreamer.data.models.EmbedServer
-import com.ead.project.dreamer.data.models.Player
 
-class VidGuard(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.VidGuard) {
-
-    override fun checkIfVideoIsAvailable(): Boolean {
-        return !super.checkIfVideoIsAvailable()
+class VidGuard(context: Context, url : String) : EmbedServer(context, url) {
+    override fun isAvailable(): Boolean {
+        return !super.isAvailable()
     }
 }

@@ -1,17 +1,12 @@
 package com.ead.project.dreamer.data.models.server
 
+import android.content.Context
 import com.ead.project.dreamer.data.models.EmbedServer
-import com.ead.project.dreamer.data.models.Player
 
-class Mega(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Mega) {
+class Mega(context: Context, url : String) : EmbedServer(context, url) {
 
-    override fun setupEmbeddedUrl(embeddedUrl: String?): String {
-        return fixRedirectUrl(embeddedUrl?:return url)
-    }
-
-    override fun checkIfVideoIsAvailable(): Boolean {
-        return !super.checkIfVideoIsAvailable()
-    }
+    override var url: String = fixRedirectUrl(url)
+    override fun isAvailable(): Boolean { return !super.isAvailable() }
 
     private fun fixRedirectUrl(string: String) : String {
         if (string.contains("/file"))

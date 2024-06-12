@@ -1,13 +1,11 @@
 package com.ead.project.dreamer.data.models.server
 
+import android.content.Context
 import com.ead.project.dreamer.data.models.EmbedServer
-import com.ead.project.dreamer.data.models.Player
 
 
-class DoodStream(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.DoodStream) {
-    override fun checkIfVideoIsAvailable(): Boolean {
-        return false
-    }
+class DoodStream(context: Context, url : String) : EmbedServer(context, url) {
+    override fun isAvailable(): Boolean { return !super.isAvailable() }
 
     //TESTING
 

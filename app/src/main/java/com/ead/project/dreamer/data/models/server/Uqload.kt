@@ -1,12 +1,12 @@
 package com.ead.project.dreamer.data.models.server
 
+import android.content.Context
 import com.ead.project.dreamer.data.models.EmbedServer
-import com.ead.project.dreamer.data.models.Player
 import org.jsoup.Jsoup
 
-class Uqload (embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Uqload) {
+class Uqload (context: Context, url : String) : EmbedServer(context, url) {
 
-    override fun checkIfVideoIsAvailable(): Boolean {
+    override fun isAvailable(): Boolean {
         return !(try {
             Jsoup.connect(url).get()
                 .body()

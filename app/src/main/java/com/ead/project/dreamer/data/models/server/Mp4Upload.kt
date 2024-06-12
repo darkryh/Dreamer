@@ -1,13 +1,12 @@
 package com.ead.project.dreamer.data.models.server
 
-
+import android.content.Context
 import com.ead.project.dreamer.data.models.EmbedServer
-import com.ead.project.dreamer.data.models.Player
 import org.jsoup.Jsoup
 
-class Mp4Upload(embeddedUrl:String) : EmbedServer(embeddedUrl,Player.Mp4Upload) {
+class Mp4Upload(context: Context, url : String) : EmbedServer(context, url) {
 
-    override fun checkIfVideoIsAvailable(): Boolean {
+    override fun isAvailable(): Boolean {
         return !(try {
             Jsoup.connect(url).get()
                 .body()

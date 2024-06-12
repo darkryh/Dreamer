@@ -1,6 +1,6 @@
 package com.ead.project.dreamer.data.models.server
 
-import com.ead.project.dreamer.data.models.Player
+import android.content.Context
 import com.ead.project.dreamer.data.models.Server
 
-class Uptobox(embeddedUrl:String) : Server(embeddedUrl, Player.Uptobox)
+class Uptobox(context: Context,url : String) : Server(context, url)
