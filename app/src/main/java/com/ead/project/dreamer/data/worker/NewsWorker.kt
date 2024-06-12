@@ -43,10 +43,10 @@ class NewsWorker @AssistedInject constructor(
             val newsItemsList = newsUseCase.getNews()
 
             val isDataEmpty = newsItemsList.isEmpty()
-            val newsItem = if (isDataEmpty) getFakeNews()
+            if (isDataEmpty) getFakeNews()
             else newsItemsList.last()
 
-            val newsData = async { webProvider.getNews(newsItem) }
+            val newsData = async { webProvider.getNews() }
             newsData.await().apply {
                 if (isDataEmpty) objectUseCase.insertObject (this)
                 else objectUseCase.updateObject(this)
