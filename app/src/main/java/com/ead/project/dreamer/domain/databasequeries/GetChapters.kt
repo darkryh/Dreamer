@@ -10,6 +10,7 @@ class GetChapters @Inject constructor(
     private val repository: AnimeRepository
 ) {
 
+    suspend operator fun invoke(idProfile : Int) : List<Chapter> = repository.getChaptersFromId(idProfile)
     fun livedata (id : Int,isDesc :Boolean = true) : LiveData<List<Chapter>> =
         if (isDesc) { repository.getFlowChaptersFromProfile(id) }
         else { repository.getFlowChaptersFromProfileAsc(id) }.asLiveData()

@@ -1,45 +1,27 @@
 package com.ead.project.dreamer.domain.servers
 
+import android.content.Context
+import com.ead.lib.moongetter.MoonGetter
 import com.ead.project.dreamer.app.data.server.Server
-import com.ead.project.dreamer.data.models.server.*
+import com.ead.project.dreamer.app.data.util.system.toNormal
+import com.ead.project.dreamer.data.models.server_properties.ONE_FICHIER_API_TOKEN
 import javax.inject.Inject
 
 class GetServer @Inject constructor(
-    private val serverIdentifier: ServerIdentifier
+    private val context: Context
 ) {
 
-    operator fun invoke(url : String) : com.ead.project.dreamer.data.models.Server =
-        when (serverIdentifier(url)) {
-            Server.OKRU -> Okru(url)
-            Server.ONEFICHIER -> Onefichier(url)
-            Server.STREAMWISH -> StreamWish(url)
-            Server.STREAMSB -> StreamSB(url)
-            Server.SENDVID -> Senvid(url)
-            Server.DOOD_STREAM -> DoodStream(url)
-            Server.SOLIDFILES -> SolidFiles(url)
-            Server.BAYFILES -> Bayfiles(url)
-            Server.FEMBED -> Fembed(url)
-            Server.VIDEOBIN -> Videobin(url)
-            Server.ZIPPYSHARE -> Zippyshare(url)
-            Server.MEDIAFIRE -> Mediafire(url)
-            Server.PIXELDRAIN -> PixelDrain(url)
-            Server.STREAMTAPE -> Streamtape(url)
-            Server.GOOGLE_DRIVE -> GoogleDrive(url)
-            Server.PUJ -> Puj(url)
-            Server.VOE -> Voe(url)
-            Server.UPTOBOX -> Uptobox(url)
-            Server.ANONFILE -> Anonfiles(url)
-            Server.MEGA_UP -> MegaUp(url)
-            Server.FIRELOAD -> Fireload(url)
-            Server.MP4UPLOAD -> Mp4Upload(url)
-            Server.FILEMOON -> FileMoon(url)
-            Server.FILELIONS -> Filelions(url)
-            Server.VIDGUARD -> VidGuard(url)
-            Server.MIXDROP -> MixDrop(url)
-            Server.UQLOAD -> Uqload(url)
-            Server.MEGA -> Mega(url)
-            Server.VIDLOX -> Vidlox(url)
-            Server.YOUR_UPLOAD -> YourUpload(url)
-            else -> NullServer(url)
-        }
+    suspend operator fun invoke(url : String) : com.ead.project.dreamer.data.models.Server? {
+        val server = MoonGetter
+            .initialize(context)
+            .connect(url)
+            .setCustomServers(Server.serverIntegrationList)
+            .set1FichierToken(ONE_FICHIER_API_TOKEN)
+            .get()
+
+        return server?.toNormal(
+            context,
+            url
+        )
+    }
 }

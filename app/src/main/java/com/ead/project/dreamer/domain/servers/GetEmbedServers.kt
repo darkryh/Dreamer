@@ -1,27 +1,28 @@
 package com.ead.project.dreamer.domain.servers
 
 import android.content.Context
+import com.ead.lib.monoschinos.MonosChinos
 import com.ead.project.dreamer.data.database.model.Chapter
 import javax.inject.Inject
 
-class GetEmbedServers @Inject constructor(
-    private val context: Context,
-    private val getServerResultToArray: GetServerResultToArray,
-    private val serverScript: ServerScript,
-) {
+class GetEmbedServers @Inject constructor() {
 
-    private lateinit var chapter: Chapter
+    private val animeSeoRegex = "ver/([^/]+)".toRegex()
+    private val reducer = "url=([^&]+)".toRegex()
+    suspend operator fun invoke(chapter: Chapter,context: Context) : List<String>  {
+        val seo = animeSeoRegex.find(chapter.reference)?.groupValues?.get(1) ?: "null"
 
-    operator fun invoke(timeoutTask : () -> Unit,chapter: Chapter)  {
-        this.chapter = chapter
-        serverEngine(timeoutTask, chapter)
-    }
+        val player = MonosChinos
+            .builder(context)
+            .playerPage(seo)
+            .get() ?: return emptyList()
 
-    private val serverEngine = object  : ServerEngine(context,getServerResultToArray,serverScript) {
-        override fun getServerList(it: String): List<String> {
-            val result = super.getServerList(it)
-            return result
+        val embedServers : MutableList<String> = mutableListOf()
+        embedServers.addAll(player.options)
+        embedServers.addAll(player.downloads)
+
+        return embedServers.map {
+            reducer.find(it)?.groupValues?.get(1) ?: it
         }
     }
-
 }
