@@ -35,6 +35,23 @@ data class AnimeProfile (
         const val TYPE_UNCENSORED = "Sin Censura"
         const val TYPE_ECCHI = "Ecchi"
         const val TYPE_BOYS_LOVE = "Yaoi"
+
+        fun fake(id: Int) : AnimeProfile {
+             return AnimeProfile(
+                 id = id,
+                 coverPhoto = "",
+                 profilePhoto = "",
+                 title = "",
+                 titleAlternate = "",
+                 rating = -1f,
+                 state = "",
+                 description = "",
+                 date = "",
+                 genres = emptyList(),
+                 rawGenres = "",
+                 size = 0,
+             )
+        }
     }
 
     override fun equalsHeader(other: Any?): Boolean {
