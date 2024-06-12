@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.ead.project.dreamer.app.data.server.Server
 import com.ead.project.dreamer.app.model.scraper.AnimeBaseScrap
 import com.ead.project.dreamer.app.model.scraper.AnimeProfileScrap
 import com.ead.project.dreamer.app.model.scraper.ChapterHomeScrap
@@ -17,7 +16,6 @@ import com.ead.project.dreamer.domain.HomeUseCase
 import com.ead.project.dreamer.domain.NewsUseCase
 import com.ead.project.dreamer.domain.PreferenceUseCase
 import com.ead.project.dreamer.domain.ProfileUseCase
-import com.ead.project.dreamer.domain.ServerUseCase
 import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -29,7 +27,6 @@ import java.io.IOException
 class ScrapperWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val serverUseCase: ServerUseCase,
     private val chapterUseCase: ChapterUseCase,
     private val directoryUseCase: DirectoryUseCase,
     private val homeUseCase: HomeUseCase,
@@ -43,7 +40,6 @@ class ScrapperWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             try {
-                setServerScript(serverUseCase.serverScript.fromApi())
                 setAnimeBaseScrap(directoryUseCase.getDirectoryScrap.fromApi())
                 setAnimeProfileScrap(profileUseCase.getProfileScrap.fromApi())
                 setChapterHomeScrap(homeUseCase.getHomeScrap.fromApi())
@@ -57,10 +53,6 @@ class ScrapperWorker @AssistedInject constructor(
                 Result.failure()
             }
         }
-    }
-
-    private suspend fun setServerScript(serverCode : String) {
-        preferences.set(Server.PREFERENCE_SERVER_SCRIPT,serverCode)
     }
 
     private suspend fun setAnimeBaseScrap(animeBaseScrap: AnimeBaseScrap) {
