@@ -40,7 +40,7 @@
     <string name="word_decorate">· %1$s</string>
     <string name="rating_layout">✪ %.1f</string>
     <string name="title_home_chapter">%1$s - %2$d</string>
-    <string name="chapter_number">Capítulo número %1$d</string>
+    <string name="chapter_number">Capítulo número  %1$d</string>
     <string name="continue_watching_chapter_number">Seguir viendo desde capítulo número %1$d</string>
     <string name="cant_install_update_warning">No hay permiso de instalación, se recomienda habilitar en las propiedades del la app manualmente.</string>
     <string name="requesting_installer_permission">Solicitando, permiso para actualizar dreamer.</string>
@@ -78,6 +78,7 @@
     <string name="zoom">Zoom</string>
     <string name="fill">Relleno</string>
     <string name="price">price</string>
+    <string name="no_server_available">Ningun servidor disponible</string>
     <string name="timeout_message">Tiempo de espera agotado,intente ingresar despues en unos minutos, o revise su estado de conexión.</string>
     <string name="error_url_message">Error url malformada..</string>
     <string name="status_app">La versión actual %1$s de la  aplicación, se encuentre obsoleta. Le recomendamos actualizar a una versión mínima : %2$f. o posterior! Click en este mensaje para actualizar a la ultima versión</string>
