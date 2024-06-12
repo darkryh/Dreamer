@@ -39,6 +39,8 @@ class PlayerViewModel @Inject constructor(
     private val adPreferences = preferenceUseCase.adPreferences
     private val userPreferences = preferenceUseCase.userPreferences
 
+    val getProfile = profileUseCase.getProfile
+
     private val adOrder by lazy {
         AdOrder(
             items = mutableListOf(),
