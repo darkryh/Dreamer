@@ -7,9 +7,22 @@ import androidx.datastore.dataStoreFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import com.ead.lib.moongetter.models.ServerIntegration
+import com.ead.lib.moongetter.server_sites.Voe
 import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.app.model.AutomaticServerPreference
 import com.ead.project.dreamer.app.model.ServerPreference
+import com.ead.project.dreamer.data.models.server.DoodStream
+import com.ead.project.dreamer.data.models.server.FileMoon
+import com.ead.project.dreamer.data.models.server.Mega
+import com.ead.project.dreamer.data.models.server.MegaUp
+import com.ead.project.dreamer.data.models.server.MixDrop
+import com.ead.project.dreamer.data.models.server.Mp4Upload
+import com.ead.project.dreamer.data.models.server.Puj
+import com.ead.project.dreamer.data.models.server.Uptobox
+import com.ead.project.dreamer.data.models.server.Uqload
+import com.ead.project.dreamer.data.models.server.VidGuard
+import com.ead.project.dreamer.data.models.server.YourUpload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -195,7 +208,7 @@ object Server {
     )
 
     val URL_STREAMWISH_DOMAINS = listOf(
-        "streamwish.to", "embedwish.com","sfastwish.com","wishfast.top"
+        "streamwish.to", "embedwish.com","sfastwish.com","wishfast.top","swhoi.com"
     )
 
     val URL_FILELIONS_DOMAINS = listOf(
@@ -209,6 +222,57 @@ object Server {
     )
 
     val URL_UQLOAD_DOMAINS = listOf(
-        "uqload.com","uqload.io"
+        "uqload"
+    )
+
+    val serverIntegrationList : List<ServerIntegration> = listOf(
+        ServerIntegration(
+          serverClass = Voe::class.java,
+            pattern = "https?://(?:voe|markstyleall|shannonpersonalcost|cindyeyefinal)\\.(?:com|sx|net|to|io|co|xyz)/(?:e|d)/\\w+"
+        ),
+        ServerIntegration(
+            serverClass = DoodStream::class.java,
+            pattern = "https://doodstream\\.com/e/([a-zA-Z0-9]+)"
+        ),
+        ServerIntegration(
+            serverClass = FileMoon::class.java,
+            pattern = "https://filemoon\\.sx/e/([a-zA-Z0-9]+)"
+        ),
+        ServerIntegration(
+            serverClass = Mega::class.java,
+            pattern = "https://mega\\.nz/([a-zA-Z0-9/_-]+)"
+        ),
+        ServerIntegration(
+            serverClass = MegaUp::class.java,
+            pattern = "https://megaup\\.net/([a-zA-Z0-9]+)"
+        ),
+        ServerIntegration(
+            serverClass = MixDrop::class.java,
+            pattern = "https://mixdrop\\.(co|to)/f/([a-zA-Z0-9]+)"
+        ),
+        ServerIntegration(
+            serverClass = Mp4Upload::class.java,
+            pattern = "https://www\\.mp4upload\\.com/embed-[a-zA-Z0-9]+\\.html"
+        ),
+        ServerIntegration(
+            serverClass = Puj::class.java,
+            pattern = "https://player\\.odycdn\\.com/api/v4/streams/free/[a-zA-Z0-9%/-]+"
+        ),
+        ServerIntegration(
+            serverClass = Uptobox::class.java,
+            pattern = "https://uptobox\\.com/[a-zA-Z0-9]+"
+        ),
+        ServerIntegration(
+            serverClass = Uqload::class.java,
+            pattern = "https://uqload\\.[a-z]{2,3}/embed-([a-zA-Z0-9]+)\\.html"
+        ),
+        ServerIntegration(
+            serverClass = VidGuard::class.java,
+            pattern = "https://(?:vidguard\\.(?:net|io)|vgapi\\.xyz|listeamed\\.net)/[a-zA-Z0-9_-]+"
+        ),
+        ServerIntegration(
+            serverClass = YourUpload::class.java,
+            pattern = "https://www\\.yourupload\\.com/embed/[a-zA-Z0-9]+"
+        )
     )
 }
