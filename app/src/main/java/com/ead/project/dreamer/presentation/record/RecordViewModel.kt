@@ -8,6 +8,7 @@ import com.ead.project.dreamer.app.model.EadAccount
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.AdOrder
 import com.ead.project.dreamer.domain.PreferenceUseCase
+import com.ead.project.dreamer.domain.ProfileUseCase
 import com.ead.project.dreamer.domain.RecordsUseCase
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +21,13 @@ import javax.inject.Inject
 class RecordViewModel @Inject constructor(
     private val recordsUseCase: RecordsUseCase,
     val handleChapter: HandleChapter,
-    preferenceUseCase: PreferenceUseCase
+    preferenceUseCase: PreferenceUseCase,
+    profileUseCase: ProfileUseCase
 ): ViewModel() {
 
     private val userPreferences = preferenceUseCase.userPreferences
+
+    val getAnimeProfile = profileUseCase.getProfile
 
     private val adOrder by lazy {
         AdOrder(
@@ -35,11 +39,11 @@ class RecordViewModel @Inject constructor(
     private val _records : MutableLiveData<List<Any>> = MutableLiveData(emptyList())
     val records : LiveData<List<Any>> = _records
 
-   fun setRecords(list : List<Any>) {
-       viewModelScope.launch(Dispatchers.IO) {
-           adOrder.setup(list,_records)
-       }
-   }
+    fun setRecords(list : List<Any>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            adOrder.setup(list,_records)
+        }
+    }
 
     fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
