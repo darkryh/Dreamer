@@ -15,7 +15,7 @@ import com.ead.project.dreamer.data.utils.Run
 import com.ead.project.dreamer.data.utils.Thread
 import com.ead.project.dreamer.domain.databasequeries.GetChapter
 import com.ead.project.dreamer.domain.servers.GetServerResultToArray
-import com.ead.project.dreamer.domain.servers.GetServers
+import com.ead.project.dreamer.domain.servers.GetServerUntilFindResource
 import com.ead.project.dreamer.domain.servers.GetSortedServers
 import com.ead.project.dreamer.domain.servers.ServerScript
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +31,7 @@ class DownloadEngine @Inject constructor(
     private val getChapter: GetChapter,
     private val getServerResultToArray: GetServerResultToArray,
     private val getSortedServers: GetSortedServers,
-    private val getServers: GetServers,
+    private val getServerUntilFindResource: GetServerUntilFindResource,
     private val enqueueDownload: EnqueueDownload,
     private val serverScript: ServerScript,
     private val downloadStore: DownloadStore,
@@ -91,7 +91,7 @@ class DownloadEngine @Inject constructor(
 
     private fun getServers(it: List<String>) = scope.launch (Dispatchers.IO) {
         prepareDownload(withContext(Dispatchers.Default) {
-            getServers.fromCoroutine(it)
+            getServerUntilFindResource.fromCoroutine(it)
         })
     }
 
@@ -100,20 +100,9 @@ class DownloadEngine @Inject constructor(
             var isDownloadFailed = true
 
             for (server in serverList) {
-                if (server.isValidated) {
-
-                    enqueueDownload(server.videoList.last().directLink)
-                    isDownloadFailed = false
-                    break
-
-                }
-                else if (server.isConnectionValidated) {
-
-                    enqueueDownload(server.videoList.last().directLink)
-                    isDownloadFailed = false
-                    break
-
-                }
+                enqueueDownload(server.videoList.last().directLink)
+                isDownloadFailed = false
+                break
             }
 
             if (isDownloadFailed) restart()
