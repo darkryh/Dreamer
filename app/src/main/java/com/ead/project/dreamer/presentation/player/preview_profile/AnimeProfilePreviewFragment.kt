@@ -133,7 +133,7 @@ class AnimeProfilePreviewFragment : DialogFragment() {
 
     private fun loadAnimeProfileHeader(animeProfile: AnimeProfile) {
         binding.apply {
-            imageCover.load(animeProfile.coverPhoto) {
+            imageCover.load(animeProfile.profilePhoto) {
                 scale(Scale.FIT)
                 transformations(RoundedCornersTransformation(topLeft = 20f.toPixels(), topRight = 20f.toPixels()))
             }
@@ -149,6 +149,7 @@ class AnimeProfilePreviewFragment : DialogFragment() {
             textDate.text = animeProfile.date
             textRating.text = animeProfile.rating.toString()
             ratingBar.rating = animeProfile.rating
+            containerRating.setVisibility(animeProfile.rating != -1f)
 
             if (animeProfile.description.length > minLettersCharacter) {
                 descriptionOverloaded = true
