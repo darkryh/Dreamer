@@ -5,9 +5,7 @@ import javax.inject.Inject
 
 class ServerUseCase @Inject constructor(
     val getServer: GetServer,
-    val getServers: GetServers,
-    val getEmbedServers: GetEmbedServers,
-    val getEmbedServersMutable: GetEmbedServersMutable,
+    val getServerUntilFindResource: GetServerUntilFindResource,
     val getSortedServers: GetSortedServers,
-    val serverScript: ServerScript
+    val getEmbedServers: GetEmbedServers
 )
