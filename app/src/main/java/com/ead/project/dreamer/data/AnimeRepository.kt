@@ -109,10 +109,10 @@ class AnimeRepository @Inject constructor(
     fun getFlowAnimeProfile(id : Int) : Flow<AnimeProfile?> = animeProfileDao.getFlowProfile(id)
 
     fun getFlowRandomProfileListFrom(genre : String, animeProfile: AnimeProfile,limit : Int = 20) :Flow<List<AnimeProfile>> =
-        animeProfileDao.getFlowProfileRandomListFrom(genre,animeProfile.rating,animeProfile.id,limit)
+        animeProfileDao.getFlowProfileRandomListFrom(genre,animeProfile.id,limit)
 
     fun getFlowRandomProfileListCensuredFrom(genre : String, animeProfile: AnimeProfile,limit : Int = 20) :Flow<List<AnimeProfile>> =
-        animeProfileDao.getFlowProfileRandomListCensuredFrom(genre,animeProfile.rating,animeProfile.id,limit)
+        animeProfileDao.getFlowProfileRandomListCensuredFrom(genre,animeProfile.id,limit)
 
     fun getFlowProfileRandomRecommendationsList(): Flow<List<AnimeProfile>> =
         animeProfileDao.getFlowProfileRandomRecommendationsList()
@@ -142,6 +142,7 @@ class AnimeRepository @Inject constructor(
 
     suspend fun getChapterFromId(id : Int) : Chapter? = chapterDao.getChapterFromId(id)
 
+    suspend fun getChaptersFromId(idProfile : Int) : List<Chapter> = chapterDao.getChaptersFromId(idProfile)
     fun getFlowFirstChapterFromProfileId(id: Int) : Flow<Chapter?> = chapterDao.getFlowFirstChapterFromProfileId(id)
 
     suspend fun getChaptersRecordsFromId(id : Int) : List<Chapter> = chapterDao.getChaptersRecordsFromId(id)
