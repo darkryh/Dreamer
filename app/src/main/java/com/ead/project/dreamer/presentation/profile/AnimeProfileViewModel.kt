@@ -43,6 +43,8 @@ class AnimeProfileViewModel @Inject constructor(
     val appBuildPreferences = preferenceUseCase.appBuildPreferences
     private val userPreferences = preferenceUseCase.userPreferences
 
+    val getProfile = profileUseCase.getProfile
+
     fun getAccount() : Flow<EadAccount?> = userPreferences.user
 
     fun getAnimeProfile(id : Int) : LiveData<AnimeProfile?>  = profileUseCase.getProfile.livedata(id)
