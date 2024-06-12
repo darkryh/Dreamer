@@ -51,7 +51,7 @@ class ProfileChaptersFragment : Fragment() {
             recyclerViewChapters.apply {
 
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-                this@ProfileChaptersFragment.adapter = ChapterRecyclerViewAdapter(activity as Context, handleChapter = viewModel.handleChapter)
+                this@ProfileChaptersFragment.adapter = ChapterRecyclerViewAdapter(activity as Context, handleChapter = viewModel.handleChapter, getProfile = viewModel.getProfile)
                 adapter = this@ProfileChaptersFragment.adapter
                 setupChapters()
 

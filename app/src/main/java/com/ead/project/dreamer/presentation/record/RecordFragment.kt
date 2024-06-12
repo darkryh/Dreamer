@@ -62,7 +62,7 @@ class RecordFragment : Fragment() {
         binding.list.apply {
 
             layoutManager = getLayoutManagerMode()
-            this@RecordFragment.adapter = ChapterRecordRecyclerViewAdapter(activity as Context, isSmallDevice, viewModel.handleChapter)
+            this@RecordFragment.adapter = ChapterRecordRecyclerViewAdapter(activity as Context, isSmallDevice, viewModel.handleChapter, viewModel.getAnimeProfile)
             adapter = this@RecordFragment.adapter
             setupRecords()
 

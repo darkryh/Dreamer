@@ -168,12 +168,18 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
     }
 
     private fun initLayouts() {
-        imageChapterCoverInCasting.load(chapter.cover)
-        imageChapterCoverInPlayer.load(chapter.cover) {
-            transformations(
-                CircleCropTransformation()
-            )
+        if (chapter.cover.isNotBlank()) {
+            imageChapterCoverInCasting.load(chapter.cover)
+            imageChapterCoverInPlayer.load(chapter.cover) {
+                transformations(
+                    CircleCropTransformation()
+                )
+            }
         }
+        else {
+            observeProfileFromChapter()
+        }
+
 
         nextChapterLayout.root.addSelectableItemEffect()
         buttonPlaylist.addSelectableItemEffect()
@@ -305,7 +311,7 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         if (isInPortraitMode()) {
             portraitMode()
         }
-         else {
+        else {
             horizontalMode()
         }
     }
@@ -399,6 +405,19 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
         nextChapterLayout.root.setVisibility(nextChapter != null)
     }
 
+    private fun observeProfileFromChapter() {
+        viewModel.getProfileData(chapter.idProfile).observe(this) {
+            if (it != null) {
+                imageChapterCoverInCasting.load(it.profilePhoto)
+                imageChapterCoverInPlayer.load(it.profilePhoto) {
+                    transformations(
+                        CircleCropTransformation()
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeNextChapter() {
         viewModel.geNextChapterFrom(chapter).observe(this) { nextChapter ->
             this@PlayerActivity.nextChapter = nextChapter
@@ -416,6 +435,8 @@ class PlayerActivity : AppCompatActivity(),View.OnLayoutChangeListener   {
                 root.setOnClickListener {
                     viewModel.handleChapter(this@PlayerActivity, nextChapter)
                 }
+
+                logo.setVisibility(nextChapter.cover.isNotBlank())
 
                 logo.load(nextChapter.cover) {
                     transformations(

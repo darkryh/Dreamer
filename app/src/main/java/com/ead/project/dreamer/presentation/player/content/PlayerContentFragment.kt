@@ -39,6 +39,7 @@ class PlayerContentFragment : Fragment() {
     private lateinit var adLoader: AdLoader
 
     private var countSuggestion = 0
+    private var needsToLoadCoverFromProfile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +63,14 @@ class PlayerContentFragment : Fragment() {
     }
 
     private fun initLayouts() {
-        binding.imageChapterProfile.load(chapter.cover){
-            transformations(CircleCropTransformation())
-        }
-
         binding.textTitle.text = getString(R.string.title_seeing,chapter.title)
         binding.textCurrentChapterNumber.text = getString(R.string.chapter_number,chapter.number)
+        needsToLoadCoverFromProfile = chapter.cover.isBlank()
+        if (chapter.cover.isNotBlank()) {
+            binding.imageChapterProfile.load(chapter.cover) {
+                transformations(CircleCropTransformation())
+            }
+        }
     }
 
     private fun initRecyclerViews() {
@@ -90,7 +93,14 @@ class PlayerContentFragment : Fragment() {
 
     private fun settingProfile() {
         viewModel.getProfileData(chapter.idProfile).observe(viewLifecycleOwner) {
-            if (it != null) settingSuggestions(it)
+            if (it != null) {
+                settingSuggestions(it)
+                if (needsToLoadCoverFromProfile) {
+                    binding.imageChapterProfile.load(it.profilePhoto){
+                        transformations(CircleCropTransformation())
+                    }
+                }
+            }
         }
     }
 

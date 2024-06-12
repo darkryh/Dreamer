@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.ead.commons.lib.lifecycle.observeOnce
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.AppInfo
 import com.ead.project.dreamer.app.data.monos_chinos.MonosChinos
@@ -50,13 +49,6 @@ class SettingsFixerFragment : PreferenceFragmentCompat() {
             }
             else dvpPreference.addLog(getString(R.string.status_database_items_correct))
 
-            settingsFixerViewModel.getEmbedServers({},testChapter).observeOnce(this) { list ->
-                if (list.contains(getString(R.string.null_word))) {
-                    dvpPreference.addLog(getString(R.string.status_server_script_incorrect))
-                    preferenceFixer.isEnabled = true
-                }
-                else dvpPreference.addLog(getString(R.string.status_server_script_correct))
-            }
         }
 
     }

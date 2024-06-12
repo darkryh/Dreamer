@@ -88,6 +88,7 @@ class ProfileDescriptionFragment : Fragment() {
             textDate.text = animeProfile.date
             textRating.text = animeProfile.rating.toString()
             ratingBar.rating = animeProfile.rating
+            containerRating.setVisibility(animeProfile.rating != -1f)
 
             if (animeProfile.description.length > minLettersCharacter) {
                 descriptionOverloaded = true

@@ -1,18 +1,15 @@
 package com.ead.project.dreamer.presentation.settings.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import com.ead.project.dreamer.app.data.util.HttpUtil
 import com.ead.project.dreamer.app.data.worker.Worker
-import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.domain.ChapterUseCase
 import com.ead.project.dreamer.domain.HomeUseCase
 import com.ead.project.dreamer.domain.ProfileUseCase
-import com.ead.project.dreamer.domain.ServerUseCase
 import com.ead.project.dreamer.domain.configurations.LaunchOneTimeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +22,7 @@ class SettingsFixerViewModel @Inject constructor(
     private val launchOneTimeRequest: LaunchOneTimeRequest,
     private val homeUseCase: HomeUseCase,
     private val chapterUseCase: ChapterUseCase,
-    private val profileUseCase: ProfileUseCase,
-    private val serverUseCase: ServerUseCase
+    private val profileUseCase: ProfileUseCase
 ) : ViewModel() {
 
     fun getConnectionState(url: String) : MutableLiveData<Int> {
@@ -56,9 +52,6 @@ class SettingsFixerViewModel @Inject constructor(
                     && profilesToFix.isEmpty()
         } catch (e : Exception) { false }
     }
-
-    fun getEmbedServers(timeoutTask : () -> Unit, chapter: Chapter) : LiveData<List<String>> =
-        serverUseCase.getEmbedServersMutable(timeoutTask,chapter)
 
     private fun getConnection(url : String) : Int = HttpUtil.isConnectionAvailableInt(url)
 }
