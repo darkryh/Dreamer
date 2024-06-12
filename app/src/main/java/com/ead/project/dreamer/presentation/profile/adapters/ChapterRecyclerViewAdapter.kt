@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -16,14 +14,19 @@ import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.data.database.model.Chapter
 import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.LayoutChapterBinding
+import com.ead.project.dreamer.domain.databasequeries.GetProfile
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
+import kotlinx.coroutines.runBlocking
 
 class ChapterRecyclerViewAdapter(
     private val context: Context,
     private val editModeView : View? = null,
-    private val handleChapter: HandleChapter
+    private val handleChapter: HandleChapter,
+    private val getProfile: GetProfile
 ) : RecyclerView.Adapter<ChapterRecyclerViewAdapter.ViewHolder>() {
+
+    private var cover : String? = null
 
     private val dreamerAsyncDiffUtil = object : DreamerAsyncDiffUtil<Chapter>(){}
     private val differ = AsyncListDiffer(this,dreamerAsyncDiffUtil)
@@ -44,12 +47,12 @@ class ChapterRecyclerViewAdapter(
 
     fun submitList (list: List<Chapter>) = differ.submitList(list)
 
-    fun removeEditMode() {
-        /*isEditMode = false
+    /*fun removeEditMode() {
+        *//*isEditMode = false
         hideAnimation(editModeView)
         val temporalList = differ.currentList.map { item -> item.copy(isSelected = false) }
         differ.submitList(null)
-        differ.submitList(temporalList)*/
+        differ.submitList(temporalList)*//*
     }
 
     private fun hideAnimation(view: View?) {
@@ -61,7 +64,7 @@ class ChapterRecyclerViewAdapter(
             it.startAnimation(bottomDown)
             it.visibility = View.INVISIBLE
         }
-    }
+    }*/
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -85,7 +88,12 @@ class ChapterRecyclerViewAdapter(
         }
 
         private fun settingImages(chapter: Chapter) {
-            binding.imageChapterProfile.load(chapter.cover){
+            editModeView // just to call remove when fixed
+            binding.imageChapterProfile.load(
+                chapter.cover.ifBlank {
+                    cover?: runBlocking { getProfile(chapter.idProfile) }?.profilePhoto.also { cover = it }
+                })
+            {
                 crossfade(true)
                 crossfade(500)
                 transformations(RoundedCornersTransformation(8f.toPixels()))
@@ -101,7 +109,7 @@ class ChapterRecyclerViewAdapter(
         private fun settingFunctionality(chapter: Chapter) {
             binding.root.setOnClickListener {
                 if (!isEditMode) handleChapter(context, chapter)
-                else configureEditMode(chapter)
+                else configureEditMode()
             }
             binding.root.setOnLongClickListener {
                 //isEditMode = true
@@ -112,7 +120,7 @@ class ChapterRecyclerViewAdapter(
             }
         }
 
-        private fun showAnimation(view: View?) {
+        /*private fun showAnimation(view: View?) {
             view?.let {
                 val bottomUp: Animation = AnimationUtils.loadAnimation(
                     context,
@@ -121,9 +129,9 @@ class ChapterRecyclerViewAdapter(
                 it.startAnimation(bottomUp)
                 it.visibility = View.VISIBLE
             }
-        }
+        }*/
 
-        private fun configureEditMode(chapter: Chapter) {
+        private fun configureEditMode() {
             //error val
             /*chapter.isSelected = !chapter.isSelected
             if (chapter.isSelected) binding.root.strokeWidth = 4

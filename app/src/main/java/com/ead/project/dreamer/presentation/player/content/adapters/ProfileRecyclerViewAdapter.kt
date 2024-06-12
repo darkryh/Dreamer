@@ -11,6 +11,7 @@ import coil.request.CachePolicy
 import coil.transform.RoundedCornersTransformation
 import com.ead.commons.lib.views.addSelectableItemEffect
 import com.ead.commons.lib.views.justifyInterWord
+import com.ead.commons.lib.views.setVisibility
 import com.ead.project.dreamer.R
 import com.ead.project.dreamer.app.data.util.system.toPixels
 import com.ead.project.dreamer.data.database.model.AnimeProfile
@@ -96,6 +97,7 @@ class ProfileRecyclerViewAdapter(
                 }
             }
 
+            binding.textRating.setVisibility(animeProfile.rating != -1f)
             binding.textRating.text = context
                 .getString(R.string.rating_layout,animeProfile.rating)
 

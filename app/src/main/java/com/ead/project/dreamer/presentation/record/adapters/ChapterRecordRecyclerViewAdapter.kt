@@ -18,14 +18,17 @@ import com.ead.project.dreamer.data.utils.ui.mechanism.DreamerAsyncDiffUtil
 import com.ead.project.dreamer.databinding.AdUnifiedBannerBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordGridBinding
 import com.ead.project.dreamer.databinding.LayoutChapterRecordLinearBinding
+import com.ead.project.dreamer.domain.databasequeries.GetProfile
 import com.ead.project.dreamer.domain.servers.HandleChapter
 import com.ead.project.dreamer.presentation.chapter.settings.ChapterSettingsFragment
 import com.google.android.gms.ads.nativead.NativeAd
+import kotlinx.coroutines.runBlocking
 
 class ChapterRecordRecyclerViewAdapter (
     private val context: Context,
     private val isLinear : Boolean = false,
-    private val handleChapter: HandleChapter
+    private val handleChapter: HandleChapter,
+    private val getProfile : GetProfile,
 ) : RecyclerView.Adapter<ChapterRecordRecyclerViewAdapter.ViewHolder>() {
 
     companion object {
@@ -104,7 +107,7 @@ class ChapterRecordRecyclerViewAdapter (
             binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imageChapterProfile.load(chapter.cover) {
+            binding.imageChapterProfile.load(chapter.cover.ifBlank { runBlocking { getProfile(chapter.idProfile) }?.profilePhoto }) {
                 crossfade(true)
                 crossfade(500)
                 transformations(
@@ -137,7 +140,7 @@ class ChapterRecordRecyclerViewAdapter (
             binding.imageChapterProfile.alpha = 0.93f
             binding.root.addSelectableItemEffect()
 
-            binding.imageChapterProfile.load(chapter.cover) {
+            binding.imageChapterProfile.load(chapter.cover.ifBlank { runBlocking { getProfile(chapter.idProfile) }?.profilePhoto }) {
                 crossfade(true)
                 crossfade(500)
                 transformations(
