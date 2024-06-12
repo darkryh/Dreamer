@@ -41,7 +41,7 @@ class CastingChaptersFragment : Fragment() {
     private fun initLayouts() {
         binding.recyclerViewList.apply {
             layoutManager = LinearLayoutManager(context)
-            this@CastingChaptersFragment.adapter = ChapterRecyclerViewAdapter(activity as Context, handleChapter = viewModel.handleChapter)
+            this@CastingChaptersFragment.adapter = ChapterRecyclerViewAdapter(activity as Context, handleChapter = viewModel.handleChapter, getProfile = viewModel.getProfile)
             adapter = this@CastingChaptersFragment.adapter
             setupChapters()
         }
