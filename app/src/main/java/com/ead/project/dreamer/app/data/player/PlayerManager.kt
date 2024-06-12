@@ -53,6 +53,7 @@ import com.ead.project.dreamer.presentation.player.PlayerViewModel
 import com.google.android.gms.cast.framework.CastContext
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.runBlocking
 
 
 @UnstableApi class PlayerManager(
@@ -223,7 +224,7 @@ import com.google.common.util.concurrent.ListenableFuture
             val metadata = MediaMetadata.Builder().apply {
                 setTitle(chapter.title)
                 setSubtitle(context.getString(R.string.chapter_number,chapter.number))
-                setArtworkUri(Uri.parse(chapter.cover))
+                setArtworkUri(Uri.parse(getMediaCover(chapter)))
                 setWriter(context.applicationInfo.name)
             }.build()
 
@@ -240,6 +241,10 @@ import com.google.common.util.concurrent.ListenableFuture
                 it.prepare()
             }
         }
+    }
+
+    private fun getMediaCover(chapter: Chapter) : String = runBlocking {
+        viewModel.getProfile(chapter.idProfile)?.profilePhoto ?: "null"
     }
 
     private fun setExoplayerFlags() {
@@ -263,12 +268,12 @@ import com.google.common.util.concurrent.ListenableFuture
             }
 
         }
-    else {
+        else {
 
-        listOf(MediaItem.Builder().setUri(Uri.fromFile(filesPreferences.getChapterFile(chapter)))
-            .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()).build())
+            listOf(MediaItem.Builder().setUri(Uri.fromFile(filesPreferences.getChapterFile(chapter)))
+                .setAdsConfiguration(MediaItem.AdsConfiguration.Builder(adTagUri).build()).build())
 
-    }
+        }
 
     private fun Player.rememberState() {
 
