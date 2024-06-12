@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     kotlin("android")
     kotlin("kapt")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.dagger.hilt)
     id("kotlin-parcelize")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlitycs)
 }
 
 android {
@@ -16,8 +16,8 @@ android {
         applicationId = "com.ead.project.dreamer"
         minSdk = 26
         targetSdk = 34
-        versionCode = 22
-        versionName = "1.921"
+        versionCode = 25
+        versionName = "1.925"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -60,146 +60,130 @@ android {
 
 dependencies {
     
-    val roomVersion = "2.6.0"
-    val lottieVersion = "6.1.0"
-    val media3Version = "1.1.1"
-    val okhttpVersion = "4.11.0"
-    val retrofitVersion = "2.9.0"
-    val ktorVersion = "2.3.5"
-    val lifecycleVersion = "2.6.2"
-    val fragmentsVersion = "2.7.4"
-    val daggerHiltVersion = "2.48.1"
-    val googlePlayInAppUpdateVersion = "2.1.0"
-
     //own libs
-    implementation("com.github.darkryh:lifecycle-commons-ktx:0.0.3")
-    implementation("com.github.darkryh:views-commons-ktx:0.0.5")
-    implementation("com.github.darkryh:resource-commons-ktx:0.0.1")
-    implementation("com.github.darkryh:metrics-commons-ktx:0.0.1")
+    implementation(libs.moongetter)
+    implementation(libs.somoskudasai)
+    implementation(libs.nomoreadsonmywebviewplayer)
+    implementation(libs.monoschinosapi)
+    implementation(libs.lifecycle.commons.ktx)
+    implementation(libs.views.commons.ktx)
+    implementation(libs.resource.commons.ktx)
+    implementation(libs.metrics.commons.ktx)
 
     //basics
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.media:media:1.6.0")
+    implementation(libs.core.ktx)
+    implementation(libs.appcompat)
+    implementation(libs.preference.ktx)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
+    implementation(libs.preference.ktx)
+    implementation(libs.media)
 
     //lifecycles
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
 
     //navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:$fragmentsVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$fragmentsVersion")
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
 
     //tests
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 
     //desugar
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     //room
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     //image loader coil
-    implementation("io.coil-kt:coil:2.4.0")
+    implementation(libs.coil)
 
     //shimmer
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation(libs.shimmer)
 
     //html parser
-    implementation("org.jsoup:jsoup:1.16.2")
+    implementation(libs.jsoup)
 
     //data store
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.datastore.preferences)
 
     //media3
-    implementation("androidx.media3:media3-ui:$media3Version")
+    implementation(libs.media3.ui)
     // For media playback using ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation(libs.media3.exoplayer)
     // For DASH playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-dash:$media3Version")
+    implementation(libs.media3.exoplayer.dash)
     // For HLS playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-hls:$media3Version")
+    implementation(libs.media3.exoplayer.hls)
     // For RTSP playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-rtsp:$media3Version")
+    implementation(libs.media3.exoplayer.rtsp)
     // For SS playback support with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:$media3Version")
+    implementation(libs.media3.exoplayer.smoothstreaming)
     // For ad insertion using the Interactive Media Ads SDK with ExoPlayer
-    implementation("androidx.media3:media3-exoplayer-ima:$media3Version")
+    implementation(libs.media3.exoplayer.ima)
     // For exposing and controlling media sessions
-    implementation("androidx.media3:media3-session:$media3Version")
+    implementation(libs.media3.session)
     // For extracting data from media containers
-    implementation("androidx.media3:media3-extractor:$media3Version")
+    implementation(libs.media3.extractor)
     // For integrating with Cast
-    implementation("androidx.media3:media3-cast:$media3Version")
-
-    //apacheCommons
-    implementation("org.apache.commons:commons-text:1.10.0")
+    implementation(libs.media3.cast)
 
     //workManager
-    implementation("androidx.work:work-runtime-ktx:2.8.1")
-    implementation("androidx.hilt:hilt-common:1.0.0")
-    implementation("androidx.hilt:hilt-work:1.0.0")
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.common)
+    implementation(libs.hilt.work)
 
     //gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     //dagger hilt
-    implementation("com.google.dagger:hilt-android:$daggerHiltVersion")
-    kapt("com.google.dagger:hilt-android-compiler:$daggerHiltVersion")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
 
     //lottie
-    implementation("com.airbnb.android:lottie:$lottieVersion")
+    implementation(libs.lottie)
 
     //okhttp
-    implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
-    implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     //retrofit
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion") {
-        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
-        exclude (module = "okhttp")
-    }
+    implementation(libs.retrofit) { exclude (module = "okhttp") }
 
     //gson converter
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-
-    //calculator string
-    implementation("net.objecthunter:exp4j:0.4.8")
+    implementation(libs.converter.gson)
 
     //admob
-    implementation("com.google.android.gms:play-services-ads:22.5.0")
+    implementation(libs.play.services.ads)
 
     //firebase
-    implementation(enforcedPlatform("com.google.firebase:firebase-bom:32.4.0"))
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-inappmessaging-display-ktx")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.inappmessaging.display.ktx)
 
     //cast
-    implementation("androidx.mediarouter:mediarouter:1.6.0")
-    implementation("com.google.android.gms:play-services-cast-framework:21.3.0")
-    implementation("com.android.volley:volley:1.2.1")
+    implementation(libs.mediarouter)
+    implementation(libs.play.services.cast.framework)
+    implementation(libs.volley)
 
     //embedded Server
-    implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("io.ktor:ktor-server-websockets:$ktorVersion")
-    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
-    implementation("io.ktor:ktor-server-partial-content:$ktorVersion")
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.websockets)
+    implementation(libs.ktor.server.call.logging)
+    implementation(libs.ktor.server.partial.content)
 
     //play In-App Update:
-    implementation("com.google.android.play:app-update:$googlePlayInAppUpdateVersion")
-    implementation("com.google.android.play:app-update-ktx:$googlePlayInAppUpdateVersion")
+    implementation(libs.app.update)
+    implementation(libs.app.update.ktx)
 }
