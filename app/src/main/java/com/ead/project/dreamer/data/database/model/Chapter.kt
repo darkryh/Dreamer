@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import com.ead.project.dreamer.app.data.files.Files
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.data.util.system.delete
+import com.ead.project.dreamer.data.models.ChapterComparison
 import com.ead.project.dreamer.data.utils.LocalServer
 import com.ead.project.dreamer.data.utils.ui.mechanism.EqualsDiffUtil
 import kotlinx.parcelize.IgnoredOnParcel
@@ -51,6 +52,16 @@ data class Chapter (
 
     @IgnoredOnParcel
     val isMediaWatched get() = currentProgress >= (totalProgress * 0.91).roundToInt() && isMediaInitialized
+
+    fun toComparison() : ChapterComparison {
+        return ChapterComparison(
+            idProfile = idProfile,
+            title = title,
+            cover = cover,
+            number = number,
+            reference = reference
+        )
+    }
 
     fun getLocalReference() : String = LocalServer.address + "/${routeName()}"
 
