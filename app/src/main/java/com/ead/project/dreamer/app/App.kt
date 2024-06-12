@@ -7,6 +7,7 @@ import android.net.NetworkRequest
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.ead.lib.nomoreadsonmywebviewplayer.core.Blocker
 import com.ead.project.dreamer.app.data.network.Network
 import com.ead.project.dreamer.app.data.notifications.NotificationChannels
 import com.ead.project.dreamer.app.data.preference.Settings
@@ -28,13 +29,15 @@ class App : Application(), Configuration.Provider {
     @Inject lateinit var scope : CoroutineScope
     @Inject lateinit var downloadManager: DownloadManager
 
-    override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder()
-        .setWorkerFactory(hiltWorkerFactory)
-        .build()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(hiltWorkerFactory)
+            .build()
 
     override fun onCreate() {
         super.onCreate()
         Instance = this
+        Blocker.init(Instance)
         initAdsPreferences()
         initApplicationTheme()
         initApplicationPreferences()
