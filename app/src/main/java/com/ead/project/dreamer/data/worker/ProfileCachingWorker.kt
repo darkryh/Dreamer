@@ -17,7 +17,7 @@ import java.io.IOException
 
 @HiltWorker
 class ProfileCachingWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val directoryUseCase: DirectoryUseCase,
     private val objectUseCase: ObjectUseCase,
@@ -31,7 +31,7 @@ class ProfileCachingWorker @AssistedInject constructor(
                 val id = array[0].toInt()
                 val reference = array[1]
 
-                val requestedProfile = async { webProvider.getAnimeProfile(id,reference) }
+                val requestedProfile = async { webProvider.getAnimeProfile(id ,reference, context) }
                 val animeBase = directoryUseCase.getDirectory.byId(id)
                 requestedProfile.await().apply {
                     objectUseCase.insertObject(copy(

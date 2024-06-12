@@ -8,6 +8,7 @@ import com.ead.project.dreamer.app.data.home.HomeNotifier
 import com.ead.project.dreamer.app.data.home.HomePreferences
 import com.ead.project.dreamer.app.data.notifications.NotificationManager
 import com.ead.project.dreamer.data.database.model.ChapterHome
+import com.ead.project.dreamer.data.models.ChapterNotify
 import com.ead.project.dreamer.data.network.WebProvider
 import com.ead.project.dreamer.domain.HomeUseCase
 import com.ead.project.dreamer.domain.ObjectUseCase
@@ -60,10 +61,8 @@ class HomeWorker @AssistedInject constructor(
             val chapterHomeList = homeUseCase.getHomeList()
 
             val isDataEmpty = chapterHomeList.isEmpty()
-            val chapter = if (isDataEmpty) ChapterHome.fake()
-            else chapterHomeList.last()
 
-            val homeData = async { webProvider.getChaptersHome(chapter) }
+            val homeData = async { webProvider.getChaptersHome(context) }
             homeData.await().apply {
 
                 if (isDataEmpty) objectUseCase.insertObject(this)
@@ -86,7 +85,7 @@ class HomeWorker @AssistedInject constructor(
 
                 val releaseList = homeUseCase.getHomeList()
                 val favoriteList = profileUseCase.getProfilesFavoriteReleases.stringList()
-                val chaptersTitleList = homePreferences.getList().map { it.title }
+                val chaptersTitleList = homePreferences.getList().map { ChapterNotify(it.title,it.chapterNumber) }
 
                 chaptersTitleList.apply {
 
@@ -94,14 +93,14 @@ class HomeWorker @AssistedInject constructor(
 
                         if (notificationLevel == NotificationManager.FAVORITES) {
                             for (chapter in releaseList) {
-                                if (!contains(chapter.title) && favoriteList.contains(chapter.title)) {
+                                if (!contains(ChapterNotify(chapter.title,chapter.chapterNumber)) && favoriteList.contains(chapter.title)) {
                                     notificationList.add(chapter)
                                 }
                             }
                         }
                         else {
                             for (chapter in releaseList) {
-                                if (!contains(chapter.title)) {
+                                if (!contains(ChapterNotify(chapter.title,chapter.chapterNumber))) {
                                     notificationList.add(chapter)
                                 }
                             }

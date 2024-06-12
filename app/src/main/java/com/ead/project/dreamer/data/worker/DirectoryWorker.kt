@@ -18,7 +18,7 @@ import java.io.IOException
 
 @HiltWorker
 class DirectoryWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val directoryUseCase: DirectoryUseCase,
     private val objectUseCase: ObjectUseCase,
@@ -32,7 +32,7 @@ class DirectoryWorker @AssistedInject constructor(
                 val workerPosition = inputData.getInt(Worker.DIRECTORY_KEY, -1)
 
                 if (directory.size <= HomePreferences.HOME_ITEM_LIMIT) {
-                    val directoryData = async { webProvider.requestingData(workerPosition) }
+                    val directoryData = async { webProvider.requestingData(workerPosition, context) }
                     directoryData.await().apply {
                         if (isEmpty()) Result.failure()
                         objectUseCase.insertObject(this)

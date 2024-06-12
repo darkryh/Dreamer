@@ -20,7 +20,7 @@ import java.io.IOException
 
 @HiltWorker
 class ProfileRepositoryWorker  @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val directoryUseCase: DirectoryUseCase,
     private val objectUseCase: ObjectUseCase,
@@ -44,7 +44,8 @@ class ProfileRepositoryWorker  @AssistedInject constructor(
                         val profile = async {
                             webProvider.getAnimeProfile(
                                 animeBase.id,
-                                animeBase.reference
+                                animeBase.reference,
+                                context
                             )
                         }
                         profile.await().apply {

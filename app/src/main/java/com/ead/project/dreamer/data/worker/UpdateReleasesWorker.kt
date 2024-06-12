@@ -18,7 +18,7 @@ import java.io.IOException
 
 @HiltWorker
 class UpdateReleasesWorker @AssistedInject constructor(
-    @Assisted context: Context,
+    @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val objectUseCase: ObjectUseCase,
     private val profileUseCase: ProfileUseCase,
@@ -41,6 +41,7 @@ class UpdateReleasesWorker @AssistedInject constructor(
                             webProvider.getAnimeProfile(
                                 profile.id,
                                 profile.reference!!,
+                                context
                             )
                         }
                         profileInProgress.await().apply {
