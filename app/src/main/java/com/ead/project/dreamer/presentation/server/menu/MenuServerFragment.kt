@@ -89,8 +89,10 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     private fun initLayouts() {
         menuServerManager.initialize(binding.serverContainer)
         binding.lottieLoadingServer.visibility = View.VISIBLE
-        binding.imageChapterMenu.load(chapter.cover){
-            transformations(RoundedCornersTransformation(10f))
+        if (chapter.cover.isNotBlank()) {
+            binding.imageChapterMenu.load(chapter.cover){
+                transformations(RoundedCornersTransformation(10f))
+            }
         }
         binding.textTitleMenu.text = getString(R.string.welcome_player, chapter.title, chapter.number)
     }
@@ -104,7 +106,10 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     }
 
     private fun initServers() {
-        viewModel.getEmbedServers({timeoutActionTask()},chapter).observeOnce(this) { embeddedServers->
+        viewModel.getEmbedServers(chapter,requireContext()).observeOnce(this) { embeddedServers->
+
+            if (embeddedServers.isEmpty())
+                dismissReason(requireContext().getString(R.string.timeout_message))
 
             embeddedUrlServers = embeddedServers.toMutableList()
 
@@ -124,9 +129,9 @@ class MenuServerFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun timeoutActionTask() {
+    private fun dismissReason(text  :String) {
         if (_binding != null) {
-            toast(requireContext().getString(R.string.timeout_message),Toast.LENGTH_SHORT)
+            toast(text,Toast.LENGTH_SHORT)
         }
 
         dismiss()
@@ -145,47 +150,27 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
     private fun launchAutomaticProcess() {
         embeddedUrlServers = viewModel.getSortedServer(embeddedUrlServers,isDownloadingMode)
-        serversFactoringProcess()
+        getUntilFindResource()
     }
 
-    private fun serversFactoringProcess () {
-        viewModel.getServers(embeddedUrlServers).observeOnce(this) { serverList ->
+    private fun getUntilFindResource () {
+        viewModel.getServers(embeddedUrlServers).observeOnce(this) { server ->
 
             isCancelable = false
-            launchAutomaticServer(serverList)
+            launchAutomaticServer(server ?:return@observeOnce dismissReason(requireContext().getString(R.string.no_server_available)))
 
         }
     }
 
-    private fun launchAutomaticServer(serverList : List<Server>) {
+    private fun launchAutomaticServer(server : Server) {
         Thread.launch {
             Run.catching {
 
-                for (server in serverList) {
-                    if (server.isValidated) {
-
-                        if (chapter.id == 0) {
-                            prepareChecker(server)
-                            break
-                        }
-
-                        preparingIntent(server.videoList,server.isDirect)
-                        break
-
-                    } else if (server.isConnectionValidated) {
-
-                        if (chapter.id == 0) {
-                            prepareChecker(server)
-                            break
-                        }
-
-                        preparingIntent(server.videoList, server.isDirect)
-                        break
-
-                    }
+                if (chapter.id == 0) {
+                    prepareChecker(server)
                 }
+                else preparingIntent(server.videoList,server.isDirect)
 
-                dismiss()
             }
         }
     }
@@ -222,40 +207,7 @@ class MenuServerFragment : BottomSheetDialogFragment() {
     private fun getSelectedServer(index : Int) {
         Run.catching {
             viewModel.getServer(embeddedUrlServers[index]).observeOnce(this) { server ->
-                if (server.videoList.isNotEmpty()) {
-
-                    if (chapter.id == 0) {
-
-                        ChapterCheckerFragment.launch(
-                            context = requireActivity() as Context,
-                            chapter = chapter,
-                            previousChapter = previousChapter,
-                            playList = server.videoList,
-                            isDirect = server.isDirect,
-                            isExternalPlayer = false,
-                            isDownloadingMode = isDownloadingMode,
-                            isFromContent = isFromContent
-                        )
-
-                        dismiss()
-                        return@observeOnce
-
-                    }
-
-
-                    if (isDownloadingMode) {
-
-                        prepareDownload(server)
-
-                    } else {
-
-                        preparingIntent(server.videoList,server.isDirect)
-
-                    }
-                    dismiss()
-
-                } else {
-
+                if (server == null || server.videoList.isEmpty()) {
                     binding.serverContainer.allViews.forEach { serverOption -> serverOption.isEnabled = true }
 
                     embeddedUrlServers.removeAt(index)
@@ -265,6 +217,40 @@ class MenuServerFragment : BottomSheetDialogFragment() {
 
                     toast(getString(R.string.server_warning_error),Toast.LENGTH_SHORT)
                 }
+                else
+                    if (server.videoList.isNotEmpty()) {
+
+                        if (chapter.id == 0) {
+
+                            ChapterCheckerFragment.launch(
+                                context = requireActivity() as Context,
+                                chapter = chapter,
+                                previousChapter = previousChapter,
+                                playList = server.videoList,
+                                isDirect = server.isDirect,
+                                isExternalPlayer = false,
+                                isDownloadingMode = isDownloadingMode,
+                                isFromContent = isFromContent
+                            )
+
+                            dismiss()
+                            return@observeOnce
+
+                        }
+
+
+                        if (isDownloadingMode) {
+
+                            prepareDownload(server)
+
+                        } else {
+
+                            preparingIntent(server.videoList,server.isDirect)
+
+                        }
+                        dismiss()
+
+                    }
             }
         }
     }
