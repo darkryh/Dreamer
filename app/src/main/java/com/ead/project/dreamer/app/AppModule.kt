@@ -150,45 +150,6 @@ object AppModule {
     @Provides
     fun provideAppReceiver() : AppReceiver = AppReceiver()
 
-    @Singleton
-    @Provides
-    fun provideActionStore(context: Context) : ActionStore
-    = ActionStore(context = context)
-
-    @Singleton
-    @Provides
-    fun provideAdPreferences(
-        store : DataStore<AdPreference>
-    ) : AdPreferences
-    = AdPreferences(store)
-
-    @Singleton
-    @Provides
-    fun provideAppBuildPreferences(
-        store: DataStore<AppBuild>
-    ) : AppBuildPreferences
-    = AppBuildPreferences(store)
-
-    @Singleton
-    @Provides
-    fun provideEadPreferences(
-        store : DataStore<EadAccount?>
-    ) : EadPreferences
-    = EadPreferences(store)
-
-    @Singleton
-    @Provides
-    fun provideFilesPreferences(
-        store : DataStore<FilePreference>,
-    ) : FilesPreferences
-    = FilesPreferences(store)
-
-    @Singleton
-    @Provides
-    fun provideHomePreferences(
-        store: DataStore<HomePreference>
-    ) : HomePreferences
-    = HomePreferences(store)
 
     @Singleton
     @Provides
@@ -306,13 +267,18 @@ object AppModule {
     @Singleton
     @Provides
     fun provideWebProvider(
-        getHomeScrap: GetHomeScrap,
-        getDirectoryScrap: GetDirectoryScrap,
-        getProfileScrap: GetProfileScrap,
-        getChapterScrap: GetChapterScrap,
-        getNewsItemScrap: GetNewsItemScrap,
-        getNewsItemWebScrap: GetNewsItemWebScrap
-    ): WebProvider = WebProvider(getHomeScrap, getDirectoryScrap, getProfileScrap, getChapterScrap, getNewsItemScrap, getNewsItemWebScrap)
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase,
+        gson: Gson
+    ): WebProvider {
+        return WebProvider(
+            getDirectoryScrap = GetDirectoryScrap(
+               repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                gson = gson,
+            )
+        )
+    }
 
     @Singleton
     @Provides
@@ -341,44 +307,48 @@ object AppModule {
     fun provideDownloadManagerGoogle(context: Context) : DownloadManager =
         context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
-
-    //DOMAIN
-
-    @Singleton
-    @Provides
-    fun provideAddDownload(
-        streamingState: StreamingState,
-        runningState: RunningState,
-        pendingState: PendingState,
-        pausedState: PausedState,
-        failedState: FailedState,
-        downloadedState: DownloadedState
-    ) : AddDownload
-    = AddDownload(streamingState, runningState, pendingState, pausedState, failedState, downloadedState)
-
     @Singleton
     @Provides
     fun provideApplicationUseCase(
-        getApplicationAds: GetApplicationAds,
-        getAppStatusVersion: GetAppStatusVersion
-    ) : ApplicationUseCase = ApplicationUseCase(getApplicationAds, getAppStatusVersion)
+        repository: AnimeRepository
+    ) : ApplicationUseCase {
+        return ApplicationUseCase(
+            getApplicationAds = GetApplicationAds(
+                repository = repository
+            ),
+            getAppStatusVersion = GetAppStatusVersion(
+                repository = repository
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideChapterUseCase(
-        getChapter: GetChapter,
-        getChapters: GetChapters,
-        getChaptersToDownload: GetChaptersToDownload,
-        getChaptersToFix: GetChaptersToFix,
-        getChapterScrap: GetChapterScrap
-    ) : ChapterUseCase = ChapterUseCase(getChapter,getChapters, getChaptersToDownload,getChaptersToFix,getChapterScrap)
-
-    @Singleton
-    @Provides
-    fun provideCheckIfUpdateIsAlreadyDownloaded(
-        preferenceUseCase: PreferenceUseCase
-    ) : IsAlreadyDownloaded
-    = IsAlreadyDownloaded(preferenceUseCase)
+        preferenceUseCase: PreferenceUseCase,
+        repository: AnimeRepository,
+        gson: Gson,
+    ) : ChapterUseCase {
+        return ChapterUseCase(
+            getChapter = GetChapter(
+                repository = repository
+            ),
+            getChapters = GetChapters(
+                repository = repository
+            ),
+            getChaptersToDownload = GetChaptersToDownload(
+                repository = repository
+            ),
+            getChaptersToFix = GetChaptersToFix(
+                repository = repository
+            ),
+            getChapterScrap = GetChapterScrap(
+                repository = repository,
+                gson = gson,
+                preferenceUseCase = preferenceUseCase
+            )
+        )
+    }
 
     @Singleton
     @Provides
@@ -406,102 +376,169 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideConfigureRecords(
-        repository: AnimeRepository
-    ) : ConfigureRecords
-    = ConfigureRecords(repository)
-
-    @Singleton
-    @Provides
-    fun provideGenerateDownload(
-        downloadManager: DownloadManager,
-        downloadStore: DownloadStore
-    ) : GenerateDownload
-    = GenerateDownload(downloadManager,downloadStore)
-
-    @Singleton
-    @Provides
-    fun provideDeleteObject(
-        repository: AnimeRepository
-    ) : DeleteObject = DeleteObject(repository)
-
-    @Singleton
-    @Provides
     fun provideDirectoryUseCase(
-        getDirectoryList: GetDirectoryList,
-        getDirectory: GetDirectory,
-        getDirectoryScrap: GetDirectoryScrap,
-        getDirectoryState: GetDirectoryState,
-        setDirectoryState: SetDirectoryState
-    ) : DirectoryUseCase = DirectoryUseCase(getDirectoryList, getDirectory,getDirectoryScrap,getDirectoryState, setDirectoryState)
+        preferenceUseCase: PreferenceUseCase,
+        repository: AnimeRepository,
+        gson: Gson
+    ) : DirectoryUseCase {
+        return DirectoryUseCase(
+            getDirectory = GetDirectory(
+                repository = repository
+            ),
+            getDirectoryList = GetDirectoryList(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase
+            ),
+            getDirectoryState = GetDirectoryState(
+                preferenceUseCase = preferenceUseCase
+            ),
+            getDirectoryScrap = GetDirectoryScrap(
+                repository = repository,
+                gson = gson,
+                preferenceUseCase = preferenceUseCase
+            ),
+            setDirectoryState = SetDirectoryState(
+                preferenceUseCase = preferenceUseCase
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideDiscordUseCase(
-        getDiscordMember: GetDiscordMember
-    ) : DiscordUseCase =
-        DiscordUseCase(getDiscordMember)
-
+        repository: AnimeRepository
+    ) : DiscordUseCase {
+        return DiscordUseCase(
+            getDiscordMember = GetDiscordMember(
+                getDiscordUserToken = GetDiscordUserToken(
+                    repository = repository
+                ),
+                getDiscordUserRefreshToken = GetDiscordUserRefreshToken(
+                    repository = repository
+                ),
+                getDiscordUserData = GetDiscordUserData(
+                    repository = repository
+                ),
+                getDiscordUserInGuild = GetDiscordUserInGuild(
+                    repository = repository
+                ),
+                getDiscordUserInToGuild = GetDiscordUserInToGuild(
+                    repository = repository
+                )
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideDownloadEngine(
         context: Context,
+        gson: Gson,
         repository: AnimeRepository,
-        getChapter: GetChapter,
-        getServerResultToArray: GetServerResultToArray,
-        getSortedServers: GetSortedServers,
-        getServers: GetServers,
-        enqueueDownload: EnqueueDownload,
         downloadStore: DownloadStore,
-        serverScript: ServerScript,
-        //downloadWebView: DownloadWebView,
-        appReceiver: AppReceiver
-    ) : DownloadEngine
-    = DownloadEngine(context, repository, getChapter ,getServerResultToArray, getSortedServers, getServers, enqueueDownload, serverScript, downloadStore,/*downloadWebView,*/ appReceiver)
-
-/*    @Singleton
-    @Provides
-    @MainThread
-    fun provideDownloadWebView(context: Context) : DownloadWebView = DownloadWebView(context)*/
-
+        downloadManager: DownloadManager,
+        appReceiver: AppReceiver,
+        preferenceUseCase: PreferenceUseCase
+    ) : DownloadEngine {
+        return DownloadEngine(
+            context = context,
+            repository = repository,
+            getChapter = GetChapter(
+                repository = repository
+            ),
+            getServerResultToArray = GetServerResultToArray(),
+            getSortedServers = GetSortedServers(
+                serverIdentifier = ServerIdentifier(),
+                preferenceUseCase = preferenceUseCase
+            ),
+            getServerUntilFindResource = GetServerUntilFindResource(
+                context = context
+            ),
+            enqueueDownload = EnqueueDownload(
+                generateDownload = GenerateDownload(
+                    downloadManager = downloadManager,
+                    downloadStore = downloadStore
+                ),
+                configureDownload = ConfigureDownload(
+                    context = context,
+                    gson = gson,
+                    preferenceUseCase = preferenceUseCase
+                ),
+                appReceiver = appReceiver,
+                context = context,
+            ),
+            serverScript = ServerScript(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase
+            ),
+            downloadStore = downloadStore,
+            appReceiver = appReceiver
+        )
+    }
 
     @Singleton
     @Provides
     fun provideDownloadUseCase(
-        addDownload: AddDownload,
-        removeDownload: RemoveDownload,
-        isInParallelLimit: IsInParallelDownloadLimit
-    ) : DownloadUseCase
-    = DownloadUseCase(addDownload,removeDownload,isInParallelLimit)
-
-    @Singleton
-    @Provides
-    fun provideStreamingState(
+        context: Context,
+        gson: Gson,
+        appReceiver: AppReceiver,
         downloadStore: DownloadStore,
-        launchDownload: LaunchDownload,
-        enqueueDownload: EnqueueDownload
-    ) : StreamingState = StreamingState(downloadStore, launchDownload, enqueueDownload)
+        downloadManager: DownloadManager,
+        preferenceUseCase: PreferenceUseCase,
+        launchPeriodicTimeRequest: LaunchPeriodicTimeRequest
+    ) : DownloadUseCase {
 
-    @Singleton
-    @Provides
-    fun provideRunningState() : RunningState = RunningState()
+        val launchDownload = LaunchDownload(
+            launchPeriodicTimeRequest = launchPeriodicTimeRequest
+        )
 
-    @Singleton
-    @Provides
-    fun providePendingState() : PendingState = PendingState()
+        val enqueueDownload = EnqueueDownload(
+            generateDownload = GenerateDownload(
+                downloadManager = downloadManager,
+                downloadStore = downloadStore
+            ),
+            configureDownload = ConfigureDownload(
+                context = context,
+                gson = gson,
+                preferenceUseCase = preferenceUseCase
+            ),
+            appReceiver = appReceiver,
+            context = context
+        )
 
-    @Singleton
-    @Provides
-    fun providePausedState() : PausedState = PausedState()
+        val removeDownload = RemoveDownload(
+            downloadManager = downloadManager,
+            downloadStore = downloadStore
+        )
 
-    @Singleton
-    @Provides
-    fun provideFailedState(removeDownload: RemoveDownload, launchDownload: LaunchDownload, enqueueDownload: EnqueueDownload) : FailedState = FailedState(removeDownload, launchDownload, enqueueDownload)
+        return DownloadUseCase(
+            add = AddDownload(
+                streamingState = StreamingState(
+                    downloadStore = downloadStore,
+                    launchDownload = launchDownload,
+                    enqueueDownload = enqueueDownload
+                ),
+                runningState = RunningState(),
+                pendingState = PendingState(),
+                pausedState = PausedState(),
+                failedState = FailedState(
+                    removeDownload = removeDownload,
+                    launchDownload = launchDownload,
+                    enqueueDownload = enqueueDownload
+                ),
+                downloadedState = DownloadedState(
+                    filesPreferences = preferenceUseCase.filesPreferences,
+                    launchDownload = launchDownload,
+                    enqueueDownload = enqueueDownload
 
-    @Singleton
-    @Provides
-    fun provideDownloadedState(filesPreferences: FilesPreferences, launchDownload: LaunchDownload, enqueueDownload: EnqueueDownload) : DownloadedState = DownloadedState(filesPreferences, launchDownload, enqueueDownload)
+                )
+            ),
+            remove = removeDownload,
+            isInParallelLimit = IsInParallelDownloadLimit(
+                downloadStore = downloadStore
+            )
+        )
+    }
 
     @Singleton
     @Provides
@@ -510,265 +547,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetApplicationAds(repository: AnimeRepository) : GetApplicationAds
-    = GetApplicationAds(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetAppStatusVersion(repository: AnimeRepository) : GetAppStatusVersion
-    = GetAppStatusVersion(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetChapter(repository: AnimeRepository) : GetChapter
-    = GetChapter(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetChapters(repository: AnimeRepository) : GetChapters
-    = GetChapters(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetChapterScrap(repository: AnimeRepository, gson: Gson,preferenceUseCase: PreferenceUseCase) : GetChapterScrap
-    = GetChapterScrap(repository,gson, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetChaptersToDownload(repository: AnimeRepository) : GetChaptersToDownload
-    = GetChaptersToDownload(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetChaptersToFix(repository: AnimeRepository) : GetChaptersToFix
-    = GetChaptersToFix(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetDirectory(repository: AnimeRepository) : GetDirectory
-    = GetDirectory(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetDirectoryList(
-        repository: AnimeRepository,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetDirectoryList
-    = GetDirectoryList(repository,preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetDirectoryScrap(
-        repository: AnimeRepository,
-        gson: Gson,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetDirectoryScrap
-    = GetDirectoryScrap(repository, gson, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetDirectoryState(
-        preferenceUseCase: PreferenceUseCase
-    ) : GetDirectoryState
-    = GetDirectoryState(preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordMember(
-        getDiscordUserData: GetDiscordUserData,
-        getDiscordUserInGuild: GetDiscordUserInGuild,
-        getDiscordUserInToGuild: GetDiscordUserInToGuild,
-        getDiscordUserRefreshToken: GetDiscordUserRefreshToken,
-        getDiscordUserToken: GetDiscordUserToken
-    ) : GetDiscordMember
-    = GetDiscordMember(
-        getDiscordUserToken,
-        getDiscordUserRefreshToken,
-        getDiscordUserData,
-        getDiscordUserInGuild,
-        getDiscordUserInToGuild
-    )
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordUserData(repository: AnimeRepository) : GetDiscordUserData
-    = GetDiscordUserData(repository)
-
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordUserInGuild(
-        repository: AnimeRepository
-    ) : GetDiscordUserInGuild
-    = GetDiscordUserInGuild(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordUserInToGuild(
-        repository: AnimeRepository
-    ) : GetDiscordUserInToGuild
-    = GetDiscordUserInToGuild(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordUserRefreshToken(repository: AnimeRepository) : GetDiscordUserRefreshToken
-    = GetDiscordUserRefreshToken(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetDiscordUserToken(repository: AnimeRepository) : GetDiscordUserToken
-    = GetDiscordUserToken(repository)
-
-
-    @Singleton
-    @Provides
-    fun provideGetEmbedServer(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServers
-    = GetEmbedServers(context,getServerResultToArray,serverScript)
-
-    @Singleton
-    @Provides
-    fun provideGetEmbedServerMutable(context: Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : GetEmbedServersMutable
-    = GetEmbedServersMutable(context,getServerResultToArray,serverScript)
-
-    @Singleton
-    @Provides
-    fun provideGetHomeList(
-        repository: AnimeRepository,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetHomeList
-    = GetHomeList(repository,preferenceUseCase)
-
-    @Singleton
-    @Provides
     fun provideHomeNotifier(context: Context) : HomeNotifier
     = HomeNotifier(context)
-
-    @Singleton
-    @Provides
-    fun provideGetHomeRecommendations(
-        repository: AnimeRepository,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetHomeRecommendations
-    = GetHomeRecommendations(repository,preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetHomeReleaseList(repository: AnimeRepository) : GetHomeReleaseList
-    = GetHomeReleaseList(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetHomeScrap(
-        repository: AnimeRepository,
-        gson: Gson,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetHomeScrap
-    = GetHomeScrap(repository, gson , preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetLikedProfiles(repository: AnimeRepository) : GetLikedProfiles
-    = GetLikedProfiles(repository)
-
-    @Singleton
-    @Provides
-    fun provideMostViewedProfiles(repository: AnimeRepository) : GetMostViewedProfiles
-    = GetMostViewedProfiles(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetNews(
-        repository: AnimeRepository,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetNews
-    = GetNews(repository,preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetNewsItemScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetNewsItemScrap
-    = GetNewsItemScrap(repository,gson, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetNewsItemWebScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetNewsItemWebScrap
-    = GetNewsItemWebScrap(repository, gson, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetProfile(repository: AnimeRepository) : GetProfile
-    = GetProfile(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetProfileInboxRecommendations(repository: AnimeRepository) : GetProfileInboxRecommendations
-    = GetProfileInboxRecommendations(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetProfileList(repository: AnimeRepository) : GetProfileList
-    = GetProfileList(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetProfilePlayerRecommendations(
-        repository: AnimeRepository,
-        context: Context,
-        preferenceUseCase: PreferenceUseCase
-    ): GetProfilePlayerRecommendations
-    = GetProfilePlayerRecommendations(repository,context, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetProfileScrap(repository: AnimeRepository, gson: Gson, preferenceUseCase: PreferenceUseCase) : GetProfileScrap
-    = GetProfileScrap(repository, gson, preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetProfilesFavoriteReleases(repository: AnimeRepository) : GetProfilesFavoriteReleases
-    = GetProfilesFavoriteReleases(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetProfilesReleases(repository: AnimeRepository) : GetProfilesReleases
-    = GetProfilesReleases(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetProfileToFix(repository: AnimeRepository) : GetProfilesToFix
-    = GetProfilesToFix(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetRecords(repository: AnimeRepository) : GetRecords
-    = GetRecords(repository)
-
-    @Singleton
-    @Provides
-    fun provideGetServer(serverIdentifier: ServerIdentifier) : GetServer
-    = GetServer(serverIdentifier)
-
-    @Singleton
-    @Provides
-    fun provideGetServerResultToArray() : GetServerResultToArray
-    = GetServerResultToArray()
-
-    @Singleton
-    @Provides
-    fun provideGetServers(getServer: GetServer) : GetServers
-    = GetServers(getServer)
-
-    @Singleton
-    @Provides
-    fun provideGetServerScript(repository: AnimeRepository,preferenceUseCase: PreferenceUseCase) : ServerScript
-    = ServerScript(repository,preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideGetSortedServer(
-        serverIdentifier: ServerIdentifier,
-        preferenceUseCase: PreferenceUseCase
-    ) : GetSortedServers
-    = GetSortedServers(serverIdentifier,preferenceUseCase)
 
     @Singleton
     @Provides
@@ -791,27 +571,34 @@ object AppModule {
     @Singleton
     @Provides
     fun provideHomeUseCase(
-        getHomeList: GetHomeList,
-        getHomeRecommendations: GetHomeRecommendations,
-        getHomeReleaseList: GetHomeReleaseList,
-        getHomeScrap: GetHomeScrap
-    ) : HomeUseCase = HomeUseCase(getHomeList, getHomeRecommendations,getHomeReleaseList,getHomeScrap)
-
-    @Singleton
-    @Provides
-    fun provideInsertObject(
-        repository: AnimeRepository
-    ) : InsertObject = InsertObject(repository)
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase,
+        gson: Gson
+    ) : HomeUseCase {
+        return HomeUseCase(
+            getHomeList = GetHomeList(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase
+            ),
+            getHomeRecommendations = GetHomeRecommendations(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase
+            ),
+            getHomeReleaseList = GetHomeReleaseList(
+                repository = repository
+            ),
+            getHomeScrap = GetHomeScrap(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                gson = gson
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideInstallWorkers(workManager: WorkManager,constraints: Constraints) : InstallWorkers
     = InstallWorkers(workManager,constraints)
-
-    @Singleton
-    @Provides
-    fun provideIsInParallelDownloadLimit(downloadStore: DownloadStore) : IsInParallelDownloadLimit
-    = IsInParallelDownloadLimit(downloadStore)
 
     @Singleton
     @Provides
@@ -833,16 +620,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideEnqueueDownload(
-        generateDownload: GenerateDownload,
-        configureDownload: ConfigureDownload,
-        appReceiver: AppReceiver,
-        context: Context
-    ) : EnqueueDownload
-    = EnqueueDownload(generateDownload, configureDownload, appReceiver, context)
-
-    @Singleton
-    @Provides
     fun provideLaunchOneTimeRequest(workManager: WorkManager,constraints: Constraints) : LaunchOneTimeRequest
     = LaunchOneTimeRequest(workManager,constraints)
 
@@ -853,130 +630,193 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetUpdate(downloadStore: DownloadStore) : GetUpdate
-    = GetUpdate(downloadStore)
-
-    @Singleton
-    @Provides
-    fun provideMonosChinosLogin(repository: AnimeRepository) : Login
-    = Login(repository)
-
-    @Singleton
-    @Provides
     fun provideMonosChinosUseCase(
-        login: Login
-    ) : MonosChinosUseCase
-    = MonosChinosUseCase(login)
+        repository: AnimeRepository
+    ) : MonosChinosUseCase {
+        return MonosChinosUseCase(
+            login = Login(
+                repository = repository
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideNewsUseCase(
-        getNews: GetNews,
-        getNewsItemScrap: GetNewsItemScrap,
-        getNewsItemWebScrap: GetNewsItemWebScrap
-    ) : NewsUseCase = NewsUseCase(getNews, getNewsItemScrap ,getNewsItemWebScrap)
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase,
+        gson: Gson
+    ) : NewsUseCase {
+        return NewsUseCase(
+            getNews = GetNews(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase
+            ),
+            getNewsItemScrap = GetNewsItemScrap(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                gson = gson
+            ),
+            getNewsItemWebScrap = GetNewsItemWebScrap(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                gson = gson
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideObjectUseCase(
-        insertObject: InsertObject,
-        updateObject: UpdateObject,
-        deleteObject: DeleteObject
-    ) : ObjectUseCase = ObjectUseCase(insertObject, updateObject, deleteObject)
+        repository: AnimeRepository
+    ) : ObjectUseCase {
+        return ObjectUseCase(
+            insertObject = InsertObject(
+                repository = repository
+            ),
+            updateObject = UpdateObject(
+                repository = repository
+            ),
+            deleteObject = DeleteObject(
+                repository = repository
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun providePreferenceUseCase(
-        appBuildPreferences: AppBuildPreferences,
-        actionStore: ActionStore,
-        preferencesSettings: Preferences,
-        adPreferences: AdPreferences,
-        homePreferences: HomePreferences,
-        filesPreferences: FilesPreferences,
-        playerPreferences: PlayerPreferences,
-        eadPreferences: EadPreferences
-    ) : PreferenceUseCase =
-        PreferenceUseCase(
-            appBuildPreferences = appBuildPreferences,
-            actionStore = actionStore,
-            preferences = preferencesSettings,
-            adPreferences = adPreferences,
-            homePreferences = homePreferences,
-            filesPreferences = filesPreferences,
-            playerPreferences = playerPreferences,
-            userPreferences = eadPreferences
+        context: Context,
+        appBuildStore : DataStore<AppBuild>,
+        adPreferenceStore : DataStore<AdPreference>,
+        homePreferencesStore :DataStore<HomePreference>,
+        filesPreferencesStore : DataStore<FilePreference>,
+        playerPreferencesStore : DataStore<PlayerPreference>,
+        userPreferenceStore : DataStore<EadAccount?>
+    ) : PreferenceUseCase {
+        return PreferenceUseCase(
+            appBuildPreferences = AppBuildPreferences(
+                store = appBuildStore
+            ),
+            actionStore = ActionStore(
+                context = context
+            ),
+            preferences = Preferences(
+                context = context
+            ),
+            adPreferences = AdPreferences(
+                store = adPreferenceStore
+            ),
+            homePreferences = HomePreferences(
+                store = homePreferencesStore
+            ),
+            filesPreferences = FilesPreferences(
+                store = filesPreferencesStore
+            ),
+            playerPreferences = PlayerPreferences(
+                store = playerPreferencesStore
+            ),
+            userPreferences = EadPreferences(
+                store = userPreferenceStore
+            )
         )
-
-    @Singleton
-    @Provides
-    fun providePlayerPreferences(
-        store : DataStore<PlayerPreference>
-    ) : PlayerPreferences
-    = PlayerPreferences(store)
-
-    @Singleton
-    @Provides
-    fun providePreferences(context: Context) : Preferences =
-        Preferences(context = context)
+    }
 
     @Singleton
     @Provides
     fun provideProfileUseCase(
-        getProfile: GetProfile,
-        getProfileList: GetProfileList,
-        getProfilesToFix: GetProfilesToFix,
-        getLikedProfiles: GetLikedProfiles,
-        getMostViewedProfiles: GetMostViewedProfiles,
-        getProfileInboxRecommendations: GetProfileInboxRecommendations,
-        getProfilePlayerRecommendations: GetProfilePlayerRecommendations,
-        getProfilesReleases: GetProfilesReleases,
-        getProfilesFavoriteReleases: GetProfilesFavoriteReleases,
-        getProfileScrap: GetProfileScrap
-    ) : ProfileUseCase = ProfileUseCase(getProfile, getProfileList , getProfilesToFix ,getLikedProfiles, getMostViewedProfiles, getProfileInboxRecommendations, getProfilePlayerRecommendations,getProfilesReleases,getProfilesFavoriteReleases,getProfileScrap)
+        context: Context,
+        repository: AnimeRepository,
+        preferenceUseCase: PreferenceUseCase,
+        gson: Gson
+    ) : ProfileUseCase {
+        return ProfileUseCase(
+            getProfile = GetProfile(
+                repository = repository
+            ),
+            getProfileScrap = GetProfileScrap(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                gson = gson
+            ),
+            getLikedProfiles = GetLikedProfiles(
+                repository = repository
+            ),
+            getMostViewedProfiles = GetMostViewedProfiles(
+                repository = repository
+            ),
+            getProfilePlayerRecommendations = GetProfilePlayerRecommendations(
+                repository = repository,
+                preferenceUseCase = preferenceUseCase,
+                context = context
+            ),
+            getProfileList = GetProfileList(
+                repository = repository
+            ),
+            getProfileInboxRecommendations = GetProfileInboxRecommendations(
+                repository = repository
+            ),
+            getProfilesFavoriteReleases = GetProfilesFavoriteReleases(
+                repository = repository
+            ),
+            getProfilesReleases = GetProfilesReleases(
+                repository = repository
+            ),
+            getProfilesToFix = GetProfilesToFix(
+                repository = repository
+            )
+        )
+    }
 
     @Singleton
     @Provides
     fun provideRecordsUseCase(
-        getRecords: GetRecords,
-        configureRecords: ConfigureRecords
-    ) : RecordsUseCase = RecordsUseCase(getRecords,configureRecords)
+        repository: AnimeRepository
+    ) : RecordsUseCase {
+        return RecordsUseCase(
+            getRecords = GetRecords(
+                repository = repository
+            ),
+            configureRecords = ConfigureRecords(
+                repository = repository
+            )
+        )
+    }
 
     @Singleton
     @Provides
-    fun provideRemoveDownload(
-        downloadManager: DownloadManager,
-        downloadStore: DownloadStore ) : RemoveDownload
-    = RemoveDownload(downloadManager,downloadStore)
+    fun provideServerUseCase(
+        context: Context,
+        preferenceUseCase: PreferenceUseCase,
+    ) : ServerUseCase {
+        return ServerUseCase(
+            getServer = GetServer(
+                context = context
+            ),
+            getServerUntilFindResource = GetServerUntilFindResource(
+                context = context
+            ),
+            getSortedServers = GetSortedServers(
+                serverIdentifier = ServerIdentifier(),
+                preferenceUseCase = preferenceUseCase
+            ),
+            getEmbedServers = GetEmbedServers()
+        )
+    }
 
     @Singleton
     @Provides
-    fun provideSetDirectoryState(
+    fun provideUpdateUseCase(
+        downloadStore: DownloadStore,
         preferenceUseCase: PreferenceUseCase
-    ) : SetDirectoryState
-    = SetDirectoryState(preferenceUseCase)
-
-    @Singleton
-    @Provides
-    fun provideServerEngine(context : Context,getServerResultToArray: GetServerResultToArray,serverScript: ServerScript) : ServerEngine
-    = ServerEngine(context,getServerResultToArray,serverScript)
-
-    @Singleton
-    @Provides
-    fun provideServerIdentifier() : ServerIdentifier
-    = ServerIdentifier()
-
-    @Singleton
-    @Provides
-    fun provideServerUseCase(getServer: GetServer, getServers: GetServers, getEmbedServers: GetEmbedServers, getEmbedServersMutable: GetEmbedServersMutable, getSortedServers: GetSortedServers, serverScript: ServerScript) : ServerUseCase
-    = ServerUseCase(getServer, getServers, getEmbedServers,getEmbedServersMutable, getSortedServers,serverScript)
-
-    @Singleton
-    @Provides
-    fun provideUpdateObject(repository: AnimeRepository) : UpdateObject
-    = UpdateObject(repository)
-
-    @Singleton
-    @Provides
-    fun provideUpdateUseCase(getUpdate: GetUpdate, isAlreadyDownloaded: IsAlreadyDownloaded) : UpdateUseCase
-    = UpdateUseCase(getUpdate, isAlreadyDownloaded)
+    ): UpdateUseCase {
+        return UpdateUseCase(
+            getUpdate = GetUpdate(
+                downloadStore = downloadStore
+            ),
+            isAlreadyDownloaded = IsAlreadyDownloaded(
+                preferenceUseCase = preferenceUseCase
+            )
+        )
+    }
 }
