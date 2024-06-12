@@ -49,7 +49,7 @@ class HomePreferences @Inject constructor(
     companion object {
         const val NOTIFICATION_DEFAULT = 0
         const val NOTIFICATION_LIMIT_INDEX = 50
-        const val HOME_ITEM_LIMIT = 25
+        const val HOME_ITEM_LIMIT = 32
         const val NOTIFICATION_CHANNEL_ID = 700
     }
 }
