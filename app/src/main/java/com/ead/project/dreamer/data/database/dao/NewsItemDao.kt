@@ -13,10 +13,10 @@ interface NewsItemDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateNews(list: List<NewsItem>)
 
-    @Query("select * from anime_news_item_table order by id desc")
+    @Query("select * from anime_news_item_table order by id asc")
     suspend fun getNewsItemList() : MutableList<NewsItem>
 
-    @Query("select * from anime_news_item_table order by id desc")
+    @Query("select * from anime_news_item_table order by id asc")
     fun getFlowDataList() : Flow<List<NewsItem>>
 
     @Query("select * from anime_news_item_table " +
@@ -46,7 +46,7 @@ interface NewsItemDao {
             "order by id desc")
     fun getFlowDataListCensured() : Flow<List<NewsItem>>
 
-    @Query("select * from anime_news_item_table order by id desc limit 3")
+    @Query("select * from anime_news_item_table order by id asc limit 3")
     fun getFlowDataListLimited() : Flow<List<NewsItem>>
 
     @Query("select * from anime_news_item_table " +

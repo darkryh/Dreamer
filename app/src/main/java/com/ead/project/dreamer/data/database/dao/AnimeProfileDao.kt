@@ -35,26 +35,24 @@ interface AnimeProfileDao {
     fun getFlowProfile(id : Int) : Flow<AnimeProfile?>
 
     @Query("select * from anime_profile_table " +
-            "where rawGenres like '%' || :rawGenre || '%'  and rating>=:rating " +
+            "where rawGenres like '%' || :rawGenre || '%'" +
             "and id !=:id order by RANDOM() limit :limit")
-    fun getFlowProfileRandomListFrom(rawGenre : String, rating : Float, id: Int,limit : Int) : Flow<List<AnimeProfile>>
+    fun getFlowProfileRandomListFrom(rawGenre : String, id: Int,limit : Int) : Flow<List<AnimeProfile>>
 
     @Query("select * from (select * from anime_profile_table " +
             "where rawGenres not like '%' || '${AnimeProfile.TYPE_ECCHI}' || '%' " +
             "and rawGenres not like '%' || '${AnimeProfile.TYPE_BOYS_LOVE}' || '%') " +
-            "as T where rawGenres like '%' || :rawGenre || '%'  and rating>=:rating " +
+            "as T where rawGenres like '%' || :rawGenre || '%'" +
             "and id !=:id order by RANDOM() limit :limit")
-    fun getFlowProfileRandomListCensuredFrom(rawGenre : String, rating : Float, id: Int,limit: Int) : Flow<List<AnimeProfile>>
+    fun getFlowProfileRandomListCensuredFrom(rawGenre : String, id: Int,limit: Int) : Flow<List<AnimeProfile>>
 
     @Query("select * from anime_profile_table " +
             "where state = '${AnimeProfile.PROFILE_RELEASE_STATE}' " +
-            "and rating >= ${AnimeProfile.MINIMUM_RECOMMEND_VALUE} " +
             "and coverPhoto !='' order by RANDOM() limit 10")
     fun getFlowProfileRandomRecommendationsList() : Flow<List<AnimeProfile>>
 
     @Query("select * from anime_profile_table " +
             "where state = '${AnimeProfile.PROFILE_RELEASE_STATE}' " +
-            "and rating >= ${AnimeProfile.MINIMUM_RECOMMEND_VALUE} " +
             "and rawGenres not like '%' || '${AnimeProfile.TYPE_ECCHI}' || '%' " +
             "and coverPhoto !='' order by RANDOM() limit 10")
     fun getFlowProfileRandomRecommendationsListCensured() : Flow<List<AnimeProfile>>
@@ -100,6 +98,6 @@ interface AnimeProfileDao {
             "or rawGenres like '%' || :fivMGenre || '%' or rawGenres like '%' || :fSGenre || '%' " +
             "or rawGenres like '%' || :sSGenre || '%' or rawGenres like '%' || :tSGenre || '%' " +
             "or rawGenres like '%' || :tFGenre || '%') " +
-            "and rating >= ${AnimeProfile.MINIMUM_RECOMMEND_VALUE} order by random() limit :limit")
+            "order by random() limit :limit")
     suspend fun getRecommendations(fMGenre : String,sMGenre: String,tMGenre : String,forMGenre : String,fivMGenre : String,fSGenre : String,sSGenre : String,tSGenre :String,tFGenre : String,limit: Int=20) : List<AnimeProfile>
 }

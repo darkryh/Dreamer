@@ -14,21 +14,21 @@ interface ChapterHomeDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     suspend fun updateHome(list: List<ChapterHome>)
 
-    @Query("select * from anime_chapter_home_table order by id desc")
+    @Query("select * from anime_chapter_home_table order by id asc")
     suspend fun getChapterHomeList() : MutableList<ChapterHome>
 
-    @Query("select * from anime_chapter_home_table order by id desc")
+    @Query("select * from anime_chapter_home_table order by id asc")
     fun getFlowDataList() : Flow<List<ChapterHome>>
 
-    @Query("select * from anime_chapter_home_table order by id desc limit 8")
+    @Query("select * from anime_chapter_home_table order by id asc limit 8")
     fun getFlowPreviewDataList() : Flow<List<ChapterHome>>
 
     @Query("select * from anime_chapter_home_table " +
-            "where type!='${AnimeProfile.TYPE_UNCENSORED}' order by id desc")
+            "where type!='${AnimeProfile.TYPE_UNCENSORED}' order by id asc")
     fun getFlowDataListCensured() : Flow<List<ChapterHome>>
 
     @Query("select * from anime_chapter_home_table " +
-            "where type!='${AnimeProfile.TYPE_UNCENSORED}' order by id desc limit 8")
+            "where type!='${AnimeProfile.TYPE_UNCENSORED}' order by id asc limit 8")
     fun getFlowPreviewDataListCensured() : Flow<List<ChapterHome>>
 
     @Query("select * from anime_chapter_home_table where chapterNumber <= 1")
