@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ead.commons.lib.lifecycle.parcelable
 import com.ead.commons.lib.lifecycle.parcelableArrayList
+import com.ead.lib.nomoreadsonmywebviewplayer.models.BlockerClient
 import com.ead.project.dreamer.app.data.util.TimeUtil
 import com.ead.project.dreamer.app.data.util.system.clearData
 import com.ead.project.dreamer.app.data.util.system.hideSystemUI
@@ -51,6 +52,12 @@ class PlayerWebActivity : AppCompatActivity() {
     }
 
     private fun loadChapter() {
+        binding.webView.webViewClient = object : BlockerClient() {
+            override val exceptionWordKeys: List<String>
+                get() = listOf(
+                    ".sx"
+                )
+        }
         binding.webView.loadUrl(playlist.last().directLink)
     }
 

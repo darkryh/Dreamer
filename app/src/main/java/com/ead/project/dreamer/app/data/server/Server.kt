@@ -8,12 +8,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import com.ead.lib.moongetter.models.ServerIntegration
-import com.ead.lib.moongetter.server_sites.Voe
 import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.app.model.AutomaticServerPreference
 import com.ead.project.dreamer.app.model.ServerPreference
 import com.ead.project.dreamer.data.models.server.DoodStream
 import com.ead.project.dreamer.data.models.server.FileMoon
+import com.ead.project.dreamer.data.models.server.GoodStream
 import com.ead.project.dreamer.data.models.server.Mega
 import com.ead.project.dreamer.data.models.server.MegaUp
 import com.ead.project.dreamer.data.models.server.MixDrop
@@ -22,6 +22,7 @@ import com.ead.project.dreamer.data.models.server.Puj
 import com.ead.project.dreamer.data.models.server.Uptobox
 import com.ead.project.dreamer.data.models.server.Uqload
 import com.ead.project.dreamer.data.models.server.VidGuard
+import com.ead.project.dreamer.data.models.server.Voe
 import com.ead.project.dreamer.data.models.server.YourUpload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -158,6 +159,7 @@ object Server {
     const val ZIPPYSHARE = "Zippyshare"
     const val MEGA = "Mega"
     const val ONEFICHIER = "1Fichier"
+    const val GOODSTREAM = "GoodStream"
     const val FIRELOAD = "Fireload"
     const val VOE = "Voe"
     const val UPTOBOX = "Uptobox"
@@ -188,6 +190,7 @@ object Server {
     const val URL_ZIPPYSHARE = "zippyshare.com"
     const val URL_MEGA = "mega.nz"
     const val URL_ONEFICHIER = "1fichier.com"
+    const val URL_GOODSTREAM = "goodstream.uno"
     const val URL_FIRELOAD = "fireload.com"
     const val URL_VOE = "voe.sx"
     const val URL_UPTOBOX = "uptobox.com"
@@ -226,6 +229,10 @@ object Server {
     )
 
     val serverIntegrationList : List<ServerIntegration> = listOf(
+        ServerIntegration(
+          serverClass = GoodStream::class.java,
+            pattern = "https://goodstream\\.uno/video/embed/([a-zA-Z0-9]+)"
+        ),
         ServerIntegration(
           serverClass = Voe::class.java,
             pattern = "https?://(?:voe|markstyleall|shannonpersonalcost|cindyeyefinal)\\.(?:com|sx|net|to|io|co|xyz)/(?:e|d)/\\w+"

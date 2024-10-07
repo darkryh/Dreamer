@@ -1,0 +1,53 @@
+package com.ead.project.dreamer.data.models.server
+
+import android.content.Context
+import com.ead.lib.moongetter.core.system.extensions.await
+import com.ead.lib.moongetter.models.Server
+import com.ead.lib.moongetter.models.exceptions.InvalidServerException
+import com.ead.project.dreamer.R
+import com.ead.project.dreamer.data.utils.decoder
+import com.ead.project.dreamer.data.utils.PatternManager
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
+
+class Voe(context: Context, url : String) : Server(context, url) {
+
+    override suspend fun onExtract() {
+
+        var response = OkHttpClient()
+            .newCall(
+                Request.Builder()
+                    .url(url)
+                    .build()
+            )
+            .await()
+
+        if (!response.isSuccessful) throw InvalidServerException(context.getString(R.string.server_warning_error))
+
+
+        url = PatternManager.singleMatch(
+            string = response.body?.string().toString(),
+            regex = """window\.location\.href\s*=\s*'([^']+)""",
+            groupIndex = 1
+        ).toString()
+
+        response = OkHttpClient()
+            .newCall(
+                Request.Builder()
+                    .url(url)
+                    .build()
+            )
+            .await()
+
+        if (!response.isSuccessful) throw InvalidServerException(context.getString(R.string.server_warning_error))
+
+        url = decoder( PatternManager.singleMatch(
+            string = response.body?.string().toString(),
+            regex = """'hls':\s*'([^']+)"""
+        ) ?: throw InvalidServerException(context.getString(R.string.server_warning_error)) )
+
+
+        addDefault()
+    }
+}

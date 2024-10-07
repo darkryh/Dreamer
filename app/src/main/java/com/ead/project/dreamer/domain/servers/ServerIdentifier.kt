@@ -11,6 +11,7 @@ class ServerIdentifier @Inject constructor() {
         if (url.contains(Server.URL_OKRU)) return Server.OKRU
         if (url.contains(Server.URL_SOLIDFILES)) return Server.SOLIDFILES
         if (url.contains(Server.URL_ONEFICHIER)) return Server.ONEFICHIER
+        if (url.contains(Server.URL_GOODSTREAM)) return Server.GOODSTREAM
         if (url.contains(Server.URL_GOOGLE_DRIVE)) return Server.GOOGLE_DRIVE
         if (url.contains(Server.URL_FEMBED)) return Server.FEMBED
         if (url.contains(Server.URL_SENDVID)) return Server.SENDVID

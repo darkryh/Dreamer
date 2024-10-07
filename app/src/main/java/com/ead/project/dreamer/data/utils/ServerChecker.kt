@@ -13,6 +13,7 @@ import com.ead.lib.moongetter.server_sites.Voe
 import com.ead.project.dreamer.app.App
 import com.ead.project.dreamer.app.data.server.Server
 import com.ead.project.dreamer.app.data.util.system.contains
+import com.ead.project.dreamer.data.models.server.GoodStream
 import com.ead.project.dreamer.data.models.server.Mp4Upload
 
 
@@ -47,6 +48,7 @@ class ServerChecker {
         }
 
         private fun recommendedServers(): List<String> = listOf(
+            GoodStream::class.java.simpleName,
             Okru::class.java.simpleName, Onefichier::class.java.simpleName,
             StreamWish::class.java.simpleName,
             Mediafire::class.java.simpleName, Server.STREAMSB,

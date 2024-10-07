@@ -6,6 +6,7 @@ object ServerOrder {
 
     val internalServers : List<String> = listOf(
         Server.ONEFICHIER,
+        Server.GOODSTREAM,
         Server.OKRU,
         Server.STREAMWISH,
         Server.MEDIAFIRE,
@@ -36,6 +37,7 @@ object ServerOrder {
     val externalServers : List<String> = listOf(
         Server.OKRU,
         Server.ONEFICHIER,
+        Server.GOODSTREAM,
         Server.STREAMWISH,
         Server.MEDIAFIRE,
         Server.PIXELDRAIN,
@@ -64,6 +66,7 @@ object ServerOrder {
 
     val downloadServers : List<String> = listOf(
         Server.ONEFICHIER,
+        Server.GOODSTREAM,
         Server.MEDIAFIRE,
         Server.OKRU,
         Server.PIXELDRAIN,
